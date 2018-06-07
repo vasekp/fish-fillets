@@ -54,7 +54,7 @@ local function prog_init()
                     darked = true
                 end
             elseif darked then
-                game_changeBg("images/"..codename.."/chodba-p2.png")
+                game_changeBg("images/"..codename.."/chodba-p2.jpg")
                 for key, model in pairs(getModelsTable()) do
                     model:setEffect("none")
                 end
