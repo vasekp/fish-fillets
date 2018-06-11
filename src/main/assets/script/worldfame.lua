@@ -1,4 +1,3 @@
-
 node_bestSolution("start", 54, "Pavel Danihelka")
 node_bestSolution("briefcase", 225, "Pavel Danihelka")
 node_bestSolution("cellar", 375, "Pavel Danihelka")
@@ -77,15 +76,3 @@ node_bestSolution("warcraft", 573, "Josef Peterka")
 node_bestSolution("windoze", 549, "David Glass")
 node_bestSolution("hardware", 631, "Masaaki Irie")
 node_bestSolution("floppy", 998, "Gabor Braun")
- 
-node_bestSolution("hanoi", 404, "Masaaki Irie")
-node_bestSolution("rush", 852, "Miroslav OlĹˇĂˇk")
-node_bestSolution("fdto", 243, "Masaaki Irie")
-node_bestSolution("rotate", 213, "Masaaki Irie")
-node_bestSolution("nowall", 418, "Masaaki Irie")
-node_bestSolution("hole", 459, "Masaaki Irie")
-node_bestSolution("key", 560, "Masaaki Irie")
-node_bestSolution("keys", 281, "Erik Hajduk")
-node_bestSolution("linux", 665, "Masaaki Irie")
-
-node_bestSolution("electromagnet", 480, "Erik Hajduk")
