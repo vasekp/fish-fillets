@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "cz.ger.ffng"
-        minSdkVersion 4
-        targetSdkVersion 4
+        minSdkVersion 8
+        targetSdkVersion 14
 
         ndk {
             moduleName "ffng"

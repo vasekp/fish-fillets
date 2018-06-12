@@ -15,17 +15,11 @@ include_directories(
             src/main/jni/ff/state/
             src/main/jni/ff/widget/ )
 
-file( GLOB ffng_sources "src/main/jni/*.cpp" )
+file( GLOB ffng_sources "src/main/jni/*.cpp" "src/main/jni/ff/*/*.cpp" )
 
 add_library( ffng
              SHARED
              ${ffng_sources} )
-
-file( GLOB ffmain_sources "src/main/jni/ff/*/*.cpp" )
-
-add_library( ffmain
-             STATIC
-             ${ffmain_sources} )
 
 file( GLOB lua_sources "src/main/jni/lua/*.c" )
 
@@ -34,7 +28,6 @@ add_library( lua
              ${lua_sources} )
 
 target_link_libraries( ffng
-                       ffmain
                        lua
                        android
                        log )
