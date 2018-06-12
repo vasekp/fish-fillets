@@ -28,7 +28,7 @@ void android_sigaction(int signal, siginfo_t *info, void *reserved)
 */
 
 extern "C"
-int Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
+JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
 {
 	/*
 	// Try to catch crashes...
