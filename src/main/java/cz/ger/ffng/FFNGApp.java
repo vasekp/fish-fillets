@@ -150,13 +150,6 @@ public class FFNGApp extends Thread {
 			
 			setWindowScale();
 		}
-		/*
-		while (surface == null) {
-			try {
-				wait();
-			} catch(InterruptedException e) {}
-		}
-		*/
 		canvas.save();
 		canvas.scale(windowScale, windowScale, 0, 0);
 		canvas.drawBitmap(screen, windowX/windowScale, windowY/windowScale, bilinearPaint);
@@ -272,19 +265,12 @@ public class FFNGApp extends Thread {
 	}
 	
 	synchronized public void renderThis(FFNGSurface surface) {
-		/*
-		while(surface != null) {
-			try {
-				wait();
-			} catch(InterruptedException e) {}
-		}*/
 		canvas.drawBitmap(surface.getBitmap(), 0, 0, null);
        	activity.runOnUiThread(new Runnable() {
        			@Override public void run() {
        				view.invalidate();
        			}
        		});
-		//notifyAll();
 	}
 	
 	private float touchx = -1;
@@ -378,18 +364,8 @@ public class FFNGApp extends Thread {
             setOnKeyListener(this);
         }
 
-        //private static int counter = 0;
-        
         @Override protected void onDraw(Canvas canvas) {
         	app.render(canvas);
-        	//invalidate();
-
-        	/*
-        	if (++counter == 1000) {
-        		Log.d("FFNG", "1000");
-        		counter = 0;
-        	}
-        	*/
         }
 
         private static final int TOUCH_STATE_NONE = 0;
@@ -412,7 +388,6 @@ public class FFNGApp extends Thread {
 			case TOUCH_STATE_BUTTON_PRESSED:
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_MOVE:
-					//sleep(5);
 					result = true;
 					break;
 				case MotionEvent.ACTION_UP:
@@ -485,7 +460,6 @@ public class FFNGApp extends Thread {
 			                break;
 			            case MotionEvent.ACTION_MOVE:
 			            	app.setTouch(x, y);
-			            	//sleep(5);
 			                //touch_move(x, y);
 			                //invalidate();
 			                result = true;
@@ -505,15 +479,6 @@ public class FFNGApp extends Thread {
 			}
 
 			return result;
-		}
-		
-		private void sleep(int ms) {
-			try {
-				Thread.sleep(ms);
-			}
-			catch(InterruptedException ie){
-				//If this thread was intrrupted by nother thread 
-			}
 		}
 
 		// see SDLKey in FFNGInputEvent.h

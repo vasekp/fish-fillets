@@ -1,22 +1,17 @@
 package cz.ger.ffng;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import com.badlogic.gdx.backends.android.AndroidAudio;
-import com.badlogic.gdx.backends.android.AndroidFiles;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.badlogic.gdx.backends.android.AndroidAudio;
+import com.badlogic.gdx.backends.android.AndroidFiles;
 
 public class FFNG extends Activity {
 	private FFNGApp app;
@@ -95,20 +90,4 @@ public class FFNG extends Activity {
 			wakeLock.release();
 		}
 	}
-    
-	/** A signal handler in native code has been triggered. As our last gasp,
-	 * launch the crash handler (in its own process), because when we return
-	 * from this function the process will soon exit. */
-	/*
-	void nativeCrashed()
-	{
-		if (prefs != null) {
-			try {
-				System.err.println("saved game was:\n"+prefs.getString("savedGame",""));
-			} catch(Exception e) {}
-		}
-		new RuntimeException("crashed here (native trace should follow after the Java trace)").printStackTrace();
-		startActivity(new Intent(this, CrashHandler.class));
-	}
-	*/
 }
