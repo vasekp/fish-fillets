@@ -53,7 +53,6 @@ FFNG_SRC_FILES :=	\
 					ff/gengine/Environ.cpp \
 					ff/plan/Title.cpp \
 					ff/effect/TTFException.cpp \
-					ff/effect/Outline.cpp \
 					ff/gengine/def-script.cpp \
 					ff/menu/LevelNode.cpp \
 					ff/menu/NodeDrawer.cpp \

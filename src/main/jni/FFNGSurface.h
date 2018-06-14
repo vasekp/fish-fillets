@@ -39,7 +39,6 @@ struct SDL_Surface {
 	void fillRect(const SDL_Rect *dstRect, Uint32 pixel);
 	void filledCircleColor(int x, int y, int radius, Uint32 colorRGBA);
 	Uint32 getPixel(int x, int y);
-	void putPixel(int x, int y, Uint32 colorRGBA);
 private:
 	int getWidth() const;
 	int getHeight() const;
@@ -51,7 +50,6 @@ public:
 	static void freeSurface(SDL_Surface *surface);
 	static void blitSurface(SDL_Surface *srcSurface, const SDL_Rect *srcRect, SDL_Surface *dstSurface, const SDL_Rect *dstRect);
 	static Uint32 getPixel(SDL_Surface *surface, int x, int y);
-	static void putPixel(SDL_Surface *surface, int x, int y, Uint32 colorRGBA);
 	static SDL_Surface* createSurface(int width, int height, int colorkey = 0xff000000);
 	static SDL_Surface* clone(SDL_Surface* source);
 	static void fillRect(SDL_Surface *surface, const SDL_Rect *dstRect, Uint32 pixel);

@@ -379,26 +379,6 @@ Uint32 SDL_Surface::getPixel(int x, int y) {
     return javaEnv->CallIntMethod(surface, mid, x, y);
 }
 
-void SDL_Surface::putPixel(int x, int y, Uint32 colorRGBA) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (!mid) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
-		mid = javaEnv->GetMethodID(cls, "putPixel", "(III)V");
-	}
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::putPixel 1 %p %p %p", javaEnv, cls, mid);
-
-	if (mid == NULL) {
-		assert("method not found");
-		return;
-	}
-
-    javaEnv->CallVoidMethod(surface, mid, x, y, colorRGBA);
-}
-
 int SDL_Surface::getWidth() const {
 	static JNIEnv *javaEnv = NULL;
 	static jclass cls = NULL;
@@ -490,10 +470,6 @@ void FFNGSurface::blitSurface(SDL_Surface *srcSurface, const SDL_Rect *srcRect, 
 
 Uint32 FFNGSurface::getPixel(SDL_Surface *surface, int x, int y) {
 	return surface->getPixel(x, y);
-}
-
-void FFNGSurface::putPixel(SDL_Surface *surface, int x, int y, Uint32 colorRGBA) {
-	surface->putPixel(x, y, colorRGBA);
 }
 
 SDL_Surface* FFNGSurface::createSurface(int width, int height, int colorkey) {

@@ -18,7 +18,7 @@ public class FFNG extends Activity {
 	public static AndroidFiles files = null;
 	public static AndroidAudio audio = null;
 	public static AssetManager assets = null;
-	
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class FFNG extends Activity {
         
         app.start();
     }
-    
+
     public FFNGApp getApp() {
     	return app;
     }

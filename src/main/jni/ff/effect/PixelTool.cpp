@@ -17,6 +17,7 @@
  * Compare colors.
  * NOTE: aplha values are ignored
  */
+#if 0
 bool
 PixelTool::colorEquals(const Color &color1, const Color &color2)
 {
@@ -24,6 +25,7 @@ PixelTool::colorEquals(const Color &color1, const Color &color2)
         && color1.g == color2.g
         && color1.b == color2.b;
 }
+#endif
 //-----------------------------------------------------------------
 Uint32
 PixelTool::convertColor(/*FFNG SDL_PixelFormat *format, */const Color &color)
@@ -37,6 +39,7 @@ PixelTool::convertColor(/*FFNG SDL_PixelFormat *format, */const Color &color)
  * Surface must be locked.
  * @return color
  */
+#if 0
 Color
 PixelTool::getColor(SDL_Surface *surface, int x, int y)
 {
@@ -66,6 +69,7 @@ PixelTool::putColor(SDL_Surface *surface, int x, int y,
     putPixel(surface, x, y, color.get32()/*FFNG pixel*/);
 }
 //-----------------------------------------------------------------
+#endif
 /**
  * Get pixel at x, y.
  * Surface must be locked.
@@ -91,6 +95,7 @@ PixelTool::getPixel(SDL_Surface *surface, int x, int y)
  * Put pixel at x, y.
  * Surface must be locked.
  */
+#if 0
     void
 PixelTool::putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
@@ -106,6 +111,7 @@ PixelTool::putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     	FFNGSurface::putPixel(surface, x, y, pixel);
     }
 }
+#endif
 //-----------------------------------------------------------------
 /**
  * Decodes pixel from memory.
@@ -114,6 +120,7 @@ PixelTool::putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
  * @return pixel in bpp color depth 
  * @throws LogicException for unknown color depth
  */
+#if 0
     Uint32
 PixelTool::unpackPixel(Uint8 bpp, Uint8 *p)
 {
@@ -176,3 +183,4 @@ PixelTool::packPixel(Uint8 bpp, Uint8 *p, Uint32 pixel)
     }
 }
 
+#endif
