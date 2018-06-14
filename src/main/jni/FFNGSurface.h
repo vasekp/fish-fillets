@@ -4,6 +4,11 @@
 #include <string>
 #include "jnix.h"
 #include "FFNGTypes.h"
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
+
+constexpr int MaxWidth = 900;
+constexpr int MaxHeight = 900;
 
 struct SDL_Rect {
 	int x,y;
@@ -15,19 +20,18 @@ struct SDL_Rect {
 
 struct SDL_Surface {
 	int w,h;
-	Uint32 colorkey;
+    GLuint texture;
 
-	jobject surface;
+private: SDL_Surface();
 
-	SDL_Surface();  // TODO this shouldn't exist in production
+public:
 	SDL_Surface(int width, int height, Uint32 colorkey = 0x000000ff, bool transparent = false);
-	SDL_Surface(SDL_Surface *source);
 	SDL_Surface(const char *path);
 	SDL_Surface(const std::string &path);
 	SDL_Surface(jobject font, const char *text, int frontColor, int bgColor, int outlineWidth = 0);
 	~SDL_Surface();
 
-	jobject getSurface() const;
+	GLuint getSurface() const;
 	void blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, int srcw, int srch);
 	void blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color, const SDL_Surface *layer);
 	void blitWavy(const SDL_Surface *source, int x, int y, float amp, float periode, float speed);
@@ -46,12 +50,17 @@ private:
 
 class FFNGSurface {
 public:
+    static EGLContext ctx;
+    static EGLDisplay dpy;
+    static EGLSurface sfc;
+
+    static void initEGL();
+
 	static SDL_Surface* imgLoad(const char *file);
 	static void freeSurface(SDL_Surface *surface);
 	static void blitSurface(SDL_Surface *srcSurface, const SDL_Rect *srcRect, SDL_Surface *dstSurface, const SDL_Rect *dstRect);
 	static Uint32 getPixel(SDL_Surface *surface, int x, int y);
 	static SDL_Surface* createSurface(int width, int height, int colorkey = 0xff000000);
-	static SDL_Surface* clone(SDL_Surface* source);
 	static void fillRect(SDL_Surface *surface, const SDL_Rect *dstRect, Uint32 pixel);
 	static void filledCircleColor(SDL_Surface *screen, int x, int y, int radius, Uint32 colorRGBA);
 	static void lineColor(SDL_Surface *screen, int x1, int y1, int x2, int y2, Uint32 colorRGBA);

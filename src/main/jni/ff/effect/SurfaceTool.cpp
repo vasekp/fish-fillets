@@ -75,6 +75,7 @@ SurfaceTool::createTransparent(int w, int h, const Color &transparent)
  * @return new surface, free it after use
  * @throws SDLException when function fails
  */
+#if 0
     SDL_Surface *
 SurfaceTool::createClone(SDL_Surface *surface)
 {
@@ -88,6 +89,7 @@ SurfaceTool::createClone(SDL_Surface *surface)
     }
     return clone;
 }
+#endif
 //-----------------------------------------------------------------
 /**
  * Fill surface with given color. Alpha value in color is supported.

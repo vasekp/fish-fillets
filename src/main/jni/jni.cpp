@@ -15,6 +15,7 @@
 #include "Application.h"
 #include "HelpException.h"
 #include "BaseException.h"
+#include "FFNGSurface.h"
 
 /*
 static struct sigaction old_sa[NSIG];
@@ -51,6 +52,8 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject o
 
     try {
         Application app;
+
+		FFNGSurface::initEGL();
 
         try {
             app.init(0, NULL);

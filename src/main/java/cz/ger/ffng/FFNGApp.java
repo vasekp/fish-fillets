@@ -264,15 +264,26 @@ public class FFNGApp extends Thread {
 		}
 	}
 	
-	synchronized public void renderThis(FFNGSurface surface) {
+	/*synchronized public void renderThis(FFNGSurface surface) {
 		canvas.drawBitmap(surface.getBitmap(), 0, 0, null);
        	activity.runOnUiThread(new Runnable() {
        			@Override public void run() {
        				view.invalidate();
        			}
        		});
+	}*/
+
+	synchronized public void renderThis() {
+		canvas.drawBitmap(bmp, 0, 0, null);
+		activity.runOnUiThread(new Runnable() {
+			@Override public void run() {
+				view.invalidate();
+			}
+		});
 	}
-	
+
+	private final Bitmap bmp = Bitmap.createBitmap(900, 900, Config.ARGB_8888);
+
 	private float touchx = -1;
 	private float touchy = -1;
 	

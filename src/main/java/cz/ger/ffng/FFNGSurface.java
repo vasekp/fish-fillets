@@ -19,12 +19,12 @@ import javax.microedition.khronos.egl.EGLSurface;
 
 public class FFNGSurface {
 
-    private int width;
-    private int height;
-    private final int texture;
-    private static final int framebuffer;
+    //private int width;
+    //private int height;
+    //private final int texture;
+    //private static final int framebuffer;
     private static final int FLOAT_SIZE = 4;
-    private static final int programCopy;
+    /*private static final int programCopy;
     private static final int programUniform;
     private static final int programScaled;
     private static final int programMasked;
@@ -37,9 +37,9 @@ public class FFNGSurface {
 
     static final EGL10 egl;
     static final EGLDisplay dpy;
-    static final EGLSurface sfc;
+    static final EGLSurface sfc;*/
 
-    static {
+    /*static {
         egl = (EGL10) EGLContext.getEGL();
         dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
         if (dpy == EGL10.EGL_NO_DISPLAY) {
@@ -291,9 +291,15 @@ public class FFNGSurface {
         this.width = bitmap.getWidth();
         this.height = bitmap.getHeight();
         bitmap.recycle();
+    }*/
+
+    static Bitmap loadBitmap(String file) {
+        BitmapFactory.Options options = new BitmapFactory.Options(); // TODO static
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        return BitmapFactory.decodeStream(FFNG.files.internal(file).read(), null, options);
     }
 
-    FFNGSurface(Bitmap bmp) {
+    /*FFNGSurface(Bitmap bmp) {
         this();
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
         this.width = bmp.getWidth();
@@ -690,5 +696,5 @@ public class FFNGSurface {
             throw new RuntimeException("Error in program linking: " + error);
         } else
             return handle;
-    }
+    }*/
 }
