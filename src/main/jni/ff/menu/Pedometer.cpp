@@ -66,8 +66,8 @@ Pedometer::prepareBg()
     drawer.drawSelected(m_level->getLevelName());
 
     SolverDrawer solver(m_status);
-    solver.setShift(V2((bgSurface->w - solver.getW()) / 2,
-                bgSurface->h - 150));
+    solver.setShift(V2((bgSurface->getWidth() - solver.getW()) / 2,
+                bgSurface->getHeight() - 150));
     solver.drawOn(bgSurface);
 
     if (m_bg) {
@@ -193,8 +193,8 @@ Pedometer::drawNumbers(SDL_Surface *screen, int value)
     static const int POS_Y = 177;
     static const int SHIFT_SPEED = 8;
 
-    int numberWidth = m_numbers->w;
-    int numberHeight = m_numbers->h / 10;
+    int numberWidth = m_numbers->getWidth();
+    int numberHeight = m_numbers->getHeight() / 10;
 
     for (int i = CIPHERS - 1; i >= 0; --i) {
         int cipher = value % 10;
@@ -218,8 +218,8 @@ Pedometer::drawNumber(SDL_Surface *screen, int x, int y, int shiftY)
     SDL_Rect src_rect;
     src_rect.x = 0;
     src_rect.y = shiftY;
-    src_rect.w = m_numbers->w;
-    src_rect.h = m_numbers->h / 10;
+    src_rect.w = m_numbers->getWidth();
+    src_rect.h = m_numbers->getHeight() / 10;
 
     FFNGSurface::blitSurface/* FFNG SDL_BlitSurface*/(m_numbers, &src_rect, screen, &dest_rect);
 }

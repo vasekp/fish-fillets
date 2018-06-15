@@ -97,8 +97,8 @@ void
 NodeDrawer::drawDot(SDL_Surface *dot, const V2 &loc) const
 {
     SDL_Rect rect;
-    rect.x = loc.getX() - dot->w / 2;
-    rect.y = loc.getY() - dot->h / 2;
+    rect.x = loc.getX() - dot->getWidth() / 2;
+    rect.y = loc.getY() - dot->getHeight() / 2;
     FFNGSurface::blitSurface/* FFNG SDL_BlitSurface*/(dot, NULL, m_screen, &rect);
 }
 //-----------------------------------------------------------------
@@ -110,7 +110,7 @@ NodeDrawer::drawSelect(const V2 &loc) const
 {
 
     const SDL_Surface *dot = m_imagePack->getRes("solved");
-    int radius = max(dot->w, dot->h) / 2 + 1;
+    int radius = max(dot->getWidth(), dot->getHeight()) / 2 + 1;
     //FFNG Uint32 colorRGBA = 0xffc61880;
     Uint32 colorRGBA = 0x80ffc618; //ARGB
 
@@ -127,8 +127,8 @@ NodeDrawer::drawSelected(const std::string &levelname) const
     int text_width = m_font->calcTextWidth(levelname);
 
     SDL_Rect rect;
-    rect.x = (m_screen->w - text_width) / 2;
-    rect.y = m_screen->h - 50;
+    rect.x = (m_screen->getWidth() - text_width) / 2;
+    rect.y = m_screen->getHeight() - 50;
 
     Color color(255, 255, 0, 255);
     SDL_Surface *surface = m_font->renderTextOutlined(levelname, color);

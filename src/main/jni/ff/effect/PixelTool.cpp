@@ -78,7 +78,7 @@ PixelTool::putColor(SDL_Surface *surface, int x, int y,
     Uint32
 PixelTool::getPixel(SDL_Surface *surface, int x, int y)
 {
-    assert((0 <= x && x < surface->w) && (0 <= y && y < surface->h));
+    assert((0 <= x && x < surface->getWidth()) && (0 <= y && y < surface->getHeight()));
 
     /* FFNG no memory access on android
        TODO optimize this by caching whole lines in byte[] (Bitmap)

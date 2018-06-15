@@ -16,8 +16,8 @@ class WiPicture : public IWidget {
     public:
         WiPicture(const Path &picture);
         virtual ~WiPicture();
-        virtual int getW() const { return m_surface->w; }
-        virtual int getH() const { return m_surface->h; }
+        virtual int getW() const { return m_surface->getWidth(); }
+        virtual int getH() const { return m_surface->getHeight(); }
 
         virtual void drawOn(SDL_Surface *screen);
 };
