@@ -8,11 +8,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
+import android.graphics.Region;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -59,7 +61,7 @@ public class FFNGApp extends Thread {
 	FFNGApp() {
 		screen = Bitmap.createBitmap(900, 900, Config.ARGB_8888);
 		canvas = new Canvas(screen);
-		
+
 		captionPaint.setARGB(255, 255, 255, 255);
 		captionPaint.setTextSize(30);
 		
@@ -151,6 +153,7 @@ public class FFNGApp extends Thread {
 			setWindowScale();
 		}
 		canvas.save();
+		canvas.drawColor(Color.BLACK);
 		canvas.scale(windowScale, windowScale, 0, 0);
 		canvas.drawBitmap(screen, windowX/windowScale, windowY/windowScale, bilinearPaint);
 		canvas.restore();
@@ -274,6 +277,7 @@ public class FFNGApp extends Thread {
 	}*/
 
 	synchronized public void renderThis() {
+		canvas.clipRect(0, 0, windowWidth, windowHeight, Region.Op.REPLACE);
 		canvas.drawBitmap(bmp, 0, 0, null);
 		activity.runOnUiThread(new Runnable() {
 			@Override public void run() {

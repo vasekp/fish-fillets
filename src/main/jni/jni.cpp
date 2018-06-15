@@ -54,6 +54,7 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject o
         Application app;
 
 		FFNGSurface::initEGL();
+		FFNGSurface::initShaders();
 
         try {
             app.init(0, NULL);

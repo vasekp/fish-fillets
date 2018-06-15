@@ -75,17 +75,16 @@ void FFNGVideo::flip(SDL_Surface *screen) {
 
 	jfieldID fid = javaEnv->GetFieldID(cls, "bmp", "Landroid/graphics/Bitmap;");
 	jobject bmp = javaEnv->GetObjectField(obj, fid);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, MaxWidth, MaxHeight);
-	glClear(GL_COLOR_BUFFER_BIT);
-	//blit(0, 0, this, 0, 0, width, height);
-	eglSwapBuffers(FFNGSurface::dpy, FFNGSurface::sfc);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen->texture, 0);
+
+    eglSwapBuffers(FFNGSurface::dpy, FFNGSurface::sfc);
 
     void *pixels;
     AndroidBitmap_lockPixels(javaEnv, bmp, &pixels);
 	glReadPixels(0, 0, MaxWidth, MaxHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	AndroidBitmap_unlockPixels(javaEnv, bmp);
 	
-	javaEnv->CallVoidMethod(obj, mid, screen->getSurface());
+	javaEnv->CallVoidMethod(obj, mid, screen->getTexture());
 }

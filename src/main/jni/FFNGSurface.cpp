@@ -7,6 +7,11 @@ EGLContext FFNGSurface::ctx;
 EGLDisplay FFNGSurface::dpy;
 EGLSurface FFNGSurface::sfc;
 
+GLuint FFNGSurface::framebuffer;
+GLuint FFNGSurface::program;
+
+constexpr float FFNGSurface::square[8];
+
 SDL_Surface::SDL_Surface() : w(0), h(0) {
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -47,7 +52,7 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
     w = info.width;
     h = info.height;
     if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
-        ;//
+        ;
 
     void* pixels;
     AndroidBitmap_lockPixels(javaEnv, jBitmap, &pixels);
@@ -99,12 +104,39 @@ SDL_Surface::~SDL_Surface() {
     glDeleteTextures(1, &texture);
 }
 
-GLuint SDL_Surface::getSurface() const {
+GLuint SDL_Surface::getTexture() const {
     return texture;
 }
 
 void
 SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, int srcw, int srch) {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, source->getTexture());
+
+    //bool full = srcx == 0 && srcy == 0 && srcw == source->getWidth() && srch == source->getHeight();
+
+    //int program = full ? programCopy : programScaled;
+    glUseProgram(FFNGSurface::program);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(dstx, dsty, srcw, srch);
+
+    int uTexture = glGetUniformLocation(FFNGSurface::program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    /*if(!full) {
+        int uScale = glGetUniformLocation(program, "uScale");
+        int uOffset = glGetUniformLocation(program, "uOffset");
+        glUniform2f(uScale, (float)srcw / source.width, (float)srch / source.height);
+        glUniform2f(uOffset, (float)srcx / source.width, (float)srcy / source.height);
+    }*/
+
+    GLuint aPosition = (GLuint)glGetAttribLocation(FFNGSurface::program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glEnableVertexAttribArray(aPosition);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void SDL_Surface::blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color,
@@ -184,7 +216,7 @@ void FFNGSurface::freeSurface(SDL_Surface *surface) {
 void
 FFNGSurface::blitSurface(SDL_Surface *srcSurface, const SDL_Rect *srcRect, SDL_Surface *dstSurface,
                          const SDL_Rect *dstRect) {
-/*    int dstx, dsty, srcx, srcy, srcw, srch;
+    int dstx, dsty, srcx, srcy, srcw, srch;
 
     if(dstRect) {
         dstx = dstRect->x;
@@ -206,7 +238,7 @@ FFNGSurface::blitSurface(SDL_Surface *srcSurface, const SDL_Rect *srcRect, SDL_S
         srch = srcSurface->h;
     }
 
-    dstSurface->blit(dstx, dsty, srcSurface, srcx, srcy, srcw, srch);*/
+    dstSurface->blit(dstx, dsty, srcSurface, srcx, srcy, srcw, srch);
 }
 
 Uint32 FFNGSurface::getPixel(SDL_Surface *surface, int x, int y) {
@@ -275,5 +307,84 @@ void FFNGSurface::initEGL() {
         ;
 
     glClearColor(1.f, 1.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+    glEnable(GL_BLEND);
+
+    glGenFramebuffers(1, &framebuffer);
+}
+
+GLuint loadShader(GLenum type, std::string code) {
+    GLuint handle = glCreateShader(type);
+    if (handle == GL_FALSE)
+        ;
+
+    const char* source = code.c_str();
+    glShaderSource(handle, 1, &source, nullptr);
+    glCompileShader(handle);
+
+    int status;
+    glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+
+    if (status == GL_FALSE) {
+        int loglen, actlen;
+        glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &loglen);
+        std::string error(loglen, '\0');
+        glGetShaderInfoLog(handle, loglen, &actlen, &(error[0]));
+        glDeleteShader(handle);
+        //throw new RuntimeException("Error compiling shader: " + error);
+        __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "%s", error.c_str());
+        return 0;
+    } else
+        return handle;
+}
+
+GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
+    GLuint handle = glCreateProgram();
+
+    if (handle == GL_FALSE)
+        ;
+        //throw new RuntimeException("Error creating program!");
+
+    glAttachShader(handle, vertexShader);
+    glAttachShader(handle, fragmentShader);
+    glLinkProgram(handle);
+
+    int linkStatus;
+    glGetProgramiv(handle, GL_LINK_STATUS, &linkStatus);
+
+    if (linkStatus == GL_FALSE) {
+        int loglen, actlen;
+        glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &loglen);
+        std::string error(loglen, '\0');
+        glGetProgramInfoLog(handle, loglen, &actlen, &(error[0]));
+        glDeleteProgram(handle);
+        //throw new RuntimeException("Error in program linking: " + error);
+        __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "%s", error.c_str());
+        return 0;
+    } else
+        return handle;
+}
+
+void FFNGSurface::initShaders() {
+    std::string vertexCopySource = R"(
+attribute vec2 aPosition;
+varying vec2 vTexPos;
+mat4 fxd = mat4(2.0, 0.0, 0.0, 0.0,  0.0, 2.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,  -1.0, -1.0, 0.0, 1.0);
+void main() {
+  vTexPos = aPosition;
+  gl_Position = fxd * vec4(aPosition.xy, 0.0, 1.0);
+})";
+
+    std::string fragmentCopySource = R"(
+precision mediump float;
+uniform sampler2D uSrcTexture;
+varying vec2 vTexPos;
+void main(void)
+{
+  gl_FragColor = texture2D(uSrcTexture, vTexPos);
+})";
+
+    GLuint vertexCopy{loadShader(GL_VERTEX_SHADER, vertexCopySource)};
+    GLuint fragmentCopy{loadShader(GL_FRAGMENT_SHADER, fragmentCopySource)};
+    program = createProgram(vertexCopy, fragmentCopy);
 }

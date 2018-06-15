@@ -30,4 +30,7 @@ add_library( lua
 target_link_libraries( ffng
                        lua
                        android
-                       log )
+                       log
+                       jnigraphics
+                       EGL
+                       GLESv2 )

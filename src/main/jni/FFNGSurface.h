@@ -31,7 +31,7 @@ public:
 	SDL_Surface(jobject font, const char *text, int frontColor, int bgColor, int outlineWidth = 0);
 	~SDL_Surface();
 
-	GLuint getSurface() const;
+	GLuint getTexture() const;
 	void blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, int srcw, int srch);
 	void blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color, const SDL_Surface *layer);
 	void blitWavy(const SDL_Surface *source, int x, int y, float amp, float periode, float speed);
@@ -54,7 +54,12 @@ public:
     static EGLDisplay dpy;
     static EGLSurface sfc;
 
+    static GLuint framebuffer;
+    static GLuint program;
+
+    constexpr static float square[8] = {0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0};
     static void initEGL();
+    static void initShaders();
 
 	static SDL_Surface* imgLoad(const char *file);
 	static void freeSurface(SDL_Surface *surface);
