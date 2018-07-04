@@ -83,36 +83,39 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
 SDL_Surface::SDL_Surface(const std::string &path) : SDL_Surface(path.c_str()) {}
 
 SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgColor,
-                         int outlineWidth) : SDL_Surface() {}
-//        : surface(NULL) {
-//    // TODO w, h, colorkey
-//    static JNIEnv *javaEnv = NULL;
-//    static jclass cls = NULL;
-//    static jmethodID mid = NULL;
-//
-//    if(!mid) {
-//        javaEnv = JNI::getInstance()->getJavaEnv();
-//        cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
-//        mid = javaEnv->GetStaticMethodID(cls, "newSurface",
-//                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;III)Lcz/ger/ffng/FFNGSurface;");
-//    }
-//    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
-//
-//    if(mid == NULL) {
-//        assert("method not found");
-//        return;
-//    }
-//
-//    jstring textString = javaEnv->NewStringUTF(text);
-//
-//    surface = javaEnv->CallStaticObjectMethod(cls, mid, font, textString, frontColor, bgColor,
-//                                              outlineWidth);
-//
-//    javaEnv->DeleteLocalRef(textString);
-//
-//    w = getWidth();
-//    h = getHeight();
-//}
+                         int outlineWidth) : SDL_Surface() {
+    static JNIEnv *javaEnv = NULL;
+    static jclass cls = NULL;
+    static jmethodID mid = NULL;
+
+    if(!mid) {
+        javaEnv = JNI::getInstance()->getJavaEnv();
+        cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
+        mid = javaEnv->GetStaticMethodID(cls, "newSurface",
+                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;III)Landroid/graphics/Bitmap;");
+    }
+    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
+
+    jstring textString = javaEnv->NewStringUTF(text);
+
+    jobject jBitmap = javaEnv->CallStaticObjectMethod(cls, mid, font, textString, frontColor, bgColor,
+                                              outlineWidth);
+
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(javaEnv, jBitmap, &info);
+    width = info.width;
+    height = info.height;
+    if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+        ;
+
+    void *pixels;
+    AndroidBitmap_lockPixels(javaEnv, jBitmap, &pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    AndroidBitmap_unlockPixels(javaEnv, jBitmap);
+
+    javaEnv->DeleteLocalRef(textString);
+    javaEnv->DeleteLocalRef(jBitmap);
+}
 
 SDL_Surface::~SDL_Surface() {
     glDeleteTextures(1, &texture);
