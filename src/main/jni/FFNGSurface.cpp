@@ -8,15 +8,16 @@ EGLDisplay FFNGSurface::dpy;
 EGLSurface FFNGSurface::sfc;
 
 GLuint FFNGSurface::framebuffer;
-GLuint FFNGSurface::programCopy;
 GLuint FFNGSurface::programUniform;
-GLuint FFNGSurface::programScaled;
-GLuint FFNGSurface::programMasked;
-GLuint FFNGSurface::programWavy;
-GLuint FFNGSurface::programDisintegrate;
-GLuint FFNGSurface::programMirror;
 GLuint FFNGSurface::programCircle;
-GLuint FFNGSurface::programZX;
+
+GLuint FFNGSurface::programUCopy;
+GLuint FFNGSurface::programUMasked;
+GLuint FFNGSurface::programUReverse;
+GLuint FFNGSurface::programUMirror;
+GLuint FFNGSurface::programUWavy;
+GLuint FFNGSurface::programUDisintegrate;
+GLuint FFNGSurface::programUZX;
 
 constexpr float FFNGSurface::square[8];
 
@@ -117,25 +118,27 @@ void
 SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, int srcw, int srch) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
-
-    bool full = srcx == 0 && srcy == 0 && srcw == source->getWidth() && srch == source->getHeight();
-
-    GLuint program = full ? FFNGSurface::programCopy : FFNGSurface::programScaled;
+    
+    GLuint program = FFNGSurface::programUCopy;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(dstx, dsty, srcw, srch);
+    glViewport(0, 0, width, height);
 
     int uTexture = glGetUniformLocation(program, "uSrcTexture");
     glUniform1i(uTexture, 1);
 
-    if(!full) {
-        int uScale = glGetUniformLocation(program, "uScale");
-        int uOffset = glGetUniformLocation(program, "uOffset");
-        glUniform2f(uScale, (float) srcw / source->getWidth(), (float) srch / source->getHeight());
-        glUniform2f(uOffset, (float) srcx / source->getWidth(), (float) srcy / source->getHeight());
-    }
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, (float) srcx, (float) srcy);
+    glUniform2f(uDstOffset, (float) dstx, (float) dsty);
+    glUniform2f(uBlitSize, (float) srcw, (float) srch);
 
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
@@ -145,27 +148,40 @@ SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, i
 }
 
 void SDL_Surface::blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color,
-                             const SDL_Surface *layer) {
+                             const SDL_Surface *source) {
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, layer->getTexture());
+    glBindTexture(GL_TEXTURE_2D, source->getTexture());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, mask->getTexture());
-    glUseProgram(FFNGSurface::programMasked);
+
+    GLuint program = FFNGSurface::programUMasked;
+    glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(dstx, dsty, layer->width, layer->height);
+    glViewport(0, 0, width, height);
 
-    int uTexture = glGetUniformLocation(FFNGSurface::programMasked, "uSrcTexture");
-    int uMask = glGetUniformLocation(FFNGSurface::programMasked, "uMaskTexture");
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    int uMask = glGetUniformLocation(program, "uMaskTexture");
     glUniform1i(uTexture, 1);
     glUniform1i(uMask, 2);
 
-    int uMaskColor = glGetUniformLocation(FFNGSurface::programMasked, "uMaskColor");
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) dstx, (float) dsty);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
+
+    int uMaskColor = glGetUniformLocation(program, "uMaskColor");
     glUniform4f(uMaskColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
                 ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
 
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programMasked, "aPosition");
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
     glEnableVertexAttribArray(aPosition);
 
@@ -176,24 +192,37 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
                            float shift) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
-    glUseProgram(FFNGSurface::programWavy);
+
+    GLuint program = FFNGSurface::programUWavy;
+    glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(x, y, source->width, source->height);
+    glViewport(0, 0, width, height);
 
-    int uTexture = glGetUniformLocation(FFNGSurface::programWavy, "uSrcTexture");
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
     glUniform1i(uTexture, 1);
 
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programWavy, "aPosition");
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) x, (float) y);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
     glEnableVertexAttribArray(aPosition);
 
-    int uAmplitude = glGetUniformLocation(FFNGSurface::programWavy, "uAmplitude");
-    int uPeriod = glGetUniformLocation(FFNGSurface::programWavy, "uPeriod");
-    int uShift = glGetUniformLocation(FFNGSurface::programWavy, "uShift");
-    glUniform1f(uAmplitude, amp / width);
-    glUniform1f(uPeriod, period / height);
+    int uAmplitude = glGetUniformLocation(program, "uAmplitude");
+    int uPeriod = glGetUniformLocation(program, "uPeriod");
+    int uShift = glGetUniformLocation(program, "uShift");
+    glUniform1f(uAmplitude, amp);
+    glUniform1f(uPeriod, period);
     glUniform1f(uShift, shift);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -202,57 +231,71 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
 void SDL_Surface::blitDisintegrate(const SDL_Surface *source, int x, int y, int disint) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
-    glUseProgram(FFNGSurface::programDisintegrate);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(x, y, source->width, source->height);
-
-    int uTexture = glGetUniformLocation(FFNGSurface::programDisintegrate, "uSrcTexture");
-    glUniform1i(uTexture, 1);
-
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programDisintegrate, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
-    glEnableVertexAttribArray(aPosition);
-
-    int uWidth = glGetUniformLocation(FFNGSurface::programDisintegrate, "uWidth");
-    int uHeight = glGetUniformLocation(FFNGSurface::programDisintegrate, "uHeight");
-    int uPhase = glGetUniformLocation(FFNGSurface::programDisintegrate, "uPhase");
-    glUniform1i(uWidth, source->width);
-    glUniform1i(uHeight, source->height);
-    glUniform1i(uPhase, disint);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-}
-
-void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border) {
-    int color = source->getPixel(source->width / 2, source->height / 2);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, source->getTexture());
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glUseProgram(FFNGSurface::programMirror);
+    GLuint program = FFNGSurface::programUDisintegrate;
+    glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
-    int uSrcTexture = glGetUniformLocation(FFNGSurface::programMirror, "uSrcTexture");
-    int uTgtTexture = glGetUniformLocation(FFNGSurface::programMirror, "uTgtTexture");
-    glUniform1i(uSrcTexture, 1);
-    glUniform1i(uTgtTexture, 0);
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
 
-    int uMaskColor = glGetUniformLocation(FFNGSurface::programMirror, "uMaskColor");
-    glUniform4f(uMaskColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
-                ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) x, (float) y);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
-    int uScale = glGetUniformLocation(FFNGSurface::programMirror, "uScale");
-    int uOffset = glGetUniformLocation(FFNGSurface::programMirror, "uOffset");
-    glUniform2f(uScale, (float) source->width / width, (float) source->height / height);
-    glUniform3f(uOffset, (float) x / width, (float) y / height, (float) border / width);
+    int uPhase = glGetUniformLocation(program, "uPhase");
+    glUniform1f(uPhase, ((float) disint) / 255.0f);
 
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programMirror, "aPosition");
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glEnableVertexAttribArray(aPosition);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, source->getTexture());
+
+    GLuint program = FFNGSurface::programUMirror;
+    glUseProgram(program);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    int uTarget = glGetUniformLocation(program, "uDstTexture");
+    glUniform1i(uTexture, 1);
+    glUniform1i(uTarget, 0);
+
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) x, (float) y);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
+
+    int uBorder = glGetUniformLocation(program, "uBorder");
+    glUniform1f(uBorder, (float) border);
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
     glEnableVertexAttribArray(aPosition);
 
@@ -262,21 +305,29 @@ void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border
 void SDL_Surface::blitReverse(const SDL_Surface *source, int x, int y) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
-    glUseProgram(FFNGSurface::programScaled);
+
+    GLuint program = FFNGSurface::programUReverse;
+    glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(x, y, source->width, source->height);
+    glViewport(0, 0, width, height);
 
-    int uTexture = glGetUniformLocation(FFNGSurface::programScaled, "uSrcTexture");
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
     glUniform1i(uTexture, 1);
 
-    int uScale = glGetUniformLocation(FFNGSurface::programScaled, "uScale");
-    int uOffset = glGetUniformLocation(FFNGSurface::programScaled, "uOffset");
-    glUniform2f(uScale, -1.0f, 1.0f);
-    glUniform2f(uOffset, 1.0f, 0.0f);
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) x, (float) y);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programScaled, "aPosition");
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
     glEnableVertexAttribArray(aPosition);
 
@@ -297,41 +348,84 @@ void SDL_Surface::blitZX(const SDL_Surface *source, int x, int y, int zx, int co
                          int stripeHeight) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
-    glUseProgram(FFNGSurface::programZX);
+
+    GLuint program = FFNGSurface::programUZX;
+    glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(x, y, source->width, source->height);
+    glViewport(0, 0, width, height);
 
-    int uTexture = glGetUniformLocation(FFNGSurface::programZX, "uSrcTexture");
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
     glUniform1i(uTexture, 1);
 
-    int uMaskColor = glGetUniformLocation(FFNGSurface::programZX, "uMaskColor");
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, (float) x, (float) y);
+    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
+
+    int uMaskColor = glGetUniformLocation(program, "uMaskColor");
     glUniform4f(uMaskColor, 0.5f, 0.5f, 0.5f, 1.0f);
 
-    int uColors = glGetUniformLocation(FFNGSurface::programZX, "uColors");
+    int uColors = glGetUniformLocation(program, "uColors");
     glUniform4fv(uColors, 2, zxColors + (zx == ZX1 || zx == ZX2 ? 0 : 8));
 
-    int uStartY = glGetUniformLocation(FFNGSurface::programZX, "uStartY");
-    int uPeriodY = glGetUniformLocation(FFNGSurface::programZX, "uPeriodY");
+    int uStartY = glGetUniformLocation(program, "uStartY");
+    int uPeriodY = glGetUniformLocation(program, "uPeriodY");
     if(zx == ZX2 || zx == ZX4)
-        glUniform1f(uStartY, (float) (countHeight + stripeHeight) / height);
+        glUniform1f(uStartY, (float) (countHeight + stripeHeight));
     else
-        glUniform1f(uStartY, (float) countHeight / height);
-    glUniform1f(uPeriodY, 2 * (float) stripeHeight / height);
+        glUniform1f(uStartY, (float) countHeight);
+    glUniform1f(uPeriodY, 2 * (float) stripeHeight);
 
-    GLuint aPosition = (GLuint) glGetAttribLocation(FFNGSurface::programZX, "aPosition");
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void SDL_Surface::line(int x1, int y1, int x2, int y2, Uint32 colorRGBA) {
+void SDL_Surface::line(int x1, int y1, int x2, int y2, Uint32 color) {
+    GLuint program = FFNGSurface::programUniform;
+    glUseProgram(program);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, 0.f, 0.f);
+    glUniform2f(uBlitSize, (float) width, (float) height);
+
+    int uColor = glGetUniformLocation(program, "uColor");
+    glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
+                ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
+
+    float points[2][2] = {{(float)x1 / width, (float)y1 / height},
+                          {(float)x2 / width, (float)y2 / height}};
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
+    glEnableVertexAttribArray(aPosition);
+
+    glDrawArrays(GL_LINES, 0, 2);
 }
 
-void SDL_Surface::fillRect(const SDL_Rect *dstRect, Uint32 pixel) {
+void SDL_Surface::fillRect(const SDL_Rect *dstRect, Uint32 color) {
     int x_ = 0,
             y_ = 0,
             w_ = width,
@@ -342,10 +436,70 @@ void SDL_Surface::fillRect(const SDL_Rect *dstRect, Uint32 pixel) {
         w_ = dstRect->w;
         h_ = dstRect->h;
     }
+
+    GLuint program = FFNGSurface::programUniform;
+    glUseProgram(program);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, (float)x_, (float)y_);
+    glUniform2f(uDstOffset, (float)x_, (float)y_);
+    glUniform2f(uBlitSize, (float)w_, (float)h_);
+
+    int uColor = glGetUniformLocation(program, "uColor");
+    glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
+                ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glEnableVertexAttribArray(aPosition);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 colorRGBA) {
+void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 color) {
+    GLuint program = FFNGSurface::programCircle;
+    glUseProgram(program);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, (float)(x - radius), (float)(y - radius));
+    glUniform2f(uDstOffset, (float)(x - radius), (float)(y - radius));
+    glUniform2f(uBlitSize, (float)(2*radius), (float)(2*radius));
+
+    int uCenter = glGetUniformLocation(program, "uCenter");
+    int uRadius = glGetUniformLocation(program, "uRadius");
+    int uColor = glGetUniformLocation(program, "uColor");
+    glUniform2f(uCenter, (float)x, (float)y);
+    glUniform1f(uRadius, (float)radius);
+    glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
+                ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glEnableVertexAttribArray(aPosition);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 Uint32 SDL_Surface::getPixel(int x, int y) const {
@@ -536,151 +690,192 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
 }
 
 void FFNGSurface::initShaders() {
-    std::string vertexCopySource = R"(
-attribute vec2 aPosition;
-varying vec2 vTexPos;
-mat4 fxd = mat4(2.0, 0.0, 0.0, 0.0,  0.0, 2.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,  -1.0, -1.0, 0.0, 1.0);
-void main() {
-  vTexPos = aPosition;
-  gl_Position = fxd * vec4(aPosition.xy, 0.0, 1.0);
-})";
-
-    std::string vertexScaledSource = R"(
-attribute vec2 aPosition;
-uniform vec2 uScale;
-uniform vec2 uOffset;
-varying vec2 vTexPos;
-mat4 fxd = mat4(2.0, 0.0, 0.0, 0.0,  0.0, 2.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,  -1.0, -1.0, 0.0, 1.0);
-void main() {
-  vTexPos = uScale * aPosition + uOffset;
-  gl_Position = fxd * vec4(aPosition.xy, 0.0, 1.0);
-})";
-
-    std::string vertexMirrorSource = R"(
-attribute vec2 aPosition;
-uniform vec2 uScale;
-uniform vec3 uOffset;
-varying vec2 vTexPos;
-varying vec2 vMirrorTgtTexPos;
-mat4 fxd = mat4(2.0, 0.0, 0.0, 0.0,  0.0, 2.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,  -1.0, -1.0, 0.0, 1.0);
-void main() {
-  vTexPos = aPosition;
-  vMirrorTgtTexPos = vec2(-1.0, 1.0) * uScale * aPosition.xy + uOffset.xy + vec2(uOffset.z, 0.0);
-  gl_Position = fxd * vec4(uScale * aPosition.xy + uOffset.xy, 0.0, 1.0);
-})";
-
-
-    std::string fragmentCopySource = R"(
+    std::string vertexUnitedSource = R"(
 precision mediump float;
+
+attribute vec2 aPosition;
+
+uniform vec2 uSrcOffset;
+uniform vec2 uDstOffset;
+uniform vec2 uBlitSize;
+uniform vec2 uDstSize;
+
+varying vec2 vPixCoords;
+
+void main() {
+  vPixCoords = aPosition * uBlitSize + uSrcOffset;
+  vec2 lClipCoords = (vPixCoords - uSrcOffset + uDstOffset) / uDstSize * 2.0 - vec2(1.0, 1.0);
+  gl_Position = vec4(lClipCoords, 0.0, 1.0);
+})";
+
+    std::string fragmentUCopySource = R"(
+precision mediump float;
+
 uniform sampler2D uSrcTexture;
-varying vec2 vTexPos;
+uniform vec2 uSrcSize;
+
+varying vec2 vPixCoords;
+
 void main(void)
 {
-  gl_FragColor = texture2D(uSrcTexture, vTexPos);
+  gl_FragColor = texture2D(uSrcTexture, vPixCoords / uSrcSize);
+})";
+
+    std::string fragmentUReverseSource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcSize;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  vec2 lTexCoords = vPixCoords / uSrcSize;
+  gl_FragColor = texture2D(uSrcTexture, vec2(1.0 - lTexCoords.x, lTexCoords.y));
+})";
+
+    std::string fragmentUMaskedSource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform sampler2D uMaskTexture;
+uniform vec2 uSrcSize;
+uniform vec4 uMaskColor;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  vec2 lTexCoords = vPixCoords / uSrcSize;
+  gl_FragColor = distance(texture2D(uMaskTexture, lTexCoords), uMaskColor) < 0.1 ? texture2D(uSrcTexture, lTexCoords) : vec4(0.0);
+})";
+
+    std::string fragmentUMirrorSource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform sampler2D uDstTexture;
+uniform vec2 uDstOffset;
+uniform vec2 uSrcSize;
+uniform vec2 uDstSize;
+uniform float uBorder;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  vec2 lPixMirrored = uDstOffset + vec2(-1.0, 1.0) * vPixCoords + vec2(uBorder, 0.0);
+  vec2 lTexCoords = vPixCoords / uSrcSize;
+  vec4 lTexColor = texture2D(uSrcTexture, lTexCoords);
+  vec4 lMaskColor = texture2D(uSrcTexture, vec2(0.5, 0.5));
+  gl_FragColor = distance(lTexColor, lMaskColor) < 0.1
+    ? texture2D(uDstTexture, lPixMirrored / uDstSize)
+    : lTexColor;
+})";
+
+    std::string fragmentUWavySource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcSize;
+uniform float uAmplitude;
+uniform float uShift;
+uniform float uPeriod;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  float dx = uAmplitude * sin(vPixCoords.y / uPeriod + uShift);
+  gl_FragColor = texture2D(uSrcTexture, (vPixCoords + vec2(dx, 0.0)) / uSrcSize);
+})";
+
+    std::string fragmentUDisintegrateSource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcSize;
+uniform float uPhase;
+
+varying vec2 vPixCoords;
+
+float noise(float x, float y) {
+  return fract(sin(mod(x + 1.618 * y, 6.28)) * 100.0);
+}
+
+void main(void)
+{
+  gl_FragColor = noise(vPixCoords.x, vPixCoords.y) < uPhase
+    ? texture2D(uSrcTexture, vPixCoords / uSrcSize)
+    : vec4(0.0);
+})";
+
+    std::string fragmentUZXSource = R"(
+precision mediump float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcSize;
+uniform vec4 uMaskColor;
+uniform vec4 uColors[2];
+uniform float uStartY;
+uniform float uPeriodY;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  gl_FragColor = distance(texture2D(uSrcTexture, vPixCoords / uSrcSize), uMaskColor) < 0.1
+    ? (fract((vPixCoords.y + uStartY) / uPeriodY) < 0.5 ? uColors[0] : uColors[1])
+    : vec4(0.0);
 })";
 
     std::string fragmentUniformSource = R"(
 precision mediump float;
+
 uniform vec4 uColor;
+
 void main(void)
 {
   gl_FragColor = uColor;
 })";
 
-    std::string fragmentMaskedSource = R"(
-precision mediump float;
-uniform sampler2D uSrcTexture;
-uniform sampler2D uMaskTexture;
-uniform vec4 uMaskColor;
-varying vec2 vTexPos;
-void main(void)
-{
-  gl_FragColor = distance(texture2D(uMaskTexture, vTexPos), uMaskColor) < 0.1 ? texture2D(uSrcTexture, vTexPos) : vec4(0.0);
-})";
-
-    std::string fragmentWavySource = R"(
-precision mediump float;
-uniform sampler2D uSrcTexture;
-uniform float uAmplitude;
-uniform float uShift;
-uniform float uPeriod;
-varying vec2 vTexPos;
-void main(void)
-{
-  gl_FragColor = texture2D(uSrcTexture, fract(vTexPos + uAmplitude * vec2(sin(vTexPos.y / uPeriod + uShift), 0.0)));
-})";
-
-    std::string fragmentDisintegrateSource = R"(
-precision mediump float;
-uniform sampler2D uSrcTexture;
-uniform int uWidth;
-uniform int uHeight;
-uniform int uPhase;
-varying vec2 vTexPos;
-float noise(int x, int y) {
-  return fract(sin(mod(float(x) + 1.618 * float(y), 6.28)) * 100.0);
-})
-void main(void)
-{
-  gl_FragColor = noise(int(vTexPos.x * float(uWidth)), int(vTexPos.y * float(uHeight))) < float(uPhase) / 255.0 ? texture2D(uSrcTexture, vTexPos) : vec4(0.0);
-})";
-
-    std::string fragmentMirrorSource = R"(
-precision mediump float;
-uniform sampler2D uSrcTexture;
-uniform sampler2D uTgtTexture;
-uniform vec4 uMaskColor;
-varying vec2 vTexPos;
-varying vec2 vMirrorTgtTexPos;
-void main(void)
-{
-  gl_FragColor = distance(texture2D(uSrcTexture, vTexPos), uMaskColor) < 0.1 ? texture2D(uTgtTexture, vMirrorTgtTexPos) : texture2D(uSrcTexture, vTexPos);
-})";
-
     std::string fragmentCircleSource = R"(
 precision mediump float;
-varying vec2 vTexPos;
-uniform vec4 uColor;
-void main(void)
-{
-  gl_FragColor = distance(vTexPos, vec2(0.5, 0.5)) < 0.5 ? uColor : vec4(0.0);
-})";
 
-    std::string fragmentZXSource = R"(
-precision mediump float;
-uniform sampler2D uSrcTexture;
-uniform vec4 uMaskColor;
-uniform vec4 uColors[2];
-uniform float uStartY;
-uniform float uPeriodY;
-varying vec2 vTexPos;
+uniform vec2 uCenter;
+uniform float uRadius;
+uniform vec4 uColor;
+
+varying vec2 vPixCoords;
+
 void main(void)
 {
-  gl_FragColor = distance(texture2D(uSrcTexture, vTexPos), uMaskColor) < 0.1
-    ? (fract((vTexPos.y + uStartY) / uPeriodY) < 0.5 ? uColors[0] : uColors[1])
+  gl_FragColor = distance(vPixCoords, uCenter) < uRadius
+    ? uColor
     : vec4(0.0);
 })";
 
-    GLuint vertexCopy{loadShader(GL_VERTEX_SHADER, vertexCopySource)};
-    GLuint vertexScaled{loadShader(GL_VERTEX_SHADER, vertexScaledSource)};
-    GLuint vertexMirror{loadShader(GL_VERTEX_SHADER, vertexMirrorSource)};
+    GLuint vertexCommon{loadShader(GL_VERTEX_SHADER, vertexUnitedSource)};
+    GLuint fragmentUCopy{loadShader(GL_FRAGMENT_SHADER, fragmentUCopySource)};
+    GLuint fragmentUMasked{loadShader(GL_FRAGMENT_SHADER, fragmentUMaskedSource)};
+    GLuint fragmentUReverse{loadShader(GL_FRAGMENT_SHADER, fragmentUReverseSource)};
+    GLuint fragmentUMirror{loadShader(GL_FRAGMENT_SHADER, fragmentUMirrorSource)};
+    GLuint fragmentUWavy{loadShader(GL_FRAGMENT_SHADER, fragmentUWavySource)};
+    GLuint fragmentUDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentUDisintegrateSource)};
+    GLuint fragmentUZX{loadShader(GL_FRAGMENT_SHADER, fragmentUZXSource)};
 
-    GLuint fragmentCopy{loadShader(GL_FRAGMENT_SHADER, fragmentCopySource)};
     GLuint fragmentUniform{loadShader(GL_FRAGMENT_SHADER, fragmentUniformSource)};
-    GLuint fragmentMasked{loadShader(GL_FRAGMENT_SHADER, fragmentMaskedSource)};
-    GLuint fragmentWavy{loadShader(GL_FRAGMENT_SHADER, fragmentWavySource)};
-    GLuint fragmentDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentDisintegrateSource)};
-    GLuint fragmentMirror{loadShader(GL_FRAGMENT_SHADER, fragmentMirrorSource)};
     GLuint fragmentCircle{loadShader(GL_FRAGMENT_SHADER, fragmentCircleSource)};
-    GLuint fragmentZX{loadShader(GL_FRAGMENT_SHADER, fragmentZXSource)};
 
-    programCopy = createProgram(vertexCopy, fragmentCopy);
-    programUniform = createProgram(vertexCopy, fragmentUniform);
-    programScaled = createProgram(vertexScaled, fragmentCopy);
-    programMasked = createProgram(vertexCopy, fragmentMasked);
-    programWavy = createProgram(vertexCopy, fragmentWavy);
-    programDisintegrate = createProgram(vertexCopy, fragmentDisintegrate);
-    programMirror = createProgram(vertexMirror, fragmentMirror);
-    programCircle = createProgram(vertexCopy, fragmentCircle);
-    programZX = createProgram(vertexCopy, fragmentZX);
+    programUCopy = createProgram(vertexCommon, fragmentUCopy);
+    programUMasked = createProgram(vertexCommon, fragmentUMasked);
+    programUReverse = createProgram(vertexCommon, fragmentUReverse);
+    programUMirror = createProgram(vertexCommon, fragmentUMirror);
+    programUWavy = createProgram(vertexCommon, fragmentUWavy);
+    programUDisintegrate = createProgram(vertexCommon, fragmentUDisintegrate);
+    programUZX = createProgram(vertexCommon, fragmentUZX);
+
+    programUniform = createProgram(vertexCommon, fragmentUniform);
+    programCircle = createProgram(vertexCommon, fragmentCircle);
 }

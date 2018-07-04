@@ -42,7 +42,7 @@ public:
     void blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, int srcw, int srch);
 
     void
-    blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color, const SDL_Surface *layer);
+    blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32 color, const SDL_Surface *source);
 
     void blitWavy(const SDL_Surface *source, int x, int y, float amp, float period, float shift);
 
@@ -74,15 +74,16 @@ public:
     static EGLSurface sfc;
 
     static GLuint framebuffer;
-    static GLuint programCopy;
     static GLuint programUniform;
-    static GLuint programScaled;
-    static GLuint programMasked;
-    static GLuint programWavy;
-    static GLuint programDisintegrate;
-    static GLuint programMirror;
     static GLuint programCircle;
-    static GLuint programZX;
+
+    static GLuint programUCopy;
+    static GLuint programUMasked;
+    static GLuint programUReverse;
+    static GLuint programUMirror;
+    static GLuint programUWavy;
+    static GLuint programUDisintegrate;
+    static GLuint programUZX;
 
     constexpr static float square[8] = {0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0};
 
