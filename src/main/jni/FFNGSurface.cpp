@@ -19,7 +19,12 @@ GLuint FFNGSurface::programUWavy;
 GLuint FFNGSurface::programUDisintegrate;
 GLuint FFNGSurface::programUZX;
 
-constexpr float FFNGSurface::square[8];
+#define SQUARE(x, y, w, h) {\
+  {(float)(x), (float)(y)}, \
+  {(float)(x + w), (float)(y)}, \
+  {(float)(x), (float)(y + h)}, \
+  {(float)(x + w), (float)(y + h)} \
+}
 
 SDL_Surface::SDL_Surface() : width(0), height(0) {
     glGenTextures(1, &texture);
@@ -131,17 +136,16 @@ SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, i
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, (float) srcx, (float) srcy);
     glUniform2f(uDstOffset, (float) dstx, (float) dsty);
-    glUniform2f(uBlitSize, (float) srcw, (float) srch);
 
+    float points[4][2] = SQUARE(dstx, dsty, srcw, srch);
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -168,21 +172,20 @@ void SDL_Surface::blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) dstx, (float) dsty);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
     int uMaskColor = glGetUniformLocation(program, "uMaskColor");
     glUniform4f(uMaskColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
                 ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
 
+    float points[4][2] = SQUARE(dstx, dsty, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -205,17 +208,16 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) x, (float) y);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
+    float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     int uAmplitude = glGetUniformLocation(program, "uAmplitude");
@@ -244,20 +246,19 @@ void SDL_Surface::blitDisintegrate(const SDL_Surface *source, int x, int y, int 
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) x, (float) y);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
     int uPhase = glGetUniformLocation(program, "uPhase");
     glUniform1f(uPhase, ((float) disint) / 255.0f);
 
+    float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -283,20 +284,19 @@ void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) x, (float) y);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
     int uBorder = glGetUniformLocation(program, "uBorder");
     glUniform1f(uBorder, (float) border);
 
+    float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -318,17 +318,16 @@ void SDL_Surface::blitReverse(const SDL_Surface *source, int x, int y) {
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) x, (float) y);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
+    float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -361,14 +360,12 @@ void SDL_Surface::blitZX(const SDL_Surface *source, int x, int y, int zx, int co
 
     int uSrcSize = glGetUniformLocation(program, "uSrcSize");
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uSrcSize, (float) source->getWidth(), (float) source->getHeight());
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, (float) x, (float) y);
-    glUniform2f(uBlitSize, (float) source->getWidth(), (float) source->getHeight());
 
     int uMaskColor = glGetUniformLocation(program, "uMaskColor");
     glUniform4f(uMaskColor, 0.5f, 0.5f, 0.5f, 1.0f);
@@ -384,8 +381,9 @@ void SDL_Surface::blitZX(const SDL_Surface *source, int x, int y, int zx, int co
         glUniform1f(uStartY, (float) countHeight);
     glUniform1f(uPeriodY, 2 * (float) stripeHeight);
 
+    float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -403,21 +401,17 @@ void SDL_Surface::line(int x1, int y1, int x2, int y2, Uint32 color) {
     glUniform1i(uTexture, 1);
 
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, 0.f, 0.f);
-    glUniform2f(uBlitSize, (float) width, (float) height);
 
     int uColor = glGetUniformLocation(program, "uColor");
     glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
                 ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
 
-    float points[2][2] = {{(float)x1 / width, (float)y1 / height},
-                          {(float)x2 / width, (float)y2 / height}};
-
+    float points[2][2] = {{(float)x1, (float)y1}, {(float)x2, (float)y2}};
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
@@ -448,20 +442,19 @@ void SDL_Surface::fillRect(const SDL_Rect *dstRect, Uint32 color) {
     glUniform1i(uTexture, 1);
 
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, (float)x_, (float)y_);
     glUniform2f(uDstOffset, (float)x_, (float)y_);
-    glUniform2f(uBlitSize, (float)w_, (float)h_);
 
     int uColor = glGetUniformLocation(program, "uColor");
     glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
                 ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
 
+    float points[4][2] = SQUARE(x_, y_, w_, h_);
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -479,13 +472,11 @@ void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 color) {
     glUniform1i(uTexture, 1);
 
     int uDstSize = glGetUniformLocation(program, "uDstSize");
-    int uBlitSize = glGetUniformLocation(program, "uBlitSize");
     int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     int uDstOffset = glGetUniformLocation(program, "uDstOffset");
     glUniform2f(uDstSize, (float) width, (float) height);
     glUniform2f(uSrcOffset, (float)(x - radius), (float)(y - radius));
     glUniform2f(uDstOffset, (float)(x - radius), (float)(y - radius));
-    glUniform2f(uBlitSize, (float)(2*radius), (float)(2*radius));
 
     int uCenter = glGetUniformLocation(program, "uCenter");
     int uRadius = glGetUniformLocation(program, "uRadius");
@@ -495,8 +486,9 @@ void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 color) {
     glUniform4f(uColor, ((color >> 16) & 255) / 255.0f, ((color >> 8) & 255) / 255.0f,
                 ((color >> 0) & 255) / 255.0f, ((color >> 24) & 255) / 255.0f);
 
+    float points[4][2] = SQUARE(x - radius, y - radius, 2*radius, 2*radius);
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), FFNGSurface::square);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -697,14 +689,13 @@ attribute vec2 aPosition;
 
 uniform vec2 uSrcOffset;
 uniform vec2 uDstOffset;
-uniform vec2 uBlitSize;
 uniform vec2 uDstSize;
 
 varying vec2 vPixCoords;
 
 void main() {
-  vPixCoords = aPosition * uBlitSize + uSrcOffset;
-  vec2 lClipCoords = (vPixCoords - uSrcOffset + uDstOffset) / uDstSize * 2.0 - vec2(1.0, 1.0);
+  vPixCoords = aPosition - uDstOffset + uSrcOffset;
+  vec2 lClipCoords = aPosition / uDstSize * 2.0 - vec2(1.0, 1.0);
   gl_Position = vec4(lClipCoords, 0.0, 1.0);
 })";
 

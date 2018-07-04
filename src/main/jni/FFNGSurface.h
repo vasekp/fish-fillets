@@ -85,8 +85,6 @@ public:
     static GLuint programUDisintegrate;
     static GLuint programUZX;
 
-    constexpr static float square[8] = {0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0};
-
     static void initEGL();
 
     static void initShaders();
