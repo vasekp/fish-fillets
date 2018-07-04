@@ -8,16 +8,17 @@ EGLDisplay FFNGSurface::dpy;
 EGLSurface FFNGSurface::sfc;
 
 GLuint FFNGSurface::framebuffer;
+
+GLuint FFNGSurface::programCopy;
+GLuint FFNGSurface::programMasked;
+GLuint FFNGSurface::programReverse;
+GLuint FFNGSurface::programMirror;
+GLuint FFNGSurface::programWavy;
+GLuint FFNGSurface::programDisintegrate;
+GLuint FFNGSurface::programZX;
+
 GLuint FFNGSurface::programUniform;
 GLuint FFNGSurface::programCircle;
-
-GLuint FFNGSurface::programUCopy;
-GLuint FFNGSurface::programUMasked;
-GLuint FFNGSurface::programUReverse;
-GLuint FFNGSurface::programUMirror;
-GLuint FFNGSurface::programUWavy;
-GLuint FFNGSurface::programUDisintegrate;
-GLuint FFNGSurface::programUZX;
 
 #define SQUARE(x, y, w, h) {\
   {(float)(x), (float)(y)}, \
@@ -126,7 +127,7 @@ SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, i
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
     
-    GLuint program = FFNGSurface::programUCopy;
+    GLuint program = FFNGSurface::programCopy;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -160,7 +161,7 @@ void SDL_Surface::blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, mask->getTexture());
 
-    GLuint program = FFNGSurface::programUMasked;
+    GLuint program = FFNGSurface::programMasked;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -198,7 +199,7 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
 
-    GLuint program = FFNGSurface::programUWavy;
+    GLuint program = FFNGSurface::programWavy;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -236,7 +237,7 @@ void SDL_Surface::blitDisintegrate(const SDL_Surface *source, int x, int y, int 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
 
-    GLuint program = FFNGSurface::programUDisintegrate;
+    GLuint program = FFNGSurface::programDisintegrate;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -272,7 +273,7 @@ void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
 
-    GLuint program = FFNGSurface::programUMirror;
+    GLuint program = FFNGSurface::programMirror;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -308,7 +309,7 @@ void SDL_Surface::blitReverse(const SDL_Surface *source, int x, int y) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
 
-    GLuint program = FFNGSurface::programUReverse;
+    GLuint program = FFNGSurface::programReverse;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -350,7 +351,7 @@ void SDL_Surface::blitZX(const SDL_Surface *source, int x, int y, int zx, int co
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, source->getTexture());
 
-    GLuint program = FFNGSurface::programUZX;
+    GLuint program = FFNGSurface::programZX;
     glUseProgram(program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
@@ -701,7 +702,7 @@ void main() {
   gl_Position = vec4(lClipCoords, 0.0, 1.0);
 })";
 
-    std::string fragmentUCopySource = R"(
+    std::string fragmentCopySource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -714,7 +715,7 @@ void main(void)
   gl_FragColor = texture2D(uSrcTexture, vPixCoords / uSrcSize);
 })";
 
-    std::string fragmentUReverseSource = R"(
+    std::string fragmentReverseSource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -728,7 +729,7 @@ void main(void)
   gl_FragColor = texture2D(uSrcTexture, vec2(1.0 - lTexCoords.x, lTexCoords.y));
 })";
 
-    std::string fragmentUMaskedSource = R"(
+    std::string fragmentMaskedSource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -744,7 +745,7 @@ void main(void)
   gl_FragColor = distance(texture2D(uMaskTexture, lTexCoords), uMaskColor) < 0.1 ? texture2D(uSrcTexture, lTexCoords) : vec4(0.0);
 })";
 
-    std::string fragmentUMirrorSource = R"(
+    std::string fragmentMirrorSource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -767,7 +768,7 @@ void main(void)
     : lTexColor;
 })";
 
-    std::string fragmentUWavySource = R"(
+    std::string fragmentWavySource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -784,7 +785,7 @@ void main(void)
   gl_FragColor = texture2D(uSrcTexture, (vPixCoords + vec2(dx, 0.0)) / uSrcSize);
 })";
 
-    std::string fragmentUDisintegrateSource = R"(
+    std::string fragmentDisintegrateSource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -804,7 +805,7 @@ void main(void)
     : vec4(0.0);
 })";
 
-    std::string fragmentUZXSource = R"(
+    std::string fragmentZXSource = R"(
 precision mediump float;
 
 uniform sampler2D uSrcTexture;
@@ -850,24 +851,26 @@ void main(void)
 })";
 
     GLuint vertexCommon{loadShader(GL_VERTEX_SHADER, vertexUnitedSource)};
-    GLuint fragmentUCopy{loadShader(GL_FRAGMENT_SHADER, fragmentUCopySource)};
-    GLuint fragmentUMasked{loadShader(GL_FRAGMENT_SHADER, fragmentUMaskedSource)};
-    GLuint fragmentUReverse{loadShader(GL_FRAGMENT_SHADER, fragmentUReverseSource)};
-    GLuint fragmentUMirror{loadShader(GL_FRAGMENT_SHADER, fragmentUMirrorSource)};
-    GLuint fragmentUWavy{loadShader(GL_FRAGMENT_SHADER, fragmentUWavySource)};
-    GLuint fragmentUDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentUDisintegrateSource)};
-    GLuint fragmentUZX{loadShader(GL_FRAGMENT_SHADER, fragmentUZXSource)};
+
+    GLuint fragmentCopy{loadShader(GL_FRAGMENT_SHADER, fragmentCopySource)};
+    GLuint fragmentMasked{loadShader(GL_FRAGMENT_SHADER, fragmentMaskedSource)};
+    GLuint fragmentReverse{loadShader(GL_FRAGMENT_SHADER, fragmentReverseSource)};
+    GLuint fragmentMirror{loadShader(GL_FRAGMENT_SHADER, fragmentMirrorSource)};
+    GLuint fragmentWavy{loadShader(GL_FRAGMENT_SHADER, fragmentWavySource)};
+    GLuint fragmentDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentDisintegrateSource)};
+    GLuint fragmentZX{loadShader(GL_FRAGMENT_SHADER, fragmentZXSource)};
 
     GLuint fragmentUniform{loadShader(GL_FRAGMENT_SHADER, fragmentUniformSource)};
     GLuint fragmentCircle{loadShader(GL_FRAGMENT_SHADER, fragmentCircleSource)};
 
-    programUCopy = createProgram(vertexCommon, fragmentUCopy);
-    programUMasked = createProgram(vertexCommon, fragmentUMasked);
-    programUReverse = createProgram(vertexCommon, fragmentUReverse);
-    programUMirror = createProgram(vertexCommon, fragmentUMirror);
-    programUWavy = createProgram(vertexCommon, fragmentUWavy);
-    programUDisintegrate = createProgram(vertexCommon, fragmentUDisintegrate);
-    programUZX = createProgram(vertexCommon, fragmentUZX);
+    programCopy = createProgram(vertexCommon, fragmentCopy);
+
+    programMasked = createProgram(vertexCommon, fragmentMasked);
+    programReverse = createProgram(vertexCommon, fragmentReverse);
+    programMirror = createProgram(vertexCommon, fragmentMirror);
+    programWavy = createProgram(vertexCommon, fragmentWavy);
+    programDisintegrate = createProgram(vertexCommon, fragmentDisintegrate);
+    programZX = createProgram(vertexCommon, fragmentZX);
 
     programUniform = createProgram(vertexCommon, fragmentUniform);
     programCircle = createProgram(vertexCommon, fragmentCircle);

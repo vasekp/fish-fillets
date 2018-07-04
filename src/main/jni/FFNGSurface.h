@@ -74,16 +74,19 @@ public:
     static EGLSurface sfc;
 
     static GLuint framebuffer;
+
+    /* trivial shader */
+    static GLuint programCopy;
+    /* effects */
+    static GLuint programMasked;
+    static GLuint programReverse;
+    static GLuint programMirror;
+    static GLuint programWavy;
+    static GLuint programDisintegrate;
+    static GLuint programZX;
+    /* geometrical shapes */
     static GLuint programUniform;
     static GLuint programCircle;
-
-    static GLuint programUCopy;
-    static GLuint programUMasked;
-    static GLuint programUReverse;
-    static GLuint programUMirror;
-    static GLuint programUWavy;
-    static GLuint programUDisintegrate;
-    static GLuint programUZX;
 
     static void initEGL();
 
