@@ -162,7 +162,7 @@ local function prog_init()
 
             stav_table[2] = stav_table[0]
 
-            stav_table[1] = stav_table[3]
+            stav_table[3] = stav_table[1]
 
             stav_table[6] = stav_table[5]
             stav_table[7] = stav_table[5]

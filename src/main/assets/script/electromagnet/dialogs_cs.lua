@@ -46,7 +46,7 @@ dialogStr("To je možné.")
 
 
 dialogId("rand-1-0", "font_small", "Perhaps we have to find out what is the point of all these magnets in this level?")
-dialogStr("Možná bychom měli zjistit proč tu jsou ty magnety.")
+dialogStr("Možná bychom měli zjistit, proč tu jsou ty magnety.")
 
 dialogId("rand-1-1", "font_big", "I don’t think so. The brief said we should find out, how the interstellar propulsion works.")
 dialogStr("Nemyslím. Podle instrukcí máme zjistit jak funguje jejich mezihvězdný pohon.")
@@ -99,7 +99,7 @@ dialogId("rand-3-2-3", "font_big", "Non-ferrous heavy metal.")
 dialogStr("Barevný kov.")
 
 dialogId("rand-3-2-4", "font_big", "Glass glued with colored paper.")
-dialogStr("Sklo přilepené na barevným papír.")
+dialogStr("Sklo slepené barevným papírem.")
 
 dialogId("rand-3-2-5", "font_big", "An alien alloy.")
 dialogStr("Mimozemská slitina.")
@@ -192,7 +192,7 @@ dialogId("shoot-2-0", "font_small", "It is no miracle that the weapon shoots if 
 dialogStr("Není divu, že ta zbraň střílí, když odsunuješ věci její spouští.")
 
 dialogId("shoot-2-1", "font_small", "You shouldn’t use an shooting iron as crowbar replacement!")
-dialogStr("Neměl by jsi používat střelnou zbraň jako páčidlo.")
+dialogStr("Neměl bys používat střelnou zbraň jako páčidlo.")
 
 dialogId("shoot-3-0", "font_big", "It was’nt my fault. You gave me that thing there.")
 dialogStr("To není moje vina. Ty jsi mi to tak dala.")
