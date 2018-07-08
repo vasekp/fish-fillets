@@ -14,7 +14,6 @@ class SurfaceTool {
                 int width=0, int height=0);
         static SDL_Surface *createTransparent(int w, int h,
                 const Color &transparent);
-        static SDL_Surface *createClone(SDL_Surface *surface);
         static void alphaFill(SDL_Surface *surface, SDL_Rect *dstrect,
                 const Color &color);
 };

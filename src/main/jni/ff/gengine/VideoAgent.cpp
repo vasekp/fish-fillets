@@ -106,8 +106,8 @@ VideoAgent::initVideoMode()
 
     SysVideo::setCaption(options->getParam("caption", "A game"));
     if (NULL == m_screen
-            || m_screen->w != screen_width
-            || m_screen->h != screen_height)
+            || m_screen->getWidth() != screen_width
+            || m_screen->getHeight() != screen_height)
     {
     	/*FFNG*/FFNGApp::setGameState(options->getAsInt("game_state", FFNGApp::GAMESTATE_LOADING));
         changeVideoMode(screen_width, screen_height);

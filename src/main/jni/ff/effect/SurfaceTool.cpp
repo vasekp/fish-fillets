@@ -23,10 +23,10 @@
 SurfaceTool::createEmpty(SDL_Surface *surface, int width, int height)
 {
     if (!width) {
-        width = surface->w;
+        width = surface->getWidth();
     }
     if (!height) {
-        height = surface->h;
+        height = surface->getHeight();
     }
 
     /* FFNG different surface instancing
@@ -75,6 +75,7 @@ SurfaceTool::createTransparent(int w, int h, const Color &transparent)
  * @return new surface, free it after use
  * @throws SDLException when function fails
  */
+#if 0
     SDL_Surface *
 SurfaceTool::createClone(SDL_Surface *surface)
 {
@@ -88,6 +89,7 @@ SurfaceTool::createClone(SDL_Surface *surface)
     }
     return clone;
 }
+#endif
 //-----------------------------------------------------------------
 /**
  * Fill surface with given color. Alpha value in color is supported.
@@ -101,8 +103,8 @@ SurfaceTool::createClone(SDL_Surface *surface)
 SurfaceTool::alphaFill(SDL_Surface *surface, SDL_Rect *dstrect,
         const Color &color)
 {
-    int w = surface->w;
-    int h = surface->h;
+    int w = surface->getWidth();
+    int h = surface->getHeight();
     if (dstrect) {
         w = dstrect->w;
         h = dstrect->h;

@@ -15,6 +15,7 @@
 #include "Application.h"
 #include "HelpException.h"
 #include "BaseException.h"
+#include "FFNGSurface.h"
 
 /*
 static struct sigaction old_sa[NSIG];
@@ -28,7 +29,7 @@ void android_sigaction(int signal, siginfo_t *info, void *reserved)
 */
 
 extern "C"
-int Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
+JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
 {
 	/*
 	// Try to catch crashes...
@@ -51,6 +52,9 @@ int Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
 
     try {
         Application app;
+
+		FFNGSurface::initEGL();
+		FFNGSurface::initShaders();
 
         try {
             app.init(0, NULL);

@@ -12,7 +12,6 @@
 #include "Path.h"
 #include "TTFException.h"
 #include "SDLException.h"
-#include "Outline.h"
 
 #ifdef HAVE_FRIBIDI
 #include "fribidi.h"

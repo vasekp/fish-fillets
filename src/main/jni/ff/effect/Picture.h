@@ -18,8 +18,8 @@ class Picture : public Drawable {
         Picture(SDL_Surface *new_surface, const V2 &loc);
         virtual ~Picture();
 
-        int getW() const { return m_surface->w; }
-        int getH() const { return m_surface->h; }
+        int getW() const { return m_surface->getWidth(); }
+        int getH() const { return m_surface->getHeight(); }
         virtual void drawOn(SDL_Surface *screen);
 
         void setLoc(const V2 &loc) { m_loc = loc; }

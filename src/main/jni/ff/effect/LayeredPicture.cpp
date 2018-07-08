@@ -28,8 +28,8 @@ LayeredPicture::LayeredPicture(const Path &bg_file, const V2 &loc,
 {
     m_lowerLayer = ResImagePack::loadImage(lowerLayer);
     m_colorMask = ResImagePack::loadImage(colorMask);
-    if (m_lowerLayer->w != m_colorMask->w
-            || m_lowerLayer->h != m_colorMask->h) {
+    if (m_lowerLayer->getWidth() != m_colorMask->getWidth()
+            || m_lowerLayer->getHeight() != m_colorMask->getHeight()) {
         FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_lowerLayer);
         FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_colorMask);
         FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_surface);
@@ -68,8 +68,8 @@ LayeredPicture::getMaskAt(const V2 &loc)
 {
     Uint32 result = MASK_NO;
 
-    if ((0 <= loc.getX() && loc.getX() < m_colorMask->w)
-            && (0 <= loc.getY() && loc.getY() < m_colorMask->h))
+    if ((0 <= loc.getX() && loc.getX() < m_colorMask->getWidth())
+            && (0 <= loc.getY() && loc.getY() < m_colorMask->getHeight()))
     {
         SurfaceLock lock1(m_colorMask);
         result = PixelTool::getPixel(m_colorMask,

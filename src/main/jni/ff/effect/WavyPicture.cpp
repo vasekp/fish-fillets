@@ -21,7 +21,7 @@ WavyPicture::WavyPicture(const Path &file, const V2 &loc)
     : Picture(file, loc)
 {
     m_amp = 0;
-    m_periode = m_surface->w;
+    m_periode = m_surface->getWidth();
     m_speed = 0;
 }
 //-----------------------------------------------------------------
@@ -59,14 +59,14 @@ WavyPicture::drawOn(SDL_Surface *screen)
         line_rect.y = py;
         dest_rect.x = m_loc.getX();
         dest_rect.y = m_loc.getY() + py;
-        FFNGSurface::blitSurface/* FFNG SDL_BlitSurface* /(m_surface, &line_rect, screen, &dest_rect);
+        SDL_BlitSurface(m_surface, &line_rect, screen, &dest_rect);
 
         pad.x = (shiftX < 0) ? 0 : m_surface->w - shiftX;
         pad.y = py;
         pad.w = abs(shiftX);
         dest_rect.x = m_loc.getX() + pad.x;
         dest_rect.y = m_loc.getY() + py;
-        FFNGSurface::blitSurface/* FFNG SDL_BlitSurface* /(m_surface, &pad, screen, &dest_rect);
+        SDL_BlitSurface(m_surface, &pad, screen, &dest_rect);
     }
     */
 }

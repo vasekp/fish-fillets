@@ -63,7 +63,7 @@ EffectZx::blit(SDL_Surface *screen, SDL_Surface *surface, int x, int y)
 {
     screen->blitZX(surface, x, y, m_zx, m_countHeight, m_stripeHeight);
 
-	for (int py = 0; py < surface->h; ++py) {
+	for (int py = 0; py < surface->getHeight(); ++py) {
 		m_countHeight++;
 		if (m_countHeight > m_stripeHeight) {
 			m_countHeight -= m_stripeHeight;

@@ -43,7 +43,7 @@ StepDecor::drawOnScreen(const View * /*view*/, SDL_Surface *screen)
         SDL_Surface *text_surface = m_font.renderTextOutlined(steps, color);
 
         SDL_Rect rect;
-        rect.x = screen->w - text_surface->w;
+        rect.x = screen->getHeight() - text_surface->getWidth();
         rect.y = 10;
         FFNGSurface::blitSurface/* FFNG SDL_BlitSurface*/(text_surface, NULL, screen, &rect);
         FFNGSurface::freeSurface/* FFNG SDL_FreeSurface*/(text_surface);

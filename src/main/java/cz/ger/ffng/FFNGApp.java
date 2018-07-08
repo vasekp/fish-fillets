@@ -8,11 +8,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
+import android.graphics.Region;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -59,7 +61,7 @@ public class FFNGApp extends Thread {
 	FFNGApp() {
 		screen = Bitmap.createBitmap(900, 900, Config.ARGB_8888);
 		canvas = new Canvas(screen);
-		
+
 		captionPaint.setARGB(255, 255, 255, 255);
 		captionPaint.setTextSize(30);
 		
@@ -150,14 +152,8 @@ public class FFNGApp extends Thread {
 			
 			setWindowScale();
 		}
-		/*
-		while (surface == null) {
-			try {
-				wait();
-			} catch(InterruptedException e) {}
-		}
-		*/
 		canvas.save();
+		canvas.drawColor(Color.BLACK);
 		canvas.scale(windowScale, windowScale, 0, 0);
 		canvas.drawBitmap(screen, windowX/windowScale, windowY/windowScale, bilinearPaint);
 		canvas.restore();
@@ -271,22 +267,27 @@ public class FFNGApp extends Thread {
 		}
 	}
 	
-	synchronized public void renderThis(FFNGSurface surface) {
-		/*
-		while(surface != null) {
-			try {
-				wait();
-			} catch(InterruptedException e) {}
-		}*/
+	/*synchronized public void renderThis(FFNGSurface surface) {
 		canvas.drawBitmap(surface.getBitmap(), 0, 0, null);
        	activity.runOnUiThread(new Runnable() {
        			@Override public void run() {
        				view.invalidate();
        			}
        		});
-		//notifyAll();
+	}*/
+
+	synchronized public void renderThis() {
+		canvas.clipRect(0, 0, windowWidth, windowHeight, Region.Op.REPLACE);
+		canvas.drawBitmap(bmp, 0, 0, null);
+		activity.runOnUiThread(new Runnable() {
+			@Override public void run() {
+				view.invalidate();
+			}
+		});
 	}
-	
+
+	private final Bitmap bmp = Bitmap.createBitmap(900, 900, Config.ARGB_8888);
+
 	private float touchx = -1;
 	private float touchy = -1;
 	
@@ -378,18 +379,8 @@ public class FFNGApp extends Thread {
             setOnKeyListener(this);
         }
 
-        //private static int counter = 0;
-        
         @Override protected void onDraw(Canvas canvas) {
         	app.render(canvas);
-        	//invalidate();
-
-        	/*
-        	if (++counter == 1000) {
-        		Log.d("FFNG", "1000");
-        		counter = 0;
-        	}
-        	*/
         }
 
         private static final int TOUCH_STATE_NONE = 0;
@@ -412,7 +403,6 @@ public class FFNGApp extends Thread {
 			case TOUCH_STATE_BUTTON_PRESSED:
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_MOVE:
-					//sleep(5);
 					result = true;
 					break;
 				case MotionEvent.ACTION_UP:
@@ -485,7 +475,6 @@ public class FFNGApp extends Thread {
 			                break;
 			            case MotionEvent.ACTION_MOVE:
 			            	app.setTouch(x, y);
-			            	//sleep(5);
 			                //touch_move(x, y);
 			                //invalidate();
 			                result = true;
@@ -505,15 +494,6 @@ public class FFNGApp extends Thread {
 			}
 
 			return result;
-		}
-		
-		private void sleep(int ms) {
-			try {
-				Thread.sleep(ms);
-			}
-			catch(InterruptedException ie){
-				//If this thread was intrrupted by nother thread 
-			}
 		}
 
 		// see SDLKey in FFNGInputEvent.h
