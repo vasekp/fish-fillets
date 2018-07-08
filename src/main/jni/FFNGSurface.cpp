@@ -133,7 +133,6 @@ SDL_Surface::blit(int dstx, int dsty, SDL_Surface *source, int srcx, int srcy, i
     GLuint program = FFNGSurface::programCopy;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -167,7 +166,6 @@ void SDL_Surface::blitMasked(int dstx, int dsty, const SDL_Surface *mask, Uint32
     GLuint program = FFNGSurface::programMasked;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -205,7 +203,6 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
     GLuint program = FFNGSurface::programWavy;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -243,7 +240,6 @@ void SDL_Surface::blitDisintegrate(const SDL_Surface *source, int x, int y, int 
     GLuint program = FFNGSurface::programDisintegrate;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -279,7 +275,6 @@ void SDL_Surface::blitMirror(const SDL_Surface *source, int x, int y, int border
     GLuint program = FFNGSurface::programMirror;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -315,7 +310,6 @@ void SDL_Surface::blitReverse(const SDL_Surface *source, int x, int y) {
     GLuint program = FFNGSurface::programReverse;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -357,7 +351,6 @@ void SDL_Surface::blitZX(const SDL_Surface *source, int x, int y, int zx, int co
     GLuint program = FFNGSurface::programZX;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -399,7 +392,6 @@ void SDL_Surface::line(int x1, int y1, int x2, int y2, Uint32 color) {
     GLuint program = FFNGSurface::programUniform;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -440,7 +432,6 @@ void SDL_Surface::fillRect(const SDL_Rect *dstRect, Uint32 color) {
     GLuint program = FFNGSurface::programUniform;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -470,7 +461,6 @@ void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 color) {
     GLuint program = FFNGSurface::programCircle;
     glUseProgram(program);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, width, height);
 
@@ -501,9 +491,7 @@ void SDL_Surface::filledCircleColor(int x, int y, int radius, Uint32 color) {
 }
 
 Uint32 SDL_Surface::getPixel(int x, int y) const {
-    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    eglSwapBuffers(FFNGSurface::dpy, FFNGSurface::sfc);
 
     unsigned char pixels[4];
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -633,6 +621,7 @@ void FFNGSurface::initEGL() {
     glEnable(GL_BLEND);
 
     glGenFramebuffers(1, &FFNGSurface::framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
 }
 
 GLuint loadShader(GLenum type, std::string code) {
