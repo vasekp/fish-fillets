@@ -10,7 +10,7 @@ int FFNGApp::getTicks() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -37,7 +37,7 @@ void FFNGApp::setGameState(int newState) {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -59,7 +59,7 @@ int FFNGApp::getGameState() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -81,7 +81,7 @@ void FFNGApp::switchFishes(bool isBig) {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -103,7 +103,7 @@ void FFNGApp::saveEffect() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -125,7 +125,7 @@ bool FFNGApp::pauseAndDisposeChance() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();

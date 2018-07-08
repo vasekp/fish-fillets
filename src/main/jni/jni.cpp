@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <android/log.h>
 #include <signal.h>
+#include <ff/gengine/ResImagePack.h>
 #include "jnix.h"
 #include "Log.h"
 #include "Application.h"
@@ -41,6 +42,11 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject o
         }
         app.shutdown();
     	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "OK");
+        JNI::getInstance()->clearJavaContext();
+
+        FFNGSurface::termEGL();
+        ResImagePack::clearCache();
+
         return 0;
     }
     catch (BaseException &e) {
@@ -55,6 +61,7 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject o
     }
 
 	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FAIL");
+    JNI::getInstance()->clearJavaContext();
     return 1;
 }
 
@@ -86,6 +93,12 @@ void JNI::setJavaContext(JNIEnv * env, jobject obj) {
 	 m_javaEnv = env;
 	 m_javaObj = obj;
 	 m_javaCls = m_javaEnv->GetObjectClass(m_javaObj);
+}
+
+void JNI::clearJavaContext() {
+    m_javaEnv = nullptr;
+    m_javaObj = nullptr;
+    m_javaCls = nullptr;
 }
 
 int JNI::getInt(jobject obj, const char *fieldName)

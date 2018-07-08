@@ -14,6 +14,7 @@ public:
 	 * @param obj java parent, the parent object/class
 	 */
 	void setJavaContext(JNIEnv * env, jobject obj);
+    void clearJavaContext();
 	JNIEnv *getJavaEnv() const { return m_javaEnv; }
 	jobject getJavaObj() const { return m_javaObj; }
 	jclass getJavaCls() const { return m_javaCls; }

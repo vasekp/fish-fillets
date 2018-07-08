@@ -9,7 +9,7 @@ bool FFNGFiles::exists(const std::string &path, int type)
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFiles");
 		mid = javaEnv->GetStaticMethodID(cls, "exists", "(Ljava/lang/String;I)Z");
@@ -35,7 +35,7 @@ std::string FFNGFiles::read(const std::string &path, int type) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFiles");
 		mid = javaEnv->GetStaticMethodID(cls, "read", "(Ljava/lang/String;I)Ljava/lang/String;");
@@ -63,7 +63,7 @@ void FFNGFiles::createPath(const std::string &path) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFiles");
 		mid = javaEnv->GetStaticMethodID(cls, "createPath", "(Ljava/lang/String;)V");
@@ -82,7 +82,7 @@ bool FFNGFiles::write(const std::string &path, const std::string &data) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFiles");
 		mid = javaEnv->GetStaticMethodID(cls, "write", "(Ljava/lang/String;Ljava/lang/String;)Z");

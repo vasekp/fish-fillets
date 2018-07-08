@@ -17,9 +17,9 @@
 //FFNG #include "SDL_image.h"
 
 // The set cache size allows to contain all fish images and animations
-// from level 'barrel'.
+// from level 'experiments'.
 ResCache<SDL_Surface*> *ResImagePack::CACHE = new ResCache<SDL_Surface*>(
-        265, new ResImagePack(false));
+        320, new ResImagePack(false));
 
 //-----------------------------------------------------------------
 ResImagePack::ResImagePack(bool caching_enabled) {
@@ -92,5 +92,9 @@ ResImagePack::unloadRes(SDL_Surface *res)
         //FFNG SDL_FreeSurface(res);
     	FFNGSurface::freeSurface(res);
     }
+}
+
+void ResImagePack::clearCache() {
+    CACHE->clear();
 }
 

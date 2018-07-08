@@ -23,6 +23,8 @@ class ResImagePack : public ResourcePack<SDL_Surface*> {
         static SDL_Surface *loadImage(const Path &file);
         void addImage(const std::string &name, const Path &file);
         virtual void unloadRes(SDL_Surface *res);
+
+        static void clearCache();
 };
 
 #endif

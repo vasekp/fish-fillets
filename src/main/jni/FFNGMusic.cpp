@@ -19,7 +19,7 @@ void FFNGMusic::halt(int channel) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetStaticMethodID(cls, "halt", "(I)V");
@@ -40,7 +40,7 @@ bool FFNGMusic::isPlaying(int channel) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetStaticMethodID(cls, "isPlaying", "(I)Z");
@@ -61,7 +61,7 @@ int FFNGMusic::playChannel(int channel, Mix_Chunk *sound, int loops) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetMethodID(cls, "playChannel", "(II)I");
@@ -84,7 +84,7 @@ void FFNGMusic::volume(int channel, float vol) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetStaticMethodID(cls, "volume", "(IF)V");
@@ -150,7 +150,7 @@ Mix_Music::~Mix_Music() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
@@ -172,7 +172,7 @@ jobject Mix_Music::loadMusic(const char *file) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetStaticMethodID(cls, "loadMusic", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGMusic;");
@@ -198,7 +198,7 @@ void Mix_Music::play() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetMethodID(cls, "play", "()V");
@@ -218,7 +218,7 @@ void Mix_Music::stop() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetMethodID(cls, "stop", "()V");
@@ -238,7 +238,7 @@ void Mix_Music::dispose() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
@@ -258,7 +258,7 @@ void Mix_Music::stopAll() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetStaticMethodID(cls, "stopAll", "()V");
@@ -278,7 +278,7 @@ void Mix_Music::setVolumeAll(int vol) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 		mid = javaEnv->GetStaticMethodID(cls, "setVolumeAll", "(I)V");
@@ -304,7 +304,7 @@ Mix_Chunk::~Mix_Chunk() {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
@@ -326,7 +326,7 @@ jobject Mix_Chunk::loadSound(const char *file) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 		mid = javaEnv->GetStaticMethodID(cls, "loadSound", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGSound;");
