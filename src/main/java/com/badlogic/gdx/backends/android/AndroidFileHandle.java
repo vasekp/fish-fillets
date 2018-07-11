@@ -38,20 +38,12 @@ public class AndroidFileHandle extends FileHandle {
 		this.type = type;
 
 		switch (type) {
-		case Classpath:
-			if (FileHandle.class.getResourceAsStream("/" + fileName) == null)
-				throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
-			file = new File("/" + fileName);
-			break;
 		case Internal:
 			ensureInternalFileExists(fileName);
 			file = new File(fileName);
 			break;
 		case External:
 			file = new File(FFNG.files.getExternalStoragePath() + fileName);
-			break;
-		case Absolute:
-			file = new File(fileName);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown type: " + type);
@@ -64,10 +56,6 @@ public class AndroidFileHandle extends FileHandle {
 		this.type = type;
 
 		switch (type) {
-		case Classpath:
-			if (FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/')) == null)
-				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
-			break;
 		case Internal:
 			ensureInternalFileExists(file.getPath());
 			break;
@@ -82,10 +70,6 @@ public class AndroidFileHandle extends FileHandle {
 		File parent = file.getParentFile();
 		if (parent == null) {
 			switch (type) {
-			case Classpath:
-			case Absolute:
-				parent = new File("/");
-				break;
 			case Internal:
 				parent = new File("");
 				break;

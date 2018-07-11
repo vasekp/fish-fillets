@@ -54,7 +54,7 @@ public abstract class FileHandle {
 	 *        {@link FileType#Internal} and the file doesn't exist, or if it could not be read.
 	 */
 	public InputStream read () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
+		if (type == FileType.Internal && !file.exists()) {
 			InputStream input = FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
@@ -73,7 +73,6 @@ public abstract class FileHandle {
 	 *        {@link FileType#Internal} file, or if it could not be written.
 	 */
 	public OutputStream write (boolean append) {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
 		try {
 			return new FileOutputStream(file, append);
@@ -88,7 +87,6 @@ public abstract class FileHandle {
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	 */
 	public FileHandle[] list () {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		String[] relativePaths = file.list();
 		if (relativePaths == null) return new FileHandle[0];
 		FileHandle[] handles = new FileHandle[relativePaths.length];
@@ -102,9 +100,7 @@ public abstract class FileHandle {
 	 * empty directory will return false.
 	 */
 	public boolean isDirectory () {
-		if (type == FileType.Classpath) return false;
 		return file.isDirectory();
-
 	}
 
 	/**
@@ -120,14 +116,13 @@ public abstract class FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
 	 */
 	public void mkdirs () {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot mkdirs with a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot mkdirs with an internal file: " + file);
 		file.mkdirs();
 	}
 
 	public boolean exists () {
 		// Classpath and internal FileHandles can't be created unless they exist.
-		if (type == FileType.Classpath || type == FileType.Internal) return true;
+		if (type == FileType.Internal) return true;
 		return file.exists();
 	}
 
@@ -135,7 +130,7 @@ public abstract class FileHandle {
 	 * Returns the length in bytes of this file, or 0 if this file is a directory or does not exist.
 	 */
 	public long length () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
+		if (type == FileType.Internal && !file.exists()) {
 			try {
 				InputStream input = read();
 				long length = input.available();

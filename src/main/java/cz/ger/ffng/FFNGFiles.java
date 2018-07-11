@@ -18,8 +18,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class FFNGFiles {
 	public final static int INTERNAL = 1;
 	public final static int EXTERNAL = 2;
-	public final static int ABSOLUTE = 3;
-	
+
 	protected static boolean useCache = false;
 	// Vector, HashSet, ArrayList, LinkedList
 	protected static final HashSet<String> internalFileList = new HashSet<String>();
@@ -66,14 +65,7 @@ public class FFNGFiles {
 	}
 	
 	static public FileType getFileType(int type) {
-		FileType ft = FileType.Internal;
-		switch(type) {
-			case ABSOLUTE: ft = FileType.Absolute; break;
-			case EXTERNAL: ft = FileType.External; break;
-			case INTERNAL:
-			default: ft = FileType.Internal; break;
-		}
-		return ft;
+		return (type == EXTERNAL ? FileType.External : FileType.Internal);
 	}
 	
 	static public String correctPath(String path, FileType type) {
@@ -91,7 +83,7 @@ public class FFNGFiles {
 		try {
 			fh = FFNG.files.getFileHandle(correctPath(file, ft), ft);
 		} catch(Exception e) {
-			throw new IOException("File doesn't exist: " + file + " (" + (type == ABSOLUTE ? "absolute" : (type == EXTERNAL ? "external" : "internal")));
+			throw new IOException("File doesn't exist: " + file + " (" + (type == EXTERNAL ? "external" : "internal"));
 		} catch(NoSuchMethodError e) {
 			Log.d("FFNG", "FFNGFiles" + e.getMessage());
 		}
