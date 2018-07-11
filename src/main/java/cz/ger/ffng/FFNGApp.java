@@ -133,11 +133,15 @@ public class FFNGApp extends Thread {
 	}
 	
 	synchronized private boolean pauseAndDisposeChance() {
+		if(isDisposeRequired())
+			/* In case the requests both come before the thread inquires */
+			return true;
 		if (isPauseRequired()) {
 			Log.d("FFNG", "pause thread");
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
+				/* we are actually waiting for the interruption */
 			}
 			Log.d("FFNG", "resume thread");
 		}
