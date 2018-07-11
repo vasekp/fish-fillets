@@ -103,6 +103,15 @@ class ResCache : public NoCopy {
             }
         }
 
+        void clear() {
+            for (unsigned int i = 0; i < m_entries.size(); i++) {
+                if (m_entries[i]->value != NULL) {
+                    m_unloader->unloadRes(m_entries[i]->value);
+                }
+                *m_entries[i] = CacheEntry<T>();
+            }
+        }
+
     private:
         /**
          * Returns the matching CacheEntry or NULL.

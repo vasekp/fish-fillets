@@ -10,7 +10,7 @@ TTF_Font::TTF_Font(const char *file, int height_)
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 		mid = javaEnv->GetStaticMethodID(cls, "createFont", "(Ljava/lang/String;I)Lcz/ger/ffng/FFNGFont;");
@@ -32,7 +32,7 @@ TTF_Font::TTF_Font(const char *file, int height_)
 TTF_Font::~TTF_Font() {
 	static JNIEnv *javaEnv = NULL;
 
-	if (!javaEnv) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 	}
 
@@ -65,7 +65,7 @@ int TTF_Font::getWidth(const char *text) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 		mid = javaEnv->GetMethodID(cls, "getWidth", "(Ljava/lang/String;)I");
@@ -91,7 +91,7 @@ int TTF_Font::getHeight(const char *text) {
 	static jclass cls = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 		mid = javaEnv->GetMethodID(cls, "getHeight", "(Ljava/lang/String;)I");

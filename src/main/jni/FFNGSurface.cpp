@@ -47,7 +47,7 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
     static jclass cls = NULL;
     static jmethodID mid = NULL;
 
-    if(!mid) {
+    if(javaEnv != JNI::getInstance()->getJavaEnv()) {
         javaEnv = JNI::getInstance()->getJavaEnv();
         cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
         mid = javaEnv->GetStaticMethodID(cls, "loadBitmap",
@@ -88,7 +88,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
     static jclass cls = NULL;
     static jmethodID mid = NULL;
 
-    if(!mid) {
+    if(javaEnv != JNI::getInstance()->getJavaEnv()) {
         javaEnv = JNI::getInstance()->getJavaEnv();
         cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
         mid = javaEnv->GetStaticMethodID(cls, "newSurface",
@@ -622,6 +622,11 @@ void FFNGSurface::initEGL() {
 
     glGenFramebuffers(1, &FFNGSurface::framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, FFNGSurface::framebuffer);
+}
+
+void FFNGSurface::termEGL() {
+    eglMakeCurrent(FFNGSurface::dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglTerminate(FFNGSurface::dpy);
 }
 
 GLuint loadShader(GLenum type, std::string code) {

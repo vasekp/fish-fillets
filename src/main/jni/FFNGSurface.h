@@ -89,8 +89,8 @@ public:
     static GLuint programCircle;
 
     static void initEGL();
-
     static void initShaders();
+    static void termEGL();
 
     static SDL_Surface *imgLoad(const char *file);
 

@@ -12,7 +12,7 @@ SDL_Surface* FFNGVideo::setVideoMode(int width, int height, int bpp, int flags) 
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -36,7 +36,7 @@ void FFNGVideo::setWindowCaption(const std::string &caption) {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -60,7 +60,7 @@ void FFNGVideo::flip(SDL_Surface *screen) {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();

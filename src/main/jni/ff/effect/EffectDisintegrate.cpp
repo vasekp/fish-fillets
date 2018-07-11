@@ -57,20 +57,5 @@ EffectDisintegrate::blit(SDL_Surface *screen, SDL_Surface *surface,
         int x, int y)
 {
 	screen->blitDisintegrate(surface, x, y, m_disint);
-	/* FFNG
-    SurfaceLock lock1(screen);
-    SurfaceLock lock2(surface);
-
-    for (int py = 0; py < surface->h; ++py) {
-        for (int px = 0; px < surface->w; ++px) {
-            if (Random::aByte(py * surface->w + px) < m_disint) {
-                Color pixel = PixelTool::getColor(surface, px, py);
-                if (pixel.a == 255) {
-                    PixelTool::putColor(screen, x + px, y + py, pixel);
-                }
-            }
-        }
-    }
-    */
 }
 

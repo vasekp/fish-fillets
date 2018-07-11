@@ -12,7 +12,7 @@ int getTouchX() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -29,7 +29,7 @@ int getTouchY() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
@@ -53,7 +53,7 @@ jobject getNextEvent() {
 	static jobject obj = NULL;
 	static jmethodID mid = NULL;
 
-	if (!mid) {
+	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
 		javaEnv = JNI::getInstance()->getJavaEnv();
 		cls = JNI::getInstance()->getJavaCls();
 		obj = JNI::getInstance()->getJavaObj();
