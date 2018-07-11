@@ -35,10 +35,6 @@ public class AndroidFiles implements Files {
 		return new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
 	}
 
-	@Override public FileHandle classpath (String path) {
-		return new AndroidFileHandle(null, path, FileType.Classpath);
-	}
-
 	@Override public FileHandle internal (String path) {
 		return new AndroidFileHandle(assets, path, FileType.Internal);
 	}
@@ -47,15 +43,8 @@ public class AndroidFiles implements Files {
 		return new AndroidFileHandle(null, path, FileType.External);
 	}
 
-	@Override public FileHandle absolute (String path) {
-		return new AndroidFileHandle(null, path, FileType.Absolute);
-	}
-
 	@Override public String getExternalStoragePath () {
 		return sdcard;
 	}
 
-	@Override public boolean isExternalStorageAvailable () {
-		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-	}
 }

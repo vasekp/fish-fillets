@@ -62,11 +62,6 @@ public interface Files {
 	public FileHandle getFileHandle (String path, FileType type);
 
 	/**
-	 * Convenience method that returns a {@link FileType#Classpath} file handle.
-	 */
-	public FileHandle classpath (String path);
-
-	/**
 	 * Convenience method that returns an {@link FileType#Internal} file handle.
 	 */
 	public FileHandle internal (String path);
@@ -77,19 +72,9 @@ public interface Files {
 	public FileHandle external (String path);
 
 	/**
-	 * Convenience method that returns an {@link FileType#Absolute} file handle.
-	 */
-	public FileHandle absolute (String path);
-
-	/**
 	 * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
 	 * the desktop.
 	 */
 	public String getExternalStoragePath ();
 
-	/**
-	 * Returns true if the external storage is ready for file IO. Eg, on Android, the SD card is not available when mounted for use
-	 * with a PC.
-	 */
-	public boolean isExternalStorageAvailable ();
 }
