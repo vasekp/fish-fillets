@@ -820,7 +820,7 @@ varying vec2 vPixCoords;
 
 void main(void)
 {
-  float dx = uAmplitude * sin(vPixCoords.y / uPeriod + uShift);
+  float dx = uAmplitude * sin(mod(vPixCoords.y / uPeriod + uShift, 2.0 * 3.1416));
   gl_FragColor = texture2D(uSrcTexture, (vPixCoords + vec2(dx, 0.0)) / uSrcSize);
 })";
 
