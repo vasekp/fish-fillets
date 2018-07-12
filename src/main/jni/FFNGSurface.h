@@ -46,6 +46,8 @@ public:
 
     void blitWavy(const SDL_Surface *source, int x, int y, float amp, float period, float shift);
 
+    void blitWavyText(const SDL_Surface *source, int x, int y, float amp, float period, float shift);
+
     void blitDisintegrate(const SDL_Surface *source, int x, int y, int disint);
 
     void blitMirror(const SDL_Surface *source, int x, int y, int border);
@@ -82,6 +84,7 @@ public:
     static GLuint programReverse;
     static GLuint programMirror;
     static GLuint programWavy;
+    static GLuint programWavyText;
     static GLuint programDisintegrate;
     static GLuint programZX;
     /* geometrical shapes */

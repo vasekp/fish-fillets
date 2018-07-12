@@ -52,9 +52,9 @@ public class FFNGFont {
     	bounds = getBounds(text);
 		if (outlineWidth > 0) {
 			outlinePaint.setStrokeWidth(2*outlineWidth);
-			canvas.drawText(text, -bounds.left + outlineWidth, -bounds.top + outlineWidth, outlinePaint);
+			canvas.drawText(text, -bounds.left + outlineWidth, -bounds.top + outlineWidth + 2, outlinePaint);
 		}
     	fillPaint.setColor(frontColor);
-    	canvas.drawText(text, -bounds.left + outlineWidth, -bounds.top + outlineWidth, fillPaint);
+    	canvas.drawText(text, -bounds.left + outlineWidth, -bounds.top + outlineWidth + 2, fillPaint);
     }
 }

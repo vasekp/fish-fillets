@@ -14,6 +14,7 @@ GLuint FFNGSurface::programMasked;
 GLuint FFNGSurface::programReverse;
 GLuint FFNGSurface::programMirror;
 GLuint FFNGSurface::programWavy;
+GLuint FFNGSurface::programWavyText;
 GLuint FFNGSurface::programDisintegrate;
 GLuint FFNGSurface::programZX;
 
@@ -219,6 +220,46 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
     glUniform2f(uDstOffset, (float) x, (float) y);
 
     float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
+    glEnableVertexAttribArray(aPosition);
+
+    int uAmplitude = glGetUniformLocation(program, "uAmplitude");
+    int uPeriod = glGetUniformLocation(program, "uPeriod");
+    int uShift = glGetUniformLocation(program, "uShift");
+    glUniform1f(uAmplitude, amp);
+    glUniform1f(uPeriod, period);
+    glUniform1f(uShift, shift);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void SDL_Surface::blitWavyText(const SDL_Surface *source, int x, int y, float amp, float period,
+                           float shift) {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, source->getTexture());
+
+    GLuint program = FFNGSurface::programWavyText;
+    glUseProgram(program);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uSrcTrueSize = glGetUniformLocation(program, "uSrcTrueSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), source->getHeight() + 2*amp);
+    glUniform2f(uSrcTrueSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, -amp);
+    glUniform2f(uDstOffset, (float) x, y - amp);
+
+    float points[4][2] = SQUARE(x, y - amp, source->getWidth(), source->getHeight() + 2*amp);
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
@@ -782,6 +823,24 @@ void main(void)
   gl_FragColor = texture2D(uSrcTexture, (vPixCoords + vec2(dx, 0.0)) / uSrcSize);
 })";
 
+    std::string fragmentWavyTextSource = R"(
+precision highp float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcTrueSize;
+uniform float uAmplitude;
+uniform float uShift;
+uniform float uPeriod;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  float p = uShift - vPixCoords.x / uPeriod;
+  float dy = p < 1.0 ? uAmplitude * (1.0 - p) * cos(3.5 * 3.1416 * p) : 0.0;
+  gl_FragColor = texture2D(uSrcTexture, (vPixCoords - vec2(0.0, dy)) / uSrcTrueSize);
+})";
+
     std::string fragmentDisintegrateSource = R"(
 precision highp float;
 
@@ -854,6 +913,7 @@ void main(void)
     GLuint fragmentReverse{loadShader(GL_FRAGMENT_SHADER, fragmentReverseSource)};
     GLuint fragmentMirror{loadShader(GL_FRAGMENT_SHADER, fragmentMirrorSource)};
     GLuint fragmentWavy{loadShader(GL_FRAGMENT_SHADER, fragmentWavySource)};
+    GLuint fragmentWavyText{loadShader(GL_FRAGMENT_SHADER, fragmentWavyTextSource)};
     GLuint fragmentDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentDisintegrateSource)};
     GLuint fragmentZX{loadShader(GL_FRAGMENT_SHADER, fragmentZXSource)};
 
@@ -866,6 +926,7 @@ void main(void)
     programReverse = createProgram(vertexCommon, fragmentReverse);
     programMirror = createProgram(vertexCommon, fragmentMirror);
     programWavy = createProgram(vertexCommon, fragmentWavy);
+    programWavyText = createProgram(vertexCommon, fragmentWavyText);
     programDisintegrate = createProgram(vertexCommon, fragmentDisintegrate);
     programZX = createProgram(vertexCommon, fragmentZX);
 

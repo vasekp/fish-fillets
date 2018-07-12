@@ -22,6 +22,7 @@ class Title : public Drawable {
         int m_mintime;
         int m_limitY;
         int m_finalY;
+        int m_startCycles;
         const std::string m_content;
         Font *m_font;
         SDL_Surface *m_surface;
