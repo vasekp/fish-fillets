@@ -85,6 +85,7 @@ void FFNGVideo::flip(SDL_Surface *screen) {
     AndroidBitmap_lockPixels(javaEnv, bmp, &pixels);
 	glReadPixels(0, 0, MaxWidth, MaxHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	AndroidBitmap_unlockPixels(javaEnv, bmp);
-	
+	javaEnv->DeleteLocalRef(bmp);
+
 	javaEnv->CallVoidMethod(obj, mid, screen->getTexture());
 }
