@@ -126,26 +126,6 @@ public abstract class FileHandle {
 		return file.exists();
 	}
 
-	/**
-	 * Returns the length in bytes of this file, or 0 if this file is a directory or does not exist.
-	 */
-	public long length () {
-		if (type == FileType.Internal && !file.exists()) {
-			try {
-				InputStream input = read();
-				long length = input.available();
-				try {
-					input.close();
-				} catch (Exception ignored) {
-				}
-				return length;
-			} catch (Exception ignored) {
-			}
-			return 0;
-		}
-		return file.length();
-	}
-
 	public String toString () {
 		return file.getPath();
 	}

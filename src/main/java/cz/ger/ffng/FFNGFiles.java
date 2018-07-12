@@ -19,20 +19,16 @@ public class FFNGFiles {
 	public final static int INTERNAL = 1;
 	public final static int EXTERNAL = 2;
 
-	protected static boolean useCache = false;
 	// Vector, HashSet, ArrayList, LinkedList
 	protected static final HashSet<String> internalFileList = new HashSet<String>();
 	protected static final HashSet<String> externalFileList = new HashSet<String>();
 	
 	protected static final String sdcardStorage = "Android/data/cz.ger.ffng";
-	
-	public void dummy() {}
-	
-	public static void createCache() {
+
+    public static void createCache() {
 		//createFileList(internalFileList, getFileHandle("", FileType.Internal));	// too slow :(
 		readFileList(internalFileList, "filelist.txt");
 		createFileList(externalFileList, FFNG.files.getFileHandle(sdcardStorage, FileType.External));
-		useCache = true;
 	}
 	
 	protected static void readFileList(HashSet<String> fileList, String sourceFile) {
@@ -45,7 +41,7 @@ public class FFNGFiles {
 		}
 		String[] splittedList = list.split("\n");
 		for (String s : splittedList) {
-			if (s.trim() != "") {
+			if (!s.trim().equals("")) {
 				fileList.add(s.trim());
 			}
 		}
@@ -100,16 +96,10 @@ public class FFNGFiles {
 		}
 		return true;
 		*/
-		if (useCache && (type == INTERNAL || type == EXTERNAL)) {
-			switch (type) {
-				case INTERNAL: return internalFileList.contains(path);
-				case EXTERNAL: return externalFileList.contains(FFNG.files.getExternalStoragePath() + sdcardStorage + "/" + path);
-			}
-		}
-		try {
-			return getFileHandle(path, type).exists();
-		} catch(Exception ex) {
-			return false;
+		switch (type) {
+			case INTERNAL: return internalFileList.contains(path);
+			case EXTERNAL: return externalFileList.contains(FFNG.files.getExternalStoragePath() + sdcardStorage + "/" + path);
+			default: throw new AssertionError("type neither internal nor external");
 		}
 	}
 	
