@@ -146,6 +146,8 @@ Application::prepareOptions(int argc, char *argv[])
             "Sound sample rate (default=44100)");
     params.addParam("strict_rules", OptionParams::TYPE_BOOLEAN,
                     "Disallow pushing of partially supported objects (default=true)");
+    params.addParam("replay_level", OptionParams::TYPE_STRING,
+                    "Replay the solution for the given level codename");
     OptionAgent::agent()->parseCmdOpt(argc, argv, params);
 }
 //-----------------------------------------------------------------
