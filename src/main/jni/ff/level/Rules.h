@@ -35,6 +35,8 @@ class Rules : public NoCopy {
         bool isOnCond(const OnCondition &cond);
         bool isOnWall();
 
+        bool isOnHolderBacks();
+        Cube::t_models getPads();
         bool isFalling() const;
         Cube::t_models whoIsFalling();
 
@@ -45,8 +47,6 @@ class Rules : public NoCopy {
         bool touchSpec(Dir::eDir dir);
         void setTouched(Dir::eDir dir);
         void moveDirBrute(Dir::eDir dir);
-
-        void freeOldPos();
     public:
         Rules(Cube *model);
         ~Rules();
@@ -56,7 +56,7 @@ class Rules : public NoCopy {
         void occupyNewPos();
         bool checkDead(Cube::eAction lastAction);
         void changeState();
-        void finishRound();
+        void freeOldPos();
 
         int actionOut();
         void actionFall();

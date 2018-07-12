@@ -16,6 +16,7 @@
 #include "OnStack.h"
 #include "OnWall.h"
 #include "OnStrongPad.h"
+#include "OptionAgent.h"
 
 #include <assert.h>
 
@@ -78,6 +79,8 @@ Rules::takeField(Field *field)
  * Accomplish last move in m_dir direction.
  * Mask to a new position.
  * Change model position.
+ *
+ * It complements the unmasking in freeOldPos().
  */
     void
 Rules::occupyNewPos()
@@ -164,14 +167,22 @@ Rules::checkDead(Cube::eAction lastAction)
     bool
 Rules::checkDeadMove()
 {
+    bool strict = OptionAgent::agent()->getAsBool("strict_rules", true);
+
     Cube::t_models resist = m_mask->getResist(Dir::DIR_UP);
     Cube::t_models::iterator end = resist.end();
     for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
         if (!(*i)->isAlive()) {
             Dir::eDir resist_dir = (*i)->rules()->getDir();
             if (resist_dir != Dir::DIR_NO && resist_dir != Dir::DIR_UP) {
-                if (!(*i)->rules()->isOnStack()) {
-                    return true;
+                if (strict) {
+                    if ((*i)->rules()->isOnHolderBacks()) {
+                        return true;
+                    }
+                } else {
+                    if (!(*i)->rules()->isOnStack()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -305,15 +316,6 @@ Rules::clearLastFall()
  * Unmask from old position.
  */
     void
-Rules::finishRound()
-{
-    freeOldPos();
-}
-//-----------------------------------------------------------------
-/**
- * Unmask from old position.
- */
-    void
 Rules::freeOldPos()
 {
     if (m_dir != Dir::DIR_NO) {
@@ -389,7 +391,56 @@ Rules::isOnStrongPad(Cube::eWeight weight)
 {
     return isOnCond(OnStrongPad(weight));
 }
+//-----------------------------------------------------------------
+/**
+ * Returns true if the object is laying just on alive holders
+ * and they all have at least a part of their backs
+ * directly under this object.
+ *
+ * Pushing the object would kill all the holders.
+ * The object would be free to fall.
+ */
+    bool
+Rules::isOnHolderBacks()
+{
+    unsigned int numDirectHolders = 0;
+    Cube::t_models resist = m_mask->getResist(Dir::DIR_DOWN);
+    Cube::t_models::iterator end = resist.end();
+    for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
+        if ((*i)->isAlive()) {
+            ++numDirectHolders;
+        }
+    }
 
+    Cube::t_models pads = getPads();
+    MarkMask::unique(&pads);
+    return numDirectHolders == pads.size();
+}
+//-----------------------------------------------------------------
+/**
+ * Returns all alive fish and walls under this object.
+ */
+    Cube::t_models
+Rules::getPads()
+{
+    Cube::t_models pads;
+    m_mask->unmask();
+
+    Cube::t_models resist = m_mask->getResist(Dir::DIR_DOWN);
+    Cube::t_models::iterator end = resist.end();
+    for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
+        if ((*i)->isAlive() || (*i)->isWall()) {
+            pads.push_back(*i);
+        } else {
+            Cube::t_models distance_pads = (*i)->rules()->getPads();
+            pads.insert(pads.end(), distance_pads.begin(),
+                    distance_pads.end());
+        }
+    }
+
+    m_mask->mask();
+    return pads;
+}
 //-----------------------------------------------------------------
 /**
  * Whether object is falling.

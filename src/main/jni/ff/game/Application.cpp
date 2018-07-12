@@ -144,6 +144,10 @@ Application::prepareOptions(int argc, char *argv[])
             "Cache images (default=true)");
     params.addParam("sound_frequency", OptionParams::TYPE_NUMBER,
             "Sound sample rate (default=44100)");
+    params.addParam("strict_rules", OptionParams::TYPE_BOOLEAN,
+                    "Disallow pushing of partially supported objects (default=true)");
+    params.addParam("replay_level", OptionParams::TYPE_STRING,
+                    "Replay the solution for the given level codename");
     OptionAgent::agent()->parseCmdOpt(argc, argv, params);
 }
 //-----------------------------------------------------------------
