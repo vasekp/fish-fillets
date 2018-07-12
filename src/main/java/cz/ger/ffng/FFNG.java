@@ -10,13 +10,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
 public class FFNG extends Activity {
 	private FFNGApp app;
 	public static AndroidFiles files = null;
-	public static AndroidAudio audio = null;
 	public static AssetManager assets = null;
 
     /** Called when the activity is first created. */
@@ -26,8 +24,7 @@ public class FFNG extends Activity {
         
         assets = getAssets();
         files = new AndroidFiles(assets);
-        audio = new AndroidAudio(this);
-        
+
         FFNGFiles.createCache();
         
         // turn off the window's title bar
