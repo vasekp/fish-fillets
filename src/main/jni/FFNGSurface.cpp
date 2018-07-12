@@ -683,7 +683,7 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
 
 void FFNGSurface::initShaders() {
     std::string vertexUnitedSource = R"(
-precision mediump float;
+precision highp float;
 
 attribute vec2 aPosition;
 
@@ -700,7 +700,7 @@ void main() {
 })";
 
     std::string fragmentCopySource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -713,7 +713,7 @@ void main(void)
 })";
 
     std::string fragmentReverseSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -727,7 +727,7 @@ void main(void)
 })";
 
     std::string fragmentMaskedSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform sampler2D uMaskTexture;
@@ -743,7 +743,7 @@ void main(void)
 })";
 
     std::string fragmentMirrorSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform sampler2D uDstTexture;
@@ -766,7 +766,7 @@ void main(void)
 })";
 
     std::string fragmentWavySource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -783,7 +783,7 @@ void main(void)
 })";
 
     std::string fragmentDisintegrateSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -803,7 +803,7 @@ void main(void)
 })";
 
     std::string fragmentZXSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -822,7 +822,7 @@ void main(void)
 })";
 
     std::string fragmentUniformSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform vec4 uColor;
 
@@ -832,7 +832,7 @@ void main(void)
 })";
 
     std::string fragmentCircleSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform vec2 uCenter;
 uniform float uRadius;
