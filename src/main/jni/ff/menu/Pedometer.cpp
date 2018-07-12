@@ -188,7 +188,7 @@ Pedometer::drawOn(SDL_Surface *screen)
     void
 Pedometer::drawNumbers(SDL_Surface *screen, int value)
 {
-    static const int CIPHERS = 5;
+    static const int DIGITS = 5;
     static const int POS_X = 275;
     static const int POS_Y = 177;
     static const int SHIFT_SPEED = 8;
@@ -196,16 +196,16 @@ Pedometer::drawNumbers(SDL_Surface *screen, int value)
     int numberWidth = m_numbers->getWidth();
     int numberHeight = m_numbers->getHeight() / 10;
 
-    for (int i = CIPHERS - 1; i >= 0; --i) {
-        int cipher = value % 10;
+    for (int i = DIGITS - 1; i >= 0; --i) {
+        int digit = value % 10;
         value /= 10;
         int x = POS_X + numberWidth * i;
-        int shiftY = max(numberHeight * (9 - cipher),
+        int shiftY = max(numberHeight * (9 - digit),
                 numberHeight * 9 - SHIFT_SPEED * m_meterPhase);
-        m_meterPhase++;
-
         drawNumber(screen, x, POS_Y, shiftY);
     }
+
+    m_meterPhase++;
 }
 //-----------------------------------------------------------------
 void
