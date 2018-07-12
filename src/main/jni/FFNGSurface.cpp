@@ -84,7 +84,7 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
 SDL_Surface::SDL_Surface(const std::string &path) : SDL_Surface(path.c_str()) {}
 
 SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgColor,
-                         int outlineWidth) : SDL_Surface() {
+                         float outlineWidth) : SDL_Surface() {
     static JNIEnv *javaEnv = NULL;
     static jclass cls = NULL;
     static jmethodID mid = NULL;
@@ -93,7 +93,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
         javaEnv = JNI::getInstance()->getJavaEnv();
         cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
         mid = javaEnv->GetStaticMethodID(cls, "newSurface",
-                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;III)Landroid/graphics/Bitmap;");
+                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;IIF)Landroid/graphics/Bitmap;");
     }
     //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 

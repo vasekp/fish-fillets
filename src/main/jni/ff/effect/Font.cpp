@@ -163,7 +163,7 @@ Font::renderText(const std::string &text, const Color &color) const
  */
 SDL_Surface *
 Font::renderTextOutlined(const std::string &text,
-                const Color &color, int outlineWidth) const
+                const Color &color, float outlineWidth) const
 {
 	/* FFNG we are doing outline another way
     static const Color BLACK(0, 0, 0, 255);

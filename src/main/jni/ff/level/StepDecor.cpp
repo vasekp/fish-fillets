@@ -40,7 +40,7 @@ StepDecor::drawOnScreen(const View * /*view*/, SDL_Surface *screen)
         }
 
         std::string steps = StringTool::toString(m_counter->getStepCount());
-        SDL_Surface *text_surface = m_font.renderTextOutlined(steps, color);
+        SDL_Surface *text_surface = m_font.renderTextOutlined(steps, color, 1.5f);
 
         SDL_Rect rect;
         rect.x = screen->getHeight() - text_surface->getWidth();

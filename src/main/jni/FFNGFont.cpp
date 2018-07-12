@@ -117,7 +117,7 @@ void TTF_Font::sizeUTF8(const char *text, int *width, int *height) {
 	if (height) *height = getHeight(text);
 }
 
-SDL_Surface* TTF_Font::renderUTF8_Shaded(const char *text, Color fontColor, Color bgColor, int outlineWidth) {
+SDL_Surface* TTF_Font::renderUTF8_Shaded(const char *text, Color fontColor, Color bgColor, float outlineWidth) {
 	// bgColor could be ignored as it is transparent anyway
 	return new SDL_Surface(typeface, text, fontColor.get32(), bgColor.get32(), outlineWidth);
 }

@@ -33,7 +33,7 @@ public:
 
     SDL_Surface(const std::string &path);
 
-    SDL_Surface(jobject font, const char *text, int frontColor, int bgColor, int outlineWidth = 0);
+    SDL_Surface(jobject font, const char *text, int frontColor, int bgColor, float outlineWidth = 0.0f);
 
     ~SDL_Surface();
 

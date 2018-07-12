@@ -48,7 +48,7 @@ public class FFNGFont {
     	return bounds;
     }
     
-    public void render(Canvas canvas, String text, int frontColor, int bgColor, int outlineWidth) {
+    public void render(Canvas canvas, String text, int frontColor, int bgColor, float outlineWidth) {
     	bounds = getBounds(text);
 		if (outlineWidth > 0) {
 			outlinePaint.setStrokeWidth(2*outlineWidth);

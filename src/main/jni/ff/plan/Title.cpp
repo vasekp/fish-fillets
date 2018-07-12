@@ -35,7 +35,7 @@ Title::Title(int baseY, int finalY, int bonusTime, int limitY,
 : m_content(content)
 {
     m_font = font;
-    m_surface = m_font->renderTextOutlined(content, *color);
+    m_surface = m_font->renderTextOutlined(content, *color, 1.5f);
 
     int text_width = m_font->calcTextWidth(content);
 
