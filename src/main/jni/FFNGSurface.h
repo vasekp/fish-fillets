@@ -6,6 +6,9 @@
 #include "FFNGTypes.h"
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
+#include <vector>
+#include <array>
+#include <math.h>
 
 constexpr int MaxWidth = 900;
 constexpr int MaxHeight = 900;
@@ -17,6 +20,29 @@ struct SDL_Rect {
     SDL_Rect();
 
     SDL_Rect(int x, int y, int w, int h);
+};
+
+struct CoordPair {
+    float x;
+    float y;
+
+    constexpr CoordPair() : x(0), y(0) { }
+    constexpr CoordPair(float x_, float y_): x(x_), y(y_) { }
+
+    CoordPair operator*(float scalar) const { return {x * scalar, y * scalar}; }
+    CoordPair operator/(float scalar) const { return {x / scalar, y / scalar}; }
+    friend CoordPair operator*(float scalar, const CoordPair& cp) { return cp * scalar; }
+    CoordPair& operator*=(float scalar) { x *= scalar; y *= scalar; return *this; }
+    CoordPair& operator/=(float scalar) { x /= scalar; y /= scalar; return *this; }
+    CoordPair operator+(const CoordPair& other) const { return {x + other.x, y + other.y}; }
+    CoordPair operator-(const CoordPair& other) const { return {x - other.x, y - other.y}; }
+    CoordPair& operator+=(const CoordPair& other) { x += other.x; y += other.y; return *this; }
+    CoordPair& operator-=(const CoordPair& other) { x -= other.x; y -= other.y; return *this; }
+
+    CoordPair perp() const { return {y, -x}; }
+    float norm() const { return hypot(x, y); }
+    CoordPair normal() const { return *this / norm(); }
+    CoordPair& normalize() { *this /= norm(); return *this; }
 };
 
 struct SDL_Surface {
@@ -62,6 +88,8 @@ public:
 
     void filledCircleColor(int x, int y, int radius, Uint32 colorRGBA);
 
+    void curve(std::vector<CoordPair> points, float width, std::array<float, 3> dirLight, Uint32 colorLow, Uint32 colorHigh);
+
     Uint32 getPixel(int x, int y) const;
 
     int getWidth() const;
@@ -90,6 +118,7 @@ public:
     /* geometrical shapes */
     static GLuint programUniform;
     static GLuint programCircle;
+    static GLuint programCurve;
 
     static void initEGL();
     static void initShaders();

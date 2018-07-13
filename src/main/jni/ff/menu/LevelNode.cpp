@@ -230,7 +230,7 @@ LevelNode::addChild(LevelNode *new_node)
  * Draws self and path to all children.
  * Children are drawed recursive.
  */
-void
+/* FFNG void
 LevelNode::drawPath(const NodeDrawer *drawer) const
 {
     if (m_state > STATE_HIDDEN) {
@@ -245,5 +245,4 @@ LevelNode::drawPath(const NodeDrawer *drawer) const
         }
         drawer->drawNode(this);
     }
-}
-
+}*/

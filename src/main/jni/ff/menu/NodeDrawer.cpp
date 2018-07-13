@@ -135,7 +135,9 @@ NodeDrawer::drawSelected(const std::string &levelname) const
     FFNGSurface::blitSurface/* FFNG SDL_BlitSurface*/(surface, NULL, m_screen, &rect);
     FFNGSurface::freeSurface/* FFNG SDL_FreeSurface*/(surface);
 }
+
 //-----------------------------------------------------------------
+#if 0 // FFNG
 void
 NodeDrawer::drawEdge(const LevelNode *start, const LevelNode *end) const
 {
@@ -153,4 +155,14 @@ NodeDrawer::drawEdge(const LevelNode *start, const LevelNode *end) const
     FFNGSurface::lineColor/*FFNG aalineColor*/(m_screen, x1 - 1, y1 + 1 , x2 - 1, y2 + 1, colorRGBA);
     FFNGSurface::lineColor/*FFNG aalineColor*/(m_screen, x1 + 1, y1 - 1 , x2 + 1, y2 - 1, colorRGBA);
 }
+#endif
 
+//-----------------------------------------------------------------
+void NodeDrawer::drawCurve(std::vector<const LevelNode *> path) {
+    std::vector<CoordPair> coords{};
+    for(auto node : path) {
+        auto loc = node->getLoc();
+        coords.push_back({(float)loc.getX(), (float)loc.getY()});
+    }
+    m_screen->curve(coords, 3.0f, {-0.2f, -0.5f, 1.0f}, 0xFF7F3F11, 0xFFE0B528);
+}
