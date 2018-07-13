@@ -114,6 +114,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
     AndroidBitmap_lockPixels(javaEnv, jBitmap, &pixels);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     AndroidBitmap_unlockPixels(javaEnv, jBitmap);
 
     javaEnv->DeleteLocalRef(textString);
