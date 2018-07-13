@@ -426,6 +426,10 @@ local function prog_init()
     if subinit then
         table.insert(update_table, subinit)
     end
+    subinit = prog_init_klavir()
+    if subinit then
+        table.insert(update_table, subinit)
+    end
     subinit = prog_init_krab1()
     if subinit then
         table.insert(update_table, subinit)
@@ -439,10 +443,6 @@ local function prog_init()
         table.insert(update_table, subinit)
     end
     subinit = prog_init_krab4()
-    if subinit then
-        table.insert(update_table, subinit)
-    end
-    subinit = prog_init_klavir()
     if subinit then
         table.insert(update_table, subinit)
     end
