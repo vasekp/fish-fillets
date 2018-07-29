@@ -61,9 +61,10 @@ class LevelNode : public NoCopy {
         LevelNode *findNextOpen(const LevelNode *current);
         LevelNode *findNamed(const std::string &codename);
         bool areAllSolved() const;
+        const t_children& getChildren() const { return m_children; }
         bool isLeaf() const { return m_children.empty(); }
 
-        void drawPath(const NodeDrawer *drawer) const;
+        // FFNG void drawPath(const NodeDrawer *drawer) const;
 };
 
 #endif

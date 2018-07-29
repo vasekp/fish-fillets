@@ -42,6 +42,9 @@ class WorldMap : public GameState, public DescFinder, public Drawable {
         void markSolved();
         bool checkEnding() const;
 
+        void drawPaths(const LevelNode*, std::vector<const LevelNode*> prefix = {});
+        void drawNodes();
+
         void runIntro();
         void runCredits();
         void runOptions();

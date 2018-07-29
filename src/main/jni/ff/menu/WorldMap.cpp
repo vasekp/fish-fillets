@@ -34,6 +34,7 @@
 #include "Log.h"
 
 #include "FFNGApp.h"
+#include <queue>
 
 //-----------------------------------------------------------------
 WorldMap::WorldMap()
@@ -278,7 +279,8 @@ WorldMap::checkEnding() const
 WorldMap::drawOn(SDL_Surface *screen)
 {
     m_drawer->setScreen(screen);
-    m_startNode->drawPath(m_drawer);
+    drawPaths(m_startNode);
+    drawNodes();
     if (m_selected) {
         m_drawer->drawSelect(m_selected->getLoc());
         m_drawer->drawSelected(findLevelName(m_selected->getCodename()));
@@ -345,4 +347,35 @@ WorldMap::runOptions()
     MenuOptions *options = new MenuOptions();
     pushState(options);
 }
+//-----------------------------------------------------------------
+void WorldMap::drawPaths(const LevelNode* start, std::vector<const LevelNode*> path) {
+    const LevelNode* current = start;
+    while(current->getState() != LevelNode::STATE_HIDDEN) {
+        path.push_back(current);
 
+        const auto& children = current->getChildren();
+        if(children.size() > 1) {
+            for(auto it = children.begin()+1; it != children.end(); it++)
+                drawPaths(*it, {current});
+        }
+        if(!children.empty())
+            current = children.front();
+        else
+            break;
+    }
+
+    m_drawer->drawCurve(path);
+}
+//-----------------------------------------------------------------
+void WorldMap::drawNodes() {
+    std::queue<LevelNode*> queue{};
+    queue.push(m_startNode);
+    while(!queue.empty()) {
+        LevelNode* current = queue.front();
+        queue.pop();
+        m_drawer->drawNode(current);
+        for(const auto child : current->getChildren()) {
+            queue.push(child);
+        }
+    }
+}

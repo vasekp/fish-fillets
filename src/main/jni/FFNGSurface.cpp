@@ -14,11 +14,13 @@ GLuint FFNGSurface::programMasked;
 GLuint FFNGSurface::programReverse;
 GLuint FFNGSurface::programMirror;
 GLuint FFNGSurface::programWavy;
+GLuint FFNGSurface::programWavyText;
 GLuint FFNGSurface::programDisintegrate;
 GLuint FFNGSurface::programZX;
 
 GLuint FFNGSurface::programUniform;
 GLuint FFNGSurface::programCircle;
+GLuint FFNGSurface::programCurve;
 
 #define SQUARE(x, y, w, h) {\
   {(float)(x), (float)(y)}, \
@@ -83,7 +85,7 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
 SDL_Surface::SDL_Surface(const std::string &path) : SDL_Surface(path.c_str()) {}
 
 SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgColor,
-                         int outlineWidth) : SDL_Surface() {
+                         float outlineWidth) : SDL_Surface() {
     static JNIEnv *javaEnv = NULL;
     static jclass cls = NULL;
     static jmethodID mid = NULL;
@@ -92,7 +94,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
         javaEnv = JNI::getInstance()->getJavaEnv();
         cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
         mid = javaEnv->GetStaticMethodID(cls, "newSurface",
-                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;III)Landroid/graphics/Bitmap;");
+                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;IIF)Landroid/graphics/Bitmap;");
     }
     //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 
@@ -111,6 +113,8 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
     void *pixels;
     AndroidBitmap_lockPixels(javaEnv, jBitmap, &pixels);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     AndroidBitmap_unlockPixels(javaEnv, jBitmap);
 
     javaEnv->DeleteLocalRef(textString);
@@ -219,6 +223,46 @@ void SDL_Surface::blitWavy(const SDL_Surface *source, int x, int y, float amp, f
     glUniform2f(uDstOffset, (float) x, (float) y);
 
     float points[4][2] = SQUARE(x, y, source->getWidth(), source->getHeight());
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
+    glEnableVertexAttribArray(aPosition);
+
+    int uAmplitude = glGetUniformLocation(program, "uAmplitude");
+    int uPeriod = glGetUniformLocation(program, "uPeriod");
+    int uShift = glGetUniformLocation(program, "uShift");
+    glUniform1f(uAmplitude, amp);
+    glUniform1f(uPeriod, period);
+    glUniform1f(uShift, shift);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void SDL_Surface::blitWavyText(const SDL_Surface *source, int x, int y, float amp, float period,
+                           float shift) {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, source->getTexture());
+
+    GLuint program = FFNGSurface::programWavyText;
+    glUseProgram(program);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uTexture = glGetUniformLocation(program, "uSrcTexture");
+    glUniform1i(uTexture, 1);
+
+    int uSrcSize = glGetUniformLocation(program, "uSrcSize");
+    int uSrcTrueSize = glGetUniformLocation(program, "uSrcTrueSize");
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    int uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+    int uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    glUniform2f(uSrcSize, (float) source->getWidth(), source->getHeight() + 2*amp);
+    glUniform2f(uSrcTrueSize, (float) source->getWidth(), (float) source->getHeight());
+    glUniform2f(uDstSize, (float) width, (float) height);
+    glUniform2f(uSrcOffset, 0.f, -amp);
+    glUniform2f(uDstOffset, (float) x, y - amp);
+
+    float points[4][2] = SQUARE(x, y - amp, source->getWidth(), source->getHeight() + 2*amp);
     GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
     glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
     glEnableVertexAttribArray(aPosition);
@@ -683,7 +727,7 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
 
 void FFNGSurface::initShaders() {
     std::string vertexUnitedSource = R"(
-precision mediump float;
+precision highp float;
 
 attribute vec2 aPosition;
 
@@ -700,7 +744,7 @@ void main() {
 })";
 
     std::string fragmentCopySource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -713,7 +757,7 @@ void main(void)
 })";
 
     std::string fragmentReverseSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -727,7 +771,7 @@ void main(void)
 })";
 
     std::string fragmentMaskedSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform sampler2D uMaskTexture;
@@ -743,7 +787,7 @@ void main(void)
 })";
 
     std::string fragmentMirrorSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform sampler2D uDstTexture;
@@ -766,7 +810,7 @@ void main(void)
 })";
 
     std::string fragmentWavySource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -778,12 +822,30 @@ varying vec2 vPixCoords;
 
 void main(void)
 {
-  float dx = uAmplitude * sin(vPixCoords.y / uPeriod + uShift);
+  float dx = uAmplitude * sin(mod(vPixCoords.y / uPeriod + uShift, 2.0 * 3.1416));
   gl_FragColor = texture2D(uSrcTexture, (vPixCoords + vec2(dx, 0.0)) / uSrcSize);
 })";
 
+    std::string fragmentWavyTextSource = R"(
+precision highp float;
+
+uniform sampler2D uSrcTexture;
+uniform vec2 uSrcTrueSize;
+uniform float uAmplitude;
+uniform float uShift;
+uniform float uPeriod;
+
+varying vec2 vPixCoords;
+
+void main(void)
+{
+  float p = uShift - vPixCoords.x / uPeriod;
+  float dy = p < 1.0 ? uAmplitude * (1.0 - p) * cos(3.5 * 3.1416 * p) : 0.0;
+  gl_FragColor = texture2D(uSrcTexture, (vPixCoords - vec2(0.0, dy)) / uSrcTrueSize);
+})";
+
     std::string fragmentDisintegrateSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -803,7 +865,7 @@ void main(void)
 })";
 
     std::string fragmentZXSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
@@ -822,7 +884,7 @@ void main(void)
 })";
 
     std::string fragmentUniformSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform vec4 uColor;
 
@@ -832,7 +894,7 @@ void main(void)
 })";
 
     std::string fragmentCircleSource = R"(
-precision mediump float;
+precision highp float;
 
 uniform vec2 uCenter;
 uniform float uRadius;
@@ -847,6 +909,37 @@ void main(void)
     : vec4(0.0);
 })";
 
+
+    std::string vertexCurveSource = R"(
+precision mediump float;
+
+attribute vec2 aPosition;
+attribute vec2 aNormal;
+uniform vec2 uDstSize;
+varying vec3 vNormal;
+
+void main() {
+  vec2 lClipCoords = aPosition / uDstSize * 2.0 - vec2(1.0, 1.0);
+  gl_Position = vec4(lClipCoords, 0.0, 1.0);
+  vNormal = vec3(aNormal, 1.0);
+})";
+
+    std::string fragmentCurveSource = R"(
+precision mediump float;
+
+varying vec3 vNormal;
+uniform vec3 uDir;
+uniform vec4 uLowColor;
+uniform vec4 uHighColor;
+
+void main(void)
+{
+  vec3 lNormal = normalize(vNormal);
+  float lInt = dot(lNormal, uDir) * 1.7 - 0.7;
+  gl_FragColor = mix(uLowColor, uHighColor, lInt);
+})";
+
+
     GLuint vertexCommon{loadShader(GL_VERTEX_SHADER, vertexUnitedSource)};
 
     GLuint fragmentCopy{loadShader(GL_FRAGMENT_SHADER, fragmentCopySource)};
@@ -854,11 +947,14 @@ void main(void)
     GLuint fragmentReverse{loadShader(GL_FRAGMENT_SHADER, fragmentReverseSource)};
     GLuint fragmentMirror{loadShader(GL_FRAGMENT_SHADER, fragmentMirrorSource)};
     GLuint fragmentWavy{loadShader(GL_FRAGMENT_SHADER, fragmentWavySource)};
+    GLuint fragmentWavyText{loadShader(GL_FRAGMENT_SHADER, fragmentWavyTextSource)};
     GLuint fragmentDisintegrate{loadShader(GL_FRAGMENT_SHADER, fragmentDisintegrateSource)};
     GLuint fragmentZX{loadShader(GL_FRAGMENT_SHADER, fragmentZXSource)};
 
     GLuint fragmentUniform{loadShader(GL_FRAGMENT_SHADER, fragmentUniformSource)};
     GLuint fragmentCircle{loadShader(GL_FRAGMENT_SHADER, fragmentCircleSource)};
+    GLuint vertexCurve{loadShader(GL_VERTEX_SHADER, vertexCurveSource)};
+    GLuint fragmentCurve{loadShader(GL_FRAGMENT_SHADER, fragmentCurveSource)};
 
     programCopy = createProgram(vertexCommon, fragmentCopy);
 
@@ -866,9 +962,110 @@ void main(void)
     programReverse = createProgram(vertexCommon, fragmentReverse);
     programMirror = createProgram(vertexCommon, fragmentMirror);
     programWavy = createProgram(vertexCommon, fragmentWavy);
+    programWavyText = createProgram(vertexCommon, fragmentWavyText);
     programDisintegrate = createProgram(vertexCommon, fragmentDisintegrate);
     programZX = createProgram(vertexCommon, fragmentZX);
 
     programUniform = createProgram(vertexCommon, fragmentUniform);
     programCircle = createProgram(vertexCommon, fragmentCircle);
+    programCurve = createProgram(vertexCurve, fragmentCurve);
+}
+
+
+
+/* Fourth convolution of Heaviside Pi */
+float convFunc(float x) {
+    if(x < 0)
+        x = -x;
+    if(x < 1)
+        return (4 - 6*x*x + 3*x*x*x) / 6;
+    else if(x < 2)
+        return -(x-2)*(x-2)*(x-2) / 6;
+    else
+        return 0;
+}
+
+/* Derivative of the above */
+float convDiff(float x) {
+    float sign = x < 0 ? -1 : 1;
+    if(x < 0)
+        x = -x;
+    if(x < 1)
+        return sign * (-12*x + 9*x*x) / 6;
+    else if(x < 2)
+        return -sign * 3*(x-2)*(x-2) / 6;
+    else
+        return 0;
+}
+
+/* Inverse convolution for [convFunc(-1), convFunc(0), convFunc(1)] */
+constexpr float convData[] = {0.00892833f, -0.033321f, 0.124356f, -0.464102f, 1.72828f, -0.464102f, 0.124356f, -0.033321f, 0.00892833f};
+
+std::pair<CoordPair, CoordPair> interp(std::vector<CoordPair> controls, float x) {
+    CoordPair val{}, diff{};
+    for(int i = 0; i < controls.size(); i++) {
+        val += convFunc(i - x) * controls[i];
+        diff += convDiff(i - x) * controls[i];
+    }
+    return {val, diff};
+}
+
+void SDL_Surface::curve(std::vector<CoordPair> points, float w,
+                        std::array<float, 3> dirLight, Uint32 colorLow, Uint32 colorHigh) {
+
+    int size = points.size();
+    std::vector<CoordPair> controls;
+
+    GLuint program = FFNGSurface::programCurve;
+    glUseProgram(program);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, width, height);
+
+    int uDstSize = glGetUniformLocation(program, "uDstSize");
+    glUniform2f(uDstSize, (float) width, (float) height);
+
+    int uLowColor = glGetUniformLocation(program, "uLowColor");
+    int uHighColor = glGetUniformLocation(program, "uHighColor");
+    int uDir = glGetUniformLocation(program, "uDir");
+    glUniform4f(uLowColor, ((colorLow >> 16) & 255) / 255.0f, ((colorLow >> 8) & 255) / 255.0f,
+                ((colorLow >> 0) & 255) / 255.0f, ((colorLow >> 24) & 255) / 255.0f);
+    glUniform4f(uHighColor, ((colorHigh >> 16) & 255) / 255.0f, ((colorHigh >> 8) & 255) / 255.0f,
+                ((colorHigh >> 0) & 255) / 255.0f, ((colorHigh >> 24) & 255) / 255.0f);
+    glUniform3fv(uDir, 1, dirLight.data());
+
+    for(int i = -1; i < size+1; i++) {
+        CoordPair c{};
+        for(int j = -4; j <= 4; j++) {
+            int index = i+j < 0 ? 0 : i+j >= size ? size-1 : i+j;
+            c += convData[j + 4] * points[index];
+        }
+        controls.push_back(c);
+    }
+
+    std::vector<float> vertices{};
+    for(float x = 0; x < size - 1; x += 0.1) {
+        auto res = interp(controls, x + 1.0f);
+        CoordPair normal = res.second.perp().normal();
+
+        vertices.push_back(res.first.x + w*normal.x);
+        vertices.push_back(res.first.y + w*normal.y);
+        vertices.push_back(normal.x);
+        vertices.push_back(normal.y);
+
+        vertices.push_back(res.first.x - w*normal.x);
+        vertices.push_back(res.first.y - w*normal.y);
+        vertices.push_back(-normal.x);
+        vertices.push_back(-normal.y);
+    }
+
+    GLuint aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glEnableVertexAttribArray(aPosition);
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), vertices.data());
+
+    GLuint aNormal = (GLuint) glGetAttribLocation(program, "aNormal");
+    glEnableVertexAttribArray(aNormal);
+    glVertexAttribPointer(aNormal, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), vertices.data() + 2);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size() / 4);
 }

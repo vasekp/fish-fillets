@@ -33,7 +33,7 @@ class Font : public NoCopy {
         SDL_Surface *renderText(const std::string &text,
                 const Color &color) const;
         SDL_Surface *renderTextOutlined(const std::string &text,
-                const Color &color, int outlineWidth=1) const;
+                const Color &color, float outlineWidth=1.0f) const;
 };
 
 #endif

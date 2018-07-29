@@ -6,6 +6,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+#include <ff/gengine/TimerAgent.h>
 #include "Title.h"
 
 #include "Font.h"
@@ -34,7 +35,7 @@ Title::Title(int baseY, int finalY, int bonusTime, int limitY,
 : m_content(content)
 {
     m_font = font;
-    m_surface = m_font->renderTextOutlined(content, *color);
+    m_surface = m_font->renderTextOutlined(content, *color, 1.5f);
 
     int text_width = m_font->calcTextWidth(content);
 
@@ -49,6 +50,7 @@ Title::Title(int baseY, int finalY, int bonusTime, int limitY,
         m_mintime = TIME_MIN;
     }
     m_mintime += bonusTime;
+    m_startCycles = TimerAgent::agent()->getCycles();
 }
 //-----------------------------------------------------------------
 Title::~Title()
@@ -62,12 +64,14 @@ Title::~Title()
     void
 Title::drawOn(SDL_Surface *screen)
 {
-    //TODO: wavy text
-    SDL_Rect rect;
-    rect.x = m_x;
-    rect.y = m_y;
-
-    FFNGSurface::blitSurface/*FFNG SDL_BlitSurface*/(m_surface, NULL, screen, &rect);
+// FFNG
+//    SDL_Rect rect;
+//    rect.x = m_x;
+//    rect.y = m_y;
+//
+//    FFNG SDL_BlitSurface(m_surface, NULL, screen, &rect);
+    screen->blitWavyText(m_surface, m_x, m_y, 10.0f, 600.0f,
+                         (TimerAgent::agent()->getCycles() - m_startCycles) / 10.0f);
 }
 //-----------------------------------------------------------------
 /**
