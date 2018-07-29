@@ -7,34 +7,20 @@ std::string FFNGInputEvent::getKeyName(SDLKey sym) {
 }
 
 int getTouchX() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "getTouchX", "()I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "getTouchX", "()I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getTouchX 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallIntMethod(obj, mid);
 }
 
 int getTouchY() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "getTouchY", "()I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "getTouchY", "()I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getTouchY 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallIntMethod(obj, mid);
@@ -48,17 +34,10 @@ Uint8 FFNGInputEvent::getTouch(int *x, int *y) {
 }
 
 jobject getNextEvent() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "pollEvent", "()Lcz/ger/ffng/FFNGInputEvent;");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "pollEvent", "()Lcz/ger/ffng/FFNGInputEvent;");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getNextEvent 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallObjectMethod(obj, mid);

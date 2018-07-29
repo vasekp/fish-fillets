@@ -5,17 +5,10 @@
 
 int FFNGApp::getTicks() {
 	// System.currentTimeMillis
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "getTicks", "()I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "getTicks", "()I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::getTicks 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -32,17 +25,10 @@ void FFNGApp::delay(Uint32 ms) {
 }
 
 void FFNGApp::setGameState(int newState) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "setGameState", "(I)V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "setGameState", "(I)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::setGameState 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -54,17 +40,10 @@ void FFNGApp::setGameState(int newState) {
 }
 
 int FFNGApp::getGameState() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "getGameState", "()I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "getGameState", "()I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::getGameState 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -76,17 +55,10 @@ int FFNGApp::getGameState() {
 }
 
 void FFNGApp::switchFishes(bool isBig) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "switchFishes", "(Z)V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "switchFishes", "(Z)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::switchFishes 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -98,17 +70,10 @@ void FFNGApp::switchFishes(bool isBig) {
 }
 
 void FFNGApp::saveEffect() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "saveEffect", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "saveEffect", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::saveEffect 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -120,17 +85,10 @@ void FFNGApp::saveEffect() {
 }
 
 bool FFNGApp::pauseAndDisposeChance() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "pauseAndDisposeChance", "()Z");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = JNI::getInstance()->getJavaCls();
+	jobject obj = JNI::getInstance()->getJavaObj();
+	jmethodID mid = javaEnv->GetMethodID(cls, "pauseAndDisposeChance", "()Z");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGApp::pauseAndDisposeChance 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
