@@ -45,16 +45,10 @@ SDL_Surface::SDL_Surface(int width_, int height_, Uint32, bool) : SDL_Surface() 
 }
 
 SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
-    static JNIEnv *javaEnv = NULL;
-    static jclass cls = NULL;
-    static jmethodID mid = NULL;
-
-    if(javaEnv != JNI::getInstance()->getJavaEnv()) {
-        javaEnv = JNI::getInstance()->getJavaEnv();
-        cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
-        mid = javaEnv->GetStaticMethodID(cls, "loadBitmap",
+    JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+    jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
+    jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadBitmap",
                                          "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
-    }
     //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 
     if(mid == NULL) {
@@ -78,6 +72,7 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     AndroidBitmap_unlockPixels(javaEnv, jBitmap);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(pathString);
     javaEnv->DeleteLocalRef(jBitmap);
 }
@@ -86,16 +81,10 @@ SDL_Surface::SDL_Surface(const std::string &path) : SDL_Surface(path.c_str()) {}
 
 SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgColor,
                          float outlineWidth) : SDL_Surface() {
-    static JNIEnv *javaEnv = NULL;
-    static jclass cls = NULL;
-    static jmethodID mid = NULL;
-
-    if(javaEnv != JNI::getInstance()->getJavaEnv()) {
-        javaEnv = JNI::getInstance()->getJavaEnv();
-        cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
-        mid = javaEnv->GetStaticMethodID(cls, "newSurface",
-                                         "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;IIF)Landroid/graphics/Bitmap;");
-    }
+    JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+    jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
+    jmethodID mid = javaEnv->GetStaticMethodID(cls, "newSurface",
+                                     "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;IIF)Landroid/graphics/Bitmap;");
     //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 
     jstring textString = javaEnv->NewStringUTF(text);
@@ -117,6 +106,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     AndroidBitmap_unlockPixels(javaEnv, jBitmap);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(textString);
     javaEnv->DeleteLocalRef(jBitmap);
 }

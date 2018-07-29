@@ -6,15 +6,9 @@ TTF_Font::TTF_Font(const char *file, int height_)
 : height(height_)
 , typeface(NULL)
 {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
-		mid = javaEnv->GetStaticMethodID(cls, "createFont", "(Ljava/lang/String;I)Lcz/ger/ffng/FFNGFont;");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "createFont", "(Ljava/lang/String;I)Lcz/ger/ffng/FFNGFont;");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::TTF_Font 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -26,15 +20,12 @@ TTF_Font::TTF_Font(const char *file, int height_)
 
     typeface = javaEnv->CallStaticObjectMethod(cls, mid, fileString, height_);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(fileString);
 }
 
 TTF_Font::~TTF_Font() {
-	static JNIEnv *javaEnv = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 
 	// could stay empty
 	if (typeface) {
@@ -61,15 +52,9 @@ void TTF_Font::quit() {
 }
 
 int TTF_Font::getWidth(const char *text) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
-		mid = javaEnv->GetMethodID(cls, "getWidth", "(Ljava/lang/String;)I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
+	jmethodID mid = javaEnv->GetMethodID(cls, "getWidth", "(Ljava/lang/String;)I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::getWidth 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -81,21 +66,16 @@ int TTF_Font::getWidth(const char *text) {
 
     int result = javaEnv->CallIntMethod(typeface, mid, textString);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(textString);
 
     return result;
 }
 
 int TTF_Font::getHeight(const char *text) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
-		mid = javaEnv->GetMethodID(cls, "getHeight", "(Ljava/lang/String;)I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
+	jmethodID mid = javaEnv->GetMethodID(cls, "getHeight", "(Ljava/lang/String;)I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::getHeight 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -107,6 +87,7 @@ int TTF_Font::getHeight(const char *text) {
 
     int result = javaEnv->CallIntMethod(typeface, mid, textString);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(textString);
 
     return result;

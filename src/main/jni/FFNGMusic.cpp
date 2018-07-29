@@ -15,15 +15,9 @@ Mix_Chunk* FFNGMusic::loadWAV(const char *file) {
 }
 
 void FFNGMusic::halt(int channel) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetStaticMethodID(cls, "halt", "(I)V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "halt", "(I)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::halt 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -33,18 +27,13 @@ void FFNGMusic::halt(int channel) {
 
 	javaEnv->CallStaticVoidMethod(cls, mid, channel);
 
+    javaEnv->DeleteLocalRef(cls);
 }
 
 bool FFNGMusic::isPlaying(int channel) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetStaticMethodID(cls, "isPlaying", "(I)Z");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "isPlaying", "(I)Z");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::isPlaying 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -52,20 +41,17 @@ bool FFNGMusic::isPlaying(int channel) {
 		return false;
 	}
 
-	return javaEnv->CallStaticBooleanMethod(cls, mid, channel);
+	bool ret = javaEnv->CallStaticBooleanMethod(cls, mid, channel);
+
+    javaEnv->DeleteLocalRef(cls);
+    return ret;
 }
 
 int FFNGMusic::playChannel(int channel, Mix_Chunk *sound, int loops) {
 	// TODO don't forget the loops
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetMethodID(cls, "playChannel", "(II)I");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetMethodID(cls, "playChannel", "(II)I");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::playChannel 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -75,20 +61,16 @@ int FFNGMusic::playChannel(int channel, Mix_Chunk *sound, int loops) {
 
 	int ch = javaEnv->CallIntMethod(sound->getSoundObject(), mid, channel, loops);
     sound->setChannel(ch);
+
+    javaEnv->DeleteLocalRef(cls);
     return ch;
 }
 
 void FFNGMusic::volume(int channel, float vol) {
 	// TODO set channel volume, -1 for all
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetStaticMethodID(cls, "volume", "(IF)V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "volume", "(IF)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::volume 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -97,6 +79,8 @@ void FFNGMusic::volume(int channel, float vol) {
 	}
 
 	javaEnv->CallStaticVoidMethod(cls, mid, channel, vol);
+
+    javaEnv->DeleteLocalRef(cls);
 }
 
 void FFNGMusic::free(Mix_Chunk *chunk) {
@@ -146,15 +130,9 @@ Mix_Music::Mix_Music(const char *file) {
 }
 
 Mix_Music::~Mix_Music() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::~Mix_Music 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -164,19 +142,14 @@ Mix_Music::~Mix_Music() {
 
     javaEnv->CallVoidMethod(music, mid);
 
+    javaEnv->DeleteLocalRef(cls);
 	javaEnv->DeleteLocalRef(music);
 }
 
 jobject Mix_Music::loadMusic(const char *file) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetStaticMethodID(cls, "loadMusic", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGMusic;");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadMusic", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGMusic;");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::loadMusic 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -188,21 +161,16 @@ jobject Mix_Music::loadMusic(const char *file) {
 
     jobject result = javaEnv->CallStaticObjectMethod(cls, mid, fileString);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(fileString);
 
     return result;
 }
 
 void Mix_Music::play() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetMethodID(cls, "play", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetMethodID(cls, "play", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::play 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -210,19 +178,14 @@ void Mix_Music::play() {
 		return;
 	}
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->CallVoidMethod(music, mid);
 }
 
 void Mix_Music::stop() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetMethodID(cls, "stop", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetMethodID(cls, "stop", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::stop 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -230,19 +193,14 @@ void Mix_Music::stop() {
 		return;
 	}
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->CallVoidMethod(music, mid);
 }
 
 void Mix_Music::dispose() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::dispose 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -250,19 +208,14 @@ void Mix_Music::dispose() {
 		return;
 	}
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->CallVoidMethod(music, mid);
 }
 
 void Mix_Music::stopAll() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetStaticMethodID(cls, "stopAll", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "stopAll", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::stopAll 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -271,18 +224,13 @@ void Mix_Music::stopAll() {
 	}
 
     javaEnv->CallStaticVoidMethod(cls, mid);
+    javaEnv->DeleteLocalRef(cls);
 }
 
 void Mix_Music::setVolumeAll(int vol) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
-		mid = javaEnv->GetStaticMethodID(cls, "setVolumeAll", "(I)V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "setVolumeAll", "(I)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::setvolumeAll 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -291,6 +239,7 @@ void Mix_Music::setVolumeAll(int vol) {
 	}
 
     javaEnv->CallStaticVoidMethod(cls, mid, vol);
+    javaEnv->DeleteLocalRef(cls);
 }
 
 Mix_Chunk::Mix_Chunk(const char *file)
@@ -300,15 +249,9 @@ Mix_Chunk::Mix_Chunk(const char *file)
 }
 
 Mix_Chunk::~Mix_Chunk() {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Chunk::~Mix_Chunk 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -318,19 +261,14 @@ Mix_Chunk::~Mix_Chunk() {
 
     javaEnv->CallVoidMethod(sound, mid);
 
+    javaEnv->DeleteLocalRef(cls);
 	javaEnv->DeleteLocalRef(sound);
 }
 
 jobject Mix_Chunk::loadSound(const char *file) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
-		mid = javaEnv->GetStaticMethodID(cls, "loadSound", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGSound;");
-	}
+	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
+	jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadSound", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGSound;");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Chunk::loadSound 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -342,6 +280,7 @@ jobject Mix_Chunk::loadSound(const char *file) {
 
     jobject result = javaEnv->CallStaticObjectMethod(cls, mid, fileString);
 
+    javaEnv->DeleteLocalRef(cls);
     javaEnv->DeleteLocalRef(fileString);
 
     return result;

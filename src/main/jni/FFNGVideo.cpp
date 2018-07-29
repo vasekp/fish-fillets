@@ -6,18 +6,10 @@
 SDL_Surface* FFNGVideo::setVideoMode(int width, int height, int bpp, int flags) {
 	// ignore bpp and flags
     __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setVideoMode %d %d", width, height);
-
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "setWindowSize", "(II)V");
-	}
+    JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+    jclass cls = JNI::getInstance()->getJavaCls();
+    jobject obj = JNI::getInstance()->getJavaObj();
+    jmethodID mid = javaEnv->GetMethodID(cls, "setWindowSize", "(II)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setVideoMode 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -31,17 +23,10 @@ SDL_Surface* FFNGVideo::setVideoMode(int width, int height, int bpp, int flags) 
 }
 
 void FFNGVideo::setWindowCaption(const std::string &caption) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "setWindowCaption", "(Ljava/lang/String;)V");
-	}
+    JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+    jclass cls = JNI::getInstance()->getJavaCls();
+    jobject obj = JNI::getInstance()->getJavaObj();
+    jmethodID mid = javaEnv->GetMethodID(cls, "setWindowCaption", "(Ljava/lang/String;)V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setWindowCaption 1 %p %p %p", javaEnv, cls, mid);
 
 	if (mid == NULL) {
@@ -51,21 +36,15 @@ void FFNGVideo::setWindowCaption(const std::string &caption) {
 
 	jstring captionString = javaEnv->NewStringUTF(caption.c_str());
     javaEnv->CallVoidMethod(obj, mid, captionString);
+
 	javaEnv->DeleteLocalRef(captionString);
 }
 
 void FFNGVideo::flip(SDL_Surface *screen) {
-	static JNIEnv *javaEnv = NULL;
-	static jclass cls = NULL;
-	static jobject obj = NULL;
-	static jmethodID mid = NULL;
-
-	if (javaEnv != JNI::getInstance()->getJavaEnv()) {
-		javaEnv = JNI::getInstance()->getJavaEnv();
-		cls = JNI::getInstance()->getJavaCls();
-		obj = JNI::getInstance()->getJavaObj();
-		mid = javaEnv->GetMethodID(cls, "renderThis", "()V");
-	}
+    JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
+    jclass cls = JNI::getInstance()->getJavaCls();
+    jobject obj = JNI::getInstance()->getJavaObj();
+    jmethodID mid = javaEnv->GetMethodID(cls, "renderThis", "()V");
 	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::flip 1 %p %p %p", javaEnv, cls, mid);
 	
 	if (mid == NULL) {
