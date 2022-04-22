@@ -1,4 +1,3 @@
-#include <assert.h>
 #include "jnix.h"
 #include "FFNGFiles.h"
 #include <android/log.h>
@@ -8,11 +7,6 @@ bool FFNGFiles::exists(const std::string &path, int type)
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFiles");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "exists", "(Ljava/lang/String;I)Z");
-
-	if (mid == NULL) {
-		assert("method not found");
-		return false;
-	}
 
 	jstring pathString = javaEnv->NewStringUTF(path.c_str());
 

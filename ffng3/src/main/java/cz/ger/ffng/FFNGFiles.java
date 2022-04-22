@@ -60,7 +60,7 @@ public class FFNGFiles {
 			if (f.isDirectory()) {
 				createFileList(fileList, f);
 			} else {
-				fileList.add(f.path());  // TODO is this concatenation right?
+				fileList.add(f.path());
 			}
 		}
 	}

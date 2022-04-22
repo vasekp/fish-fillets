@@ -1,7 +1,6 @@
 package cz.ger.ffng;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -42,10 +41,6 @@ public class FFNG extends Activity {
         app.setContext(view, this);
         
         app.start();
-    }
-
-    public FFNGApp getApp() {
-    	return app;
     }
 
     @Override
