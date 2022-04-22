@@ -31,9 +31,10 @@ public class FFNG extends Activity {
         
         // turn off the window's title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-                       WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        getWindow().setFlags(flags, flags);
 
         app = new FFNGApp(this);
         setContentView(app.getView());
@@ -44,14 +45,12 @@ public class FFNG extends Activity {
     protected void onPause() {
     	super.onPause();
     	app.pauseRequest();
-    	releaseWakeLock();
     }
     
     @Override
     protected void onResume() {
         super.onResume();
         app.resumeRequest();
-        acquireWakeLock();
     }
     
     @Override
@@ -68,17 +67,4 @@ public class FFNG extends Activity {
     public void onSaveInstanceState(Bundle outState) {
     	
     } 
-    
-    private WakeLock wakeLock;
-	private void acquireWakeLock() {
-		final PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "FFNG");
-		wakeLock.acquire();
-	}
-
-	private void releaseWakeLock() {
-		if(wakeLock != null) {
-			wakeLock.release();
-		}
-	}
 }
