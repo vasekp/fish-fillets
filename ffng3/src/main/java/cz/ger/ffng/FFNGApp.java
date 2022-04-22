@@ -271,15 +271,6 @@ public class FFNGApp extends Thread {
 				moreButtonsAnim = 0;
 		}
 	}
-	
-	/*synchronized public void renderThis(FFNGSurface surface) {
-		canvas.drawBitmap(surface.getBitmap(), 0, 0, null);
-       	activity.runOnUiThread(new Runnable() {
-       			@Override public void run() {
-       				view.invalidate();
-       			}
-       		});
-	}*/
 
 	synchronized public void renderThis() {
 		canvas.drawBitmap(bmp, windowRect, windowRect, null);

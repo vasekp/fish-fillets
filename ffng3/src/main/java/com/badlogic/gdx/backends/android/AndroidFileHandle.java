@@ -36,29 +36,18 @@ public class AndroidFileHandle extends FileHandle {
 	AndroidFileHandle (AssetManager assets, String fileName, FileType type) {
 		this.assets = assets;
 		this.type = type;
-
-		switch (type) {
-		case Internal:
+		if (type == FileType.Internal) {
 			ensureInternalFileExists(fileName);
-			file = new File(fileName);
-			break;
-		case External:
-			file = new File(fileName);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown type: " + type);
 		}
+		file = new File(fileName);
 	}
 
 	AndroidFileHandle (AssetManager manager, File file, FileType type) {
 		this.assets = manager;
 		this.file = file;
 		this.type = type;
-
-		switch (type) {
-		case Internal:
+		if (type == FileType.Internal) {
 			ensureInternalFileExists(file.getPath());
-			break;
 		}
 	}
 
@@ -69,14 +58,7 @@ public class AndroidFileHandle extends FileHandle {
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
-			switch (type) {
-			case Internal:
-				parent = new File("");
-				break;
-			case External:
-				parent = new File("");
-				break;
-			}
+			parent = new File("");
 		}
 		return new AndroidFileHandle(assets, parent, type);
 	}

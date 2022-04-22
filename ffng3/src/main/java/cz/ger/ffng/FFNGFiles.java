@@ -94,14 +94,6 @@ public class FFNGFiles {
 	}
 	
 	static public boolean exists(String path, int type) {
-		/*
-		try {
-			getFileHandle(path, type).read();
-		} catch(Exception ex) {
-			return false;
-		}
-		return true;
-		*/
 		switch (type) {
 			case INTERNAL: return internalFileList.contains(path);
 			case EXTERNAL: return externalFileList.contains(sdcardStorage + "/" + path);

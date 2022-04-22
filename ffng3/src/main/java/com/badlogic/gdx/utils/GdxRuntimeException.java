@@ -26,10 +26,6 @@ public class GdxRuntimeException extends RuntimeException {
 		super(message);
 	}
 
-	public GdxRuntimeException (Throwable t) {
-		super(t);
-	}
-
 	public GdxRuntimeException (String message, Throwable t) {
 		super(message, t);
 	}
