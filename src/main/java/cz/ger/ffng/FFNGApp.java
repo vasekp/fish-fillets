@@ -44,6 +44,7 @@ public class FFNGApp extends Thread {
 	private int surfaceWidth = 0, surfaceHeight = 0;
 	
 	private int windowWidth = -1, windowHeight = -1;
+	private Rect windowRect = null;
 	private float windowX = 0, windowY = 0;
 	private float windowScale = 1f; 
 	private String windowCaption = "";
@@ -281,8 +282,7 @@ public class FFNGApp extends Thread {
 	}*/
 
 	synchronized public void renderThis() {
-		canvas.clipRect(0, 0, windowWidth, windowHeight, Region.Op.REPLACE);
-		canvas.drawBitmap(bmp, 0, 0, null);
+		canvas.drawBitmap(bmp, windowRect, windowRect, null);
 		activity.runOnUiThread(new Runnable() {
 			@Override public void run() {
 				view.invalidate();
@@ -323,6 +323,7 @@ public class FFNGApp extends Thread {
 	public void setWindowSize(int width, int height) {
 		windowWidth = width;
 		windowHeight = height;
+		windowRect = new Rect(0, 0, width, height);
 		windowCaptionFrameCountdown = windowCaptionDelayFrames;
 
 		setWindowScale();
