@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import cz.ger.ffng.Controls.TouchArea;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -59,7 +60,10 @@ public class FFNGApp extends Thread {
 	private Controls controls = new Controls();
 	private ActiveFishControl activeFish = new ActiveFishControl();
 	
-	FFNGApp() {
+	FFNGApp(Activity activity) {
+		this.activity = activity;
+		this.view = new FFNGView(activity);
+
 		screen = Bitmap.createBitmap(900, 900, Config.ARGB_8888);
 		canvas = new Canvas(screen);
 
@@ -89,12 +93,11 @@ public class FFNGApp extends Thread {
 		
 		controls.resizeToScreen(surfaceWidth, surfaceHeight);
 	}
-	
-	public void setContext(View view, Activity activity) {
-		this.view = view;
-		this.activity = activity;
+
+	public View getView() {
+		return view;
 	}
-	
+
 	public void run()
 	{
 		ffngmain();
@@ -362,21 +365,18 @@ public class FFNGApp extends Thread {
     //@SuppressWarnings("unused")
     private native int ffngmain();
     
-    public static class FFNGView extends View implements OnTouchListener, OnKeyListener {
-    	private FFNGApp app = null;
-    	
-        public FFNGView(Context context, FFNGApp app) {
+    private class FFNGView extends View implements OnTouchListener, OnKeyListener {
+
+        public FFNGView(Context context) {
             super(context);
             setFocusable(true);
-            
-            this.app = app;
             
             setOnTouchListener(this);
             setOnKeyListener(this);
         }
 
-        @Override protected void onDraw(Canvas canvas) {
-        	app.render(canvas);
+		@Override protected void onDraw(Canvas canvas) {
+        	FFNGApp.this.render(canvas);
         }
 
         private static final int TOUCH_STATE_NONE = 0;
@@ -404,10 +404,10 @@ public class FFNGApp extends Thread {
 				case MotionEvent.ACTION_UP:
 				//case MotionEvent.ACTION_OUTSIDE:
 				//case MotionEvent.ACTION_CANCEL:
-					app.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYUP, lastKey));
-					for (int i = 0; i < app.moreGroup.length; ++i) {
-						if (app.moreGroup[i] == touchedArea)
-							app.moreButtonsClose();
+					FFNGApp.this.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYUP, lastKey));
+					for (int i = 0; i < FFNGApp.this.moreGroup.length; ++i) {
+						if (FFNGApp.this.moreGroup[i] == touchedArea)
+							FFNGApp.this.moreButtonsClose();
 					}
 					touchState = TOUCH_STATE_NONE;
 					touchedArea.touched = false;
@@ -421,7 +421,7 @@ public class FFNGApp extends Thread {
 				switch(lastKey) {
 				case MORE_BUTTONS:
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						app.moreButtons();
+						FFNGApp.this.moreButtons();
 						touchState = TOUCH_STATE_NONE;
 						touchedArea.touched = false;
 						touchedArea = null;
@@ -433,8 +433,8 @@ public class FFNGApp extends Thread {
 				
 			case TOUCH_STATE_NONE:
 				int key = 0;
-				if (app.gameState == GAMESTATE_LEVEL) {
-					touchedArea = app.controls.getTouchArea(screenX, screenY);
+				if (FFNGApp.this.gameState == GAMESTATE_LEVEL) {
+					touchedArea = FFNGApp.this.controls.getTouchArea(screenX, screenY);
 					key = touchedArea == null ? 0 : touchedArea.value;
 					//key = app.controls.getTouchValue(screenX, screenY);
 				}
@@ -451,7 +451,7 @@ public class FFNGApp extends Thread {
 				} else if (key > 0) {
 			        switch (event.getAction()) {
 		            	case MotionEvent.ACTION_DOWN:
-		            		app.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYDOWN, key));
+							FFNGApp.this.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYDOWN, key));
 		            		touchState = TOUCH_STATE_BUTTON_PRESSED;
 		            		touchedArea.touched = true;
 		            		lastKey = key;
@@ -459,18 +459,18 @@ public class FFNGApp extends Thread {
 		            		break;
 			        }
 				} else {
-			        float x = (screenX - app.windowX) / app.windowScale;
-			        float y = (screenY - app.windowY) / app.windowScale;
+			        float x = (screenX - FFNGApp.this.windowX) / FFNGApp.this.windowScale;
+			        float y = (screenY - FFNGApp.this.windowY) / FFNGApp.this.windowScale;
 			        
 			        switch (event.getAction()) {
 			            case MotionEvent.ACTION_DOWN:
-			            	app.setTouch(x, y);
+							FFNGApp.this.setTouch(x, y);
 			                //touch_start(x, y);
 			                //invalidate();
 			                result = true;
 			                break;
 			            case MotionEvent.ACTION_MOVE:
-			            	app.setTouch(x, y);
+							FFNGApp.this.setTouch(x, y);
 			                //touch_move(x, y);
 			                //invalidate();
 			                result = true;
@@ -478,8 +478,8 @@ public class FFNGApp extends Thread {
 			            case MotionEvent.ACTION_UP:
 						//case MotionEvent.ACTION_OUTSIDE:
 						//case MotionEvent.ACTION_CANCEL:
-			            	app.setTouch(-1, -1);
-			            	app.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.MOUSEBUTTONDOWN, x, y));
+							FFNGApp.this.setTouch(-1, -1);
+							FFNGApp.this.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.MOUSEBUTTONDOWN, x, y));
 			                //touch_up();
 			                //invalidate();
 			                result = true;
@@ -521,10 +521,10 @@ public class FFNGApp extends Thread {
 			if (key > 0) {
 				switch (event.getAction()) {
 					case KeyEvent.ACTION_DOWN:
-						app.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYDOWN, key));
+						FFNGApp.this.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYDOWN, key));
 						return true;
 					case KeyEvent.ACTION_UP:
-						app.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYUP, key));
+						FFNGApp.this.eventQueue.add(new FFNGInputEvent(FFNGInputEvent.KEYUP, key));
 						return true;
 				}
 			}

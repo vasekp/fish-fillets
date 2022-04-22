@@ -16,6 +16,7 @@ public class FFNG extends Activity {
 	private FFNGApp app;
 	public static AndroidFiles files = null;
 	public static AssetManager assets = null;
+	public static String storageDir = "";
 
     /** Called when the activity is first created. */
     @Override
@@ -24,8 +25,8 @@ public class FFNG extends Activity {
 
         assets = getAssets();
         files = new AndroidFiles(assets);
+        storageDir = getExternalFilesDir(null).getPath();
 
-        FFNGFiles.setStorageBase(getExternalFilesDir(null).getPath());
         FFNGFiles.createCache();
         
         // turn off the window's title bar
@@ -34,12 +35,8 @@ public class FFNG extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        app = new FFNGApp();
-        
-        View view = new FFNGApp.FFNGView(this, app);
-        setContentView(view);
-        app.setContext(view, this);
-        
+        app = new FFNGApp(this);
+        setContentView(app.getView());
         app.start();
     }
 

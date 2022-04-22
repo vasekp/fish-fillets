@@ -23,17 +23,10 @@ public class FFNGFiles {
 	protected static final HashSet<String> internalFileList = new HashSet<String>();
 	protected static final HashSet<String> externalFileList = new HashSet<String>();
 	
-	protected static String sdcardStorage = "";
-
-	public static void setStorageBase(String  storageBase) {
-		Log.d("FFNG", storageBase);
-		sdcardStorage = storageBase;
-	}
-
     public static void createCache() {
 		//createFileList(internalFileList, getFileHandle("", FileType.Internal));	// too slow :(
 		readFileList(internalFileList, "filelist.txt");
-		createFileList(externalFileList, FFNG.files.getFileHandle(sdcardStorage, FileType.External));
+		createFileList(externalFileList, FFNG.files.getFileHandle(FFNG.storageDir, FileType.External));
 	}
 	
 	protected static void readFileList(HashSet<String> fileList, String sourceFile) {
@@ -71,7 +64,7 @@ public class FFNGFiles {
 	
 	static public String correctPath(String path, FileType type) {
 		if (type == FileType.External) {
-			return sdcardStorage + "/" + path;
+			return FFNG.storageDir + "/" + path;
 		} else {
 			return path;
 		}
@@ -95,7 +88,7 @@ public class FFNGFiles {
 	static public boolean exists(String path, int type) {
 		switch (type) {
 			case INTERNAL: return internalFileList.contains(path);
-			case EXTERNAL: return externalFileList.contains(sdcardStorage + "/" + path);
+			case EXTERNAL: return externalFileList.contains(FFNG.storageDir + "/" + path);
 			default: throw new AssertionError("type neither internal nor external");
 		}
 	}
@@ -141,15 +134,15 @@ public class FFNGFiles {
 	}
 	
 	public static void createPath(String path) {	// external
-		FFNG.files.external(sdcardStorage + "/" + path).parent().mkdirs();
+		FFNG.files.external(FFNG.storageDir + "/" + path).parent().mkdirs();
 	}
 	
 	public static boolean write(String path, String data) {
-		OutputStream os = FFNG.files.external(sdcardStorage + "/" + path).write(false);
+		OutputStream os = FFNG.files.external(FFNG.storageDir + "/" + path).write(false);
 		
 		try {
 			os.write(data.getBytes("UTF-8"));
-			externalFileList.add(sdcardStorage + "/" + path);
+			externalFileList.add(FFNG.storageDir + "/" + path);
 		} catch (IOException e) {
 			Log.e("FFNG", "error writing file " + path + ": " + e.getMessage());
 			return false;
