@@ -36,7 +36,6 @@ FFNG_SRC_FILES :=	\
 					ff/gengine/BaseMsg.cpp \
 					ff/gengine/Scripter.cpp \
 					ff/gengine/Dialog.cpp \
-					ff/gengine/FsPath.cpp \
 					ff/gengine/ImgException.cpp \
 					ff/gengine/SDLException.cpp \
 					ff/gengine/SysVideo.cpp \

@@ -12,7 +12,6 @@
 
 #include "Log.h"
 #include "Path.h"
-#include "FsPath.h"
 #include "ScriptAgent.h"
 #include "StringTool.h"
 #include "HelpException.h"
@@ -94,17 +93,7 @@ OptionAgent::prepareDataPaths()
 {
     registerWatcher("systemdir");
     registerWatcher("userdir");
-    OptionAgent::agent()->setParam("systemdir", SYSTEM_DATA_DIR);
-
-    std::string userdir = "";
-    const char *home = getenv("HOME");
-    if (home) {
-        userdir = FsPath::join(home, USER_DATA_DIR);
-        OptionAgent::agent()->setParam("userdir", userdir);
-    }
-    else {
-        readUserConfig();
-    }
+    readUserConfig();
 }
 //-----------------------------------------------------------------
 /**

@@ -11,8 +11,6 @@
 #include "Log.h"
 #include "OptionAgent.h"
 #include "Dialog.h"
-#include "FsPath.h"
-#include "PathException.h"
 
 #include <stdio.h>
 #include "FFNGFiles.h"
@@ -102,7 +100,7 @@ Path::localizePath(const std::string &original)
 std::string
 Path::getNative() const
 {
-    return FsPath::getNative(m_path);
+    return m_path;
 }
 //-----------------------------------------------------------------
 bool
