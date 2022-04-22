@@ -40,14 +40,12 @@ Path::dataPath(const std::string &file, bool writeable)
 {
     Path datapath = dataUserPath(file);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::dataPath 1 %s (%s)", file.c_str(), writeable ? "w":"r");
     if (!datapath.exists())  {
     	bool try_write = false;
         if (writeable) {
             try {
                 LOG_INFO(ExInfo("creating path")
                         .addInfo("path", datapath.getNative()));
-                /*FFNG FsPath::createPath(datapath.getPosixName());*/
                 FFNGFiles::createPath(datapath.getPosixName());
 
                 try_write = datapath.testWrite();
@@ -62,7 +60,6 @@ Path::dataPath(const std::string &file, bool writeable)
         }
     }
 
-    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::dataPath 2 %s (%s)", datapath.getPosixName().c_str(), (datapath.getType() == Path::EXTERNAL) ? "external":"internal");
     return datapath;
 }
 //-----------------------------------------------------------------
@@ -163,24 +160,18 @@ Path::getNative() const
 bool
 Path::exists() const
 {
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::exists 1 %s type=%d", m_path.c_str(), m_type);
-	bool result = FFNGFiles::exists(m_path, m_type);
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::exists 2 %s", result ? "exists" : "!exists");
-	return result;
-//    return FsPath::exists(m_path);
+	return FFNGFiles::exists(m_path, m_type);
 }
 //-----------------------------------------------------------------
 std::string
 Path::read() const
 {
-	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::read 1 %s (%s)", m_path.c_str(), m_type == INTERNAL ? "internal" : "external");
 	return FFNGFiles::read(m_path, m_type);
 }
 //-----------------------------------------------------------------
 bool
 Path::write(const std::string &data) const
 {
-	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::write 1 %s (%s)", m_path.c_str(), m_type == INTERNAL ? "internal" : "external");
 	return FFNGFiles::write(m_path, data);
 }
 //-----------------------------------------------------------------

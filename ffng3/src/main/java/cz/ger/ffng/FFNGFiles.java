@@ -20,7 +20,6 @@ public class FFNGFiles {
 	public final static int INTERNAL = 1;
 	public final static int EXTERNAL = 2;
 
-	// Vector, HashSet, ArrayList, LinkedList
 	protected static final HashSet<String> internalFileList = new HashSet<String>();
 	protected static final HashSet<String> externalFileList = new HashSet<String>();
 	
