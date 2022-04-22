@@ -47,7 +47,7 @@ Dialog::~Dialog()
 Dialog::talk(int volume, int loops) const
 {
     if (NULL == m_sound && !m_soundfile.empty()) {
-        Path soundPath = Path::dataReadPath(m_soundfile);
+        Path soundPath = Path::dataSystemPath(m_soundfile);
         m_sound = ResSoundPack::loadSound(soundPath);
     }
 

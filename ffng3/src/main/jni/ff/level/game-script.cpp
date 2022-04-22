@@ -223,7 +223,7 @@ script_model_addAnim(lua_State *L) throw()
                 ShapeBuilder::createImage(model->shape(), model->getWeight()),
                 lookDir);
     } else {
-        model->anim()->addAnim(anim_name, Path::dataReadPath(picture), lookDir);
+        model->anim()->addAnim(anim_name, Path::dataSystemPath(picture), lookDir);
     }
     END_NOEXCEPTION;
     return 0;
@@ -769,7 +769,7 @@ script_sound_addSound(lua_State *L) throw()
     const char *name = luaL_checkstring(L, 1);
     const char *file = luaL_checkstring(L, 2);
 
-    getLevelScript(L)->addSound(name, Path::dataReadPath(file));
+    getLevelScript(L)->addSound(name, Path::dataSystemPath(file));
     END_NOEXCEPTION;
     return 0;
 }

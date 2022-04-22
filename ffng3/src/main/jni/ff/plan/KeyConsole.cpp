@@ -25,7 +25,7 @@
     KeyConsole::KeyConsole()
 :  m_color(0, 200, 0)
 {
-    m_font = new Font(Path::dataReadPath("font/font_console.ttf"), 16);
+    m_font = new Font(Path::dataSystemPath("font/font_console.ttf"), 16);
     takeHandler(new ConsoleInput(this));
     registerDrawable(this);
 }

@@ -215,7 +215,7 @@ script_level_newDemo(lua_State *L) throw()
     BEGIN_NOEXCEPTION;
     const char *demofile = luaL_checkstring(L, 1);
 
-    getLevel(L)->newDemo(Path::dataReadPath(demofile));
+    getLevel(L)->newDemo(Path::dataSystemPath(demofile));
     END_NOEXCEPTION;
     return 0;
 }

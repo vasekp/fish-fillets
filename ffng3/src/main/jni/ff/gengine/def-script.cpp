@@ -102,7 +102,7 @@ script_file_include(lua_State *L) throw()
     BEGIN_NOEXCEPTION;
     const char *filename = luaL_checkstring(L, 1);
 
-    script_getLeader(L)->scriptInclude(Path::dataReadPath(filename));
+    script_getLeader(L)->scriptInclude(Path::dataSystemPath(filename));
     END_NOEXCEPTION;
     return 0;
 }
@@ -118,7 +118,7 @@ script_file_exists(lua_State *L) throw()
     BEGIN_NOEXCEPTION;
     const char *filename = luaL_checkstring(L, 1);
 
-    bool exists = Path::dataReadPath(filename).exists();
+    bool exists = Path::dataSystemPath(filename).exists();
     lua_pushboolean(L, exists);
     END_NOEXCEPTION;
     //NOTE: return exists

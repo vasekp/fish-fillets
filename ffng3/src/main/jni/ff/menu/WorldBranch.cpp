@@ -136,7 +136,7 @@ bool
 WorldBranch::wasSolved(const std::string &codename)
 {
     Path solved =
-        Path::dataReadPath(LevelStatus::getSolutionFilename(codename));
+        Path::dataUserPath(LevelStatus::getSolutionFilename(codename));
     return solved.exists();
 }
 //-----------------------------------------------------------------

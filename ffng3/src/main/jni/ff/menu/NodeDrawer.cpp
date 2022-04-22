@@ -23,23 +23,23 @@
 //-----------------------------------------------------------------
 NodeDrawer::NodeDrawer()
 {
-    m_font = new Font(Path::dataReadPath("font/font_menu.ttf"), 22);
+    m_font = new Font(Path::dataSystemPath("font/font_menu.ttf"), 22);
 
     m_imagePack = new ResImagePack();
     m_imagePack->addImage("solved",
-            Path::dataReadPath("images/menu/n0.png"));
+            Path::dataSystemPath("images/menu/n0.png"));
 
     m_imagePack->addImage("open",
-            Path::dataReadPath("images/menu/n1.png"));
+            Path::dataSystemPath("images/menu/n1.png"));
     m_imagePack->addImage("open",
-            Path::dataReadPath("images/menu/n2.png"));
+            Path::dataSystemPath("images/menu/n2.png"));
     m_imagePack->addImage("open",
-            Path::dataReadPath("images/menu/n3.png"));
+            Path::dataSystemPath("images/menu/n3.png"));
     m_imagePack->addImage("open",
-            Path::dataReadPath("images/menu/n4.png"));
+            Path::dataSystemPath("images/menu/n4.png"));
 
     m_imagePack->addImage("far",
-            Path::dataReadPath("images/menu/n_far.png"));
+            Path::dataSystemPath("images/menu/n_far.png"));
 }
 //-----------------------------------------------------------------
 NodeDrawer::~NodeDrawer()

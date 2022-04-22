@@ -20,10 +20,10 @@
 //-----------------------------------------------------------------
 MenuHelp::MenuHelp()
 {
-    Font usedFont(Path::dataReadPath("font/font_menu.ttf"), 14);
+    Font usedFont(Path::dataSystemPath("font/font_menu.ttf"), 14);
     Color usedColor(255, 255, 255, 255);
 
-    Labels labels(Path::dataReadPath("script/labels.lua"));
+    Labels labels(Path::dataSystemPath("script/labels.lua"));
     m_help = new WiPara(labels.getLabel("help"), usedFont, usedColor);
 
     takeHandler(new HelpInput(this));

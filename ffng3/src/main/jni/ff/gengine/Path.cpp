@@ -25,56 +25,6 @@
 {
     /* empty */
 }
-//-----------------------------------------------------------------
-/**
- * Try return user data path,
- * otherwise return system data path.
- * NOTE: OptionAgent must be initialized before this
- *
- * @param file path to file
- * @param writeable whether we want write to the file
- * @return path to user or system file
- */
-    Path
-Path::dataPath(const std::string &file, bool writeable)
-{
-    Path datapath = dataUserPath(file);
-
-    if (!datapath.exists())  {
-    	bool try_write = false;
-        if (writeable) {
-            try {
-                LOG_INFO(ExInfo("creating path")
-                        .addInfo("path", datapath.getNative()));
-                FFNGFiles::createPath(datapath.getPosixName());
-
-                try_write = datapath.testWrite();
-            }
-            catch (PathException &e) {
-                LOG_WARNING(e.info());
-            }
-        }
-
-        if (!try_write) {
-            datapath = dataSystemPath(file);
-        }
-    }
-
-    return datapath;
-}
-//-----------------------------------------------------------------
-    Path
-Path::dataReadPath(const std::string &file)
-{
-    return dataPath(file, false);
-}
-//-----------------------------------------------------------------
-    Path
-Path::dataWritePath(const std::string &file)
-{
-    return dataPath(file, true);
-}
-//-----------------------------------------------------------------
 /**
  * Return path to system file.
  * Path does not need to exist.
@@ -82,8 +32,7 @@ Path::dataWritePath(const std::string &file)
     Path
 Path::dataSystemPath(const std::string &file)
 {
-    std::string systemdir = OptionAgent::agent()->getParam("systemdir");
-    return constructPath(systemdir, file, INTERNAL);
+    return constructPath(file, INTERNAL);
 }
 //-----------------------------------------------------------------
 /**
@@ -93,8 +42,7 @@ Path::dataSystemPath(const std::string &file)
     Path
 Path::dataUserPath(const std::string &file)
 {
-    std::string userdir = OptionAgent::agent()->getParam("userdir");
-    return constructPath(userdir, file, EXTERNAL);
+    return constructPath(file, EXTERNAL);
 }
 //-----------------------------------------------------------------
 /**
@@ -102,10 +50,10 @@ Path::dataUserPath(const std::string &file)
  * Tries to use path to a localized resource if it exists.
  */
     Path
-Path::constructPath(const std::string &dir, const std::string &file, const FileType &type)
+Path::constructPath(const std::string &file, const FileType &type)
 {
     std::string localized = localizePath(file);
-    Path localizedPath = Path(FsPath::join(dir, localized), type);
+    Path localizedPath = Path(localized, type);
 
     if (localized == file) {
         return localizedPath;
@@ -114,7 +62,7 @@ Path::constructPath(const std::string &dir, const std::string &file, const FileT
                 .addInfo("path", localizedPath.getNative()));
         return localizedPath;
     } else {
-        return Path(FsPath::join(dir, file), type);
+        return Path(file, type);
     }
 }
 //-----------------------------------------------------------------
@@ -172,12 +120,6 @@ Path::read() const
 bool
 Path::write(const std::string &data) const
 {
+    FFNGFiles::createPath(dataSystemPath(m_path).getPosixName());
 	return FFNGFiles::write(m_path, data);
-}
-//-----------------------------------------------------------------
-bool
-Path::testWrite() const
-{
-	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Path::testWrite 1 %s (%s)", m_path.c_str(), m_type == INTERNAL ? "internal" : "external");
-	return true;
 }

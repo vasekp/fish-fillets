@@ -89,7 +89,7 @@ LevelStatus::readSolvedMoves()
 {
     m_savedMoves = "";
 
-    Path oldSolution = Path::dataReadPath(getSolutionFilename());
+    Path oldSolution = Path::dataUserPath(getSolutionFilename());
     if (oldSolution.exists()) {
         try {
             scriptDo("saved_moves=nil");
@@ -114,17 +114,7 @@ LevelStatus::writeSolvedMoves(const std::string &moves)
     std::string prevMoves = readSolvedMoves();
 
     if (prevMoves.empty() || moves.size() < prevMoves.size()) {
-        Path file = Path::dataWritePath(getSolutionFilename());
-        /* FFNG
-        FILE *saveFile = fopen(file.getNative().c_str(), "w");
-        if (saveFile) {
-            fputs("\nsaved_moves = '", saveFile);
-            fputs(moves.c_str(), saveFile);
-            fputs("'\n", saveFile);
-            fclose(saveFile);
-        }
-        else {
-        */
+        Path file = Path::dataUserPath(getSolutionFilename());
         if (!file.write("\nsaved_moves = '" + moves + "'\n")) {
             LOG_WARNING(ExInfo("cannot save solution")
                     .addInfo("file", file.getNative())
@@ -141,7 +131,7 @@ LevelStatus::createPoster() const
 {
     DemoMode *result = NULL;
     if (!m_poster.empty()) {
-        result = new DemoMode(Path::dataReadPath(m_poster));
+        result = new DemoMode(Path::dataUserPath(m_poster));
     }
     return result;
 }

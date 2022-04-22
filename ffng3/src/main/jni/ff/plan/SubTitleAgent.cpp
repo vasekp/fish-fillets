@@ -24,7 +24,7 @@ SubTitleAgent::own_init()
     m_colors = new ResColorPack();
 
     m_font = NULL;
-    m_font = new Font(Path::dataReadPath("font/font_subtitle.ttf"), 20);
+    m_font = new Font(Path::dataSystemPath("font/font_subtitle.ttf"), 20);
 }
 //-----------------------------------------------------------------
 /**

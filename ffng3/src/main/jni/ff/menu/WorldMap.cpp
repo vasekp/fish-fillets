@@ -75,10 +75,10 @@ WorldMap::~WorldMap()
 WorldMap::prepareBg()
 {
     m_bg = new LayeredPicture(
-            Path::dataReadPath("images/menu/map.png"),
+            Path::dataSystemPath("images/menu/map.png"),
             V2(0, 0),
-            Path::dataReadPath("images/menu/map_lower.png"),
-            Path::dataReadPath("images/menu/map_mask.png"));
+            Path::dataSystemPath("images/menu/map_lower.png"),
+            Path::dataSystemPath("images/menu/map_mask.png"));
 
     m_maskIntro = m_bg->getMaskAt(V2(0, 0));
     m_maskExit = m_bg->getMaskAt(V2(m_bg->getW() - 1, 0));
@@ -149,7 +149,7 @@ WorldMap::own_resumeState()
     m_selected = nextLevel;
 
     SoundAgent::agent()->playMusic(
-            Path::dataReadPath("music/menu.ogg"), NULL);
+            Path::dataSystemPath("music/menu.ogg"), NULL);
 }
 //-----------------------------------------------------------------
 /**
@@ -331,14 +331,14 @@ WorldMap::runIntro()
             .addInfo("file", movieFile.getNative()));
 #endif
 
-    pushState(new DemoMode(Path::dataReadPath("script/share/demo_intro.lua")));
+    pushState(new DemoMode(Path::dataSystemPath("script/share/demo_intro.lua")));
 }
 //-----------------------------------------------------------------
     void
 WorldMap::runCredits()
 {
     pushState(new PosterScroller(
-                Path::dataReadPath("images/menu/credits.png")));
+                Path::dataSystemPath("images/menu/credits.png")));
 }
 //-----------------------------------------------------------------
     void

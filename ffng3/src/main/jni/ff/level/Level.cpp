@@ -305,23 +305,8 @@ Level::nextPlayerAction()
 Level::saveGame(const std::string &models)
 {
     if (m_levelScript->isRoom()) {
-        Path file = Path::dataWritePath("saves/" + m_codename + ".lua");
-        /* FFNG
-        FILE *saveFile = fopen(file.getNative().c_str(), "w");
-        if (saveFile) {
-            std::string moves =
-                m_levelScript->room()->stepCounter()->getMoves();
-            fputs("\nsaved_moves = '", saveFile);
-            fputs(moves.c_str(), saveFile);
-            fputs("'\n", saveFile);
+        Path file = Path::dataUserPath("saves/" + m_codename + ".lua");
 
-            fputs("\nsaved_models = ", saveFile);
-            fputs(models.c_str(), saveFile);
-            fclose(saveFile);
-            displaySaveStatus();
-        }
-        else {
-        */
         std::string moves =
             m_levelScript->room()->stepCounter()->getMoves();
 
@@ -469,7 +454,7 @@ Level::action_save()
     bool
 Level::action_load()
 {
-    Path file = Path::dataReadPath("saves/" + m_codename + ".lua");
+    Path file = Path::dataUserPath("saves/" + m_codename + ".lua");
     if (file.exists()) {
         m_undoSteps = 0;
         m_restartCounter--;

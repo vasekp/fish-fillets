@@ -16,15 +16,10 @@ class Path {
         std::string m_path;
         FileType m_type;
     private:
-        static Path dataPath(const std::string &file, bool writeable);
         static std::string localizePath(const std::string &original);
-        static Path constructPath(const std::string &dir,
-                const std::string &file, const FileType &type);
+        static Path constructPath(const std::string &file, const FileType &type);
         explicit Path(const std::string &file, const FileType &type);
     public:
-        static Path dataReadPath(const std::string &file);
-        static Path dataWritePath(const std::string &file);
-
         static Path dataSystemPath(const std::string &file);
         static Path dataUserPath(const std::string &file);
 
@@ -34,7 +29,6 @@ class Path {
         bool exists() const;
         std::string read() const;
         bool write(const std::string &data) const;
-        bool testWrite() const;
 };
 
 #endif

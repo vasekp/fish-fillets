@@ -188,7 +188,7 @@ script_sound_playMusic(lua_State *L) throw()
     BEGIN_NOEXCEPTION;
     const char *music_name = luaL_checkstring(L, 1);
 
-    SoundAgent::agent()->playMusic(Path::dataReadPath(music_name), NULL);
+    SoundAgent::agent()->playMusic(Path::dataSystemPath(music_name), NULL);
     END_NOEXCEPTION;
     return 0;
 }

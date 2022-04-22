@@ -32,7 +32,7 @@ script_select_addFlag(lua_State *L) throw()
     const char *value = luaL_checkstring(L, 1);
     const char *picture = luaL_checkstring(L, 2);
 
-    getSelect(L)->addFlag(value, Path::dataReadPath(picture));
+    getSelect(L)->addFlag(value, Path::dataSystemPath(picture));
     END_NOEXCEPTION;
     return 0;
 }

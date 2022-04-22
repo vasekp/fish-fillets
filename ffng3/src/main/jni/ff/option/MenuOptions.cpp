@@ -100,7 +100,7 @@ MenuOptions::prepareMenu()
         m_container = NULL;
     }
 
-    Labels labels(Path::dataReadPath("script/labels.lua"));
+    Labels labels(Path::dataSystemPath("script/labels.lua"));
     IWidget *soundBox = createSoundPanel(labels);
     IWidget *musicBox = createMusicPanel(labels);
 
@@ -131,7 +131,7 @@ MenuOptions::createSoundPanel(const Labels &labels)
 {
     HBox *soundBox = new HBox();
     soundBox->addWidget(new WiPicture(
-                Path::dataReadPath("images/menu/volume_sound.png")));
+                Path::dataSystemPath("images/menu/volume_sound.png")));
     soundBox->addWidget(new WiSpace(10, 0));
     soundBox->addWidget(new Slider("volume_sound", 0, 100));
     soundBox->setTip(labels.getLabel("menu_sound"));
@@ -143,7 +143,7 @@ MenuOptions::createMusicPanel(const Labels &labels)
 {
     HBox *musicBox = new HBox();
     musicBox->addWidget(new WiPicture(
-                Path::dataReadPath("images/menu/volume_music.png")));
+                Path::dataSystemPath("images/menu/volume_music.png")));
     musicBox->addWidget(new WiSpace(10, 0));
     musicBox->addWidget(new Slider("volume_music", 0, 100));
     musicBox->setTip(labels.getLabel("menu_music"));
@@ -155,10 +155,10 @@ MenuOptions::createLangPanel(const Labels &labels)
 {
     HBox *langBox = new HBox();
     langBox->addWidget(new WiPicture(
-                Path::dataReadPath("images/menu/lang.png")));
+                Path::dataSystemPath("images/menu/lang.png")));
     langBox->addWidget(new WiSpace(10, 0));
     langBox->addWidget(new SelectLang("lang",
-                Path::dataReadPath("script/select_lang.lua")));
+                Path::dataSystemPath("script/select_lang.lua")));
     langBox->setTip(labels.getLabel("menu_lang"));
     return langBox;
 }
@@ -172,10 +172,10 @@ MenuOptions::createSpeechPanel(const Labels &labels)
 {
     HBox *speechBox = new HBox();
     speechBox->addWidget(new WiPicture(
-                Path::dataReadPath("images/menu/speech.png")));
+                Path::dataSystemPath("images/menu/speech.png")));
     speechBox->addWidget(new WiSpace(10, 0));
     speechBox->addWidget(new SelectLang("speech",
-            Path::dataReadPath("script/select_speech.lua")));
+            Path::dataSystemPath("script/select_speech.lua")));
     speechBox->setTip(labels.getLabel("menu_speech"));
     return speechBox;
 }
@@ -185,12 +185,12 @@ MenuOptions::createSubtitlesPanel(const Labels &labels)
 {
     HBox *chooseBox = new HBox();
     chooseBox->addWidget(new WiPicture(
-                Path::dataReadPath("images/menu/subtitle.png")));
+                Path::dataSystemPath("images/menu/subtitle.png")));
     chooseBox->addWidget(new WiSpace(10, 0));
     chooseBox->addWidget(new RadioBox("subtitles", "1",
-                Path::dataReadPath("images/menu/subtitles/yes.png")));
+                Path::dataSystemPath("images/menu/subtitles/yes.png")));
     chooseBox->addWidget(new RadioBox("subtitles", "0",
-                Path::dataReadPath("images/menu/subtitles/no.png")));
+                Path::dataSystemPath("images/menu/subtitles/no.png")));
     chooseBox->setTip(labels.getLabel("menu_subtitles"));
     return chooseBox;
 }
@@ -199,7 +199,7 @@ IWidget *
 MenuOptions::createBackButton(const Labels &labels)
 {
     IWidget *button = new WiButton(
-            new WiPicture(Path::dataReadPath("images/menu/back.png")),
+            new WiPicture(Path::dataSystemPath("images/menu/back.png")),
             new SimpleMsg(this, "quit"));
     button->setTip(labels.getLabel("menu_back"));
     return button;
@@ -209,7 +209,7 @@ WiStatusBar *
 MenuOptions::createStatusBar(int width)
 {
     Color color(0, 255, 0, 255);
-    Font *new_font = new Font(Path::dataReadPath("font/font_menu.ttf"), 16);
+    Font *new_font = new Font(Path::dataSystemPath("font/font_menu.ttf"), 16);
     return new WiStatusBar(new_font, color, width);
 }
 //-----------------------------------------------------------------

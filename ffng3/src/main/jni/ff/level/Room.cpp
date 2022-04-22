@@ -50,7 +50,7 @@ Room::Room(int w, int h, const std::string &picture,
     m_locker = locker;
     m_levelScript = levelScript;
     m_fastFalling = false;
-    m_bg = new WavyPicture(Path::dataReadPath(picture), V2(0, 0));
+    m_bg = new WavyPicture(Path::dataUserPath(picture), V2(0, 0));
     m_bgFilename = picture;
     m_field = new Field(w, h);
     m_finder = new FinderAlg(w, h);
@@ -523,7 +523,7 @@ void
 Room::changeBg(const std::string &picture)
 {
     if (picture != m_bgFilename) {
-        m_bg->changePicture(Path::dataReadPath(picture));
+        m_bg->changePicture(Path::dataUserPath(picture));
         m_bgFilename = picture;
     }
 }

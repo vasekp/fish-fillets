@@ -16,7 +16,7 @@
 
 //-----------------------------------------------------------------
 StepDecor::StepDecor(const StepCounter *counter)
-    : m_font(Path::dataReadPath("font/font_console.ttf"), 20)
+    : m_font(Path::dataSystemPath("font/font_console.ttf"), 20)
 {
     m_counter = counter;
 }

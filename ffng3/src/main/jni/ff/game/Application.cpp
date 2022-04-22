@@ -158,7 +158,7 @@ Application::prepareOptions(int argc, char *argv[])
     void
 Application::customizeGame()
 {
-    Path initfile = Path::dataReadPath("script/init.lua");
+    Path initfile = Path::dataSystemPath("script/init.lua");
     if (initfile.exists()) {
         ScriptAgent::agent()->scriptInclude(initfile);
     }
