@@ -154,7 +154,6 @@ size_t luaC_separateudata (lua_State *L, int all) {
   return deadmem;
 }
 
-
 static int traversetable (global_State *g, Table *h) {
   int i;
   int weakkey = 0;

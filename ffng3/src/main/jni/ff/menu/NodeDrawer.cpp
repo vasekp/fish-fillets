@@ -56,12 +56,13 @@ void
 NodeDrawer::drawNode(const LevelNode *node) const
 {
     V2 loc = node->getLoc();
-    drawDot(m_imagePack->getRes("far"), loc);
-
     SDL_Surface *dot = NULL;
     switch (node->getState()) {
-        case LevelNode::STATE_FAR:
+        case LevelNode::STATE_HIDDEN:
             return;
+        case LevelNode::STATE_FAR:
+            dot = m_imagePack->getRes("far");
+            break;
         case LevelNode::STATE_OPEN:
             {
                 int phase = TimerAgent::agent()->getCycles() % 10;

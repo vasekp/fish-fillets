@@ -43,7 +43,7 @@ public class AndroidFileHandle extends FileHandle {
 			file = new File(fileName);
 			break;
 		case External:
-			file = new File(FFNG.files.getExternalStoragePath() + fileName);
+			file = new File(fileName);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown type: " + type);
@@ -74,7 +74,7 @@ public class AndroidFileHandle extends FileHandle {
 				parent = new File("");
 				break;
 			case External:
-				parent = new File(FFNG.files.getExternalStoragePath());
+				parent = new File("");
 				break;
 			}
 		}
