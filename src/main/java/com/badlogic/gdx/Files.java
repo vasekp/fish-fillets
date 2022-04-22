@@ -58,10 +58,4 @@ public interface Files {
 	 */
 	public FileHandle external (String path);
 
-	/**
-	 * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
-	 * the desktop.
-	 */
-	public String getExternalStoragePath ();
-
 }

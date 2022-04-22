@@ -1,6 +1,7 @@
 package cz.ger.ffng;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -21,10 +22,11 @@ public class FFNG extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         assets = getAssets();
         files = new AndroidFiles(assets);
 
+        FFNGFiles.setStorageBase(getExternalFilesDir(null).getPath());
         FFNGFiles.createCache();
         
         // turn off the window's title bar
@@ -45,7 +47,7 @@ public class FFNG extends Activity {
     public FFNGApp getApp() {
     	return app;
     }
-    
+
     @Override
     protected void onPause() {
     	super.onPause();

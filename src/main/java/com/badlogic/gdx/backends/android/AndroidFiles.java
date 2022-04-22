@@ -24,7 +24,6 @@ import com.badlogic.gdx.files.FileHandle;
  * @author Nathan Sweet <misc@n4te.com>
  */
 public class AndroidFiles implements Files {
-	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	protected final AssetManager assets;
 
 	public AndroidFiles (AssetManager assets) {
@@ -41,10 +40,6 @@ public class AndroidFiles implements Files {
 
 	@Override public FileHandle external (String path) {
 		return new AndroidFileHandle(null, path, FileType.External);
-	}
-
-	@Override public String getExternalStoragePath () {
-		return sdcard;
 	}
 
 }
