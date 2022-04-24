@@ -14,7 +14,7 @@
 /**
  * Load surface.
  */
-Picture::Picture(const Path &file, const V2 &loc)
+Picture::Picture(const File &file, const V2 &loc)
     : m_loc(loc)
 {
     m_surface = ResImagePack::loadImage(file);
@@ -39,7 +39,7 @@ Picture::~Picture()
 }
 //-----------------------------------------------------------------
 void
-Picture::changePicture(const Path &file)
+Picture::changePicture(const File &file)
 {
 	FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_surface);
     m_surface = ResImagePack::loadImage(file);

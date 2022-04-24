@@ -99,7 +99,7 @@ LevelScript::askField(const V2 &loc)
 
 //-----------------------------------------------------------------
     void
-LevelScript::addSound(const std::string &name, const Path &file)
+LevelScript::addSound(const std::string &name, const File &file)
 {
     room()->addSound(name, file);
 }

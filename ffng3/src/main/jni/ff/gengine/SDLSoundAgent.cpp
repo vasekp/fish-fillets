@@ -9,7 +9,7 @@
 #include "SDLSoundAgent.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "ExInfo.h"
 #include "SDLException.h"
 #include "MixException.h"
@@ -130,17 +130,17 @@ SDLSoundAgent::setSoundVolume(int volume)
  * If finished is NULL, play music forever.
  */
 void
-SDLSoundAgent::playMusic(const Path &file,
+SDLSoundAgent::playMusic(const File &file,
         BaseMsg *finished)
 {
     // The same music is not restarted when it is not needed.
-    if (m_playingPath == file.getPosixName()
+    if (m_playingPath == file.getPath()
             && ms_finished == NULL && finished == NULL) {
         return;
     }
 
     stopMusic();
-    m_playingPath = file.getPosixName();
+    m_playingPath = file.getPath();
 
     int loops = -1;
     if (finished) {
@@ -148,13 +148,13 @@ SDLSoundAgent::playMusic(const Path &file,
         loops = 1;
     }
 
-    m_music = FFNGMusic::loadMUS/*FFNG Mix_LoadMUS*/(file.getNative().c_str());
+    m_music = FFNGMusic::loadMUS/*FFNG Mix_LoadMUS*/(file.getPath().c_str());
     if (m_music && (0 == FFNGMusic::playMusic/*FFNG Mix_PlayMusic*/(m_music, loops))) {
         FFNGMusic::hookMusicFinished/*FFNG Mix_HookMusicFinished*/(musicFinished);
     }
     else {
         LOG_WARNING(ExInfo("cannot play music")
-                .addInfo("music", file.getNative())
+                .addInfo("music", file.getPath())
                 /*FFNG .addInfo("Mix", Mix_GetError())*/);
     }
 }

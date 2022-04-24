@@ -19,7 +19,7 @@ class SDLSoundAgent : public SoundAgent {
     int m_soundVolume;
 
     private:
-        std::string generateIdName(const Path &file);
+        std::string generateIdName(const File &file);
         Mix_Chunk *findChunk(const std::string &name);
 
         static void musicFinished();
@@ -34,7 +34,7 @@ class SDLSoundAgent : public SoundAgent {
     public:
         virtual int playSound(Mix_Chunk *sound, int volume, int loops=0);
 
-        virtual void playMusic(const Path &file,
+        virtual void playMusic(const File &file,
                 BaseMsg *finished);
         virtual void stopMusic();
 };

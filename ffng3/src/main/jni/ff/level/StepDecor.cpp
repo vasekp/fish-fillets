@@ -10,13 +10,13 @@
 
 #include "StepCounter.h"
 
-#include "Path.h"
+#include "File.h"
 #include "StringTool.h"
 #include "OptionAgent.h"
 
 //-----------------------------------------------------------------
 StepDecor::StepDecor(const StepCounter *counter)
-    : m_font(Path::dataSystemPath("font/font_console.ttf"), 20)
+    : m_font(File::internal("font/font_console.ttf"), 20)
 {
     m_counter = counter;
 }

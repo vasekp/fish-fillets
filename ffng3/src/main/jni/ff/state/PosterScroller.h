@@ -1,7 +1,7 @@
 #ifndef HEADER_POSTERSCROLLER_H
 #define HEADER_POSTERSCROLLER_H
 
-class Path;
+class File;
 class Picture;
 
 #include "PosterState.h"
@@ -18,7 +18,7 @@ class PosterScroller : public PosterState {
         virtual void own_initState();
         virtual void own_updateState();
     public:
-        PosterScroller(const Path &picture);
+        PosterScroller(const File &picture);
         virtual bool allowBg() const { return true; }
 };
 

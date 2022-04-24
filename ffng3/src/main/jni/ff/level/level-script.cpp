@@ -9,7 +9,7 @@
 #include "level-script.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "V2.h"
 #include "Level.h"
 #include "LevelScript.h"
@@ -215,7 +215,7 @@ script_level_newDemo(lua_State *L) throw()
     BEGIN_NOEXCEPTION;
     const char *demofile = luaL_checkstring(L, 1);
 
-    getLevel(L)->newDemo(Path::dataSystemPath(demofile));
+    getLevel(L)->newDemo(File::internal(demofile));
     END_NOEXCEPTION;
     return 0;
 }

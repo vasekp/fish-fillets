@@ -1,7 +1,7 @@
 #ifndef HEADER_WIPICTURE_H
 #define HEADER_WIPICTURE_H
 
-class Path;
+class File;
 
 #include "IWidget.h"
 
@@ -14,7 +14,7 @@ class WiPicture : public IWidget {
     protected:
         WiPicture(SDL_Surface *new_surface) { m_surface = new_surface; }
     public:
-        WiPicture(const Path &picture);
+        WiPicture(const File &picture);
         virtual ~WiPicture();
         virtual int getW() const { return m_surface->getWidth(); }
         virtual int getH() const { return m_surface->getHeight(); }

@@ -9,7 +9,7 @@
 #include "Font.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "TTFException.h"
 #include "SDLException.h"
 
@@ -57,12 +57,12 @@ Font::biditize(const std::string &text)
  * @param height font height
  * @throws TTFException when cannot open font
  */
-Font::Font(const Path &file_ttf, int height)
+Font::Font(const File &file_ttf, int height)
 {
-    m_ttfont = new TTF_Font(file_ttf.getNative().c_str(), height); //FFNG TTF_OpenFont
+    m_ttfont = new TTF_Font(file_ttf.getPath().c_str(), height); //FFNG TTF_OpenFont
     if (!m_ttfont) {
         throw TTFException(ExInfo("OpenFont")
-                .addInfo("file", file_ttf.getNative()));
+                .addInfo("file", file_ttf.getPath()));
     }
 
     //NOTE: bg color will be set to be transparent

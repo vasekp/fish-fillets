@@ -18,7 +18,7 @@ class Command;
 class MultiDrawer;
 class StatusDisplay;
 
-#include "Path.h"
+#include "File.h"
 #include "GameState.h"
 #include "CountAdvisor.h"
 
@@ -34,7 +34,7 @@ class Level : public GameState, public CountAdvisor {
         int m_depth;
         const DescFinder *m_desc;
         std::string m_codename;
-        Path m_datafile;
+        File m_datafile;
         PhaseLocker *m_locker;
         bool m_newRound;
         LevelScript *m_levelScript;
@@ -68,7 +68,7 @@ class Level : public GameState, public CountAdvisor {
         virtual void own_noteBg();
         virtual void own_noteFg();
     public:
-        Level(const std::string &codename, const Path &datafile, int depth);
+        Level(const std::string &codename, const File &datafile, int depth);
         virtual ~Level();
         virtual const char *getName() const { return "state_level"; };
         void fillDesc(const DescFinder *desc) { m_desc = desc; }
@@ -95,7 +95,7 @@ class Level : public GameState, public CountAdvisor {
         bool isNewRound() const { return m_newRound; }
 
         void createRoom(int w, int h, const std::string &picture);
-        void newDemo(const Path &demofile);
+        void newDemo(const File &demofile);
 
         bool isActing() const;
         bool isLoading() const;

@@ -56,7 +56,7 @@ script_branch_addNode(lua_State *L) throw()
     const char *poster = luaL_optstring(L, 7, "");
 
     LevelNode *node = new LevelNode(codename,
-                Path::dataSystemPath(datafile), V2(nodeX, nodeY), poster);
+                                    File::internal(datafile), V2(nodeX, nodeY), poster);
     getWorld(L)->addNode(parent, node, hidden);
     END_NOEXCEPTION;
     return 0;
@@ -74,7 +74,7 @@ script_branch_setEnding(lua_State *L) throw()
     const char *poster = luaL_optstring(L, 3, "");
 
     LevelNode *node = new LevelNode(codename,
-                Path::dataSystemPath(datafile), V2(-1, -1), poster);
+                                    File::internal(datafile), V2(-1, -1), poster);
     getWorld(L)->setEnding(node);
     END_NOEXCEPTION;
     return 0;

@@ -23,7 +23,7 @@
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------
-DemoMode::DemoMode(const Path &demoscript)
+DemoMode::DemoMode(const File &demoscript)
     : m_demoscript(demoscript)
 {
     m_oldLimitY = 0;

@@ -10,7 +10,7 @@
 
 #include "def-script.h"
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "LevelNode.h"
 #include "LevelStatus.h"
 #include "ScriptState.h"
@@ -42,7 +42,7 @@ WorldBranch::WorldBranch(LevelNode *root)
  * @return root node (can be NULL)
  */
 LevelNode *
-WorldBranch::parseMap(const Path &datafile, LevelNode **outEnding,
+WorldBranch::parseMap(const File &datafile, LevelNode **outEnding,
         ResDialogPack *destPack)
 {
     m_outPack = destPack;
@@ -135,8 +135,8 @@ WorldBranch::bestSolution(const std::string &codename, int moves,
 bool
 WorldBranch::wasSolved(const std::string &codename)
 {
-    Path solved =
-        Path::dataUserPath(LevelStatus::getSolutionFilename(codename));
+    File solved =
+            File::external(LevelStatus::getSolutionFilename(codename));
     return solved.exists();
 }
 //-----------------------------------------------------------------

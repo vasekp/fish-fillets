@@ -1,7 +1,7 @@
 #ifndef HEADER_SCRIPTER_H
 #define HEADER_SCRIPTER_H
 
-class Path;
+class File;
 class ScriptState;
 
 #include "NoCopy.h"
@@ -18,7 +18,7 @@ class Scripter : public NoCopy {
         Scripter();
         virtual ~Scripter();
 
-        void scriptInclude(const Path &filename);
+        void scriptInclude(const File &filename);
         void scriptDo(const std::string &input);
 };
 

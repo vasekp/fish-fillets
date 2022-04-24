@@ -4,7 +4,7 @@
 class Picture;
 class DemoInput;
 
-#include "Path.h"
+#include "File.h"
 #include "GameState.h"
 #include "Planner.h"
 #include "Drawable.h"
@@ -15,7 +15,7 @@ class DemoInput;
 class DemoMode : public Planner, public GameState, public Drawable {
     private:
         int m_oldLimitY;
-        Path m_demoscript;
+        File m_demoscript;
         SDL_Surface *m_surfaceBuffer;
         Picture *m_display;
     protected:
@@ -25,7 +25,7 @@ class DemoMode : public Planner, public GameState, public Drawable {
         virtual void own_resumeState() {}
         virtual void own_cleanState();
     public:
-        DemoMode(const Path &demoscript);
+        DemoMode(const File &demoscript);
         virtual ~DemoMode();
         virtual const char *getName() const { return "state_demo"; };
 

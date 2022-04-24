@@ -1,7 +1,7 @@
 #ifndef HEADER_POSTERSTATE_H
 #define HEADER_POSTERSTATE_H
 
-class Path;
+class File;
 class Picture;
 
 #include "GameState.h"
@@ -19,7 +19,7 @@ class PosterState : public GameState {
         virtual void own_resumeState() {}
         virtual void own_cleanState() {}
     public:
-        PosterState(const Path &picture);
+        PosterState(const File &picture);
         virtual ~PosterState();
         virtual const char *getName() const { return "state_poster"; };
 };

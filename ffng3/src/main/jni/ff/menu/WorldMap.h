@@ -1,7 +1,7 @@
 #ifndef HEADER_WORLDMAP_H
 #define HEADER_WORLDMAP_H
 
-class Path;
+class File;
 class Level;
 class LevelNode;
 class NodeDrawer;
@@ -58,7 +58,7 @@ class WorldMap : public GameState, public DescFinder, public Drawable {
         WorldMap();
         virtual ~WorldMap();
         virtual const char *getName() const { return "state_worldmap"; };
-        void initMap(const Path &mapfile);
+        void initMap(const File &mapfile);
 
         virtual void drawOn(SDL_Surface *screen);
         void selectNextLevel();

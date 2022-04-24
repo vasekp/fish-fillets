@@ -44,7 +44,7 @@
 /**
  * Create new level.
  */
-    Level::Level(const std::string &codename, const Path &datafile, int depth)
+    Level::Level(const std::string &codename, const File &datafile, int depth)
 : m_codename(codename), m_datafile(datafile)
 {
     m_desc = NULL;
@@ -305,7 +305,7 @@ Level::nextPlayerAction()
 Level::saveGame(const std::string &models)
 {
     if (m_levelScript->isRoom()) {
-        Path file = Path::dataUserPath("saves/" + m_codename + ".lua");
+        File file = File::external("saves/" + m_codename + ".lua");
 
         std::string moves =
             m_levelScript->room()->stepCounter()->getMoves();
@@ -315,7 +315,7 @@ Level::saveGame(const std::string &models)
         }
         else {
             LOG_WARNING(ExInfo("cannot save game")
-                    .addInfo("file", file.getNative()));
+                    .addInfo("file", file.getPath()));
         }
     }
 }
@@ -329,7 +329,7 @@ Level::displaySaveStatus()
     FFNGApp::saveEffect();
     /* FFNG
     m_statusDisplay->displayStatus(
-            new Picture(Path::dataReadPath("images/menu/status/saved.png"),
+            new Picture(File::dataReadPath("images/menu/status/saved.png"),
                 V2(0, 0)), TIME);
     */
 }
@@ -454,7 +454,7 @@ Level::action_save()
     bool
 Level::action_load()
 {
-    Path file = Path::dataUserPath("saves/" + m_codename + ".lua");
+    File file = File::external("saves/" + m_codename + ".lua");
     if (file.exists()) {
         m_undoSteps = 0;
         m_restartCounter--;
@@ -464,7 +464,7 @@ Level::action_load()
     }
     else {
         LOG_INFO(ExInfo("there is no file to load")
-                .addInfo("file", file.getNative()));
+                .addInfo("file", file.getPath()));
     }
     return true;
 }
@@ -556,7 +556,7 @@ Level::initScreen()
 }
 //-----------------------------------------------------------------
     void
-Level::newDemo(const Path &demofile)
+Level::newDemo(const File &demofile)
 {
     m_levelScript->interruptPlan();
     DemoMode *demo = new DemoMode(demofile);

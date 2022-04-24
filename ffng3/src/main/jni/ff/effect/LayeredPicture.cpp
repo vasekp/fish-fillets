@@ -8,7 +8,7 @@
  */
 #include "LayeredPicture.h"
 
-#include "Path.h"
+#include "File.h"
 #include "ResImagePack.h"
 #include "ResourceException.h"
 #include "SurfaceLock.h"
@@ -22,8 +22,8 @@
  * @throws ResourceException when lowerLayer and colorMask have
  * different proportions
  */
-LayeredPicture::LayeredPicture(const Path &bg_file, const V2 &loc,
-        const Path &lowerLayer, const Path &colorMask)
+LayeredPicture::LayeredPicture(const File &bg_file, const V2 &loc,
+        const File &lowerLayer, const File &colorMask)
 : Picture(bg_file, loc)
 {
     m_lowerLayer = ResImagePack::loadImage(lowerLayer);
@@ -36,8 +36,8 @@ LayeredPicture::LayeredPicture(const Path &bg_file, const V2 &loc,
 
         throw ResourceException(ExInfo(
                     "lowerLayer and colorMask have different proportions")
-                .addInfo("lowerLayer", lowerLayer.getNative())
-                .addInfo("colorMask", colorMask.getNative()));
+                .addInfo("lowerLayer", lowerLayer.getPath())
+                .addInfo("colorMask", colorMask.getPath()));
     }
 
     setNoActive();

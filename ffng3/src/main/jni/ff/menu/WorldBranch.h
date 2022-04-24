@@ -1,7 +1,7 @@
 #ifndef HEADER_WORLDBRANCH_H
 #define HEADER_WORLDBRANCH_H
 
-class Path;
+class File;
 class LevelNode;
 class LevelDesc;
 class ResDialogPack;
@@ -25,7 +25,7 @@ class WorldBranch : public Scripter {
     public:
         WorldBranch(LevelNode *root);
 
-        LevelNode* parseMap(const Path &datafile, LevelNode **outEnding,
+        LevelNode* parseMap(const File &datafile, LevelNode **outEnding,
                 ResDialogPack *des);
 
         void addDesc(const std::string &codename, LevelDesc *desc);

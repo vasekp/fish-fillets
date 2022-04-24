@@ -1,7 +1,7 @@
 #ifndef HEADER_SCRIPTSTATE_H
 #define HEADER_SCRIPTSTATE_H
 
-class Path;
+class File;
 class Scripter;
 
 #include "NoCopy.h"
@@ -27,7 +27,7 @@ class ScriptState : public NoCopy {
         ScriptState();
         ~ScriptState();
 
-        void doFile(const Path &file);
+        void doFile(const File &file);
         void doString(const std::string &input);
         bool callCommand(int funcRef, int param);
         void unref(int funcRef);

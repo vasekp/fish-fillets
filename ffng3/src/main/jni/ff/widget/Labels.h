@@ -1,7 +1,7 @@
 #ifndef HEADER_LABELS_H
 #define HEADER_LABELS_H
 
-class Path;
+class File;
 class ResDialogPack;
 
 #include "Scripter.h"
@@ -14,7 +14,7 @@ class Labels : public Scripter {
     private:
         mutable ResDialogPack *m_labels;
     public:
-        Labels(const Path &source);
+        Labels(const File &source);
         virtual ~Labels();
 
         void addLabel(const std::string &name, const std::string &lang,

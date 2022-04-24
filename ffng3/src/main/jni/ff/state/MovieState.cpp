@@ -19,7 +19,7 @@
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------
-MovieState::MovieState(const Path &file)
+MovieState::MovieState(const File &file)
     : m_file(file)
 {
     takeHandler(new DemoInput(this));

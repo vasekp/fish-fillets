@@ -16,8 +16,8 @@ class LayeredPicture : public Picture {
         SDL_Surface *m_colorMask;
         Uint32 m_activeColor;
     public:
-        LayeredPicture(const Path &bg_file, const V2 &loc,
-                const Path &lowerLayer, const Path &colorMask);
+        LayeredPicture(const File &bg_file, const V2 &loc,
+                const File &lowerLayer, const File &colorMask);
         ~LayeredPicture();
 
         void setNoActive() { m_activeColor = MASK_NO; }

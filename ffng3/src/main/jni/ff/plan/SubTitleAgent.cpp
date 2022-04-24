@@ -12,7 +12,7 @@
 #include "Font.h"
 #include "ResColorPack.h"
 
-#include "Path.h"
+#include "File.h"
 #include "OptionAgent.h"
 #include "minmax.h"
 
@@ -24,7 +24,7 @@ SubTitleAgent::own_init()
     m_colors = new ResColorPack();
 
     m_font = NULL;
-    m_font = new Font(Path::dataSystemPath("font/font_subtitle.ttf"), 20);
+    m_font = new Font(File::internal("font/font_subtitle.ttf"), 20);
 }
 //-----------------------------------------------------------------
 /**

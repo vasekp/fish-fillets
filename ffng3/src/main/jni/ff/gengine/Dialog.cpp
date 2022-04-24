@@ -11,7 +11,7 @@
 #include "Log.h"
 #include "SoundAgent.h"
 #include "ResSoundPack.h"
-#include "Path.h"
+#include "File.h"
 #include "minmax.h"
 
 const std::string Dialog::DEFAULT_LANG = "en";
@@ -47,7 +47,7 @@ Dialog::~Dialog()
 Dialog::talk(int volume, int loops) const
 {
     if (NULL == m_sound && !m_soundfile.empty()) {
-        Path soundPath = Path::dataSystemPath(m_soundfile);
+        File soundPath = File::internal(m_soundfile);
         m_sound = ResSoundPack::loadSound(soundPath);
     }
 

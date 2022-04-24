@@ -1,7 +1,7 @@
 #ifndef HEADER_SOUNDAGENT_H
 #define HEADER_SOUNDAGENT_H
 
-class Path;
+class File;
 class BaseMsg;
 
 #include "BaseAgent.h"
@@ -27,7 +27,7 @@ class SoundAgent : public BaseAgent {
         virtual int playSound(Mix_Chunk *sound, int volume,
                 int loops=0) = 0;
 
-        virtual void playMusic(const Path &file,
+        virtual void playMusic(const File &file,
                 BaseMsg *finished) = 0;
         virtual void stopMusic() = 0;
         void receiveString(const StringMsg *msg);

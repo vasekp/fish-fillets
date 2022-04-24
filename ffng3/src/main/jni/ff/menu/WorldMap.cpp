@@ -16,7 +16,7 @@
 #include "WorldInput.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "WorldBranch.h"
 #include "OptionAgent.h"
 #include "VideoAgent.h"
@@ -75,10 +75,10 @@ WorldMap::~WorldMap()
 WorldMap::prepareBg()
 {
     m_bg = new LayeredPicture(
-            Path::dataSystemPath("images/menu/map.png"),
+            File::internal("images/menu/map.png"),
             V2(0, 0),
-            Path::dataSystemPath("images/menu/map_lower.png"),
-            Path::dataSystemPath("images/menu/map_mask.png"));
+            File::internal("images/menu/map_lower.png"),
+            File::internal("images/menu/map_mask.png"));
 
     m_maskIntro = m_bg->getMaskAt(V2(0, 0));
     m_maskExit = m_bg->getMaskAt(V2(m_bg->getW() - 1, 0));
@@ -92,13 +92,13 @@ WorldMap::prepareBg()
  * @throws LogicException when cannot parse data file
  */
     void
-WorldMap::initMap(const Path &mapfile)
+WorldMap::initMap(const File &mapfile)
 {
     WorldBranch parser(NULL);
     m_startNode = parser.parseMap(mapfile, &m_ending, m_descPack);
     if (NULL == m_startNode) {
         throw LogicException(ExInfo("cannot create world map")
-                .addInfo("file", mapfile.getNative()));
+                .addInfo("file", mapfile.getPath()));
     }
 }
 //-----------------------------------------------------------------
@@ -149,7 +149,7 @@ WorldMap::own_resumeState()
     m_selected = nextLevel;
 
     SoundAgent::agent()->playMusic(
-            Path::dataSystemPath("music/menu.ogg"), NULL);
+            File::internal("music/menu.ogg"), NULL);
 }
 //-----------------------------------------------------------------
 /**
@@ -321,7 +321,7 @@ WorldMap::findDesc(const std::string &codename) const
 WorldMap::runIntro()
 {
 #ifdef HAVE_SMPEG
-    Path movieFile = Path::dataReadPath("images/menu/intro.mpg");
+    File movieFile = File::dataReadPath("images/menu/intro.mpg");
     if (movieFile.exists()) {
         pushState(new MovieState(movieFile));
         return;
@@ -331,14 +331,14 @@ WorldMap::runIntro()
             .addInfo("file", movieFile.getNative()));
 #endif
 
-    pushState(new DemoMode(Path::dataSystemPath("script/share/demo_intro.lua")));
+    pushState(new DemoMode(File::internal("script/share/demo_intro.lua")));
 }
 //-----------------------------------------------------------------
     void
 WorldMap::runCredits()
 {
     pushState(new PosterScroller(
-                Path::dataSystemPath("images/menu/credits.png")));
+            File::internal("images/menu/credits.png")));
 }
 //-----------------------------------------------------------------
     void

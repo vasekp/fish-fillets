@@ -11,7 +11,7 @@
 #include "ResImagePack.h"
 
 //-----------------------------------------------------------------
-WiPicture::WiPicture(const Path &picture)
+WiPicture::WiPicture(const File &picture)
 {
     m_surface = ResImagePack::loadImage(picture);
 }

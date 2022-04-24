@@ -6,63 +6,43 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
-#include "Path.h"
+#include "File.h"
 
 #include "Log.h"
 #include "OptionAgent.h"
 #include "Dialog.h"
 
-#include <stdio.h>
 #include "FFNGFiles.h"
 #include <android/log.h>
 
-//-----------------------------------------------------------------
-    Path::Path(const std::string &file, const FileType &type)
-: m_path(file),
-  m_type(type)
-{
-    /* empty */
-}
-/**
- * Return path to system file.
- * Path does not need to exist.
- */
-    Path
-Path::dataSystemPath(const std::string &file)
-{
-    return constructPath(file, INTERNAL);
-}
-//-----------------------------------------------------------------
-/**
- * Return path to user file.
- * Path does not need to exist.
- */
-    Path
-Path::dataUserPath(const std::string &file)
-{
-    return constructPath(file, EXTERNAL);
-}
-//-----------------------------------------------------------------
-/**
- * Create path to the given file in the given directory.
+#include <utility>
+
+/*
  * Tries to use path to a localized resource if it exists.
  */
-    Path
-Path::constructPath(const std::string &file, const FileType &type)
+File
+File::internal(const std::string &path)
 {
-    std::string localized = localizePath(file);
-    Path localizedPath = Path(localized, type);
+    std::string localizedPath = localizePath(path);
+    File localized = File(localizedPath, FileType::internal);
 
-    if (localized == file) {
-        return localizedPath;
-    } else if (localizedPath.exists()) {
-        LOG_INFO(ExInfo("localized")
-                .addInfo("path", localizedPath.getNative()));
-        return localizedPath;
+    if (localizedPath == path) {
+        return localized;
+    } else if (localized.exists()) {
+        LOG_INFO(ExInfo("localizedPath")
+                         .addInfo("path", localized.getPath()));
+        return localized;
     } else {
-        return Path(file, type);
+        return File(path, FileType::internal);
     }
 }
+
+File
+File::external(const std::string &path)
+{
+    return File(path, FileType::external);
+}
+
 //-----------------------------------------------------------------
 /**
  * Return path to a localized resource or the original path.
@@ -71,8 +51,8 @@ Path::constructPath(const std::string &file, const FileType &type)
  * @param original original path
  * @return localized path if it is meaningful or the original path
  */
-    std::string
-Path::localizePath(const std::string &original)
+std::string
+File::localizePath(const std::string &original)
 {
     std::string::size_type dotPos = original.rfind('.');
     if (dotPos == std::string::npos) {
@@ -97,27 +77,23 @@ Path::localizePath(const std::string &original)
 }
 
 //-----------------------------------------------------------------
-std::string
-Path::getNative() const
-{
-    return m_path;
-}
-//-----------------------------------------------------------------
 bool
-Path::exists() const
+File::exists() const
 {
-	return FFNGFiles::exists(m_path, m_type);
+	return FFNGFiles::exists(m_path, m_type == FileType::internal ? 1 : 2);
 }
+
 //-----------------------------------------------------------------
 std::string
-Path::read() const
+File::read() const
 {
-	return FFNGFiles::read(m_path, m_type);
+	return FFNGFiles::read(m_path,  m_type == FileType::internal ? 1 : 2);
 }
+
 //-----------------------------------------------------------------
 bool
-Path::write(const std::string &data) const
+File::write(const std::string &data) const
 {
-    FFNGFiles::createPath(dataSystemPath(m_path).getPosixName());
+    FFNGFiles::createPath(m_path);
 	return FFNGFiles::write(m_path, data);
 }

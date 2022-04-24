@@ -4,7 +4,7 @@
 
 class SDL_Movie;
 
-#include "Path.h"
+#include "File.h"
 #include "GameState.h"
 
 /**
@@ -12,7 +12,7 @@ class SDL_Movie;
  */
 class MovieState : public GameState {
     protected:
-        Path m_file;
+        File m_file;
         SDL_Movie *m_movie;
     protected:
         virtual void own_initState();
@@ -21,7 +21,7 @@ class MovieState : public GameState {
         virtual void own_resumeState() {}
         virtual void own_cleanState();
     public:
-        MovieState(const Path &file);
+        MovieState(const File &file);
         virtual const char *getName() const { return "state_movie"; };
 };
 

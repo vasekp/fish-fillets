@@ -27,7 +27,7 @@
  *
  * NOTE: every SDL_InitSubSystem will disable UNICODE
  * hence InputAgent init must be after VideoAgent and SoundAgent.
- * NOTE: KeyConsole() use Path which asks OptionAgent
+ * NOTE: KeyConsole() use File which asks OptionAgent
  */
     void
 InputAgent::own_init()

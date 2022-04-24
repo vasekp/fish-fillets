@@ -1,7 +1,7 @@
 #ifndef HEADER_SCRIPTAGENT_H
 #define HEADER_SCRIPTAGENT_H
 
-class Path;
+class File;
 class ScriptState;
 
 #include "BaseAgent.h"

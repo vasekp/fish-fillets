@@ -31,7 +31,7 @@ Scripter::~Scripter()
  * Include this script file.
  */
     void
-Scripter::scriptInclude(const Path &filename)
+Scripter::scriptInclude(const File &filename)
 {
     m_script->doFile(filename);
 }

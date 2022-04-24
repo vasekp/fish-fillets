@@ -8,7 +8,7 @@
  */
 #include "MenuHelp.h"
 
-#include "Path.h"
+#include "File.h"
 #include "WiPara.h"
 
 #include "Labels.h"
@@ -20,10 +20,10 @@
 //-----------------------------------------------------------------
 MenuHelp::MenuHelp()
 {
-    Font usedFont(Path::dataSystemPath("font/font_menu.ttf"), 14);
+    Font usedFont(File::internal("font/font_menu.ttf"), 14);
     Color usedColor(255, 255, 255, 255);
 
-    Labels labels(Path::dataSystemPath("script/labels.lua"));
+    Labels labels(File::internal("script/labels.lua"));
     m_help = new WiPara(labels.getLabel("help"), usedFont, usedColor);
 
     takeHandler(new HelpInput(this));

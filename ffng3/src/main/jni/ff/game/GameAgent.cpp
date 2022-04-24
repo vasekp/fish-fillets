@@ -17,7 +17,7 @@
 #include "KeyBinder.h"
 #include "SimpleMsg.h"
 #include "IntMsg.h"
-#include "Path.h"
+#include "File.h"
 #include "OptionAgent.h"
 #include "LevelStatus.h"
 #include "Level.h"
@@ -32,7 +32,7 @@ GameAgent::own_init()
     m_manager = new StateManager();
     std::string replayLevel = OptionAgent::agent()->getParam("replay_level");
     if (replayLevel == "") {
-        Path pathMap = Path::dataSystemPath(OptionAgent::agent()->getParam(
+        File pathMap = File::internal(OptionAgent::agent()->getParam(
                 "worldmap", "script/worldmap.lua"));
         WorldMap *worldmap = new WorldMap();
         worldmap->initMap(pathMap);
@@ -61,7 +61,7 @@ GameAgent::replaySolution(const std::string &codename)
     levelStatus->prepareRun(codename, "", 0, "");
     std::string moves = levelStatus->readSolvedMoves();
 
-    Path datafile = Path::dataSystemPath(
+    File datafile = File::internal(
             "script/" + codename + "/init.lua");
     Level *level = new Level(codename, datafile, 0);
     level->fillStatus(levelStatus);

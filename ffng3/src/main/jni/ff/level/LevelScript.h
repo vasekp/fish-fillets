@@ -2,7 +2,7 @@
 #define HEADER_LEVELSCRIPT_H
 
 class V2;
-class Path;
+class File;
 class Cube;
 class Unit;
 class Level;
@@ -35,7 +35,7 @@ class LevelScript : public Planner, public RoomAccess {
         Cube *getModel(int model_index);
         Cube *askField(const V2 &loc);
 
-        void addSound(const std::string &name, const Path &file);
+        void addSound(const std::string &name, const File &file);
         void playSound(const std::string &name, int volume);
 };
 

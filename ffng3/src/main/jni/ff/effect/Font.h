@@ -1,7 +1,7 @@
 #ifndef HEADER_FONT_H
 #define HEADER_FONT_H
 
-class Path;
+class File;
 
 #include "NoCopy.h"
 #include "Color.h"
@@ -23,7 +23,7 @@ class Font : public NoCopy {
     private:
         static std::string biditize(const std::string &text);
     public:
-        Font(const Path &file_ttf, int height);
+        Font(const File &file_ttf, int height);
         ~Font();
         static void init();
         static void shutdown();

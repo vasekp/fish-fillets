@@ -12,7 +12,7 @@
 #include "RadioBox.h"
 
 #include "def-script.h"
-#include "Path.h"
+#include "File.h"
 #include "ScriptState.h"
 
 //-----------------------------------------------------------------
@@ -32,7 +32,7 @@ script_select_addFlag(lua_State *L) throw()
     const char *value = luaL_checkstring(L, 1);
     const char *picture = luaL_checkstring(L, 2);
 
-    getSelect(L)->addFlag(value, Path::dataSystemPath(picture));
+    getSelect(L)->addFlag(value, File::internal(picture));
     END_NOEXCEPTION;
     return 0;
 }
@@ -41,7 +41,7 @@ script_select_addFlag(lua_State *L) throw()
 /**
  * Execute script which will add flags.
  */
-SelectLang::SelectLang(const std::string &option, const Path &datafile)
+SelectLang::SelectLang(const std::string &option, const File &datafile)
 {
     m_option = option;
     m_activeRow = new HBox();
@@ -56,7 +56,7 @@ SelectLang::SelectLang(const std::string &option, const Path &datafile)
  * Stack flags in table.
  */
     void
-SelectLang::addFlag(const std::string &value, const Path &picture)
+SelectLang::addFlag(const std::string &value, const File &picture)
 {
     IWidget *flag = new RadioBox(m_option, value, picture);
     flag->setTip(value);

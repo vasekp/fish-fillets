@@ -1,7 +1,7 @@
 #ifndef HEADER_RADIOBOX_H
 #define HEADER_RADIOBOX_H
 
-class Path;
+class File;
 
 #include "WiContainer.h"
 
@@ -17,7 +17,7 @@ class RadioBox : public WiContainer {
         virtual void own_mouseButton(const MouseStroke &stroke);
     public:
         RadioBox(const std::string &param, const std::string &value,
-                const Path &picture);
+                const File &picture);
 
         virtual void drawOn(SDL_Surface *screen);
 };

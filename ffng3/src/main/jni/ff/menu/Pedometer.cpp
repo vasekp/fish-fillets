@@ -35,7 +35,7 @@ Pedometer::Pedometer(LevelStatus *status, Level *new_level)
     prepareRack();
 
     m_numbers = ResImagePack::loadImage(
-            Path::dataSystemPath("images/menu/numbers.png"));
+            File::internal("images/menu/numbers.png"));
 
     takeHandler(new PedoInput(this));
     registerDrawable(m_bg);
@@ -60,7 +60,7 @@ Pedometer::~Pedometer()
 Pedometer::prepareBg()
 {
     SDL_Surface *bgSurface = ResImagePack::loadImage(
-            Path::dataSystemPath("images/menu/map.png"));
+            File::internal("images/menu/map.png"));
     NodeDrawer drawer;
     drawer.setScreen(bgSurface);
     drawer.drawSelected(m_level->getLevelName());
@@ -85,10 +85,10 @@ Pedometer::prepareRack()
     static const int POS_Y = 141;
 
     m_rack = new LayeredPicture(
-            Path::dataSystemPath("images/menu/pedometer.png"),
+            File::internal("images/menu/pedometer.png"),
             V2(POS_X, POS_Y),
-            Path::dataSystemPath("images/menu/pedometer_lower.png"),
-            Path::dataSystemPath("images/menu/pedometer_mask.png"));
+            File::internal("images/menu/pedometer_lower.png"),
+            File::internal("images/menu/pedometer_mask.png"));
 
     //TODO: don't use numeric constants for coordinates
     m_maskRun = m_rack->getMaskAt(V2(86, 100));

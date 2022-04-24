@@ -9,7 +9,7 @@
 #include "Anim.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "ResImagePack.h"
 #include "LogicException.h"
 #include "StringTool.h"
@@ -81,9 +81,9 @@ Anim::drawAt(SDL_Surface *screen, int x, int y, eSide side)
  * default side is left side.
  */
     void
-Anim::addAnim(const std::string &name, const Path &picture, eSide side)
+Anim::addAnim(const std::string &name, const File &picture, eSide side)
 {
-    m_usedPath = picture.getPosixName();
+    m_usedPath = picture.getPath();
     m_animPack[side]->addImage(name, picture);
 }
 //-----------------------------------------------------------------

@@ -8,7 +8,7 @@
  */
 #include "Labels.h"
 
-#include "Path.h"
+#include "File.h"
 #include "ResDialogPack.h"
 #include "Dialog.h"
 #include "ScriptState.h"
@@ -38,7 +38,7 @@ script_label_text(lua_State *L) throw()
 }
 
 //-----------------------------------------------------------------
-Labels::Labels(const Path &source)
+Labels::Labels(const File &source)
 {
     m_labels = new ResDialogPack();
     m_script->registerFunc("label_text", script_label_text);

@@ -9,7 +9,7 @@
 #include "ScriptState.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "ScriptException.h"
 
 extern "C" {
@@ -95,12 +95,9 @@ ScriptState::callStack(int error, int params, int returns)
  * @param file script
  */
     void
-ScriptState::doFile(const Path &file)
+ScriptState::doFile(const File &file)
 {
-    __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "ScriptState::doFile 1 %s (%s)", file.getPosixName().c_str(), file.getType() == Path::INTERNAL ? "internal":"external");
     doString(file.read());
-//    int error = luaL_loadfile(m_state, file.getNative().c_str());
-//    callStack(error);
 }
 //-----------------------------------------------------------------
 /**

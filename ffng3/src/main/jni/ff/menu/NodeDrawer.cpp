@@ -13,7 +13,7 @@
 
 #include "Log.h"
 #include "V2.h"
-#include "Path.h"
+#include "File.h"
 #include "LevelNode.h"
 #include "TimerAgent.h"
 #include "minmax.h"
@@ -23,23 +23,23 @@
 //-----------------------------------------------------------------
 NodeDrawer::NodeDrawer()
 {
-    m_font = new Font(Path::dataSystemPath("font/font_menu.ttf"), 22);
+    m_font = new Font(File::internal("font/font_menu.ttf"), 22);
 
     m_imagePack = new ResImagePack();
     m_imagePack->addImage("solved",
-            Path::dataSystemPath("images/menu/n0.png"));
+                          File::internal("images/menu/n0.png"));
 
     m_imagePack->addImage("open",
-            Path::dataSystemPath("images/menu/n1.png"));
+                          File::internal("images/menu/n1.png"));
     m_imagePack->addImage("open",
-            Path::dataSystemPath("images/menu/n2.png"));
+                          File::internal("images/menu/n2.png"));
     m_imagePack->addImage("open",
-            Path::dataSystemPath("images/menu/n3.png"));
+                          File::internal("images/menu/n3.png"));
     m_imagePack->addImage("open",
-            Path::dataSystemPath("images/menu/n4.png"));
+                          File::internal("images/menu/n4.png"));
 
     m_imagePack->addImage("far",
-            Path::dataSystemPath("images/menu/n_far.png"));
+                          File::internal("images/menu/n_far.png"));
 }
 //-----------------------------------------------------------------
 NodeDrawer::~NodeDrawer()

@@ -1,7 +1,7 @@
 #ifndef HEADER_ROOM_H
 #define HEADER_ROOM_H
 
-class Path;
+class File;
 class Field;
 class FinderAlg;
 class WavyPicture;
@@ -82,7 +82,7 @@ class Room : public Drawable {
         int getW() const;
         int getH() const;
         int getCycles() const;
-        void addSound(const std::string &name, const Path &file);
+        void addSound(const std::string &name, const File &file);
         void playSound(const std::string &name, int volume=100);
 
         void setScreenShift(const V2 &shift);

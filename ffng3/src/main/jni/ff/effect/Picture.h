@@ -1,7 +1,7 @@
 #ifndef HEADER_PICTURE_H
 #define HEADER_PICTURE_H
 
-class Path;
+class File;
 
 #include "Drawable.h"
 #include "V2.h"
@@ -14,7 +14,7 @@ class Picture : public Drawable {
         V2 m_loc;
         SDL_Surface *m_surface;
     public:
-        Picture(const Path &file, const V2 &loc);
+        Picture(const File &file, const V2 &loc);
         Picture(SDL_Surface *new_surface, const V2 &loc);
         virtual ~Picture();
 
@@ -23,7 +23,7 @@ class Picture : public Drawable {
         virtual void drawOn(SDL_Surface *screen);
 
         void setLoc(const V2 &loc) { m_loc = loc; }
-        void changePicture(const Path &file);
+        void changePicture(const File &file);
         void changePicture(SDL_Surface *new_surface);
 };
 

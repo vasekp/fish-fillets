@@ -8,7 +8,7 @@
  */
 #include "ResSoundPack.h"
 
-#include "Path.h"
+#include "File.h"
 #include "OptionAgent.h"
 
 //-----------------------------------------------------------------
@@ -24,15 +24,15 @@ ResSoundPack::unloadRes(Mix_Chunk *res)
  * @return sound or NULL
  */
     Mix_Chunk *
-ResSoundPack::loadSound(const Path &file)
+ResSoundPack::loadSound(const File &file)
 {
     Mix_Chunk *chunk = NULL;
     //TODO: ask SoundAgent to load this sound
     if (OptionAgent::agent()->getAsBool("sound", true)) {
-        chunk = FFNGMusic::loadWAV /*FFNG Mix_LoadWAV*/(file.getNative().c_str());
+        chunk = FFNGMusic::loadWAV /*FFNG Mix_LoadWAV*/(file.getPath().c_str());
         if (NULL == chunk) {
             LOG_WARNING(ExInfo("cannot load sound")
-                .addInfo("path", file.getNative())
+                .addInfo("path", file.getPath())
                 /*FFNG .addInfo("MixError", Mix_GetError())*/);
         }
     }
@@ -44,7 +44,7 @@ ResSoundPack::loadSound(const Path &file)
  * Nothing is stored when sound cannot be loaded.
  */
     void
-ResSoundPack::addSound(const std::string &name, const Path &file)
+ResSoundPack::addSound(const std::string &name, const File &file)
 {
     Mix_Chunk *chunk = loadSound(file);
     if (chunk) {

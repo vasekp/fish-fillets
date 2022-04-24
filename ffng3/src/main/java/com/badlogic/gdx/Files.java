@@ -28,14 +28,14 @@ public interface Files {
 	 */
 	public enum FileType {
 		/**
-		 * Path relative to the asset directory on Android and to the application's root directory on the desktop. On the desktop,
+		 * File relative to the asset directory on Android and to the application's root directory on the desktop. On the desktop,
 		 * if the file is not, the classpath is then checked. This enables files to be found when using JWS or applets. Internal
 		 * files are always readonly.
 		 */
 		Internal,
 
 		/**
-		 * Path relative to the root of the SD card on Android and to the home directory of the current user on the desktop.
+		 * File relative to the root of the SD card on Android and to the home directory of the current user on the desktop.
 		 */
 		External,
 	}

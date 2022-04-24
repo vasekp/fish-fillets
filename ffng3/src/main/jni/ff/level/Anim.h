@@ -1,7 +1,7 @@
 #ifndef HEADER_ANIM_H
 #define HEADER_ANIM_H
 
-class Path;
+class File;
 class ResImagePack;
 
 #include "ViewEffect.h"
@@ -38,7 +38,7 @@ class Anim : public NoCopy {
 
         void drawAt(SDL_Surface *screen, int x, int y, eSide side);
 
-        void addAnim(const std::string &name, const Path &picture,
+        void addAnim(const std::string &name, const File &picture,
                 eSide side=SIDE_LEFT);
         void addAnim(const std::string &name, SDL_Surface *new_image,
                 eSide side=SIDE_LEFT);

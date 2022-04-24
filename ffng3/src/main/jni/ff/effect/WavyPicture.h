@@ -12,7 +12,7 @@ class WavyPicture : public Picture {
         float m_periode;
         float m_speed;
     public:
-        WavyPicture(const Path &file, const V2 &loc);
+        WavyPicture(const File &file, const V2 &loc);
         void setWamp(float amplitude) { m_amp = amplitude; }
         void setWperiode(float periode) { m_periode = periode; }
         void setWspeed(float speed) { m_speed = speed; }

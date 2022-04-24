@@ -9,7 +9,7 @@
 #include "LevelStatus.h"
 
 #include "def-script.h"
-#include "Path.h"
+#include "File.h"
 #include "ScriptState.h"
 #include "ScriptException.h"
 #include "DemoMode.h"
@@ -89,7 +89,7 @@ LevelStatus::readSolvedMoves()
 {
     m_savedMoves = "";
 
-    Path oldSolution = Path::dataUserPath(getSolutionFilename());
+    File oldSolution = File::external(getSolutionFilename());
     if (oldSolution.exists()) {
         try {
             scriptDo("saved_moves=nil");
@@ -114,10 +114,10 @@ LevelStatus::writeSolvedMoves(const std::string &moves)
     std::string prevMoves = readSolvedMoves();
 
     if (prevMoves.empty() || moves.size() < prevMoves.size()) {
-        Path file = Path::dataUserPath(getSolutionFilename());
+        File file = File::external(getSolutionFilename());
         if (!file.write("\nsaved_moves = '" + moves + "'\n")) {
             LOG_WARNING(ExInfo("cannot save solution")
-                    .addInfo("file", file.getNative())
+                    .addInfo("file", file.getPath())
                     .addInfo("moves", moves));
         }
     }
@@ -131,7 +131,7 @@ LevelStatus::createPoster() const
 {
     DemoMode *result = NULL;
     if (!m_poster.empty()) {
-        result = new DemoMode(Path::dataUserPath(m_poster));
+        result = new DemoMode(File::external(m_poster));
     }
     return result;
 }

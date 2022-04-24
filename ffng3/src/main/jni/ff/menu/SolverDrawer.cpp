@@ -9,7 +9,7 @@
 #include "SolverDrawer.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "Font.h"
 #include "Labels.h"
 #include "LevelStatus.h"
@@ -24,10 +24,10 @@
 SolverDrawer::SolverDrawer(LevelStatus *status)
 {
     try {
-        Font usedFont(Path::dataSystemPath("font/font_menu.ttf"), 14);
+        Font usedFont(File::internal("font/font_menu.ttf"), 14);
         Color usedColor(255, 255, 255, 255);
 
-        Labels labels(Path::dataSystemPath("script/labels.lua"));
+        Labels labels(File::internal("script/labels.lua"));
         const char *labelName;
         switch (status->compareToBest()) {
             case 1:

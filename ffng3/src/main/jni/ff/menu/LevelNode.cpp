@@ -18,7 +18,7 @@
 /**
  * Default state is STATE_FAR.
  */
-LevelNode::LevelNode(const std::string &codename, const Path &datafile,
+LevelNode::LevelNode(const std::string &codename, const File &datafile,
                 const V2 &loc, const std::string &poster)
 : m_codename(codename), m_poster(poster), m_datafile(datafile), m_loc(loc)
 {

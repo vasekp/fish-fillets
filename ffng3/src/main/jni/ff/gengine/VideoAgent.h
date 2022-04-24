@@ -1,7 +1,7 @@
 #ifndef HEADER_VIDEOAGENT_H
 #define HEADER_VIDEOAGENT_H
 
-class Path;
+class File;
 
 #include "BaseAgent.h"
 #include "MultiDrawer.h"
@@ -22,7 +22,7 @@ class VideoAgent : public BaseAgent, public MultiDrawer {
         bool m_fullscreen;
 
     private:
-        //FFNG void setIcon(const Path &file);
+        //FFNG void setIcon(const File &file);
         void changeVideoMode(int screen_width, int screen_height);
         int getVideoFlags();
         void toggleFullScreen();

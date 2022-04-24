@@ -1,7 +1,7 @@
 #ifndef HEADER_PLANNER_H
 #define HEADER_PLANNER_H
 
-class Path;
+class File;
 class CommandQueue;
 class DialogStack;
 

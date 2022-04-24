@@ -9,7 +9,7 @@
 #include "Application.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "Random.h"
 #include "AgentPack.h"
 #include "MessagerAgent.h"
@@ -119,9 +119,9 @@ Application::prepareOptions(int argc, char *argv[])
     params.addParam("loglevel", OptionParams::TYPE_NUMBER,
             "Debug with loglevel 7 (default=6)");
     params.addParam("systemdir", OptionParams::TYPE_PATH,
-            "Path to game data");
+            "File to game data");
     params.addParam("userdir", OptionParams::TYPE_PATH,
-            "Path to game data");
+            "File to game data");
     params.addParam("lang", OptionParams::TYPE_STRING,
             "2-letter code (e.g., en, cs, fr, de)");
     params.addParam("speech", OptionParams::TYPE_STRING,
@@ -139,7 +139,7 @@ Application::prepareOptions(int argc, char *argv[])
     params.addParam("volume_music", OptionParams::TYPE_NUMBER,
             "Music volume in percentage");
     params.addParam("worldmap", OptionParams::TYPE_STRING,
-            "Path to the worldmap file");
+            "File to the worldmap file");
     params.addParam("cache_images", OptionParams::TYPE_BOOLEAN,
             "Cache images (default=true)");
     params.addParam("sound_frequency", OptionParams::TYPE_NUMBER,
@@ -158,13 +158,13 @@ Application::prepareOptions(int argc, char *argv[])
     void
 Application::customizeGame()
 {
-    Path initfile = Path::dataSystemPath("script/init.lua");
+    File initfile = File::internal("script/init.lua");
     if (initfile.exists()) {
         ScriptAgent::agent()->scriptInclude(initfile);
     }
     else {
         throw ResourceException(ExInfo("init file not found")
-                .addInfo("path", initfile.getNative())
+                .addInfo("path", initfile.getPath())
                 .addInfo("systemdir",
                     OptionAgent::agent()->getParam("systemdir"))
                 .addInfo("userdir",

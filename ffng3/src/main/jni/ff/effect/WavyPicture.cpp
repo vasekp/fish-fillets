@@ -17,7 +17,7 @@
  * Load surface.
  * Default is no waves.
  */
-WavyPicture::WavyPicture(const Path &file, const V2 &loc)
+WavyPicture::WavyPicture(const File &file, const V2 &loc)
     : Picture(file, loc)
 {
     m_amp = 0;

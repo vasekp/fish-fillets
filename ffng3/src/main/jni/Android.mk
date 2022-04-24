@@ -11,7 +11,7 @@ FFNG_SRC_FILES :=	\
 					ff/gengine/Name.cpp \
 					ff/gengine/BaseListener.cpp \
 					ff/gengine/Log.cpp \
-					ff/gengine/Path.cpp \
+					ff/gengine/File.cpp \
 					ff/gengine/Random.cpp \
 					ff/gengine/ExInfo.cpp \
 					ff/gengine/AgentPack.cpp \

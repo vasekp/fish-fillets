@@ -8,7 +8,7 @@
  */
 #include "ResImagePack.h"
 
-#include "Path.h"
+#include "File.h"
 #include "ImgException.h"
 #include "SDLException.h"
 #include "OptionAgent.h"
@@ -39,12 +39,12 @@ ResImagePack::ResImagePack(bool caching_enabled) {
  * @throws SDLException when image cannot be converted
  */
 SDL_Surface *
-ResImagePack::loadImage(const Path &file)
+ResImagePack::loadImage(const File &file)
 {
-    SDL_Surface *raw_image = /*FFNG IMG_Load*/ FFNGSurface::imgLoad(file.getNative().c_str());
+    SDL_Surface *raw_image = /*FFNG IMG_Load*/ FFNGSurface::imgLoad(file.getPath().c_str());
     if (NULL == raw_image) {
         throw ImgException(ExInfo("Load")
-                .addInfo("file", file.getNative()));
+                .addInfo("file", file.getPath()));
     }
 
     return raw_image; //FFNG
@@ -52,7 +52,7 @@ ResImagePack::loadImage(const Path &file)
     SDL_Surface *surface = SDL_DisplayFormatAlpha(raw_image);
     if (NULL == surface) {
         throw SDLException(ExInfo("DisplayFormat")
-                .addInfo("file", file.getNative()));
+                .addInfo("file", file.getPath()));
     }
     SDL_FreeSurface(raw_image);
 
@@ -67,14 +67,14 @@ ResImagePack::loadImage(const Path &file)
  * @throws SDLException when image cannot be converted
  */
 void
-ResImagePack::addImage(const std::string &name, const Path &file)
+ResImagePack::addImage(const std::string &name, const File &file)
 {
     SDL_Surface *surface;
     if (m_caching_enabled) {
-        surface = CACHE->get(file.getPosixName());
+        surface = CACHE->get(file.getPath());
         if (!surface) {
             surface = loadImage(file);
-            CACHE->put(file.getPosixName(), surface);
+            CACHE->put(file.getPath(), surface);
         }
     } else {
         surface = loadImage(file);

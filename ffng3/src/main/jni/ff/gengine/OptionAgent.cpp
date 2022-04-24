@@ -11,7 +11,7 @@
 #include "Environ.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "ScriptAgent.h"
 #include "StringTool.h"
 #include "HelpException.h"
@@ -282,7 +282,7 @@ OptionAgent::getAsBool(const std::string &name,
 OptionAgent::setPersistent(const std::string &name, const std::string &value)
 {
     //NOTE: path must be created before change of environ
-    Path config = Path::dataUserPath(CONFIG_FILE);
+    File config = File::external(CONFIG_FILE);
 
     Environ *swap_env = m_environ;
     m_environ = new Environ();
@@ -391,7 +391,7 @@ void
 OptionAgent::readSystemConfig()
 {
     try {
-        Path systemConfig = Path::dataSystemPath(CONFIG_FILE);
+        File systemConfig = File::internal(CONFIG_FILE);
         if (systemConfig.exists()) {
             ScriptAgent::agent()->scriptInclude(systemConfig);
         }
@@ -405,7 +405,7 @@ void
 OptionAgent::readUserConfig()
 {
     try {
-        Path userConfig = Path::dataUserPath(CONFIG_FILE);
+        File userConfig = File::external(CONFIG_FILE);
         if (userConfig.exists()) {
             ScriptAgent::agent()->scriptInclude(userConfig);
         }

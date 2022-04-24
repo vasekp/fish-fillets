@@ -8,7 +8,7 @@
  */
 #include "demo-script.h"
 
-#include "Path.h"
+#include "File.h"
 #include "DemoMode.h"
 #include "Picture.h"
 
@@ -33,7 +33,7 @@ script_demo_display(lua_State *L) throw()
     int x = luaL_checkint(L, 2);
     int y = luaL_checkint(L, 3);
 
-    Picture *picture = new Picture(Path::dataSystemPath(filename), V2(x, y));
+    Picture *picture = new Picture(File::internal(filename), V2(x, y));
     getDemo(L)->action_display(picture);
     END_NOEXCEPTION;
     return 0;

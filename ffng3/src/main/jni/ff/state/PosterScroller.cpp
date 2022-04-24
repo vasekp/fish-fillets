@@ -13,7 +13,7 @@
 #include "minmax.h"
 
 //-----------------------------------------------------------------
-PosterScroller::PosterScroller(const Path &picture)
+PosterScroller::PosterScroller(const File &picture)
     : PosterState(picture)
 {
     m_shift = 0;

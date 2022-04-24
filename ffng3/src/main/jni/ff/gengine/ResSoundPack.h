@@ -1,7 +1,7 @@
 #ifndef HEADER_RESSOUNDPACK_H
 #define HEADER_RESSOUNDPACK_H
 
-class Path;
+class File;
 
 #include "ResourcePack.h"
 
@@ -15,8 +15,8 @@ class ResSoundPack : public ResourcePack<Mix_Chunk*> {
     public:
         virtual const char *getName() const { return "sound_pack"; }
 
-        static Mix_Chunk *loadSound(const Path &file);
-        void addSound(const std::string &name, const Path &file);
+        static Mix_Chunk *loadSound(const File &file);
+        void addSound(const std::string &name, const File &file);
         virtual void unloadRes(Mix_Chunk *res);
 };
 

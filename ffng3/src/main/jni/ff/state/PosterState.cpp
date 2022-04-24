@@ -8,7 +8,7 @@
  */
 #include "PosterState.h"
 
-#include "Path.h"
+#include "File.h"
 #include "Picture.h"
 #include "DemoInput.h"
 
@@ -18,7 +18,7 @@
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------
-PosterState::PosterState(const Path &picture)
+PosterState::PosterState(const File &picture)
 {
     m_bg = new Picture(picture, V2(0, 0));
     takeHandler(new DemoInput(this));

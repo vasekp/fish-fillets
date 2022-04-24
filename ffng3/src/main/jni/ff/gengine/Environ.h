@@ -1,7 +1,7 @@
 #ifndef HEADER_ENVIRON_H
 #define HEADER_ENVIRON_H
 
-class Path;
+class File;
 class BaseMsg;
 
 #include "NoCopy.h"
@@ -20,7 +20,7 @@ class Environ : public NoCopy {
         t_watchers m_watchers;
     public:
         virtual ~Environ();
-        void store(const Path &file);
+        void store(const File &file);
 
         void setParam(const std::string &name, const std::string &value);
         void setParam(const std::string &name, long value);

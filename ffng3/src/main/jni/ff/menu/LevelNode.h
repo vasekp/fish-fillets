@@ -5,7 +5,7 @@ class Level;
 class NodeDrawer;
 
 #include "V2.h"
-#include "Path.h"
+#include "File.h"
 #include "NoCopy.h"
 
 #include <string>
@@ -26,7 +26,7 @@ class LevelNode : public NoCopy {
         static const int DOT_RADIUS = 13;
         std::string m_codename;
         std::string m_poster;
-        Path m_datafile;
+        File m_datafile;
         V2 m_loc;
         eState m_state;
         int m_depth;
@@ -38,7 +38,7 @@ class LevelNode : public NoCopy {
         bool isUnder(const V2 &cursor) const;
         t_children findOpenNodes();
     public:
-        LevelNode(const std::string &codename, const Path &datafile,
+        LevelNode(const std::string &codename, const File &datafile,
                 const V2 &loc, const std::string &poster="");
         virtual ~LevelNode();
         void setState(eState state);

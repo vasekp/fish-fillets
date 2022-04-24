@@ -9,7 +9,7 @@
 #include "VideoAgent.h"
 
 #include "Log.h"
-#include "Path.h"
+#include "File.h"
 #include "ImgException.h"
 #include "SDLException.h"
 #include "LogicException.h"
@@ -43,7 +43,7 @@ VideoAgent::own_init()
     atexit(SDL_Quit);
     */
 
-    //FFNG no icon on android, at least this way... setIcon(Path::dataReadPath("images/icon.png"));
+    //FFNG no icon on android, at least this way... setIcon(File::dataReadPath("images/icon.png"));
 
     registerWatcher("fullscreen");
     initVideoMode();
@@ -76,12 +76,12 @@ VideoAgent::own_shutdown()
  */
 /* FFNG no icon code for android
     void
-VideoAgent::setIcon(const Path &file)
+VideoAgent::setIcon(const File &file)
 {
     SDL_Surface *icon = IMG_Load(file.getNative().c_str());
     if (NULL == icon) {
         throw ImgException(ExInfo("Load")
-                .addInfo("file", file.getNative()));
+                .addInfo("file", file.getPath()));
     }
 
     SDL_WM_SetIcon(icon, NULL);

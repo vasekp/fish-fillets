@@ -14,7 +14,7 @@
 
 //-----------------------------------------------------------------
 RadioBox::RadioBox(const std::string &param, const std::string &value,
-        const Path &picture)
+        const File &picture)
 : WiContainer(new WiPicture(picture), BORDER), m_param(param), m_value(value)
 {
 }

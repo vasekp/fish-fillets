@@ -1,7 +1,7 @@
 #ifndef HEADER_SELECTLANG_H
 #define HEADER_SELECTLANG_H
 
-class Path;
+class File;
 
 #include "VBox.h"
 #include "Scripter.h"
@@ -15,9 +15,9 @@ class SelectLang : public VBox, public Scripter {
         std::string m_option;
         WiBox *m_activeRow;
     public:
-        SelectLang(const std::string &option, const Path &datafile);
+        SelectLang(const std::string &option, const File &datafile);
 
-        void addFlag(const std::string &value, const Path &picture);
+        void addFlag(const std::string &value, const File &picture);
 };
 
 #endif
