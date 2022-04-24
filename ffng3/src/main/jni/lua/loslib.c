@@ -54,15 +54,18 @@ static int os_rename (lua_State *L) {
 }
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 static int os_tmpname (lua_State *L) {
   char buff[LUA_TMPNAMBUFSIZE];
   int err;
-  lua_tmpnam(buff, err);
+  lua_tmpnam(buff, err); // deprecated but probably never actually used
   if (err)
     return luaL_error(L, "unable to generate a unique filename");
   lua_pushstring(L, buff);
   return 1;
 }
+#pragma clang diagnostic pop
 
 
 static int os_getenv (lua_State *L) {
