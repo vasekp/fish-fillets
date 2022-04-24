@@ -8,6 +8,7 @@ class Font;
 #include "Color.h"
 
 #include <string>
+#include <utility>
 //FFNG #include "SDL.h"
 
 /**

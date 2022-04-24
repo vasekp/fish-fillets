@@ -13,7 +13,6 @@ class StringMsg : public BaseMsg {
     private:
         std::string m_value;
     public:
-        CLONE(StringMsg);
         StringMsg(BaseListener *listener, const std::string &name,
                 const std::string &value)
             : BaseMsg(listener->getName(), name), m_value(value) {}

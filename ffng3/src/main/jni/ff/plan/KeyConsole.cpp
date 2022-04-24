@@ -45,9 +45,8 @@ KeyConsole::sendCommand()
 {
     bool result = false;
     try {
-        StringMsg *msg = new StringMsg(Name::SCRIPT_NAME,
-                "dostring", m_input);
-        MessagerAgent::agent()->forwardNewMsg(msg);
+        StringMsg msg(Name::SCRIPT_NAME, "dostring", m_input);
+        MessagerAgent::agent()->forwardMsg(std::move(msg));
         result = true;
     }
     catch (BaseException &e) {

@@ -33,7 +33,7 @@ WiButton::~WiButton()
 WiButton::own_mouseButton(const MouseStroke &stroke)
 {
     if (stroke.isLeft()) {
-        m_msg->sendClone();
+        m_msg->send();
     }
 }
 

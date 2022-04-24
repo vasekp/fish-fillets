@@ -196,7 +196,7 @@ SDLSoundAgent::musicFinished()
 {
     try {
         if (ms_finished) {
-            ms_finished->sendClone();
+            ms_finished->send();
         }
         else {
             LOG_WARNING(ExInfo("NULL == ms_finished"));

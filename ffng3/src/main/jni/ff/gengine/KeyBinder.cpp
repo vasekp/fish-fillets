@@ -68,9 +68,9 @@ void
 KeyBinder::keyDown(const SDL_keysym &keysym) const
 {
     KeyStroke stroke(keysym);
-    t_strokes::const_iterator it = m_strokes.find(stroke);
+    auto it = m_strokes.find(stroke);
     if (m_strokes.end() != it) {
-        it->second->sendClone();
+        it->second->send();
     }
 }
 

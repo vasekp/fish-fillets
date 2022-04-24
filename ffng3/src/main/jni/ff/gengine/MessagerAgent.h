@@ -19,8 +19,7 @@ class MessagerAgent : public BaseAgent {
     public:
         void addListener(BaseListener *listener);
         void removeListener(const std::string &name);
-
-        void forwardNewMsg(BaseMsg *msg);
+        void forwardMsg(const BaseMsg& msg);
 };
 
 #endif

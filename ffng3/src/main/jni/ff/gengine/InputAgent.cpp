@@ -48,8 +48,7 @@ InputAgent::own_update()
         switch (event.type) {
             case /*FFNG SDL_QUIT*/SDL_Event::QUIT:
                 {
-                    BaseMsg *msg = new SimpleMsg(Name::APP_NAME, "quit");
-                    MessagerAgent::agent()->forwardNewMsg(msg);
+                    MessagerAgent::agent()->forwardMsg(SimpleMsg(Name::APP_NAME, "quit"));
                     break;
                 }
             case /*FFNG SDL_KEYDOWN*/SDL_Event::KEYDOWN:

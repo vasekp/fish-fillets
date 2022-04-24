@@ -11,7 +11,6 @@ class IntMsg : public BaseMsg {
     private:
         int m_value;
     public:
-        CLONE(IntMsg);
         IntMsg(BaseListener *listener, const std::string &name,
                 int value)
             : BaseMsg(listener->getName(), name), m_value(value) {}

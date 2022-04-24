@@ -104,8 +104,8 @@ StateManager::popState(GameState *who)
         checkStack();
     }
     else {
-        MessagerAgent::agent()->forwardNewMsg(
-                new SimpleMsg(Name::APP_NAME, "quit"));
+        MessagerAgent::agent()->forwardMsg(
+                SimpleMsg(Name::APP_NAME, "quit"));
     }
 }
 

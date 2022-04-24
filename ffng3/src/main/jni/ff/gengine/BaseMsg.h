@@ -1,9 +1,9 @@
 #ifndef HEADER_BASEMSG_H
 #define HEADER_BASEMSG_H
 
-class BaseListener;
-
 #include <string>
+
+class BaseListener;
 
 /**
  * Messgage.
@@ -15,10 +15,10 @@ class BaseMsg {
     public:
         BaseMsg(const std::string &listenerName, const std::string &name);
         virtual ~BaseMsg() {}
-        virtual BaseMsg *clone() const = 0;
-        virtual void sendActual(BaseListener *listener) const = 0;
 
-        void sendClone() const;
+    virtual void sendActual(BaseListener *listener) const = 0;
+
+        void send() const;
         bool equalsName(const std::string &name) const
         { return m_name == name; }
         const std::string &getMsgName() const { return m_name; }
@@ -26,11 +26,5 @@ class BaseMsg {
 
         virtual std::string toString() const;
 };
-
-/**
- * Allow clone typed message.
- */
-#define CLONE(TYPE) \
-virtual TYPE *clone() const { return new TYPE(*this); }
 
 #endif

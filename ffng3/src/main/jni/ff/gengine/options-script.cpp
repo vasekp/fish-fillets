@@ -24,22 +24,20 @@
 script_options_sendMsg(lua_State *L) throw()
 {
     BEGIN_NOEXCEPTION;
-    BaseMsg *message = NULL;
     const char *listener = luaL_checkstring(L, 1);
     const char *msg = luaL_checkstring(L, 2);
+    auto *agent = MessagerAgent::agent();
     if (lua_isstring(L, 3)) {
         const char *string_value = luaL_checkstring(L, 3);
-        message = new StringMsg(listener, msg, string_value);
+        agent->forwardMsg(StringMsg(listener, msg, string_value));
     }
     else if (lua_isnumber(L, 3)) {
         int int_value = luaL_checkint(L, 3);
-        message = new IntMsg(listener, msg, int_value);
+        agent->forwardMsg(IntMsg(listener, msg, int_value));
     }
     else {
-        message = new SimpleMsg(listener, msg);
+        agent->forwardMsg(SimpleMsg(listener, msg));
     }
-
-    MessagerAgent::agent()->forwardNewMsg(message);
 
     END_NOEXCEPTION;
     return 0;

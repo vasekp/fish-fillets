@@ -85,7 +85,7 @@ Environ::setParam(const std::string &name, const std::string &value)
             for (t_watchers::size_type i = 0; i < count; ++i) {
                 t_watchers::iterator cur_it = it++;
                 try {
-                    cur_it->second->sendClone();
+                    cur_it->second->send();
                 }
                 catch (NameException &e) {
                     LOG_WARNING(e.info());

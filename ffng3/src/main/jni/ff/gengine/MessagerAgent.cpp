@@ -13,8 +13,6 @@
 #include "BaseListener.h"
 #include "NameException.h"
 
-#include <memory> // for auto_ptr
-
 //-----------------------------------------------------------------
 /**
  * Remember listener under his name.
@@ -44,21 +42,19 @@ MessagerAgent::removeListener(const std::string &listenerName)
  * @throws NameException when listener cannot be found
  */
 void
-MessagerAgent::forwardNewMsg(BaseMsg *msg)
+MessagerAgent::forwardMsg(const BaseMsg& msg)
 {
-    std::auto_ptr<BaseMsg> sure_delete(msg);
-
-    const std::string &listenerName = msg->getListenerName();
+    const std::string &listenerName = msg.getListenerName();
     LOG_DEBUG(ExInfo("received new message")
-            .addInfo("msg", msg->toString()));
+            .addInfo("msg", msg.toString()));
 
-    t_listeners::iterator it = m_listeners.find(listenerName);
+    auto it = m_listeners.find(listenerName);
     if (m_listeners.end() == it) {
         throw NameException(ExInfo("cannot find listener")
                 .addInfo("name", listenerName));
     }
 
-    msg->sendActual(it->second);
+    msg.sendActual(it->second);
 }
 
 
