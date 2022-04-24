@@ -2,14 +2,12 @@ package cz.ger.ffng;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Vector;
 
 import com.badlogic.gdx.backends.android.AndroidFileHandle;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.util.Log;
 
 public class FFNGSound {
 	private static HashMap<Integer,FFNGSound> playingChannels = new HashMap<Integer,FFNGSound>();
@@ -22,7 +20,7 @@ public class FFNGSound {
 	public FFNGSound(String file) {
 		this.file = file;
 		try {
-			AndroidFileHandle fh = (AndroidFileHandle)FFNGFiles.getFileHandle(file, FFNGFiles.INTERNAL);
+			AndroidFileHandle fh = (AndroidFileHandle)FFNGFiles.getFileHandle(file);
 			AssetFileDescriptor descriptor = FFNG.assets.openFd(fh.path());
 			mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 			descriptor.close();

@@ -16,10 +16,10 @@
 #include "FFNGSurface.h"
 
 extern "C"
-JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject obj, jstring jPath)
+JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject obj, jstring jPath, jobject jAssets)
 {
 	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "begin");
-	JNI::getInstance()->setJavaContext(env, obj);
+	JNI::getInstance()->setJavaContext(env, obj, jAssets);
 
     try {
         Application app;
@@ -93,10 +93,11 @@ JNI* JNI::getInstance() {
 	return instance;
 }
 
-void JNI::setJavaContext(JNIEnv * env, jobject obj) {
+void JNI::setJavaContext(JNIEnv * env, jobject obj, jobject jAssets) {
 	 m_javaEnv = env;
 	 m_javaObj = obj;
-	 m_javaCls = m_javaEnv->GetObjectClass(m_javaObj);
+	 m_javaCls = env->GetObjectClass(m_javaObj);
+     m_assetManager = AAssetManager_fromJava(env, jAssets);
 }
 
 void JNI::clearJavaContext() {

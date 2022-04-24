@@ -14,6 +14,7 @@
 
 #include "FFNGFiles.h"
 #include <android/log.h>
+#include "jnix.h"
 
 #include <filesystem>
 #include <sstream>
@@ -86,7 +87,16 @@ File::exists() const
     if (m_type == FileType::external) {
         return std::filesystem::exists(m_path);
     } else {
-        return FFNGFiles::exists(m_path);
+        auto *assets = JNI::getInstance()->getAssetManager();
+        auto *asset = AAssetManager_open(assets, m_path.c_str(), AASSET_MODE_UNKNOWN);
+        if (asset) {
+            //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "exists %s: TRUE", m_path.c_str());
+            AAsset_close(asset);
+            return true;
+        } else {
+            //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "exists %s: FALSE", m_path.c_str());
+            return false;
+        }
     }
 }
 
@@ -100,7 +110,15 @@ File::read() const
         oss << ifs.rdbuf();
         return oss.str();
     } else {
-        return FFNGFiles::read(m_path);
+        auto *assets = JNI::getInstance()->getAssetManager();
+        auto *asset = AAssetManager_open(assets, m_path.c_str(), AASSET_MODE_BUFFER);
+        // TODO: check
+        auto size = AAsset_getLength(asset);
+        auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
+        //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "read %d bytes from %s", size, m_path.c_str());
+        std::string ret(buffer, buffer + size);
+        AAsset_close(asset);
+        return ret;
     }
 }
 

@@ -27,8 +27,6 @@ public class FFNG extends Activity {
         files = new AndroidFiles(assets);
         storageDir = getExternalFilesDir(null).getPath();
 
-        FFNGFiles.createCache();
-        
         // turn off the window's title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 

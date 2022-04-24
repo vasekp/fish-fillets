@@ -6,6 +6,7 @@ import cz.ger.ffng.Controls.TouchArea;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,7 +37,8 @@ public class FFNGApp extends Thread {
 	
 	private View view = null;
 	private Activity activity = null;
-	
+	private AssetManager assets;
+
 	private Bitmap screen = null;
 	private Canvas canvas;
 	
@@ -98,7 +100,8 @@ public class FFNGApp extends Thread {
 
 	public void run()
 	{
-		ffngMain(this.activity.getExternalFilesDir(null).getAbsolutePath());
+		assets = activity.getAssets();
+		ffngMain(this.activity.getExternalFilesDir(null).getAbsolutePath(), assets);
 		activity.finish();
 	}
 	
@@ -361,7 +364,7 @@ public class FFNGApp extends Thread {
     }
        
     //@SuppressWarnings("unused")
-    private native int ffngMain(String storagePath);
+    private native int ffngMain(String storagePath, AssetManager assetManager);
     
     private class FFNGView extends View implements OnTouchListener, OnKeyListener {
 

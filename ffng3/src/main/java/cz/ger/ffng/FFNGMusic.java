@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
-import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidFileHandle;
 
@@ -17,7 +16,7 @@ public class FFNGMusic {
 	
 	public FFNGMusic(String file) {
 		try {
-			AndroidFileHandle fh = (AndroidFileHandle)FFNGFiles.getFileHandle(file, FFNGFiles.INTERNAL);
+			AndroidFileHandle fh = (AndroidFileHandle)FFNGFiles.getFileHandle(file);
 			AssetFileDescriptor descriptor = FFNG.assets.openFd(fh.path());
 			mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 			descriptor.close();
