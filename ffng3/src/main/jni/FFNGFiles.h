@@ -5,10 +5,8 @@
 
 class FFNGFiles {
 public:
-	static bool exists(const std::string &path, int type);
-	static std::string read(const std::string &path, int type);
-	static void createPath(const std::string &path);
-	static bool write(const std::string &path, const std::string &data);
+	static bool exists(const std::string &path);
+	static std::string read(const std::string &path);
 };
 
 #endif /* FFNGFILES_H_ */

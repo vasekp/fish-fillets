@@ -1,32 +1,26 @@
 package cz.ger.ffng;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-
-import android.app.Application;
 import android.util.Log;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashSet;
+
 public class FFNGFiles {
 	public final static int INTERNAL = 1;
-	public final static int EXTERNAL = 2;
 
 	protected static final HashSet<String> internalFileList = new HashSet<String>();
-	protected static final HashSet<String> externalFileList = new HashSet<String>();
-	
+
     public static void createCache() {
-		//createFileList(internalFileList, getFileHandle("", FileType.Internal));	// too slow :(
 		readFileList(internalFileList, "filelist.txt");
-		createFileList(externalFileList, FFNG.files.getFileHandle(FFNG.storageDir, FileType.External));
 	}
 	
 	protected static void readFileList(HashSet<String> fileList, String sourceFile) {
@@ -45,39 +39,12 @@ public class FFNGFiles {
 		}
 	}
 	
-	protected static void createFileList(HashSet<String> fileList, FileHandle fh) {
-		if (fh == null) return;
-		FileHandle[] list = fh.list();
-		
-		for (FileHandle f : list) {
-			if (f.isDirectory()) {
-				createFileList(fileList, f);
-			} else {
-				fileList.add(f.path());
-			}
-		}
-	}
-	
-	static public FileType getFileType(int type) {
-		return (type == EXTERNAL ? FileType.External : FileType.Internal);
-	}
-	
-	static public String correctPath(String path, FileType type) {
-		if (type == FileType.External) {
-			return FFNG.storageDir + "/" + path;
-		} else {
-			return path;
-		}
-	}
-	
 	static public FileHandle getFileHandle(String file, int type) throws IOException {
-		FileType ft = getFileType(type);
-		
 		FileHandle fh = null;
 		try {
-			fh = FFNG.files.getFileHandle(correctPath(file, ft), ft);
+			fh = FFNG.files.getFileHandle(file, FileType.Internal);
 		} catch(Exception e) {
-			throw new IOException("File doesn't exist: " + file + " (" + (type == EXTERNAL ? "external" : "internal"));
+			throw new IOException("File doesn't exist: " + file);
 		} catch(NoSuchMethodError e) {
 			Log.d("FFNG", "FFNGFiles" + e.getMessage());
 		}
@@ -86,11 +53,7 @@ public class FFNGFiles {
 	}
 	
 	static public boolean exists(String path, int type) {
-		switch (type) {
-			case INTERNAL: return internalFileList.contains(path);
-			case EXTERNAL: return externalFileList.contains(FFNG.storageDir + "/" + path);
-			default: throw new AssertionError("type neither internal nor external");
-		}
+		return internalFileList.contains(path);
 	}
 	
 	static public String read(String path, int type) {
@@ -131,22 +94,5 @@ public class FFNGFiles {
 	    } else {        
 	        return "";
 	    }
-	}
-	
-	public static void createPath(String path) {	// external
-		FFNG.files.external(FFNG.storageDir + "/" + path).parent().mkdirs();
-	}
-	
-	public static boolean write(String path, String data) {
-		OutputStream os = FFNG.files.external(FFNG.storageDir + "/" + path).write(false);
-		
-		try {
-			os.write(data.getBytes("UTF-8"));
-			externalFileList.add(FFNG.storageDir + "/" + path);
-		} catch (IOException e) {
-			Log.e("FFNG", "error writing file " + path + ": " + e.getMessage());
-			return false;
-		}
-		return true;
 	}
 }

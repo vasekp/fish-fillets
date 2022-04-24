@@ -15,6 +15,9 @@
 #include "FFNGFiles.h"
 #include <android/log.h>
 
+#include <filesystem>
+#include <sstream>
+#include <fstream>
 #include <utility>
 
 /*
@@ -80,20 +83,39 @@ File::localizePath(const std::string &original)
 bool
 File::exists() const
 {
-	return FFNGFiles::exists(m_path, m_type == FileType::internal ? 1 : 2);
+    if (m_type == FileType::external) {
+        return std::filesystem::exists(m_path);
+    } else {
+        return FFNGFiles::exists(m_path);
+    }
 }
 
 //-----------------------------------------------------------------
 std::string
 File::read() const
 {
-	return FFNGFiles::read(m_path,  m_type == FileType::internal ? 1 : 2);
+    if (m_type == FileType::external) {
+        std::ostringstream oss;
+        std::ifstream ifs{m_path};
+        oss << ifs.rdbuf();
+        return oss.str();
+    } else {
+        return FFNGFiles::read(m_path);
+    }
 }
 
 //-----------------------------------------------------------------
 bool
 File::write(const std::string &data) const
 {
-    FFNGFiles::createPath(m_path);
-	return FFNGFiles::write(m_path, data);
+    if (m_type == FileType::external) {
+        std::filesystem::path path{m_path};
+        std::filesystem::create_directories(path.parent_path());
+        std::ofstream ofs{m_path};
+        ofs << data;
+        return true;
+    } else {
+        __android_log_print(ANDROID_LOG_ERROR, "FFNG", "write to internal file %s", m_path.c_str());
+        return false;
+    }
 }

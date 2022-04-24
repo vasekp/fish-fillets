@@ -5,11 +5,8 @@
  *      Author: dan
  */
 
-#include <string.h>
-#include <assert.h>
-#include <stdio.h>
+#include <filesystem>
 #include <android/log.h>
-#include <signal.h>
 #include <ff/gengine/ResImagePack.h>
 #include "jnix.h"
 #include "Log.h"
@@ -19,7 +16,7 @@
 #include "FFNGSurface.h"
 
 extern "C"
-JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject obj)
+JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject obj, jstring jPath)
 {
 	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "begin");
 	JNI::getInstance()->setJavaContext(env, obj);
@@ -29,6 +26,13 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngmain(JNIEnv * env, jobject o
 
 		FFNGSurface::initEGL();
 		FFNGSurface::initShaders();
+
+        {
+            const char* storagePath = env->GetStringUTFChars(jPath, nullptr);
+            std::filesystem::current_path(storagePath);
+            __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "current path %s", storagePath);
+            env->ReleaseStringUTFChars(jPath, storagePath);
+        }
 
         try {
             app.init(0, NULL);

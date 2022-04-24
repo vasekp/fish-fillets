@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import cz.ger.ffng.Controls.TouchArea;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,7 +14,6 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
-import android.graphics.Region;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -100,7 +98,7 @@ public class FFNGApp extends Thread {
 
 	public void run()
 	{
-		ffngmain();
+		ffngMain(this.activity.getExternalFilesDir(null).getAbsolutePath());
 		activity.finish();
 	}
 	
@@ -363,7 +361,7 @@ public class FFNGApp extends Thread {
     }
        
     //@SuppressWarnings("unused")
-    private native int ffngmain();
+    private native int ffngMain(String storagePath);
     
     private class FFNGView extends View implements OnTouchListener, OnKeyListener {
 
