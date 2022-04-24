@@ -33,8 +33,6 @@
 #include "MouseControl.h"
 #include "File.h"
 
-#include <assert.h>
-
 //-----------------------------------------------------------------
 /**
  * Create room holder.
@@ -74,12 +72,6 @@ Room::~Room()
     delete m_controls;
     delete m_view;
 
-    //NOTE: models must be removed before field because they unmask self
-    Cube::t_models::iterator end = m_models.end();
-    for (Cube::t_models::iterator i = m_models.begin(); i != end; ++i) {
-        delete (*i);
-    }
-
     delete m_finder;
     delete m_field;
     delete m_bg;
@@ -104,23 +96,23 @@ Room::addDecor(Decor *new_decor)
 //-----------------------------------------------------------------
 /**
  * Add model at scene.
- * @param new_model new object
- * @param new_unit driver for the object or NULL
+ * @param model new object
+ * @param unit driver for the object or NULL
  * @return model index
  */
-    int
-Room::addModel(Cube *new_model, Unit *new_unit)
+std::size_t
+Room::addModel(std::unique_ptr<Cube> model, std::unique_ptr<Unit> unit)
 {
-    new_model->rules()->takeField(m_field);
-    m_models.push_back(new_model);
+    model->rules()->takeField(m_field);
 
-    if (new_unit) {
-        new_unit->takeModel(new_model);
-        m_controls->addUnit(new_unit);
+    if (unit) {
+        unit->takeModel(model.get());
+        m_controls->addUnit(std::move(unit));
     }
 
-    int model_index = m_models.size() - 1;
-    new_model->setIndex(model_index);
+    auto model_index = m_models.size();
+    model->setIndex(model_index);
+    m_models.push_back(std::move(model));
     return model_index;
 }
 //-----------------------------------------------------------------
@@ -128,19 +120,16 @@ Room::addModel(Cube *new_model, Unit *new_unit)
  * Return model at index.
  * @throws LogicException when model_index is out of range
  */
-    Cube *
+Cube *
 Room::getModel(int model_index)
 {
-    Cube *result = NULL;
     if (0 <= model_index && model_index < (int)m_models.size()) {
-        result = m_models[model_index];
+        return m_models[model_index].get();
     }
     else {
         throw LogicException(ExInfo("bad model index")
                 .addInfo("model_index", model_index));
     }
-
-    return result;
 }
 //-----------------------------------------------------------------
 /**
@@ -227,30 +216,31 @@ Room::playDead(Cube *model)
 //-----------------------------------------------------------------
 /**
  * Move all models to new position
- * and check dead fihes.
+ * and check dead fishes.
  */
     void
 Room::prepareRound()
 {
     bool interrupt = false;
 
-    //NOTE: we must call this functions sequential for all objects
-    Cube::t_models::iterator end = m_models.end();
-    for (Cube::t_models::iterator i = m_models.begin(); i != end; ++i) {
-        (*i)->rules()->freeOldPos();
+    for(const auto& model : m_models) {
+        model->rules()->freeOldPos();
     }
-    for (Cube::t_models::iterator i = m_models.begin(); i != end; ++i) {
-        (*i)->rules()->occupyNewPos();
+
+    for(const auto& model : m_models) {
+        model->rules()->occupyNewPos();
     }
-    for (Cube::t_models::iterator j = m_models.begin(); j != end; ++j) {
-        bool die = (*j)->rules()->checkDead(m_lastAction);
+
+    for(const auto& model : m_models) {
+        bool die = model->rules()->checkDead(m_lastAction);
         interrupt |= die;
         if (die) {
-            playDead(*j);
+            playDead(model.get());
         }
     }
-    for (Cube::t_models::iterator l = m_models.begin(); l != end; ++l) {
-        (*l)->rules()->changeState();
+
+    for(const auto& model : m_models) {
+        model->rules()->changeState();
     }
 
     if (interrupt) {
@@ -267,10 +257,9 @@ Room::prepareRound()
 Room::fallout(bool interactive)
 {
     bool wentOut = false;
-    Cube::t_models::iterator end = m_models.end();
-    for (Cube::t_models::iterator i = m_models.begin(); i != end; ++i) {
-        if (!(*i)->isLost()) {
-            int outDepth = (*i)->rules()->actionOut();
+    for(const auto& model : m_models) {
+        if (!model->isLost()) {
+            int outDepth = model->rules()->actionOut();
             if (outDepth > 0) {
                 wentOut = true;
                 if (interactive) {
@@ -361,9 +350,8 @@ Room::checkActive()
     void
 Room::unBusyUnits()
 {
-    Cube::t_models::iterator end = m_models.end();
-    for (Cube::t_models::iterator i = m_models.begin(); i != end; ++i) {
-        (*i)->setBusy(false);
+    for(const auto& model : m_models) {
+        model->setBusy(false);
     }
 }
 //-----------------------------------------------------------------
@@ -446,13 +434,7 @@ Room::cannotMove() const
 bool
 Room::isSolvable() const
 {
-    Cube::t_models::const_iterator end = m_models.end();
-    for (Cube::t_models::const_iterator i = m_models.begin(); i != end; ++i) {
-        if ((*i)->isWrong()) {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(m_models.begin(), m_models.end(), [&](const auto& model) { return !model->isWrong(); });
 }
 //-----------------------------------------------------------------
 /**
@@ -466,13 +448,7 @@ Room::isSolved() const
     if (!isFresh()) {
         return false;
     }
-    Cube::t_models::const_iterator end = m_models.end();
-    for (Cube::t_models::const_iterator i = m_models.begin(); i != end; ++i) {
-        if (!(*i)->isSatisfy()) {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(m_models.begin(), m_models.end(), [&](const auto& model) { return model->isSatisfy(); });
 }
 
 //-----------------------------------------------------------------

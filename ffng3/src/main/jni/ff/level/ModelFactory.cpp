@@ -25,7 +25,7 @@
  * @throws LogicException for unknown kind
  * @throws LayoutException when shape or location is bad
  */
-Cube *
+std::unique_ptr<Cube>
 ModelFactory::createModel(const std::string &kind, const V2 &loc,
         const std::string &shape)
 {
@@ -38,11 +38,7 @@ ModelFactory::createModel(const std::string &kind, const V2 &loc,
     bool alive;
     createParams(kind, &weight, &power, &alive);
 
-    Shape *newShape = new Shape(shape);
-    Cube *model = new Cube(loc,
-            weight, power, alive, newShape);
-
-    return model;
+    return std::make_unique<Cube>(loc, weight, power, alive, new Shape(shape));
 }
 //-----------------------------------------------------------------
 /**
@@ -97,17 +93,16 @@ ModelFactory::createParams(const std::string &kind,
  * @param kind kind of item (e.g. "fish_big", "item_light", ...)
  * @return new unit or NULL
  */
-Unit *
+std::unique_ptr<Unit>
 ModelFactory::createUnit(const std::string &kind)
 {
-    Unit *result = NULL;
     if ("fish_small" == kind) {
         KeyControl smallfish;
         smallfish.setUp(SDLK_i);
         smallfish.setDown(SDLK_k);
         smallfish.setLeft(SDLK_j);
         smallfish.setRight(SDLK_l);
-        result = new Unit(smallfish, ControlSym('u', 'd', 'l', 'r'), true);
+        return std::make_unique<Unit>(smallfish, ControlSym('u', 'd', 'l', 'r'), true);
     }
     else if ("fish_big" == kind) {
         KeyControl bigfish;
@@ -115,7 +110,7 @@ ModelFactory::createUnit(const std::string &kind)
         bigfish.setDown(SDLK_s);
         bigfish.setLeft(SDLK_a);
         bigfish.setRight(SDLK_d);
-        result = new Unit(bigfish, ControlSym('U', 'D', 'L', 'R'));
+        return std::make_unique<Unit>(bigfish, ControlSym('U', 'D', 'L', 'R'));
     }
     else if (StringTool::startsWith(kind, "fish_extra") ||
         StringTool::startsWith(kind, "fish_EXTRA"))
@@ -125,28 +120,28 @@ ModelFactory::createUnit(const std::string &kind)
         extrafish.setDown(SDLK_LAST);
         extrafish.setLeft(SDLK_LAST);
         extrafish.setRight(SDLK_LAST);
-        result = new Unit(extrafish, parseExtraControlSym(kind));
+        return std::make_unique<Unit>(extrafish, parseExtraControlSym(kind));
     }
-    return result;
+    else {
+        return {};
+    }
 }
 //-----------------------------------------------------------------
 /**
  * Create special model, which will be used for outher space.
  * NOTE: hack border around field
  */
-    Cube *
+std::unique_ptr<Cube>
 ModelFactory::createBorder()
 {
-    Cube *border = new Cube(V2(-1,-1), Cube::FIXED, Cube::NONE, false,
-            new Shape("X\n"));
-    return border;
+    return std::make_unique<Cube>(V2(-1,-1), Cube::FIXED, Cube::NONE, false, new Shape("X\n"));
 }
 //-----------------------------------------------------------------
 /**
  * Create one way output out of room.
  * @throws LogicException when output_DIR is not known
  */
-Cube *
+std::unique_ptr<Cube>
 ModelFactory::createOutputItem(const std::string &kind, const V2 &loc,
         const std::string &shape)
 {
@@ -168,7 +163,7 @@ ModelFactory::createOutputItem(const std::string &kind, const V2 &loc,
                 .addInfo("kind", kind));
     }
 
-    Cube *model = new Cube(loc,
+    auto model = std::make_unique<Cube>(loc,
             Cube::FIXED, Cube::NONE, false, new Shape(shape));
     model->setOutDir(outDir);
     return model;

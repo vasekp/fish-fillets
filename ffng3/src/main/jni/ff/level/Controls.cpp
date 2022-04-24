@@ -28,26 +28,14 @@ Controls::Controls(PhaseLocker *locker)
     m_switch = true;
     m_strokeSymbol = ControlSym::SYM_NONE;
 }
-//-----------------------------------------------------------------
-/**
- * Delete drivers.
- */
-Controls::~Controls()
-{
-    t_units::iterator end = m_units.end();
-    for (t_units::iterator i = m_units.begin(); i != end; ++i) {
-        delete (*i);
-    }
-}
-//-----------------------------------------------------------------
 /**
  * Add unit under our control.
  * @return model index
  */
     void
-Controls::addUnit(Unit *unit)
+Controls::addUnit(std::unique_ptr<Unit> unit)
 {
-    m_units.push_back(unit);
+    m_units.push_back(std::move(unit));
     //NOTE: insertion invalidates m_active
     t_units::iterator end = m_units.end();
     for (t_units::iterator i = m_units.begin(); i != end; ++i) {
@@ -65,11 +53,10 @@ Controls::addUnit(Unit *unit)
 const Unit *
 Controls::getActive()
 {
-    Unit *result = NULL;
     if (m_active != m_units.end()) {
-        result = *m_active;
-    }
-    return result;
+        return m_active->get();
+    } else
+        return nullptr;
 }
 //-----------------------------------------------------------------
 /**

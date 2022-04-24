@@ -21,6 +21,8 @@ class StepCounter;
 #include "Cube.h"
 
 #include <string>
+#include <vector>
+#include <memory>
 
 /**
  * Room with level.
@@ -36,7 +38,7 @@ class Room : public Drawable {
         PhaseLocker *m_locker;
         Planner *m_levelScript;
         View *m_view;
-        Cube::t_models m_models;
+        Cube::t_models_owning m_models;
         Cube::eAction m_lastAction;
         int m_startTime;
         bool m_fastFalling;
@@ -55,7 +57,7 @@ class Room : public Drawable {
         void addDecor(Decor *new_decor);
         void setFastFalling(bool value) { m_fastFalling = value; }
 
-        int addModel(Cube *new_model, Unit *new_unit);
+        std::size_t addModel(std::unique_ptr<Cube> model, std::unique_ptr<Unit> unit);
         Cube *getModel(int model_index);
         Cube *askField(const V2 &loc);
 

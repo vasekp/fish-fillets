@@ -15,13 +15,14 @@ class MouseStroke;
 
 #include <vector>
 #include <string>
+#include <memory>
 
 /**
  * Keyboard and mouse controls.
  */
 class Controls : public StepCounter, public NoCopy {
     private:
-        typedef std::vector<Unit*> t_units;
+        typedef std::vector<std::unique_ptr<Unit>> t_units;
         t_units m_units;
         t_units::iterator m_active;
         int m_speedup;
@@ -39,9 +40,8 @@ class Controls : public StepCounter, public NoCopy {
         bool activateDriven(char symbol);
     public:
         Controls(PhaseLocker *locker);
-        ~Controls();
         void setMoves(const std::string &moves);
-        void addUnit(Unit *unit);
+        void addUnit(std::unique_ptr<Unit> unit);
         const Unit *getActive();
 
         bool driving(const InputProvider *input);

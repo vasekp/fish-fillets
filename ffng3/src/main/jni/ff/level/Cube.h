@@ -12,6 +12,7 @@ class DialogStack;
 #include "Dir.h"
 
 #include <vector>
+#include <memory>
 
 /**
  * A object in game.
@@ -19,6 +20,7 @@ class DialogStack;
 class Cube : public NoCopy {
     public:
         typedef std::vector<Cube*> t_models;
+        typedef std::vector<std::unique_ptr<Cube>> t_models_owning;
         enum eWeight {
             NONE,
             LIGHT,
@@ -31,7 +33,7 @@ class Cube : public NoCopy {
             ACTION_MOVE
         };
     private:
-        int m_index;
+        std::size_t m_index;
         bool m_busy;
         V2 m_loc;
         bool m_alive;
@@ -54,7 +56,7 @@ class Cube : public NoCopy {
                 Shape *shape);
         ~Cube();
         void setGoal(const Goal &goal) { m_goal = goal; }
-        void setIndex(int model_index) { m_index = model_index; }
+        void setIndex(std::size_t model_index) { m_index = model_index; }
         int getIndex() const { return m_index; }
         bool isBusy() const { return m_busy; }
         void setBusy(bool busy) { m_busy = busy; }

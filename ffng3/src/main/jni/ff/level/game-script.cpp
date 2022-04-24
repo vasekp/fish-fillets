@@ -15,6 +15,7 @@
 #include "Anim.h"
 #include "Shape.h"
 #include "Cube.h"
+#include "Unit.h"
 #include "Rules.h"
 #include "LevelScript.h"
 #include "ModelFactory.h"
@@ -74,9 +75,9 @@ script_game_addModel(lua_State *L) throw()
     int y = luaL_checkint(L, 3);
     const char *shape = luaL_checkstring(L, 4);
 
-    Cube *model = ModelFactory::createModel(kind, V2(x, y), shape);
-    Unit *unit = ModelFactory::createUnit(kind);
-    int model_index = getLevelScript(L)->addModel(model, unit);
+    auto model = ModelFactory::createModel(kind, V2(x, y), shape);
+    auto unit = ModelFactory::createUnit(kind);
+    int model_index = getLevelScript(L)->addModel(std::move(model), std::move(unit));
     lua_pushnumber(L, model_index);
     END_NOEXCEPTION;
     //NOTE: return model_index

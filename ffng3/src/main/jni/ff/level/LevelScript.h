@@ -12,6 +12,7 @@ class Command;
 #include "RoomAccess.h"
 
 #include <string>
+#include <memory>
 
 /**
  * Handle plan for dialogs and planned actions.
@@ -31,7 +32,7 @@ class LevelScript : public Planner, public RoomAccess {
         Level *level() { return m_level; }
         Command *createCommand(int funcRef);
 
-        int addModel(Cube *new_model, Unit *new_unit);
+        int addModel(std::unique_ptr<Cube> model, std::unique_ptr<Unit> unit);
         Cube *getModel(int model_index);
         Cube *askField(const V2 &loc);
 

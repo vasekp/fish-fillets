@@ -13,9 +13,9 @@ class Landslip;
  */
 class ModelList {
     private:
-        const Cube::t_models *m_models;
+        const Cube::t_models_owning *m_models;
     public:
-        ModelList(const Cube::t_models *models);
+        ModelList(const Cube::t_models_owning *models);
         int size() const { return m_models->size(); }
 
         void drawOn(View *view) const;

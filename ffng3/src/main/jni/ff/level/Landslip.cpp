@@ -57,13 +57,7 @@ Landslip::stoneModel(const Cube *model)
 Landslip::isOnPad(const Cube *model) const
 {
     const Cube::t_models pad = model->const_rules()->getResist(Dir::DIR_DOWN);
-    Cube::t_models::const_iterator end = pad.end();
-    for (Cube::t_models::const_iterator i = pad.begin(); i != end; ++i) {
-        if (isFixed(*i)) {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(pad.begin(), pad.end(), [&](const auto& obj) { return isFixed(obj); });
 }
 //-----------------------------------------------------------------
     bool
