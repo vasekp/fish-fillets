@@ -20,7 +20,6 @@
 #include "Level.h"
 #include "minmax.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 
 //-----------------------------------------------------------------
 Pedometer::Pedometer(LevelStatus *status, Level *new_level)
@@ -240,10 +239,10 @@ Pedometer::receiveString(const StringMsg *msg)
             prepareBg();
         }
         else {
-            throw UnknownMsgException(msg);
+            Log::warn("unknown msg %s", msg->toString().c_str());
         }
     }
     else {
-        throw UnknownMsgException(msg);
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }

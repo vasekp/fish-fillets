@@ -16,14 +16,13 @@ class VideoAgent : public BaseAgent, public MultiDrawer {
     AGENT(VideoAgent, Name::VIDEO_NAME);
     private:
         SDL_Surface *m_screen;
-        bool m_fullscreen;
 
-    private:
+private:
         //FFNG void setIcon(const File &file);
         void changeVideoMode(int screen_width, int screen_height);
         int getVideoFlags();
-        void toggleFullScreen();
-    protected:
+
+protected:
         virtual void own_init();
         virtual void own_update();
         virtual void own_shutdown();

@@ -9,7 +9,6 @@
 #include "BaseListener.h"
 
 #include "OptionAgent.h"
-#include "UnknownMsgException.h"
 #include "SimpleMsg.h"
 #include "IntMsg.h"
 #include "StringMsg.h"
@@ -38,7 +37,7 @@ BaseListener::removeWatchers()
 void
 BaseListener::receiveSimple(const SimpleMsg *msg)
 {
-    throw UnknownMsgException(msg);
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 //-----------------------------------------------------------------
 /**
@@ -47,7 +46,7 @@ BaseListener::receiveSimple(const SimpleMsg *msg)
 void
 BaseListener::receiveInt(const IntMsg *msg)
 {
-    throw UnknownMsgException(msg);
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 //-----------------------------------------------------------------
 /**
@@ -56,7 +55,7 @@ BaseListener::receiveInt(const IntMsg *msg)
 void
 BaseListener::receiveString(const StringMsg *msg)
 {
-    throw UnknownMsgException(msg);
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 
 

@@ -23,10 +23,7 @@ class OptionAgent : public BaseAgent {
         void prepareDataPaths();
         void prepareLang();
 
-    std::string getHelpInfo(const OptionParams &params) const;
-        std::string getVersionInfo() const;
-        void readSystemConfig();
-        void readUserConfig();
+    void readUserConfig();
     protected:
         virtual void own_init();
         virtual void own_shutdown();

@@ -4,11 +4,10 @@
 class File;
 class ScriptState;
 
+#include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
 #include "Scripter.h"
-
-#include <string>
 
 extern "C" {
 #include "lua.h"

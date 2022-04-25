@@ -7,6 +7,7 @@ class IWidget;
 class WiStatusBar;
 class Labels;
 
+#include "common.h"
 #include "GameState.h"
 #include "Drawable.h"
 

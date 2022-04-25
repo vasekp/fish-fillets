@@ -16,7 +16,6 @@
 #include "ScriptException.h"
 #include "OptionParams.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 #include "minmax.h"
 
 #include <stdlib.h> //getenv
@@ -25,16 +24,6 @@
 
 #ifndef LC_MESSAGES
 #define LC_MESSAGES LC_CTYPE
-#endif
-
-//NOTE: SYSTEM_DATA_DIR is set to "$(datadir)/games/@PACKAGE@"
-#ifndef SYSTEM_DATA_DIR
-#define SYSTEM_DATA_DIR ""
-#endif
-
-//NOTE: userdir = $HOME + USER_DATA_DIR
-#ifndef USER_DATA_DIR
-#define USER_DATA_DIR ".fillets-ng"
 #endif
 
 const char *OptionAgent::CONFIG_FILE = "script/options.lua";
@@ -88,8 +77,6 @@ OptionAgent::prepareVersion()
     void
 OptionAgent::prepareDataPaths()
 {
-    registerWatcher("systemdir");
-    registerWatcher("userdir");
     readUserConfig();
 }
 //-----------------------------------------------------------------
@@ -245,28 +232,6 @@ OptionAgent::removeWatchers(const std::string &listenerName)
     m_environ->removeWatchers(listenerName);
 }
 //-----------------------------------------------------------------
-/**
- * Get help text.
- */
-std::string
-OptionAgent::getHelpInfo(const OptionParams &params) const
-{
-    std::string help = "Usage: "
-        + getParam("program") + " [options] [name=value ...]\n";
-    help += "  -h, --help               Show this help\n";
-    help += "  -v, --version            Show version\n";
-    help += "  -c, --config             Show config\n";
-    help += "\n";
-    help += "Config variables:\n";
-    help += params.getHelp(m_environ);
-    return help;
-}
-//-----------------------------------------------------------------
-std::string
-OptionAgent::getVersionInfo() const
-{
-    return getParam("package") + " " + getParam("version");
-}
 //-----------------------------------------------------------------
 /**
  * Handle incoming message.
@@ -279,36 +244,9 @@ OptionAgent::getVersionInfo() const
     void
 OptionAgent::receiveString(const StringMsg *msg)
 {
-    if (msg->equalsName("param_changed")) {
-        std::string param = msg->getValue();
-        if ("systemdir" == param) {
-            readSystemConfig();
-        }
-        else if ("userdir" == param) {
-            readUserConfig();
-        }
-        else {
-            throw UnknownMsgException(msg);
-        }
-    }
-    else {
-        throw UnknownMsgException(msg);
-    }
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
-//-----------------------------------------------------------------
-void
-OptionAgent::readSystemConfig()
-{
-    try {
-        File systemConfig = File::internal(CONFIG_FILE);
-        if (systemConfig.exists()) {
-            ScriptAgent::agent()->scriptInclude(systemConfig);
-        }
-    }
-    catch (ScriptException &e) {
-        Log::warn("%s", e.info().info().c_str());
-    }
-}
+
 //-----------------------------------------------------------------
 void
 OptionAgent::readUserConfig()

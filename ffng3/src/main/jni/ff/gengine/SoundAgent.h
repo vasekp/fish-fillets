@@ -4,14 +4,11 @@
 class File;
 class BaseMsg;
 
+#include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
 #include "IntMsg.h"
-
-//FFNG #include "SDL.h"
-//FFNG #include "SDL_mixer.h"
 #include "FFNGMusic.h"
-#include <string>
 
 /**
  * Sound and music interface.

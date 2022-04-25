@@ -26,7 +26,6 @@
 #include "OptionAgent.h"
 #include "SurfaceTool.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 
 #include "FFNGApp.h"
 
@@ -246,11 +245,11 @@ MenuOptions::receiveString(const StringMsg *msg)
             m_needRefresh = true;
         }
         else {
-            throw UnknownMsgException(msg);
+            Log::warn("unknown msg %s", msg->toString().c_str());
         }
     }
     else {
-        throw UnknownMsgException(msg);
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
 

@@ -10,7 +10,6 @@
 
 #include "ScriptState.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 
 #include "options-script.h"
 
@@ -43,7 +42,7 @@ ScriptAgent::receiveString(const StringMsg *msg)
         scriptDo(msg->getValue());
     }
     else {
-        throw UnknownMsgException(msg);
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
 

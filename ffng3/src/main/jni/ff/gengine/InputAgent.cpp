@@ -13,7 +13,6 @@
 
 #include "MessagerAgent.h"
 #include "SimpleMsg.h"
-#include "UnknownMsgException.h"
 #include "Name.h"
 #include "MouseStroke.h"
 

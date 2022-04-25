@@ -6,9 +6,8 @@ class SimpleMsg;
 class IntMsg;
 class StringMsg;
 
+#include "common.h"
 #include "INamed.h"
-
-#include <string>
 
 /**
  * Listen messages.

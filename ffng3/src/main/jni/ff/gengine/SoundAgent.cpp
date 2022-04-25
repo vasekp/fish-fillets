@@ -10,7 +10,6 @@
 
 #include "OptionAgent.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 
 //-----------------------------------------------------------------
 /**
@@ -61,7 +60,7 @@ SoundAgent::receiveString(const StringMsg *msg)
         }
     }
     else {
-        throw UnknownMsgException(msg);
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
 

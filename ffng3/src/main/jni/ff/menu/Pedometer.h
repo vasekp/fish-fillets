@@ -6,12 +6,10 @@ class LevelStatus;
 class LayeredPicture;
 class Picture;
 
+#include "common.h"
 #include "Drawable.h"
 #include "GameState.h"
-
-//FFGN #include "SDL.h"
 #include "FFNGSurface.h"
-#include <string>
 
 /**
  * Pedometer with tree buttons.

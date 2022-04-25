@@ -13,36 +13,21 @@
 #include "AgentPack.h"
 #include "SimpleMsg.h"
 #include "StringMsg.h"
-#include "UnknownMsgException.h"
 #include "OptionAgent.h"
 #include "SysVideo.h"
-
-//FFNG #include "SDL_image.h"
 #include "FFNGVideo.h"
 #include "FFNGApp.h"
-#include <stdlib.h> // atexit()
 
 //-----------------------------------------------------------------
 /**
  * Init SDL and grafic window.
- * Register watcher for "fullscren" and "screen_*" options.
  * @throws SDLException if there is no usuable video mode
  */
     void
 VideoAgent::own_init()
 {
     m_screen = NULL;
-    m_fullscreen = false;
-    /* FFNG no need to (de)initialize video on android
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        throw SDLException(ExInfo("Init"));
-    }
-    atexit(SDL_Quit);
-    */
 
-    //FFNG no icon on android, at least this way... setIcon(File::dataReadPath("images/icon.png"));
-
-    registerWatcher("fullscreen");
     initVideoMode();
 }
 //-----------------------------------------------------------------
@@ -54,7 +39,7 @@ VideoAgent::own_init()
 VideoAgent::own_update()
 {
     drawOn(m_screen);
-    FFNGVideo::flip/*FFNG SDL_Flip*/(m_screen);
+    FFNGVideo::flip(m_screen);
 }
 //-----------------------------------------------------------------
 /**
@@ -63,28 +48,9 @@ VideoAgent::own_update()
     void
 VideoAgent::own_shutdown()
 {
+        //TODO
     //FFNG no quit for android... SDL_Quit();
 }
-
-//-----------------------------------------------------------------
-/**
- * Load and set icon.
- * @throws ImgException
- */
-/* FFNG no icon code for android
-    void
-VideoAgent::setIcon(const File &file)
-{
-    SDL_Surface *icon = IMG_Load(file.getNative().c_str());
-    if (NULL == icon) {
-        throw ImgException(ExInfo("Load")
-                .addInfo("file", file.getPath()));
-    }
-
-    SDL_WM_SetIcon(icon, NULL);
-    SDL_FreeSurface(icon);
-}
-*/
 
 //-----------------------------------------------------------------
 /**
@@ -121,7 +87,6 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
     OptionAgent *options = OptionAgent::agent();
     int screen_bpp = options->getAsInt("screen_bpp", 32);
     int videoFlags = getVideoFlags();
-    m_fullscreen = options->getAsBool("fullscreen", false);
 
     //TODO: check VideoModeOK and available ListModes
     /* FFNG */ if(m_screen) { delete m_screen; m_screen = NULL; }
@@ -144,77 +109,26 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
 VideoAgent::getVideoFlags()
 {
     int videoFlags  = 0;
-    /* FFNG ignore all video flags for android
-    videoFlags |= SDL_HWPALETTE;
-    videoFlags |= SDL_ANYFORMAT;
-    videoFlags |= SDL_SWSURFACE;
-    */
 
     return videoFlags;
 }
 //-----------------------------------------------------------------
 /**
- *  Toggle fullscreen.
- */
-    void
-VideoAgent::toggleFullScreen()
-{
-    /* FFNG no fullscreen toggling for android
-    int success = SDL_WM_ToggleFullScreen(m_screen);
-    if (success) {
-        m_fullscreen = !m_fullscreen;
-    }
-    else {
-        //NOTE: some platforms need reinit video
-        changeVideoMode(m_screen->w, m_screen->h);
-    }
-    */
-}
-//-----------------------------------------------------------------
-/**
  * Handle incoming message.
- * Messages:
- * - fullscreen ... toggle fullscreen
- *
- * @throws UnknownMsgException
  */
     void
 VideoAgent::receiveSimple(const SimpleMsg *msg)
 {
-    if (msg->equalsName("fullscreen")) {
-        OptionAgent *options = OptionAgent::agent();
-        bool toggle = !(options->getAsBool("fullscreen"));
-        options->setPersistent("fullscreen", toggle);
-    }
-    else {
-        throw UnknownMsgException(msg);
-    }
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 //-----------------------------------------------------------------
 /**
  * Handle incoming message.
- * Messages:
- * - param_changed(fullscreen) ... handle fullscreen
- *
  * @throws UnknownMsgException
  */
     void
 VideoAgent::receiveString(const StringMsg *msg)
 {
-    if (msg->equalsName("param_changed")) {
-        std::string param = msg->getValue();
-        if ("fullscreen" == param) {
-            bool fs = OptionAgent::agent()->getAsBool("fullscreen");
-            if (fs != m_fullscreen) {
-                toggleFullScreen();
-            }
-        }
-        else {
-            throw UnknownMsgException(msg);
-        }
-    }
-    else {
-        throw UnknownMsgException(msg);
-    }
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 
