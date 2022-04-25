@@ -18,7 +18,6 @@
 #include "View.h"
 
 #include "Rules.h"
-#include "LoadException.h"
 #include "Unit.h"
 #include "TimerAgent.h"
 #include "SubTitleAgent.h"
@@ -406,8 +405,7 @@ Room::makeMove(char move)
     bool result = false;
     if (isFresh()) {
         if (!m_controls->makeMove(move)) {
-            throw LoadException(ExInfo("load error - bad move")
-                    .addInfo("move", std::string(1, move)));
+            throw std::runtime_error("load error - bad move: " + std::string(1, move));
         }
         m_lastAction = Cube::ACTION_MOVE;
         result = true;

@@ -1,11 +1,9 @@
 #ifndef HEADER_SHAPE_H
 #define HEADER_SHAPE_H
 
+#include "common.h"
 #include "NoCopy.h"
 #include "V2.h"
-
-#include <string>
-#include <vector>
 
 /**
  * Stores model shape.

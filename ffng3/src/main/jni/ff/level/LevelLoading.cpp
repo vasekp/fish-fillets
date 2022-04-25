@@ -10,7 +10,6 @@
 
 #include "RoomAccess.h"
 #include "Room.h"
-#include "LoadException.h"
 #include "minmax.h"
 
 //-----------------------------------------------------------------
@@ -77,16 +76,10 @@ LevelLoading::nextLoadAction()
         for (int i = 0; i < m_loadSpeed
                 && !m_loadedMoves.empty(); ++i)
         {
-            try {
-                char symbol = m_loadedMoves[0];
-                m_loadedMoves.erase(0, 1);
+            char symbol = m_loadedMoves[0];
+            m_loadedMoves.erase(0, 1);
 
-                m_access->room()->loadMove(symbol);
-            }
-            catch (LoadException &e) {
-                throw LoadException(ExInfo(e.info())
-                        .addInfo("remain", m_loadedMoves));
-            }
+            m_access->room()->loadMove(symbol);
         }
     }
 }

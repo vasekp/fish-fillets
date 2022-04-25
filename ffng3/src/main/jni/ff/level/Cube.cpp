@@ -10,7 +10,6 @@
 
 #include "Shape.h"
 #include "Rules.h"
-#include "LayoutException.h"
 #include "Anim.h"
 #include "EffectDisintegrate.h"
 #include "DialogStack.h"

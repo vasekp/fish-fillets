@@ -11,8 +11,6 @@
 #include "Cube.h"
 #include "MarkMask.h"
 
-#include "Log.h"
-#include "LayoutException.h"
 #include "OnStack.h"
 #include "OnWall.h"
 #include "OnStrongPad.h"
@@ -64,9 +62,7 @@ Rules::takeField(Field *field)
     m_mask = new MarkMask(m_model, field);
     Cube::t_models resist = m_mask->getResist(Dir::DIR_NO);
     if (!resist.empty()) {
-        throw LayoutException(ExInfo("position is occupied")
-                .addInfo("model", m_model->toString())
-                .addInfo("resist", resist.front()->toString()));
+        throw std::logic_error("position is occupied: " + m_model->toString() + " xx " + resist.front()->toString());
     }
 
     m_mask->mask();

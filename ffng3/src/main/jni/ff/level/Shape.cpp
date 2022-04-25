@@ -8,7 +8,6 @@
  */
 #include "Shape.h"
 
-#include "LayoutException.h"
 #include "minmax.h"
 
 //-----------------------------------------------------------------
@@ -45,9 +44,7 @@ Shape::Shape(const std::string &shape)
                 ++x;
                 break;
             default:
-                throw LayoutException(ExInfo("bad shape char")
-                        .addInfo("char", shape[i])
-                        .addInfo("shape", shape));
+                throw std::runtime_error("bad shape char: " + std::string(1, shape[i]));
         }
     }
 

@@ -6,6 +6,7 @@ class MarkMask;
 class Field;
 class OnCondition;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "Cube.h"
 #include "Dir.h"

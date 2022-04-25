@@ -3,9 +3,8 @@
 
 class RoomAccess;
 
+#include "common.h"
 #include "NoCopy.h"
-
-#include <string>
 
 /**
  * Game loading.
