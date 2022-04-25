@@ -1,13 +1,11 @@
 #ifndef HEADER_RESOURCEPACK_H
 #define HEADER_RESOURCEPACK_H
 
-#include "Log.h"
+#include "common.h"
 #include "Random.h"
 #include "INamed.h"
-#include "ResourceException.h"
+#include "ExInfo.h"
 
-#include <string>
-#include <vector>
 #include <map>
 
 /**
@@ -87,10 +85,7 @@ class ResourcePack : public INamed {
             ++(range.first);
         }
         if (range.second == range.first) {
-            throw ResourceException(ExInfo("no such resource at index")
-                    .addInfo("name", name)
-                    .addInfo("index", rank)
-                    .addInfo("pack", toString()));
+            throw std::runtime_error("no such resource / index: " + name);
         }
         return range.first->second;
     }

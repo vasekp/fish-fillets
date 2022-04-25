@@ -10,7 +10,6 @@
 
 #include "File.h"
 #include "ResImagePack.h"
-#include "ResourceException.h"
 #include "SurfaceLock.h"
 #include "PixelTool.h"
 
@@ -30,14 +29,11 @@ LayeredPicture::LayeredPicture(const File &bg_file, const V2 &loc,
     m_colorMask = ResImagePack::loadImage(colorMask);
     if (m_lowerLayer->getWidth() != m_colorMask->getWidth()
             || m_lowerLayer->getHeight() != m_colorMask->getHeight()) {
-        FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_lowerLayer);
-        FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_colorMask);
-        FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_surface);
+        FFNGSurface::freeSurface(m_lowerLayer);
+        FFNGSurface::freeSurface(m_colorMask);
+        FFNGSurface::freeSurface(m_surface);
 
-        throw ResourceException(ExInfo(
-                    "lowerLayer and colorMask have different proportions")
-                .addInfo("lowerLayer", lowerLayer.getPath())
-                .addInfo("colorMask", colorMask.getPath()));
+        throw std::logic_error("lowerLayer and colorMask have different proportions: " + lowerLayer.getPath() + ", " + colorMask.getPath());
     }
 
     setNoActive();
@@ -45,8 +41,8 @@ LayeredPicture::LayeredPicture(const File &bg_file, const V2 &loc,
 //-----------------------------------------------------------------
 LayeredPicture::~LayeredPicture()
 {
-	FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_lowerLayer);
-	FFNGSurface::freeSurface/*FFNG SDL_FreeSurface*/(m_colorMask);
+	FFNGSurface::freeSurface(m_lowerLayer);
+	FFNGSurface::freeSurface(m_colorMask);
 }
 //-----------------------------------------------------------------
 /**
@@ -92,21 +88,5 @@ LayeredPicture::drawOn(SDL_Surface *screen)
 
     //TODO: support alpha channels
     screen->blitMasked(m_loc.getX(), m_loc.getY(), m_colorMask, m_activeColor, m_lowerLayer);
-    /*
-    for (int py = 0; py < m_colorMask->h; ++py) {
-        int world_y = m_loc.getY() + py;
-        for (int px = 0; px < m_colorMask->w; ++px) {
-            Uint32 sample = PixelTool::getPixel(m_colorMask, px, py);
-
-            if (sample == m_activeColor) {
-                Color lower = PixelTool::getColor(m_lowerLayer, px, py);
-                if (lower.a == 255) {
-                    PixelTool::putColor(screen,
-                            m_loc.getX() + px, world_y, lower);
-                }
-            }
-        }
-    }
-    */
 }
 

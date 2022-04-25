@@ -8,7 +8,6 @@
  */
 #include "Application.h"
 
-#include "Log.h"
 #include "File.h"
 #include "Random.h"
 #include "AgentPack.h"
@@ -23,7 +22,6 @@
 #include "ScriptAgent.h"
 #include "OptionAgent.h"
 #include "SubTitleAgent.h"
-#include "ResourceException.h"
 #include "OptionParams.h"
 #include "Font.h"
 
@@ -31,8 +29,6 @@
 #include "StringMsg.h"
 
 #include "FFNGApp.h"
-#include <stdexcept>
-#include <string>
 
 using namespace std::string_literals;
 

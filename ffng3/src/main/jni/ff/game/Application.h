@@ -3,6 +3,7 @@
 
 class AgentPack;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "BaseListener.h"
 #include "Name.h"

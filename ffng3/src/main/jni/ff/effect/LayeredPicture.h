@@ -1,9 +1,8 @@
 #ifndef HEADER_LAYEREDPICTURE_H
 #define HEADER_LAYEREDPICTURE_H
 
+#include "common.h"
 #include "Picture.h"
-
-//FFNG #include "SDL.h"
 #include "FFNGTypes.h"
 
 /**
