@@ -6,7 +6,6 @@
  */
 
 #include <filesystem>
-#include <android/log.h>
 #include <ff/gengine/ResImagePack.h>
 #include "jnix.h"
 #include "Log.h"
@@ -18,7 +17,7 @@
 extern "C"
 JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject obj, jstring jPath, jobject jAssets)
 {
-	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "begin");
+	Log::debug("begin");
 	JNI::getInstance()->setJavaContext(env, obj, jAssets);
 
     try {
@@ -30,7 +29,7 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
         {
             const char* storagePath = env->GetStringUTFChars(jPath, nullptr);
             std::filesystem::current_path(storagePath);
-            __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "current path %s", storagePath);
+            Log::debug("FFNG", "current path %s", storagePath);
             env->ReleaseStringUTFChars(jPath, storagePath);
         }
 

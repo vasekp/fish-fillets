@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <assert.h>
+#include <stdexcept>
 #include "FFNGMusic.h"
+#include "Log.h"
 
 void FFNGMusic::openAudio(int frequency) {
 	// could stay empty
@@ -18,11 +18,10 @@ void FFNGMusic::halt(int channel) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "halt", "(I)V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::halt 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGMusic::halt 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: halt");
 	}
 
 	javaEnv->CallStaticVoidMethod(cls, mid, channel);
@@ -34,11 +33,10 @@ bool FFNGMusic::isPlaying(int channel) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "isPlaying", "(I)Z");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::isPlaying 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGMusic::isPlaying 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return false;
+	if(!mid) {
+		throw std::logic_error("method not found: isPlaying");
 	}
 
 	bool ret = javaEnv->CallStaticBooleanMethod(cls, mid, channel);
@@ -52,11 +50,10 @@ int FFNGMusic::playChannel(int channel, Mix_Chunk *sound, int loops) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetMethodID(cls, "playChannel", "(II)I");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::playChannel 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGMusic::playChannel 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return -1;
+	if(!mid) {
+		throw std::logic_error("method not found: playChannel");
 	}
 
 	int ch = javaEnv->CallIntMethod(sound->getSoundObject(), mid, channel, loops);
@@ -71,11 +68,10 @@ void FFNGMusic::volume(int channel, float vol) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "volume", "(IF)V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGMusic::volume 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGMusic::volume 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: volume");
 	}
 
 	javaEnv->CallStaticVoidMethod(cls, mid, channel, vol);
@@ -133,11 +129,10 @@ Mix_Music::~Mix_Music() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::~Mix_Music 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::~Mix_Music 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		Log::error("method not found: dispose");
 	}
 
     javaEnv->CallVoidMethod(music, mid);
@@ -150,11 +145,10 @@ jobject Mix_Music::loadMusic(const char *file) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadMusic", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGMusic;");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::loadMusic 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::loadMusic 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return NULL;
+	if(!mid) {
+		throw std::logic_error("method not found: loadMusic");
 	}
 
 	jstring fileString = javaEnv->NewStringUTF(file);
@@ -171,11 +165,10 @@ void Mix_Music::play() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetMethodID(cls, "play", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::play 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::play 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: play");
 	}
 
     javaEnv->DeleteLocalRef(cls);
@@ -186,11 +179,10 @@ void Mix_Music::stop() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetMethodID(cls, "stop", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::stop 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::stop 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: stop");
 	}
 
     javaEnv->DeleteLocalRef(cls);
@@ -201,11 +193,10 @@ void Mix_Music::dispose() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::dispose 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::dispose 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: dispose");
 	}
 
     javaEnv->DeleteLocalRef(cls);
@@ -216,11 +207,10 @@ void Mix_Music::stopAll() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "stopAll", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::stopAll 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::stopAll 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: stopAll");
 	}
 
     javaEnv->CallStaticVoidMethod(cls, mid);
@@ -231,11 +221,10 @@ void Mix_Music::setVolumeAll(int vol) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGMusic");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "setVolumeAll", "(I)V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Music::setvolumeAll 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Music::setvolumeAll 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: setVolumeAll");
 	}
 
     javaEnv->CallStaticVoidMethod(cls, mid, vol);
@@ -252,11 +241,10 @@ Mix_Chunk::~Mix_Chunk() {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetMethodID(cls, "dispose", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Chunk::~Mix_Chunk 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Chunk::~Mix_Chunk 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		Log::error("method not found: dispose");
 	}
 
     javaEnv->CallVoidMethod(sound, mid);
@@ -269,11 +257,10 @@ jobject Mix_Chunk::loadSound(const char *file) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSound");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadSound", "(Ljava/lang/String;)Lcz/ger/ffng/FFNGSound;");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "Mix_Chunk::loadSound 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("Mix_Chunk::loadSound 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return NULL;
+	if(!mid) {
+		throw std::logic_error("method not found: loadSound");
 	}
 
 	jstring fileString = javaEnv->NewStringUTF(file);

@@ -13,7 +13,6 @@
 #include "Dialog.h"
 
 #include "FFNGFiles.h"
-#include <android/log.h>
 #include "jnix.h"
 
 #include <filesystem>
@@ -89,11 +88,11 @@ File::exists() const
         auto *assets = JNI::getInstance()->getAssetManager();
         auto *asset = AAssetManager_open(assets, m_path.c_str(), AASSET_MODE_UNKNOWN);
         if (asset) {
-            //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "exists %s: TRUE", m_path.c_str());
+            Log::debug("exists %s: TRUE", m_path.c_str());
             AAsset_close(asset);
             return true;
         } else {
-            //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "exists %s: FALSE", m_path.c_str());
+            Log::debug("exists %s: FALSE", m_path.c_str());
             return false;
         }
     }
@@ -114,7 +113,7 @@ File::read() const
         // TODO: check
         auto size = AAsset_getLength(asset);
         auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
-        //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "read %d bytes from %s", size, m_path.c_str());
+        Log::debug("read %d bytes from %s", size, m_path.c_str());
         std::string ret(buffer, buffer + size);
         AAsset_close(asset);
         return ret;
@@ -132,7 +131,7 @@ File::write(const std::string &data) const
         ofs << data;
         return true;
     } else {
-        __android_log_print(ANDROID_LOG_ERROR, "FFNG", "write to internal file %s", m_path.c_str());
+        Log::error("write to internal file %s", m_path.c_str());
         return false;
     }
 }

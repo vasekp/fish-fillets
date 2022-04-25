@@ -1,20 +1,19 @@
-#include "assert.h"
 #include "FFNGVideo.h"
-#include <android/log.h>
+#include "Log.h"
+#include <stdexcept>
 #include <android/bitmap.h>
 
 SDL_Surface* FFNGVideo::setVideoMode(int width, int height, int bpp, int flags) {
 	// ignore bpp and flags
-    __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setVideoMode %d %d", width, height);
+    Log::debug("FFNGVideo::setVideoMode %d %d", width, height);
     JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
     jclass cls = JNI::getInstance()->getJavaCls();
     jobject obj = JNI::getInstance()->getJavaObj();
     jmethodID mid = javaEnv->GetMethodID(cls, "setWindowSize", "(II)V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setVideoMode 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGVideo::setVideoMode 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return NULL;
+	if(!mid) {
+		throw std::logic_error("method not found: setWindowSize");
 	}
 
     javaEnv->CallVoidMethod(obj, mid, width, height);
@@ -27,11 +26,10 @@ void FFNGVideo::setWindowCaption(const std::string &caption) {
     jclass cls = JNI::getInstance()->getJavaCls();
     jobject obj = JNI::getInstance()->getJavaObj();
     jmethodID mid = javaEnv->GetMethodID(cls, "setWindowCaption", "(Ljava/lang/String;)V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::setWindowCaption 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("FFNGVideo::setWindowCaption 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: setWindowCaption");
 	}
 
 	jstring captionString = javaEnv->NewStringUTF(caption.c_str());
@@ -45,11 +43,10 @@ void FFNGVideo::flip(SDL_Surface *screen) {
     jclass cls = JNI::getInstance()->getJavaCls();
     jobject obj = JNI::getInstance()->getJavaObj();
     jmethodID mid = javaEnv->GetMethodID(cls, "renderThis", "()V");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FFNGVideo::flip 1 %p %p %p", javaEnv, cls, mid);
-	
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	Log::debug("FFNGVideo::flip 1 %p %p %p", javaEnv, cls, mid);
+
+	if(!mid) {
+		throw std::logic_error("method not found: renderThis");
 	}
 
 	jfieldID fid = javaEnv->GetFieldID(cls, "bmp", "Landroid/graphics/Bitmap;");

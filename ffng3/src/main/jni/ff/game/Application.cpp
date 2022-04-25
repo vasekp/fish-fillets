@@ -30,8 +30,6 @@
 #include "SimpleMsg.h"
 #include "StringMsg.h"
 
-#include <android/log.h>
-
 #include "FFNGApp.h"
 #include <stdexcept>
 #include <string>

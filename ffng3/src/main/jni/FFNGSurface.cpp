@@ -1,6 +1,6 @@
-#include <assert.h>
 #include "FFNGSurface.h"
-#include <android/log.h>
+#include "Log.h"
+#include <stdexcept>
 #include <android/bitmap.h>
 
 EGLContext FFNGSurface::ctx;
@@ -49,11 +49,10 @@ SDL_Surface::SDL_Surface(const char *path) : SDL_Surface() {
     jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
     jmethodID mid = javaEnv->GetStaticMethodID(cls, "loadBitmap",
                                          "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
-    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
+    Log::debug("SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 
-    if(mid == NULL) {
-        assert("method not found");
-        return;
+    if(!mid) {
+        throw std::logic_error("method not found: loadBitmap");
     }
 
     jstring pathString = javaEnv->NewStringUTF(path);
@@ -85,7 +84,7 @@ SDL_Surface::SDL_Surface(jobject font, const char *text, int frontColor, int bgC
     jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGSurface");
     jmethodID mid = javaEnv->GetStaticMethodID(cls, "newSurface",
                                      "(Lcz/ger/ffng/FFNGFont;Ljava/lang/String;IIF)Landroid/graphics/Bitmap;");
-    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
+    Log::debug("SDL_Surface::SDL_Surface 1 %p %p %p", javaEnv, cls, mid);
 
     jstring textString = javaEnv->NewStringUTF(text);
 
@@ -666,7 +665,7 @@ void FFNGSurface::termEGL() {
 GLuint loadShader(GLenum type, std::string code) {
     GLuint handle = glCreateShader(type);
     if(handle == GL_FALSE)
-        ;
+        throw std::runtime_error("CreateShader failed");
 
     const char *source = code.c_str();
     glShaderSource(handle, 1, &source, nullptr);
@@ -681,9 +680,7 @@ GLuint loadShader(GLenum type, std::string code) {
         std::string error(loglen, '\0');
         glGetShaderInfoLog(handle, loglen, &actlen, &(error[0]));
         glDeleteShader(handle);
-        //throw new RuntimeException("Error compiling shader: " + error);
-        __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "%s", error.c_str());
-        return 0;
+        throw std::runtime_error("CompileShader failed");
     } else
         return handle;
 }
@@ -692,8 +689,7 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
     GLuint handle = glCreateProgram();
 
     if(handle == GL_FALSE)
-        ;
-    //throw new RuntimeException("Error creating program!");
+        throw std::runtime_error("CreateProgram failed");
 
     glAttachShader(handle, vertexShader);
     glAttachShader(handle, fragmentShader);
@@ -708,9 +704,7 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
         std::string error(loglen, '\0');
         glGetProgramInfoLog(handle, loglen, &actlen, &(error[0]));
         glDeleteProgram(handle);
-        //throw new RuntimeException("Error in program linking: " + error);
-        __android_log_print(ANDROID_LOG_DEBUG, "FFNG", "%s", error.c_str());
-        return 0;
+        throw std::runtime_error("LinkProgram failed");
     } else
         return handle;
 }

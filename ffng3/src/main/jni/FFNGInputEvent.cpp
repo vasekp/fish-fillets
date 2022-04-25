@@ -1,5 +1,6 @@
 #include "jnix.h"
 #include "FFNGInputEvent.h"
+#include "Log.h"
 
 std::string FFNGInputEvent::getKeyName(SDLKey sym) {
 	// TODO key names
@@ -11,7 +12,7 @@ int getTouchX() {
 	jclass cls = JNI::getInstance()->getJavaCls();
 	jobject obj = JNI::getInstance()->getJavaObj();
 	jmethodID mid = javaEnv->GetMethodID(cls, "getTouchX", "()I");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getTouchX 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("getTouchX 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallIntMethod(obj, mid);
 }
@@ -21,7 +22,7 @@ int getTouchY() {
 	jclass cls = JNI::getInstance()->getJavaCls();
 	jobject obj = JNI::getInstance()->getJavaObj();
 	jmethodID mid = javaEnv->GetMethodID(cls, "getTouchY", "()I");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getTouchY 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("getTouchY 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallIntMethod(obj, mid);
 }
@@ -38,7 +39,7 @@ jobject getNextEvent() {
 	jclass cls = JNI::getInstance()->getJavaCls();
 	jobject obj = JNI::getInstance()->getJavaObj();
 	jmethodID mid = javaEnv->GetMethodID(cls, "pollEvent", "()Lcz/ger/ffng/FFNGInputEvent;");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "getNextEvent 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("getNextEvent 1 %p %p %p", javaEnv, cls, mid);
 
     return javaEnv->CallObjectMethod(obj, mid);
 }

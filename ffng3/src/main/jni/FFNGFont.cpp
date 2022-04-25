@@ -1,6 +1,7 @@
-#include <assert.h>
 #include "jnix.h"
 #include "FFNGFont.h"
+#include "Log.h"
+#include <stdexcept>
 
 TTF_Font::TTF_Font(const char *file, int height_)
 : height(height_)
@@ -9,11 +10,10 @@ TTF_Font::TTF_Font(const char *file, int height_)
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 	jmethodID mid = javaEnv->GetStaticMethodID(cls, "createFont", "(Ljava/lang/String;I)Lcz/ger/ffng/FFNGFont;");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::TTF_Font 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("TTF_Font::TTF_Font 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return;
+	if(!mid) {
+		throw std::logic_error("method not found: createFont");
 	}
 
 	jstring fileString = javaEnv->NewStringUTF(file);
@@ -55,11 +55,10 @@ int TTF_Font::getWidth(const char *text) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 	jmethodID mid = javaEnv->GetMethodID(cls, "getWidth", "(Ljava/lang/String;)I");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::getWidth 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("TTF_Font::getWidth 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return 0;
+	if(!mid) {
+		throw std::logic_error("method not found: getWidth");
 	}
 
 	jstring textString = javaEnv->NewStringUTF(text);
@@ -76,11 +75,10 @@ int TTF_Font::getHeight(const char *text) {
 	JNIEnv* javaEnv = JNI::getInstance()->getJavaEnv();
 	jclass cls = javaEnv->FindClass("cz/ger/ffng/FFNGFont");
 	jmethodID mid = javaEnv->GetMethodID(cls, "getHeight", "(Ljava/lang/String;)I");
-	//__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "TTF_Font::getHeight 1 %p %p %p", javaEnv, cls, mid);
+	Log::debug("TTF_Font::getHeight 1 %p %p %p", javaEnv, cls, mid);
 
-	if (mid == NULL) {
-		assert("method not found");
-		return 0;
+	if(!mid) {
+		throw std::logic_error("method not found: getHeight");
 	}
 
 	jstring textString = javaEnv->NewStringUTF(text);

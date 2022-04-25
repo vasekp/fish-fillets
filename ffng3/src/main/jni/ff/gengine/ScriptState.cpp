@@ -19,8 +19,6 @@ extern "C" {
 
 #include "def-script.h"
 
-#include <android/log.h>
-
 //-----------------------------------------------------------------
 ScriptState::ScriptState()
 {
@@ -107,7 +105,7 @@ ScriptState::doFile(const File &file)
     void
 ScriptState::doString(const std::string &input)
 {
-    //__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "ScriptState::doString 1 (%d) %s", input.size(), input.c_str());
+    Log::debug("ScriptState::doString 1 (%d) %s", input.size(), input.c_str());
     int error = luaL_loadbuffer(m_state, input.c_str(), input.size(),
             input.c_str());
     callStack(error);
