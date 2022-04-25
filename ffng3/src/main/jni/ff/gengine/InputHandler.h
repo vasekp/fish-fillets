@@ -4,6 +4,7 @@
 class KeyStroke;
 class MouseStroke;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "InputProvider.h"
 
@@ -40,7 +41,6 @@ class InputHandler : public InputProvider, public NoCopy {
         virtual bool isRightPressed() const;
         virtual V2 getMouseLoc() const { return m_mouseLoc; }
 
-        virtual std::string toString() const;
 };
 
 #endif

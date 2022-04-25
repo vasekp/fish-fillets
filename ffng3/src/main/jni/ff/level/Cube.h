@@ -100,7 +100,6 @@ class Cube : public NoCopy {
         Rules *rules() { return m_rules; }
         const Rules *const_rules() const { return m_rules; }
 
-        virtual std::string toString() const;
 };
 
 #endif

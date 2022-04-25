@@ -10,7 +10,6 @@
 
 #include "Log.h"
 #include "File.h"
-#include "ExInfo.h"
 #include "Random.h"
 #include "BaseMsg.h"
 #include "OptionAgent.h"

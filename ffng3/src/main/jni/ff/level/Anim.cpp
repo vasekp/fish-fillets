@@ -198,9 +198,7 @@ Anim::setEffect(const std::string &effectName) {
         changeEffect(new EffectZx());
     }
     else {
-        ExInfo error = ExInfo("unknown view effect")
-            .addInfo("effect", effectName);
-        Log::warn("%s", error.info().c_str());
+        Log::warn("unknown view effect: %s", effectName.c_str());
     }
 }
 

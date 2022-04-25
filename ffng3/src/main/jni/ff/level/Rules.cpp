@@ -62,7 +62,7 @@ Rules::takeField(Field *field)
     m_mask = new MarkMask(m_model, field);
     Cube::t_models resist = m_mask->getResist(Dir::DIR_NO);
     if (!resist.empty()) {
-        throw std::logic_error("position is occupied: " + m_model->toString() + " xx " + resist.front()->toString());
+        throw std::logic_error("position is occupied");
     }
 
     m_mask->mask();

@@ -1,6 +1,8 @@
 #ifndef HEADER_LEVEL_SCRIPT_H
 #define HEADER_LEVEL_SCRIPT_H
 
+#include "common.h"
+
 extern "C" {
 #include "lua.h"
 }

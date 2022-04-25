@@ -10,7 +10,6 @@
 
 #include "File.h"
 #include "Scripter.h"
-#include "ExInfo.h"
 
 //-----------------------------------------------------------------
     Scripter *
@@ -19,8 +18,7 @@ script_getLeader(lua_State *L)
     lua_pushstring(L, script_getLeaderName());
     lua_rawget(L, LUA_REGISTRYINDEX);
     if (lua_isnil(L, -1)) {
-        luaL_error(L, ExInfo("no leader")
-                .addInfo("key", script_getLeaderName()).what());
+        luaL_error(L, "no leader: key %s", script_getLeaderName());
     }
     luaL_checktype(L, -1, LUA_TLIGHTUSERDATA);
     Scripter *result = static_cast<Scripter*>(lua_touserdata(L, -1));

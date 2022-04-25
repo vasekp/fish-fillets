@@ -22,7 +22,6 @@
 #include "Room.h"
 #include "RopeDecor.h"
 #include "ShapeBuilder.h"
-#include "ExInfo.h"
 
 #include "def-script.h"
 
@@ -550,10 +549,8 @@ script_model_setGoal(lua_State *L) throw()
         goal = Goal::aliveGoal();
     }
     else {
-        ExInfo error = ExInfo("unknown goal")
-            .addInfo("goal", goalname);
-        Log::warn("%s", error.info().c_str());
-        luaL_error(L, error.what());
+        Log::error("unknown goal: %s", goalname.c_str());
+        luaL_error(L, "unknown goal: %s", goalname.c_str());
     }
 
     model->setGoal(goal);

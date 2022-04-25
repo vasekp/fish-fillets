@@ -8,16 +8,16 @@
  */
 #include "level-script.h"
 
-#include "Log.h"
 #include "File.h"
 #include "V2.h"
 #include "Level.h"
 #include "LevelScript.h"
 #include "Room.h"
 #include "Picture.h"
-#include "ExInfo.h"
 
 #include "def-script.h"
+
+constexpr int LUA_SUCCESS = 1;
 
 //-----------------------------------------------------------------
     inline LevelScript *
@@ -70,18 +70,14 @@ script_level_action_move(lua_State *L) throw()
     size_t size;
     const char *symbol = luaL_checklstring(L, 1, &size);
     if (size != 1) {
-        ExInfo error = ExInfo("bad symbol length")
-            .addInfo("length", size)
-            .addInfo("symbol", symbol);
-        Log::warn("%s", error.info().c_str());
-        luaL_error(L, error.what());
+        Log::error("bad symbol length: %s %d", symbol, size);
+        luaL_error(L, "bad symbol length: %s %d", symbol, size);
     }
 
     bool sucess = getLevel(L)->action_move(symbol[0]);
     lua_pushboolean(L, sucess);
     END_NOEXCEPTION;
-    //NOTE: return sucess
-    return 1;
+    return LUA_SUCCESS;
 }
 //-----------------------------------------------------------------
 /**
@@ -94,8 +90,7 @@ script_level_action_save(lua_State *L) throw()
     bool sucess = getLevel(L)->action_save();
     lua_pushboolean(L, sucess);
     END_NOEXCEPTION;
-    //NOTE: return sucess
-    return 1;
+    return LUA_SUCCESS;
 }
 //-----------------------------------------------------------------
 /**
@@ -108,8 +103,7 @@ script_level_action_load(lua_State *L) throw()
     bool sucess = getLevel(L)->action_load();
     lua_pushboolean(L, sucess);
     END_NOEXCEPTION;
-    //NOTE: return sucess
-    return 1;
+    return LUA_SUCCESS;
 }
 //-----------------------------------------------------------------
 /**
@@ -122,8 +116,7 @@ script_level_action_restart(lua_State *L) throw()
     bool sucess = getLevel(L)->action_restart(1);
     lua_pushboolean(L, sucess);
     END_NOEXCEPTION;
-    //NOTE: return sucess
-    return 1;
+    return LUA_SUCCESS;
 }
 
 

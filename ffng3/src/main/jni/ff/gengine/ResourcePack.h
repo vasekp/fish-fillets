@@ -4,7 +4,6 @@
 #include "common.h"
 #include "Random.h"
 #include "INamed.h"
-#include "ExInfo.h"
 
 #include <map>
 
@@ -32,7 +31,7 @@ class ResourcePack : public INamed {
     virtual ~ResourcePack()
     {
         if (!m_reses.empty()) {
-            Log::warn("resources are not released, pack=%s", toString().c_str());
+            Log::warn("resources not released");
         }
     }
     //-----------------------------------------------------------------
@@ -118,7 +117,7 @@ class ResourcePack : public INamed {
             result = getRes(name, Random::randomInt(count));
         }
         else {
-            Log::warn("no such resource name=%s pack=%s", name.c_str(), toString().c_str());
+            Log::warn("no such resource %s", name.c_str());
         }
         return result;
     }
@@ -129,18 +128,6 @@ class ResourcePack : public INamed {
     int countRes(const std::string &name)
     {
         return m_reses.count(name);
-    }
-    //-----------------------------------------------------------------
-    std::string toString() const
-    {
-            ExInfo available_res = ExInfo("resources")
-                .addInfo("name", getName());
-
-            t_constIterator end = m_reses.end();
-            for (t_constIterator item = m_reses.begin(); item != end; ++item) {
-                available_res.addInfo("key", item->first);
-            }
-            return available_res.info();
     }
 
 };

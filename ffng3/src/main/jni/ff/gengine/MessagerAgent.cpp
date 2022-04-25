@@ -43,7 +43,7 @@ void
 MessagerAgent::forwardMsg(const BaseMsg& msg)
 {
     const std::string &listenerName = msg.getListenerName();
-//    LOG_DEBUG(ExInfo("received new message").addInfo("msg", msg.toString()));
+    Log::debug("received new message: %s", msg.toString().c_str());
 
     auto it = m_listeners.find(listenerName);
     if (m_listeners.end() == it) {

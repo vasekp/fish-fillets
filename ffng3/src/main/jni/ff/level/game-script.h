@@ -1,6 +1,8 @@
 #ifndef HEADER_GAME_SCRIPT_H
 #define HEADER_GAME_SCRIPT_H
 
+#include "common.h"
+
 extern "C" {
 #include "lua.h"
 }

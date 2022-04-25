@@ -4,7 +4,6 @@
 #include "common.h"
 #include "NoCopy.h"
 #include "BaseListener.h"
-#include "ExInfo.h"
 #include "AgentPack.h"
 
 /**

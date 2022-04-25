@@ -13,7 +13,6 @@
 #include "Anim.h"
 #include "EffectDisintegrate.h"
 #include "DialogStack.h"
-#include "ExInfo.h"
 
 //-----------------------------------------------------------------
 /**
@@ -163,17 +162,6 @@ bool
 Cube::isTalking() const
 {
     return (m_dialogs && m_dialogs->isTalking(m_index));
-}
-//-----------------------------------------------------------------
-std::string
-Cube::toString() const
-{
-    return ExInfo("model")
-            .addInfo("loc", m_loc.toString())
-            .addInfo("alive", m_alive)
-            .addInfo("weight", m_weight)
-            .addInfo("power", m_power)
-            .addInfo("shape", m_shape->toString()).info();
 }
 
 

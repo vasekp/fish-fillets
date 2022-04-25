@@ -8,8 +8,6 @@
  */
 #include "InputHandler.h"
 
-#include "ExInfo.h"
-
 #include "FFNGInputEvent.h"
 
 //-----------------------------------------------------------------
@@ -49,13 +47,5 @@ bool
 InputHandler::isRightPressed() const
 {
     return m_buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-}
-//-----------------------------------------------------------------
-std::string
-InputHandler::toString() const
-{
-    return ExInfo("input")
-        .addInfo("mouse", m_mouseLoc.toString())
-        .addInfo("buttons", m_buttons).info();
 }
 

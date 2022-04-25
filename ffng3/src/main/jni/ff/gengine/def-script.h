@@ -3,15 +3,12 @@
 
 class Scripter;
 
-#include "Log.h"
-
-#include <stdexcept>
+#include "common.h"
 
 extern "C" {
 #include "lua.h"
 #include "lauxlib.h"
 }
-
 
 //NOTE: no one exception can be passed to "C" lua code
 #define BEGIN_NOEXCEPTION try {

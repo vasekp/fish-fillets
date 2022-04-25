@@ -11,7 +11,6 @@
 #include "File.h"
 #include "BaseMsg.h"
 #include "StringTool.h"
-#include "ExInfo.h"
 
 //-----------------------------------------------------------------
 /**
@@ -188,26 +187,3 @@ Environ::removeWatchers(const std::string &listenerName)
         }
     }
 }
-//-----------------------------------------------------------------
-std::string
-Environ::toString() const
-{
-    ExInfo info("environ");
-    t_values::const_iterator end = m_values.end();
-    for (t_values::const_iterator i = m_values.begin(); i != end; ++i) {
-        info.addInfo(i->first, i->second);
-    }
-    return info.info();
-}
-//-----------------------------------------------------------------
-std::string
-Environ::getHelpInfo() const
-{
-    std::string help;
-    t_values::const_iterator end = m_values.end();
-    for (t_values::const_iterator i = m_values.begin(); i != end; ++i) {
-        help += i->first + "='" + i->second + "'\n";
-    }
-    return help;
-}
-

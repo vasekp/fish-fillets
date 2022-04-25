@@ -8,10 +8,6 @@
  */
 #include "Log.h"
 
-#include "ExInfo.h"
-
-#include <stdlib.h>
-#include <stdio.h>
 #include <android/log.h>
 #include <cstdarg>
 
