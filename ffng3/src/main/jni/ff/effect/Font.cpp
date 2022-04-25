@@ -8,9 +8,7 @@
  */
 #include "Font.h"
 
-#include "Log.h"
 #include "File.h"
-#include "TTFException.h"
 
 #ifdef HAVE_FRIBIDI
 #include "fribidi.h"
@@ -58,11 +56,7 @@ Font::biditize(const std::string &text)
  */
 Font::Font(const File &file_ttf, int height)
 {
-    m_ttfont = new TTF_Font(file_ttf.getPath().c_str(), height); //FFNG TTF_OpenFont
-    if (!m_ttfont) {
-        throw TTFException(ExInfo("OpenFont")
-                .addInfo("file", file_ttf.getPath()));
-    }
+    m_ttfont = new TTF_Font(file_ttf.getPath().c_str(), height);
 
     //NOTE: bg color will be set to be transparent
     Color bg(10, 10, 10, 0);
@@ -73,7 +67,6 @@ Font::~Font()
 {
 	if (m_ttfont)
 		delete(m_ttfont);
-    //FFNG TTF_CloseFont(m_ttfont);
 }
 //-----------------------------------------------------------------
 /**
@@ -83,8 +76,8 @@ Font::~Font()
 void
 Font::init()
 {
-    if (TTF_Font::init/*FFNG TTF_Init*/() < 0) {
-        throw TTFException(ExInfo("Init"));
+    if (TTF_Font::init() < 0) {
+        throw std::runtime_error("TTF init failed");
     }
 }
 //-----------------------------------------------------------------
@@ -94,7 +87,6 @@ Font::init()
 void
 Font::shutdown()
 {
-    //FFNG TTF_Quit();
 	TTF_Font::quit();
 }
 
@@ -103,7 +95,6 @@ Font::shutdown()
 Font::calcTextWidth(const std::string &text)
 {
     int w;
-    //FFNG TTF_SizeUTF8(m_ttfont, text.c_str(), &w, NULL);
     m_ttfont->sizeUTF8(text.c_str(), &w, NULL);
     return w;
 

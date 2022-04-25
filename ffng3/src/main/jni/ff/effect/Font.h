@@ -3,15 +3,12 @@
 
 class File;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "Color.h"
 
-//FFNG #include "SDL.h"
-//FFNG #include "SDL_ttf.h"
 #include "FFNGSurface.h"
 #include "FFNGFont.h"
-
-#include <string>
 
 /**
  * TrueType UTF-8 font.
