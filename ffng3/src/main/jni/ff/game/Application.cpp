@@ -8,7 +8,6 @@
  */
 #include "Application.h"
 
-#include "BaseException.h"
 #include "File.h"
 #include "Random.h"
 #include "AgentPack.h"
@@ -121,8 +120,8 @@ Application::addSoundAgent()
         try {
             soundAgent->init();
         }
-        catch (BaseException &e) {
-            Log::warn("%s", e.info().info().c_str());
+        catch (std::exception &e) {
+            Log::warn("%s", e.what());
             delete soundAgent;
             soundAgent = new DummySoundAgent();
         }

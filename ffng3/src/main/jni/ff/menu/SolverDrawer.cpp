@@ -8,13 +8,11 @@
  */
 #include "SolverDrawer.h"
 
-#include "Log.h"
 #include "File.h"
 #include "Font.h"
 #include "Labels.h"
 #include "LevelStatus.h"
 #include "WiPara.h"
-#include "BaseException.h"
 
 //-----------------------------------------------------------------
 /**
@@ -23,36 +21,31 @@
  */
 SolverDrawer::SolverDrawer(LevelStatus *status)
 {
-    try {
-        Font usedFont(File::internal("font/font_menu.ttf"), 14);
-        Color usedColor(255, 255, 255, 255);
+    Font usedFont(File::internal("font/font_menu.ttf"), 14);
+    Color usedColor(255, 255, 255, 255);
 
-        Labels labels(File::internal("script/labels.lua"));
-        const char *labelName;
-        switch (status->compareToBest()) {
-            case 1:
-                labelName = "solver_better";
-                break;
-            case 0:
-                labelName = "solver_equals";
-                break;
-            default:
-                labelName = "solver_worse";
-        }
-        StringTool::t_args args;
-        args.push_back("");
-        args.push_back(StringTool::toString(status->getBestMoves()));
-        args.push_back(status->getBestAuthor());
+    Labels labels(File::internal("script/labels.lua"));
+    const char *labelName;
+    switch (status->compareToBest()) {
+        case 1:
+            labelName = "solver_better";
+            break;
+        case 0:
+            labelName = "solver_equals";
+            break;
+        default:
+            labelName = "solver_worse";
+    }
+    StringTool::t_args args;
+    args.push_back("");
+    args.push_back(StringTool::toString(status->getBestMoves()));
+    args.push_back(status->getBestAuthor());
 
-        WiPara *para = new WiPara(
-                labels.getFormatedLabel(labelName, args),
-                usedFont, usedColor);
-        para->enableCentered();
-        para->recenter();
-        addWidget(para);
-    }
-    catch (BaseException &e) {
-        Log::warn("%s", e.info().info().c_str());
-    }
+    WiPara *para = new WiPara(
+            labels.getFormatedLabel(labelName, args),
+            usedFont, usedColor);
+    para->enableCentered();
+    para->recenter();
+    addWidget(para);
 }
 

@@ -15,7 +15,6 @@
 #include "Name.h"
 #include "StringMsg.h"
 #include "MessagerAgent.h"
-#include "BaseException.h"
 #include "File.h"
 
 //-----------------------------------------------------------------
@@ -44,14 +43,9 @@ bool
 KeyConsole::sendCommand()
 {
     bool result = false;
-    try {
-        StringMsg msg(Name::SCRIPT_NAME, "dostring", m_input);
-        MessagerAgent::agent()->forwardMsg(std::move(msg));
-        result = true;
-    }
-    catch (BaseException &e) {
-        Log::warn("%s", e.info().info().c_str());
-    }
+    StringMsg msg(Name::SCRIPT_NAME, "dostring", m_input);
+    MessagerAgent::agent()->forwardMsg(std::move(msg));
+    result = true;
     return result;
 }
 //-----------------------------------------------------------------

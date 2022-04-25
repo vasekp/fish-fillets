@@ -9,9 +9,7 @@
 #include "jnix.h"
 #include <filesystem>
 #include <ff/gengine/ResImagePack.h>
-#include "Log.h"
 #include "Application.h"
-#include "BaseException.h"
 #include "FFNGSurface.h"
 
 extern "C"
@@ -33,13 +31,8 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
             env->ReleaseStringUTFChars(jPath, storagePath);
         }
 
-        try {
-            app.init();
-            app.run();
-        }
-        catch (BaseException &e) {
-            Log::error("%s", e.info().info().c_str());
-        }
+        app.init();
+        app.run();
         app.shutdown();
         Log::info("Terminating gracefully");
         JNI::getInstance()->clearJavaContext();
@@ -49,14 +42,8 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
 
         return 0;
     }
-    catch (BaseException &e) {
-        Log::error("%s", e.info().info().c_str());
-    }
     catch (std::exception &e) {
         Log::error("%s", e.what());
-    }
-    catch (...) {
-        Log::error("unknown exception");
     }
 
     Log::info("Terminating after error");

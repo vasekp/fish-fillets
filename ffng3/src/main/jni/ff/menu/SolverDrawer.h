@@ -3,6 +3,7 @@
 
 class LevelStatus;
 
+#include "common.h"
 #include "VBox.h"
 
 /**
