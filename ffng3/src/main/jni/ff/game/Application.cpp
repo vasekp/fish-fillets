@@ -32,10 +32,11 @@
 
 #include <android/log.h>
 
-//FFNG #include "SDL.h"
-#include <stdio.h> // for fflush, stdout
-
 #include "FFNGApp.h"
+#include <stdexcept>
+#include <string>
+
+using namespace std::string_literals;
 
 //-----------------------------------------------------------------
 Application::Application()
@@ -67,12 +68,11 @@ Application::~Application()
 }
 //-----------------------------------------------------------------
     void
-Application::init(int argc, char *argv[])
+Application::init()
 {
     MessagerAgent::agent()->addListener(this);
     m_agents->init(Name::VIDEO_NAME);
-    prepareOptions(argc, argv);
-    customizeGame();
+    loadInitScript();
 
     m_agents->init(Name::TIMER_NAME);
     addSoundAgent();
@@ -83,11 +83,8 @@ Application::init(int argc, char *argv[])
     void
 Application::run()
 {
-    int cycles = 0;
     while (!m_quit) {
         m_agents->update();
-        if (++cycles % 100 == 0)
-        	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "cycles: %d", cycles);
         m_quit |= FFNGApp::pauseAndDisposeChance();
     }
 }
@@ -98,64 +95,19 @@ Application::shutdown()
     m_agents->shutdown();
 }
 //-----------------------------------------------------------------
-//-----------------------------------------------------------------
-    void
-Application::prepareOptions(int argc, char *argv[])
-{
-    OptionParams params;
-    params.addParam("systemdir", OptionParams::TYPE_PATH,
-            "File to game data");
-    params.addParam("userdir", OptionParams::TYPE_PATH,
-            "File to game data");
-    params.addParam("lang", OptionParams::TYPE_STRING,
-            "2-letter code (e.g., en, cs, fr, de)");
-    params.addParam("speech", OptionParams::TYPE_STRING,
-            "Lang for speech");
-    params.addParam("subtitles", OptionParams::TYPE_BOOLEAN,
-            "Enable subtitles");
-    params.addParam("fullscreen", OptionParams::TYPE_BOOLEAN,
-            "Turn fullscreen on/off");
-    params.addParam("show_steps", OptionParams::TYPE_BOOLEAN,
-            "Show a step counter in levels");
-    params.addParam("sound", OptionParams::TYPE_BOOLEAN,
-            "Turn sound on/off");
-    params.addParam("volume_sound", OptionParams::TYPE_NUMBER,
-            "Sound volume in percentage");
-    params.addParam("volume_music", OptionParams::TYPE_NUMBER,
-            "Music volume in percentage");
-    params.addParam("worldmap", OptionParams::TYPE_STRING,
-            "File to the worldmap file");
-    params.addParam("cache_images", OptionParams::TYPE_BOOLEAN,
-            "Cache images (default=true)");
-    params.addParam("sound_frequency", OptionParams::TYPE_NUMBER,
-            "Sound sample rate (default=44100)");
-    params.addParam("strict_rules", OptionParams::TYPE_BOOLEAN,
-                    "Disallow pushing of partially supported objects (default=true)");
-    params.addParam("replay_level", OptionParams::TYPE_STRING,
-                    "Replay the solution for the given level codename");
-    OptionAgent::agent()->parseCmdOpt(argc, argv, params);
-}
-//-----------------------------------------------------------------
 /**
  * Run init script.
  * @throws ResourceException when data are not available
  */
     void
-Application::customizeGame()
+Application::loadInitScript()
 {
     File initfile = File::internal("script/init.lua");
     if (initfile.exists()) {
         ScriptAgent::agent()->scriptInclude(initfile);
     }
     else {
-        throw ResourceException(ExInfo("init file not found")
-                .addInfo("path", initfile.getPath())
-                .addInfo("systemdir",
-                    OptionAgent::agent()->getParam("systemdir"))
-                .addInfo("userdir",
-                    OptionAgent::agent()->getParam("userdir"))
-                .addInfo("hint",
-                    "try command line option \"systemdir=path/to/data\""));
+        throw std::runtime_error("init file not found: "s + initfile.getPath());
     }
 }
 //-----------------------------------------------------------------

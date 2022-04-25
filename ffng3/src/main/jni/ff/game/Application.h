@@ -16,15 +16,14 @@ class Application : public NoCopy, public BaseListener {
         bool m_quit;
 
     private:
-    void prepareOptions(int argc, char *argv[]);
-        void customizeGame();
+    void loadInitScript();
         void addSoundAgent();
     public:
         Application();
         virtual ~Application();
         virtual const char *getName() const { return Name::APP_NAME; }
 
-        void init(int argc, char *argv[]);
+        void init();
         void run();
         void shutdown();
 

@@ -8,9 +8,6 @@
  */
 #include "SurfaceLock.h"
 
-#include "SDLException.h"
-
-
 //-----------------------------------------------------------------
 /**
  * Lock surface when necessary.

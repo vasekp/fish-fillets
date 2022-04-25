@@ -10,7 +10,6 @@
 
 #include "File.h"
 #include "ImgException.h"
-#include "SDLException.h"
 #include "OptionAgent.h"
 #include "Log.h"
 

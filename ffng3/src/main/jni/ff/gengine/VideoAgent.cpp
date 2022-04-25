@@ -11,7 +11,6 @@
 #include "Log.h"
 #include "File.h"
 #include "ImgException.h"
-#include "SDLException.h"
 #include "LogicException.h"
 #include "AgentPack.h"
 #include "SimpleMsg.h"
@@ -125,42 +124,17 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
     int screen_bpp = options->getAsInt("screen_bpp", 32);
     int videoFlags = getVideoFlags();
     m_fullscreen = options->getAsBool("fullscreen", false);
-    /* FFNG ignore video flags for android
-    if (m_fullscreen) {
-        videoFlags |= SDL_FULLSCREEN;
-    }
-    */
 
     //TODO: check VideoModeOK and available ListModes
     /* FFNG */ if(m_screen) { delete m_screen; m_screen = NULL; }
     SDL_Surface *newScreen =
-        FFNGVideo::setVideoMode/*FFNG SDL_SetVideoMode*/(screen_width, screen_height, screen_bpp, videoFlags);
-    /* FFNG no try without fullscreen for android
-    if (NULL == newScreen && (videoFlags & SDL_FULLSCREEN)) {
-        LOG_WARNING(ExInfo("unable to use fullscreen resolution, trying windowed")
-                .addInfo("width", screen_width)
-                .addInfo("height", screen_height)
-                .addInfo("bpp", screen_bpp));
-
-        videoFlags = videoFlags & ~SDL_FULLSCREEN;
-        newScreen = SDL_SetVideoMode(screen_width, screen_height, screen_bpp,
-                videoFlags);
-    }
-    */
+        FFNGVideo::setVideoMode(screen_width, screen_height, screen_bpp, videoFlags);
 
     if (newScreen) {
         m_screen = newScreen;
-        //NOTE: must be two times to change MouseState
-        /* FFNG no mouse wapr for android
-        SDL_WarpMouse(screen_width / 2, screen_height / 2);
-        SDL_WarpMouse(screen_width / 2, screen_height / 2);
-        */
     }
     else {
-        throw SDLException(ExInfo("SetVideoMode")
-                .addInfo("width", screen_width)
-                .addInfo("height", screen_height)
-                .addInfo("bpp", screen_bpp));
+        throw std::runtime_error("setVideoMode returned null");
     }
 }
 //-----------------------------------------------------------------

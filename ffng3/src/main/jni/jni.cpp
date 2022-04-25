@@ -35,7 +35,7 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
         }
 
         try {
-            app.init(0, NULL);
+            app.init();
             app.run();
         }
         catch (HelpException &e) {

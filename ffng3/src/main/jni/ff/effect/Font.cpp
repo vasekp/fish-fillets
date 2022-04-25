@@ -11,7 +11,6 @@
 #include "Log.h"
 #include "File.h"
 #include "TTFException.h"
-#include "SDLException.h"
 
 #ifdef HAVE_FRIBIDI
 #include "fribidi.h"

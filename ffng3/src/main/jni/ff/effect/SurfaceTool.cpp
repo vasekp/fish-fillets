@@ -9,7 +9,7 @@
 #include "SurfaceTool.h"
 #include "PixelTool.h"    // FFNG
 
-#include "SDLException.h"
+#include <stdexcept>
 
 //-----------------------------------------------------------------
 /**
@@ -28,18 +28,9 @@ SurfaceTool::createEmpty(SDL_Surface *surface, int width, int height)
     if (!height) {
         height = surface->getHeight();
     }
-
-    /* FFNG different surface instancing
-    SDL_Surface *result = SDL_CreateRGBSurface(surface->flags, width, height,
-            surface->format->BitsPerPixel,
-            surface->format->Rmask,
-            surface->format->Gmask,
-            surface->format->Bmask,
-            surface->format->Amask);
-    */
     SDL_Surface *result = FFNGSurface::createSurface(width, height);
-    if (NULL == result) {
-        throw SDLException(ExInfo("CreateRGBSurface"));
+    if (!result) {
+        throw std::runtime_error("createSurface returned null");
     }
     return result;
 }
@@ -50,23 +41,10 @@ SurfaceTool::createEmpty(SDL_Surface *surface, int width, int height)
     SDL_Surface *
 SurfaceTool::createTransparent(int w, int h, const Color &transparent)
 {
-    /* FFNG different surface handling on android
-    SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE|SDL_SRCCOLORKEY,
-            w, h, 32,
-            0, 0, 0, 0);
-    */
     SDL_Surface *surface = FFNGSurface::createSurface(w, h, PixelTool::convertColor(transparent));
-    if (NULL == surface) {
-        throw SDLException(ExInfo("CreateRGBSurface"));
+    if (!surface) {
+        throw std::runtime_error("createSurface returned null");
     }
-
-    /* FFNG already filled on android (see a few lines above)
-    Uint32 transparentKey = SDL_MapRGB(surface->format,
-            transparent.r, transparent.g, transparent.b);
-    SDL_SetColorKey(surface, SDL_SRCCOLORKEY|SDL_RLEACCEL, transparentKey);
-
-    SurfaceTool::alphaFill(surface, NULL, transparent);
-    */
     return surface;
 }
 //-----------------------------------------------------------------
