@@ -11,7 +11,6 @@
 #include "Log.h"
 #include "File.h"
 #include "ExInfo.h"
-#include "MixException.h"
 #include "Random.h"
 #include "BaseMsg.h"
 #include "OptionAgent.h"
@@ -60,12 +59,6 @@ SDLSoundAgent::reinit()
 
     int frequency =
        OptionAgent::agent()->getAsInt("sound_frequency", 44100);
-    /* FFNG
-    if(Mix_OpenAudio(frequency, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
-        throw MixException(ExInfo("Mix_OpenAudio"));
-    }
-    Mix_AllocateChannels(16);
-    */
     FFNGMusic::openAudio(frequency);
 
     SoundAgent::reinit();

@@ -8,6 +8,7 @@
  */
 #include "Application.h"
 
+#include "BaseException.h"
 #include "File.h"
 #include "Random.h"
 #include "AgentPack.h"

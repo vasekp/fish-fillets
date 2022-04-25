@@ -9,11 +9,7 @@
 #include "ResImagePack.h"
 
 #include "File.h"
-#include "ImgException.h"
 #include "OptionAgent.h"
-#include "Log.h"
-
-//FFNG #include "SDL_image.h"
 
 // The set cache size allows to contain all fish images and animations
 // from level 'experiments'.
@@ -40,23 +36,12 @@ ResImagePack::ResImagePack(bool caching_enabled) {
 SDL_Surface *
 ResImagePack::loadImage(const File &file)
 {
-    SDL_Surface *raw_image = /*FFNG IMG_Load*/ FFNGSurface::imgLoad(file.getPath().c_str());
+    SDL_Surface *raw_image = FFNGSurface::imgLoad(file.getPath().c_str());
     if (NULL == raw_image) {
-        throw ImgException(ExInfo("Load")
-                .addInfo("file", file.getPath()));
+        throw std::runtime_error("Load " + file.getPath());
     }
 
-    return raw_image; //FFNG
-    /* FFNG no need to convert
-    SDL_Surface *surface = SDL_DisplayFormatAlpha(raw_image);
-    if (NULL == surface) {
-        throw SDLException(ExInfo("DisplayFormat")
-                .addInfo("file", file.getPath()));
-    }
-    SDL_FreeSurface(raw_image);
-
-    return surface;
-    */
+    return raw_image;
 }
 //-----------------------------------------------------------------
 /**
@@ -88,7 +73,6 @@ ResImagePack::unloadRes(SDL_Surface *res)
     if (m_caching_enabled) {
         CACHE->release(res);
     } else {
-        //FFNG SDL_FreeSurface(res);
     	FFNGSurface::freeSurface(res);
     }
 }

@@ -3,10 +3,9 @@
 
 class File;
 
+#include "common.h"
 #include "ResourcePack.h"
 #include "ResCache.h"
-
-//#include "SDL.h"
 #include "FFNGSurface.h"
 
 /**

@@ -9,7 +9,6 @@
 #include "VideoAgent.h"
 
 #include "File.h"
-#include "ImgException.h"
 #include "AgentPack.h"
 #include "SimpleMsg.h"
 #include "StringMsg.h"
