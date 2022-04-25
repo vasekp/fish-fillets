@@ -375,7 +375,9 @@ void WorldMap::drawNodes() {
         queue.pop();
         m_drawer->drawNode(current);
         for(const auto child : current->getChildren()) {
-            queue.push(child);
+            if(child->getState() != LevelNode::STATE_HIDDEN) {
+                queue.push(child);
+            }
         }
     }
 }
