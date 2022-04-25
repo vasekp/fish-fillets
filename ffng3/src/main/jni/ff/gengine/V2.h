@@ -4,7 +4,7 @@
 #include "StringTool.h"
 
 #include <string>
-#include <assert.h>
+#include <cassert>
 
 /**
  * Vector x,y.

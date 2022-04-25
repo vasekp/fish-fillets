@@ -12,7 +12,6 @@
 #include "NodeDrawer.h"
 
 #include <math.h>
-#include <assert.h>
 
 //-----------------------------------------------------------------
 /**
@@ -60,8 +59,7 @@ LevelNode::setState(eState state)
             }
             break;
         default:
-            assert(!"unknown level node state");
-            break;
+            throw std::logic_error("state out of enum");
     }
     m_state = state;
 }

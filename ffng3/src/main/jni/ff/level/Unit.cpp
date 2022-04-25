@@ -14,8 +14,6 @@
 #include "Anim.h"
 #include "Shape.h"
 
-#include <assert.h>
-
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------
@@ -143,9 +141,8 @@ Unit::myOrder(Dir::eDir dir) const
         case Dir::DIR_DOWN:
             return m_symbols.getDown();
         default:
-            assert(!"unknown dir");
+            throw std::logic_error("dir out of enum");
     }
-    return ControlSym::SYM_NONE;
 }
 //-----------------------------------------------------------------
 /**

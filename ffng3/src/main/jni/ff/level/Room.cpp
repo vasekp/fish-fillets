@@ -188,7 +188,7 @@ Room::playImpact(Cube::eWeight impact)
             playSound("impact_heavy", 50);
             break;
         default:
-            assert(!"unknown impact weight");
+            throw std::logic_error("impact out of enum");
     }
 }
 //-----------------------------------------------------------------

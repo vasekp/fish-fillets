@@ -18,8 +18,6 @@
 #include "OnStrongPad.h"
 #include "OptionAgent.h"
 
-#include <assert.h>
-
 //-----------------------------------------------------------------
 /**
  * Create new rules for model.
@@ -704,10 +702,8 @@ Rules::getAction() const
         case Dir::DIR_UP: return "move_up";
         case Dir::DIR_DOWN: return "move_down";
         case Dir::DIR_NO: return "rest";
-        default: assert(!"unknown dir"); break;
+        default: throw std::logic_error("dir out of enum");
     }
-
-    return "rest";
 }
 //-----------------------------------------------------------------
 /**

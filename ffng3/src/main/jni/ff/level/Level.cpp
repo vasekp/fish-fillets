@@ -35,9 +35,6 @@
 #include "DialogStack.h"
 #include "StringTool.h"
 
-#include <stdio.h>
-#include <assert.h>
-
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------

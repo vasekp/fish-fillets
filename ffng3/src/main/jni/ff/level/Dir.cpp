@@ -8,8 +8,6 @@
  */
 #include "Dir.h"
 
-#include <assert.h>
-
 //-----------------------------------------------------------------
 /**
  * Convert dir to relative coordinations.
@@ -35,8 +33,7 @@ Dir::dir2xy(eDir dir)
         case DIR_NO:
             break;
         default:
-            assert(!"unknown dir");
-            break;
+            throw std::logic_error("dir out of enum");
     }
 
     return V2(x, y);

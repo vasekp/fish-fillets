@@ -9,8 +9,7 @@
 #include "PixelTool.h"
 
 #include "LogicException.h"
-
-#include <assert.h>
+#include <cassert>
 
 //-----------------------------------------------------------------
 /**
