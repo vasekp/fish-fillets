@@ -5,7 +5,6 @@
 #include "NoCopy.h"
 #include "BaseListener.h"
 #include "ExInfo.h"
-#include "NameException.h"
 #include "AgentPack.h"
 
 /**
@@ -41,8 +40,7 @@ static TYPE *agent() \
 { \
     TYPE *result = dynamic_cast<TYPE *>(AgentPack::getAgent(sName())); \
     if (NULL == result) { \
-        throw NameException(ExInfo("cannot cast agent") \
-                .addInfo("name", sName())); \
+        throw std::logic_error("cannot cast agent:"s + sName()); \
     } \
     return result; \
 } \

@@ -1,12 +1,11 @@
 #ifndef HEADER_MESSAGERAGENT_H
 #define HEADER_MESSAGERAGENT_H
 
-
+#include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
 
 #include <map>
-
 
 /**
  * List of listeners.

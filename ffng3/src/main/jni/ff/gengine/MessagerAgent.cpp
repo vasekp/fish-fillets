@@ -8,10 +8,8 @@
  */
 #include "MessagerAgent.h"
 
-#include "Log.h"
 #include "BaseMsg.h"
 #include "BaseListener.h"
-#include "NameException.h"
 
 //-----------------------------------------------------------------
 /**
@@ -49,8 +47,7 @@ MessagerAgent::forwardMsg(const BaseMsg& msg)
 
     auto it = m_listeners.find(listenerName);
     if (m_listeners.end() == it) {
-        throw NameException(ExInfo("cannot find listener")
-                .addInfo("name", listenerName));
+        throw std::logic_error("cannot find listener: " + listenerName);
     }
 
     msg.sendActual(it->second);

@@ -4,9 +4,9 @@
 class File;
 class BaseMsg;
 
+#include "common.h"
 #include "NoCopy.h"
 
-#include <string>
 #include <map>
 
 /**

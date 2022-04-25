@@ -9,7 +9,6 @@
 #include "AgentPack.h"
 
 #include "BaseAgent.h"
-#include "NameException.h"
 #include "MessagerAgent.h"
 
 AgentPack *AgentPack::ms_singleton = NULL;
@@ -52,8 +51,7 @@ AgentPack::addAgent(BaseAgent *agent)
         m_agents.insert(
                 std::pair<std::string,BaseAgent*>(agent->getName(), agent));
     if (!status.second) {
-        throw NameException(ExInfo("agent already exists")
-                .addInfo("name", agent->getName()));
+        throw std::logic_error("agent already exists: "s + agent->getName());
     }
 
     MessagerAgent::agent()->addListener(agent);
@@ -91,12 +89,11 @@ AgentPack::getAgent(const std::string &name)
 
     t_agents::iterator it = ms_singleton->m_agents.find(name);
     if (ms_singleton->m_agents.end() == it) {
-        throw NameException(ExInfo("cannot find agent")
-                .addInfo("name", name));
+        throw std::logic_error("cannot find agent: " + name);
     }
 
     if (!it->second->isInitialized()) {
-        throw std::logic_error("agent is not initialized: "s + name);
+        throw std::logic_error("agent is not initialized: " + name);
     }
     return it->second;
 }
