@@ -5,12 +5,12 @@
  *      Author: dan
  */
 
+#include "common.h"
+#include "jnix.h"
 #include <filesystem>
 #include <ff/gengine/ResImagePack.h>
-#include "jnix.h"
 #include "Log.h"
 #include "Application.h"
-#include "HelpException.h"
 #include "BaseException.h"
 #include "FFNGSurface.h"
 
@@ -36,9 +36,6 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
         try {
             app.init();
             app.run();
-        }
-        catch (HelpException &e) {
-            printf("%s\n", e.what());
         }
         catch (BaseException &e) {
             Log::error("%s", e.info().info().c_str());

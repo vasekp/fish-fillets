@@ -13,7 +13,6 @@
 #include "File.h"
 #include "ScriptAgent.h"
 #include "StringTool.h"
-#include "HelpException.h"
 #include "ScriptException.h"
 #include "OptionParams.h"
 #include "StringMsg.h"
@@ -114,88 +113,6 @@ OptionAgent::prepareLang()
             }
         }
     }
-}
-//-----------------------------------------------------------------
-/**
- * Parse command line options.
- * Format: $0 [name=value ...]
- *
- * @throws LogicException when format is wrong
- */
-    void
-OptionAgent::parseCmdOpt(int argc, char *argv[], const OptionParams &params)
-{
-    if (argc >= 1) {
-        setParam("program", argv[0]);
-    }
-
-    for (int i = 1; i < argc; ++i) {
-        if (argv[i][0] == '-') {
-            parseDashOpt(argv[i], params);
-        }
-        else {
-            parseParamOpt(argv[i], params);
-        }
-    }
-}
-//-----------------------------------------------------------------
-/**
- * Supported options are '-h', '-v'.
- * @throws HelpException when only help is need
- * @throws LogicException when used option is unknown
- */
-    void
-OptionAgent::parseDashOpt(const std::string &arg,
-        const OptionParams &params)
-{
-    if ("-h" == arg || "--help" == arg) {
-        throw HelpException(ExInfo(getHelpInfo(params)));
-    }
-    else if ("-v" == arg || "--version" == arg) {
-        throw HelpException(ExInfo(getVersionInfo()));
-    }
-    else if ("-c" == arg || "--config" == arg) {
-        throw HelpException(ExInfo(params.getConfig(m_environ)));
-    }
-    else {
-        throw std::runtime_error("unknown option "s + arg);
-    }
-}
-//-----------------------------------------------------------------
-    void
-OptionAgent::parseParamOpt(const std::string &arg,
-                const OptionParams &params)
-{
-    std::string name;
-    std::string value;
-    if (splitOpt(arg, &name, &value)) {
-        params.checkValidity(name, value);
-        setParam(name, value);
-    }
-    else {
-        throw std::runtime_error("unknown option "s + arg);
-    }
-}
-//-----------------------------------------------------------------
-/**
- * Split "name=value".
- * @return true for success
- */
-    bool
-OptionAgent::splitOpt(const std::string &option,
-        std::string *out_name, std::string *out_value)
-{
-    bool result = false;
-    std::string::size_type pos = option.find('=');
-    if (pos != std::string::npos) {
-        if (pos + 1  < option.size()) {
-            *out_name = option.substr(0, pos);
-            *out_value = option.substr(pos + 1, std::string::npos);
-            result = true;
-        }
-    }
-
-    return result;
 }
 //-----------------------------------------------------------------
 /**

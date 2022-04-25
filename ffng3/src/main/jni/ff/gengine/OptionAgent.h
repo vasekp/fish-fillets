@@ -22,13 +22,8 @@ class OptionAgent : public BaseAgent {
         void prepareVersion();
         void prepareDataPaths();
         void prepareLang();
-        void parseDashOpt(const std::string &arg,
-                const OptionParams &params);
-        void parseParamOpt(const std::string &arg,
-                const OptionParams &params);
-        bool splitOpt(const std::string &option,
-                std::string *out_name, std::string *out_value);
-        std::string getHelpInfo(const OptionParams &params) const;
+
+    std::string getHelpInfo(const OptionParams &params) const;
         std::string getVersionInfo() const;
         void readSystemConfig();
         void readUserConfig();
@@ -36,9 +31,7 @@ class OptionAgent : public BaseAgent {
         virtual void own_init();
         virtual void own_shutdown();
     public:
-        void parseCmdOpt(int argc, char *argv[],
-                const OptionParams &params);
-        void setParam(const std::string &name, const std::string &value);
+    void setParam(const std::string &name, const std::string &value);
         void setParam(const std::string &name, long value);
         void setPersistent(const std::string &name, const std::string &value);
         void setPersistent(const std::string &name, long value);
