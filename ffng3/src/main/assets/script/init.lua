@@ -192,6 +192,4 @@ end
     for k, v in pairs(origImpls) do
         _G[k] = v
     end
-
-    sendMsg("App", "flush_stdout")
 end

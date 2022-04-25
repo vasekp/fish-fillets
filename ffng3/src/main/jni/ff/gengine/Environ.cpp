@@ -57,8 +57,7 @@ Environ::store(const File &file)
     }
 
     if (!file.write(data)) {
-        LOG_WARNING(ExInfo("cannot save config")
-                .addInfo("file", file.getPath()));
+        Log::warn("cannot save config %s", file.getPath().c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -75,9 +74,7 @@ Environ::setParam(const std::string &name, const std::string &value)
 {
     if (m_values[name] != value) {
         m_values[name] = value;
-        LOG_DEBUG(ExInfo("setParam")
-                .addInfo("param", name)
-                .addInfo("value", value));
+//        LOG_DEBUG(ExInfo("setParam").addInfo("param", name).addInfo("value", value));
 
         t_watchers::iterator it = m_watchers.find(name);
         if (m_watchers.end() != it) {
@@ -88,7 +85,7 @@ Environ::setParam(const std::string &name, const std::string &value)
                     cur_it->second->send();
                 }
                 catch (NameException &e) {
-                    LOG_WARNING(e.info());
+                    Log::warn("%s", e.info().info().c_str());
                     delete cur_it->second;
                     m_watchers.erase(cur_it);
                 }
@@ -146,10 +143,7 @@ Environ::getAsInt(const std::string &name,
     int result = StringTool::readInt(value.c_str(), &ok);
     if (!ok) {
         if (value != "") {
-            LOG_WARNING(ExInfo("cannot recognize numeric value")
-                    .addInfo("property", name)
-                    .addInfo("value", value)
-                    .addInfo("default", implicit));
+            Log::warn("cannot recognize numeric value prop=%s value=%s default=%s", name.c_str(), value.c_str(), implicit);
         }
         result = implicit;
     }
@@ -180,12 +174,7 @@ Environ::getAsBool(const std::string &name,
     }
     else {
         if (value != "") {
-            //TODO: don't print this every time
-            LOG_WARNING(ExInfo("cannot recognize boolean value")
-                    .addInfo("property", name)
-                    .addInfo("value", value)
-                    .addInfo("default", implicit)
-                    .addInfo("hint", "use 1/0, true/false, on/off, yes/no"));
+            Log::warn("cannot recognize boolean value prop=%s value=%s default=%s", name.c_str(), value.c_str(), implicit);
         }
         result = implicit;
     }
@@ -201,9 +190,6 @@ Environ::getAsBool(const std::string &name,
 Environ::addWatcher(const std::string &name, BaseMsg *msg)
 {
     m_watchers.insert(std::pair<std::string,BaseMsg*>(name, msg));
-    LOG_DEBUG(ExInfo("add watcher")
-            .addInfo("param", name)
-            .addInfo("msg", msg->toString()));
 }
 //-----------------------------------------------------------------
 /**

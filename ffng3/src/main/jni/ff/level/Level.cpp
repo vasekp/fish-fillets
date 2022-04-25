@@ -314,8 +314,7 @@ Level::saveGame(const std::string &models)
         	displaySaveStatus();
         }
         else {
-            LOG_WARNING(ExInfo("cannot save game")
-                    .addInfo("file", file.getPath()));
+            Log::warn("cannot save game %s", file.getPath().c_str());
         }
     }
 }
@@ -323,9 +322,8 @@ Level::saveGame(const std::string &models)
     void
 Level::displaySaveStatus()
 {
-    static const int TIME = 3;
-    LOG_INFO(ExInfo("game is saved")
-            .addInfo("codename", m_codename));
+//    static const int TIME = 3;
+//    LOG_INFO(ExInfo("game is saved").addInfo("codename", m_codename));
     FFNGApp::saveEffect();
     /* FFNG
     m_statusDisplay->displayStatus(
@@ -441,8 +439,7 @@ Level::action_save()
         m_levelScript->scriptDo("script_save()");
     }
     else {
-        LOG_INFO(ExInfo("bad level condition, level cannot be finished, "
-                    "no save is made"));
+//        LOG_INFO(ExInfo("bad level condition, level cannot be finished, no save is made"));
     }
     return true;
 }
@@ -463,8 +460,7 @@ Level::action_load()
         m_levelScript->scriptDo("script_load()");
     }
     else {
-        LOG_INFO(ExInfo("there is no file to load")
-                .addInfo("file", file.getPath()));
+//        LOG_INFO(ExInfo("there is no file to load").addInfo("file", file.getPath()));
     }
     return true;
 }

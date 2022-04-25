@@ -72,7 +72,7 @@ script_level_action_move(lua_State *L) throw()
         ExInfo error = ExInfo("bad symbol length")
             .addInfo("length", size)
             .addInfo("symbol", symbol);
-        LOG_WARNING(error);
+        Log::warn("%s", error.info().c_str());
         luaL_error(L, error.what());
     }
 

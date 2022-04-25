@@ -52,7 +52,7 @@ SolverDrawer::SolverDrawer(LevelStatus *status)
         addWidget(para);
     }
     catch (BaseException &e) {
-        LOG_WARNING(e.info());
+        Log::warn("%s", e.info().info().c_str());
     }
 }
 

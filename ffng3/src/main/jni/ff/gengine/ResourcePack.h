@@ -34,8 +34,7 @@ class ResourcePack : public INamed {
     virtual ~ResourcePack()
     {
         if (!m_reses.empty()) {
-            LOG_WARNING(ExInfo("resources are not released")
-                .addInfo("pack", toString()));
+            Log::warn("resources are not released, pack=%s", toString().c_str());
         }
     }
     //-----------------------------------------------------------------
@@ -64,8 +63,7 @@ class ResourcePack : public INamed {
                 ++(range.first);
             }
             m_reses.erase(name);
-            LOG_DEBUG(ExInfo("removed resources")
-                    .addInfo("name", name));
+//            LOG_DEBUG(ExInfo("removed resources").addInfo("name", name));
         }
 
     //-----------------------------------------------------------------
@@ -125,9 +123,7 @@ class ResourcePack : public INamed {
             result = getRes(name, Random::randomInt(count));
         }
         else {
-            LOG_WARNING(ExInfo("no such resource")
-                    .addInfo("name", name)
-                    .addInfo("pack", toString()));
+            Log::warn("no such resource name=%s pack=%s", name.c_str(), toString().c_str());
         }
         return result;
     }

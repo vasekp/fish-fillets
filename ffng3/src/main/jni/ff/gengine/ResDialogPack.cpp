@@ -81,10 +81,7 @@ ResDialogPack::findDialogHard(const std::string &name)
     if (NULL == dialog) {
         dialog = findDialog(name, Dialog::DEFAULT_LANG);
         if (NULL == dialog) {
-            LOG_WARNING(ExInfo("cannot find dialog")
-                    .addInfo("name", name)
-                    .addInfo("lang", lang)
-                    .addInfo("pack", toString()));
+            Log::warn("cannot find dialog name=%s lang=%s pack=%s", name.c_str(), lang.c_str(), toString().c_str());
         }
     }
 
@@ -104,10 +101,7 @@ ResDialogPack::findDialogSpeech(const std::string &name)
     if (NULL == dialog || dialog->isSpeechless()) {
         dialog = findDialog(name, Dialog::DEFAULT_LANG);
         if (NULL == dialog) {
-            LOG_WARNING(ExInfo("cannot find speech")
-                    .addInfo("name", name)
-                    .addInfo("speech", speech)
-                    .addInfo("pack", toString()));
+            Log::warn("cannot find speech name=%s speech=%s pack=%s", name.c_str(), speech.c_str(), toString().c_str());
         }
     }
 

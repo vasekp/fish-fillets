@@ -50,7 +50,7 @@ KeyConsole::sendCommand()
         result = true;
     }
     catch (BaseException &e) {
-        LOG_WARNING(e.info());
+        Log::warn("%s", e.info().info().c_str());
     }
     return result;
 }

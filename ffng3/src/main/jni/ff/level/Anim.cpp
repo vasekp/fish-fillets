@@ -128,11 +128,7 @@ Anim::setAnim(const std::string &name, int phase)
         else {
             m_animPhase %= count;
         }
-        LOG_WARNING(ExInfo("anim phase over-flow")
-                .addInfo("anim", name)
-                .addInfo("phase", phase)
-                .addInfo("count", count)
-                .addInfo("usedPath", m_usedPath));
+        Log::warn("anim phase over-flow anim=%s phase=%d count=%d usedPath=%s", name.c_str(), phase, count, m_usedPath.c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -161,10 +157,7 @@ Anim::useSpecialAnim(const std::string &name, int phase)
         else {
             m_specialAnimPhase %= count;
         }
-        LOG_WARNING(ExInfo("special anim phase over-flow")
-                .addInfo("anim", name)
-                .addInfo("phase", phase)
-                .addInfo("count", count));
+        Log::warn("special anim phase over-flow anim=%s phase=%d count=%d", name.c_str(), phase, count);
     }
 }
 //-----------------------------------------------------------------
@@ -211,7 +204,7 @@ Anim::setEffect(const std::string &effectName) {
     else {
         ExInfo error = ExInfo("unknown view effect")
             .addInfo("effect", effectName);
-        LOG_WARNING(error);
+        Log::warn("%s", error.info().c_str());
     }
 }
 
@@ -246,8 +239,7 @@ decodeInt(const std::string &input)
     bool ok;
     int result = StringTool::readInt(input.c_str(), &ok);
     if (!ok) {
-        LOG_WARNING(ExInfo("invalid int")
-                .addInfo("input", input));
+        Log::warn("invalid int %s", input.c_str());
     }
     return result;
 }
@@ -272,8 +264,7 @@ Anim::restoreState(const std::string &state)
 {
     StringTool::t_args values = StringTool::split(state, ',');
     if (values.size() != 8) {
-        LOG_WARNING(ExInfo("invalid anim state")
-                .addInfo("state", state));
+        Log::warn("invalid anim state %s", state.c_str());
         return;
     }
 

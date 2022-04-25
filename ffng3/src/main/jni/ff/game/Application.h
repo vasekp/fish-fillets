@@ -16,8 +16,7 @@ class Application : public NoCopy, public BaseListener {
         bool m_quit;
 
     private:
-        void prepareLogLevel();
-        void prepareOptions(int argc, char *argv[]);
+    void prepareOptions(int argc, char *argv[]);
         void customizeGame();
         void addSoundAgent();
     public:

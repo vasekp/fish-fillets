@@ -62,7 +62,7 @@ GameState::getInput()
     void
 GameState::initState(StateManager *manager)
 {
-    LOG_DEBUG(ExInfo("initState").addInfo("name", getName()));
+//    LOG_DEBUG(ExInfo("initState").addInfo("name", getName()));
     MessagerAgent::agent()->addListener(this);
     m_manager = manager;
     m_active = true;
@@ -122,7 +122,7 @@ GameState::resumeState()
     void
 GameState::cleanState()
 {
-    LOG_DEBUG(ExInfo("cleanState").addInfo("name", getName()));
+//    LOG_DEBUG(ExInfo("cleanState").addInfo("name", getName()));
     if (!m_active) {
         throw LogicException(ExInfo("clean - state is not active")
                 .addInfo("name", getName()));
@@ -163,7 +163,7 @@ GameState::changeState(GameState *new_state)
     void
 GameState::noteBg()
 {
-    LOG_DEBUG(ExInfo("noteBg").addInfo("name", getName()));
+//    LOG_DEBUG(ExInfo("noteBg").addInfo("name", getName()));
     own_noteBg();
     m_onBg = true;
 }
@@ -171,7 +171,7 @@ GameState::noteBg()
     void
 GameState::noteFg()
 {
-    LOG_DEBUG(ExInfo("noteFg").addInfo("name", getName()));
+//    LOG_DEBUG(ExInfo("noteFg").addInfo("name", getName()));
     m_onBg = false;
     own_noteFg();
 }
@@ -182,7 +182,7 @@ GameState::noteFg()
     void
 GameState::installHandlers()
 {
-    LOG_DEBUG(ExInfo("installHandlers").addInfo("state", getName()));
+//    LOG_DEBUG(ExInfo("installHandlers").addInfo("state", getName()));
     InputAgent::agent()->installHandler(m_handler);
     VideoAgent::agent()->acceptDrawer(m_drawer);
 }
@@ -227,8 +227,7 @@ GameState::receiveSimple(const SimpleMsg *msg)
         quitState();
     }
     else {
-        LOG_WARNING(ExInfo("unknown msg")
-                .addInfo("msg", msg->toString()));
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
 

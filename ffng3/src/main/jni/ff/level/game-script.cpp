@@ -125,8 +125,7 @@ script_game_addDecor(lua_State *L) throw()
                     V2(shift_x1, shift_y1), V2(shift_x2, shift_y2)));
     }
     else {
-        LOG_WARNING(ExInfo("unknown decor")
-                .addInfo("decor_name", decor_name));
+        Log::warn("unknown decor %s", decor_name.c_str());
     }
 
     END_NOEXCEPTION;
@@ -552,7 +551,7 @@ script_model_setGoal(lua_State *L) throw()
     else {
         ExInfo error = ExInfo("unknown goal")
             .addInfo("goal", goalname);
-        LOG_WARNING(error);
+        Log::warn("%s", error.info().c_str());
         luaL_error(L, error.what());
     }
 

@@ -110,14 +110,6 @@ GameAgent::keyBinding()
     KeyStroke fs(SDLK_F11, KMOD_NONE);
     msg = new SimpleMsg(Name::VIDEO_NAME, "fullscreen");
     keyBinder->addStroke(fs, msg);
-
-    // log
-    KeyStroke log_plus(SDLK_KP_PLUS, KMOD_RALT);
-    msg = new SimpleMsg(Name::APP_NAME, "inc_loglevel");
-    keyBinder->addStroke(log_plus, msg);
-    KeyStroke log_minus(SDLK_KP_MINUS, KMOD_RALT);
-    msg = new SimpleMsg(Name::APP_NAME, "dec_loglevel");
-    keyBinder->addStroke(log_minus, msg);
     */
 }
 

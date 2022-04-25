@@ -124,33 +124,8 @@ Font::renderText(const std::string &text, const Color &color) const
     std::string content = biditize(text);
     if (text.empty()) {
         content = " ";
-        LOG_WARNING(ExInfo("empty text to render")
-                .addInfo("r", color.r)
-                .addInfo("g", color.g)
-                .addInfo("b", color.b));
+        Log::warn("empty text");
     }
-
-    /* FFNG let's make it simplier
-    SDL_Surface *raw_surface = TTF_RenderUTF8_Shaded(m_ttfont, content.c_str(),
-            color, m_bg);
-    if (!raw_surface) {
-        throw TTFException(ExInfo("RenderUTF8")
-                .addInfo("text", text));
-    }
-
-    //NOTE: at index 0 is bg color
-    if (SDL_SetColorKey(raw_surface, SDL_SRCCOLORKEY, 0) < 0) {
-        throw SDLException(ExInfo("SetColorKey"));
-    }
-
-    SDL_Surface *surface = SDL_DisplayFormat(raw_surface);
-    if (!surface) {
-        throw SDLException(ExInfo("DisplayFormat"));
-    }
-    SDL_FreeSurface(raw_surface);
-
-    return surface;
-    */
     return m_ttfont->renderUTF8_Shaded(content.c_str(), color, m_bg);
 }
 //-----------------------------------------------------------------

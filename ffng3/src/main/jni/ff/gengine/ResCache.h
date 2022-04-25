@@ -74,8 +74,7 @@ class ResCache : public NoCopy {
         void put(const std::string &name, T value) {
             CacheEntry<T>* entry = findNextUnusedEntry();
             if (!entry) {
-                LOG_DEBUG(ExInfo("cannot fit into cache")
-                        .addInfo("name", name));
+//                LOG_DEBUG(ExInfo("cannot fit into cache").addInfo("name", name));
                 return;
             }
 
@@ -95,7 +94,7 @@ class ResCache : public NoCopy {
             if (found) {
                 found->refcount -= 1;
                 if (found->refcount < 0) {
-                    LOG_WARNING(ExInfo("extra release of a cache entry"));
+                    Log::warn("extra release of a cache entry");
                     found->refcount = 0;
                 }
             } else {

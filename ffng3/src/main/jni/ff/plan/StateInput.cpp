@@ -81,8 +81,7 @@ StateInput::keyEvent(const KeyStroke &stroke)
     void
 StateInput::specKey(int keyIndex)
 {
-    LOG_WARNING(ExInfo("unknown key")
-            .addInfo("keyIndex", keyIndex));
+    Log::warn("unknown key %d", keyIndex);
 }
 //-----------------------------------------------------------------
 void

@@ -97,7 +97,7 @@ LevelStatus::readSolvedMoves()
             scriptDo("status_readMoves(saved_moves)");
         }
         catch (ScriptException &e) {
-            LOG_WARNING(e.info());
+            Log::warn("%s", e.info().info().c_str());
         }
     }
 
@@ -116,9 +116,7 @@ LevelStatus::writeSolvedMoves(const std::string &moves)
     if (prevMoves.empty() || moves.size() < prevMoves.size()) {
         File file = File::external(getSolutionFilename());
         if (!file.write("\nsaved_moves = '" + moves + "'\n")) {
-            LOG_WARNING(ExInfo("cannot save solution")
-                    .addInfo("file", file.getPath())
-                    .addInfo("moves", moves));
+            Log::warn("cannot save solution %s", file.getPath().c_str());
         }
     }
 }

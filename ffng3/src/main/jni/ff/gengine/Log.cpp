@@ -13,48 +13,38 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <android/log.h>
+#include <cstdarg>
 
-//int Log::ms_logLevel = LEVEL_INFO;
-int Log::ms_logLevel = LEVEL_DEBUG;
 //-----------------------------------------------------------------
-/**
- * Print log info.
- * @param level priority level
- * @param file source file
- * @param line line number in source file
- * @param info detail info
- */
-void 
-Log::log(int level, const char *file, int line,
-        const ExInfo &info) throw()
-{
-    if (true || level <= ms_logLevel) {
-        const char *levelName;
-        android_LogPriority andLevelName;
-        switch (level) {
-            case LEVEL_DEBUG:
-                levelName = "DEBUG";
-                andLevelName = ANDROID_LOG_DEBUG;
-                break;
-            case LEVEL_INFO:
-                levelName = "INFO";
-                andLevelName = ANDROID_LOG_INFO;
-                break;
-            case LEVEL_WARNING:
-                levelName = "WARNING";
-                andLevelName = ANDROID_LOG_WARN;
-                break;
-            case LEVEL_ERROR:
-                levelName = "ERROR";
-                andLevelName = ANDROID_LOG_ERROR;
-                break;
-            default:
-                levelName = "UNKNOWN";
-                andLevelName = ANDROID_LOG_UNKNOWN;
-                break;
-        }
 
-        fprintf(stderr, "%s:%d: %s %s\n", file, line, levelName, info.what());
-        __android_log_print(andLevelName, "FFNG", "%s:%d: %s %s\n", file, line, levelName, info.what());
-    }
+void Log::log(int priority, const char *tag, const char *format, va_list va) {
+    __android_log_vprint(priority, tag, format, va);
+}
+
+void Log::debug(const char *format, ...) {
+    std::va_list ap;
+    va_start(ap, format);
+    log(ANDROID_LOG_DEBUG, tag, format, ap);
+    va_end(ap);
+}
+
+void Log::info(const char *format, ...) {
+    std::va_list ap;
+    va_start(ap, format);
+    log(ANDROID_LOG_INFO, tag, format, ap);
+    va_end(ap);
+}
+
+void Log::warn(const char *format, ...) {
+    std::va_list ap;
+    va_start(ap, format);
+    log(ANDROID_LOG_WARN, tag, format, ap);
+    va_end(ap);
+}
+
+void Log::error(const char *format, ...) {
+    std::va_list ap;
+    va_start(ap, format);
+    log(ANDROID_LOG_ERROR, tag, format, ap);
+    va_end(ap);
 }

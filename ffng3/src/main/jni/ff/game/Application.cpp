@@ -71,7 +71,6 @@ Application::init(int argc, char *argv[])
 {
     MessagerAgent::agent()->addListener(this);
     m_agents->init(Name::VIDEO_NAME);
-    prepareLogLevel();
     prepareOptions(argc, argv);
     customizeGame();
 
@@ -99,25 +98,11 @@ Application::shutdown()
     m_agents->shutdown();
 }
 //-----------------------------------------------------------------
-/**
- * Set loglevel according option.
- * Prepare to change.
- */
-    void
-Application::prepareLogLevel()
-{
-    OptionAgent *options = OptionAgent::agent();
-    StringMsg *event = new StringMsg(this, "param_changed", "loglevel");
-    options->addWatcher("loglevel", event);
-    options->setDefault("loglevel", Log::getLogLevel());
-}
 //-----------------------------------------------------------------
     void
 Application::prepareOptions(int argc, char *argv[])
 {
     OptionParams params;
-    params.addParam("loglevel", OptionParams::TYPE_NUMBER,
-            "Debug with loglevel 7 (default=6)");
     params.addParam("systemdir", OptionParams::TYPE_PATH,
             "File to game data");
     params.addParam("userdir", OptionParams::TYPE_PATH,
@@ -190,7 +175,7 @@ Application::addSoundAgent()
             soundAgent->init();
         }
         catch (BaseException &e) {
-            LOG_WARNING(e.info());
+            Log::warn("%s", e.info().info().c_str());
             delete soundAgent;
             soundAgent = new DummySoundAgent();
         }
@@ -206,8 +191,6 @@ Application::addSoundAgent()
  * Handle incoming message.
  * Messages:
  * - quit ... application quit
- * - inc_loglevel ... inc loglevel by 1 (max LEVEL_DEBUG)
- * - dec_loglevel ... dec loglevel by 1 (min LEVEL_ERROR)
  */
     void
 Application::receiveSimple(const SimpleMsg *msg)
@@ -215,44 +198,14 @@ Application::receiveSimple(const SimpleMsg *msg)
     if (msg->equalsName("quit")) {
         m_quit = true;
     }
-    else if (msg->equalsName("inc_loglevel")) {
-        int level = Log::getLogLevel() + 1;
-        if (level <= Log::LEVEL_DEBUG) {
-            OptionAgent::agent()->setParam("loglevel", level);
-        }
-    }
-    else if (msg->equalsName("dec_loglevel")) {
-        int level = Log::getLogLevel() - 1;
-        if (level >= Log::LEVEL_ERROR) {
-            OptionAgent::agent()->setParam("loglevel", level);
-        }
-    }
-    else if (msg->equalsName("flush_stdout")) {
-        fflush(stdout);
-    }
     else {
-        LOG_WARNING(ExInfo("unknown msg")
-                .addInfo("msg", msg->toString()));
+        Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
-//-----------------------------------------------------------------
-/**
- * Handle incoming message.
- * Messages:
- * - param_changed(loglevel) ... set loglevel
- */
-    void
+
+void
 Application::receiveString(const StringMsg *msg)
 {
-    if (msg->equalsName("param_changed")) {
-        std::string param = msg->getValue();
-        if ("loglevel" == param) {
-            Log::setLogLevel(OptionAgent::agent()->getAsInt("loglevel"));
-        }
-    }
-    else {
-        LOG_WARNING(ExInfo("unknown msg")
-                .addInfo("msg", msg->toString()));
-    }
+    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 

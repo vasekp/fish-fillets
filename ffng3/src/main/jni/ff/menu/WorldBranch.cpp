@@ -185,9 +185,7 @@ WorldBranch::insertNode(const std::string &parent, LevelNode *new_node)
         }
         else {
             if (parent != "") {
-                LOG_WARNING(ExInfo("root node should have empty parent")
-                        .addInfo("parent", parent)
-                        .addInfo("new_node", new_node->getCodename()));
+                Log::warn("root node should have empty parent (%s)", parent.c_str());
             }
             m_root = new_node;
         }

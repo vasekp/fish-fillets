@@ -293,7 +293,7 @@ OptionAgent::setPersistent(const std::string &name, const std::string &value)
         }
     }
     catch (ScriptException &e) {
-        LOG_WARNING(e.info());
+        Log::warn("%s", e.info().info().c_str());
     }
     setParam(name, value);
     m_environ->store(config);
@@ -397,7 +397,7 @@ OptionAgent::readSystemConfig()
         }
     }
     catch (ScriptException &e) {
-        LOG_WARNING(e.info());
+        Log::warn("%s", e.info().info().c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -411,7 +411,7 @@ OptionAgent::readUserConfig()
         }
     }
     catch (ScriptException &e) {
-        LOG_WARNING(e.info());
+        Log::warn("%s", e.info().info().c_str());
     }
 }
 

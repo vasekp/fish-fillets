@@ -81,8 +81,7 @@ NodeDrawer::drawNode(const LevelNode *node) const
             dot = m_imagePack->getRes("solved");
             break;
         default:
-            LOG_WARNING(ExInfo("don't know how to draw node")
-                    .addInfo("state", node->getState()));
+            Log::warn("don't know how to draw node state=%d", node->getState());
             return;
     }
     drawDot(dot, loc);

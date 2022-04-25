@@ -64,8 +64,7 @@ OptionParams::getType(eType type) const
         case TYPE_PATH:
             return "path";
         default:
-            LOG_WARNING(ExInfo("unknown param type")
-                    .addInfo("type", type));
+            Log::warn("unknown param type %d", type);
     }
     return "unknown";
 }

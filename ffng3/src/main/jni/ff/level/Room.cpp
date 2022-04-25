@@ -208,8 +208,7 @@ Room::playDead(Cube *model)
             playSound("dead_big");
             break;
         default:
-            LOG_WARNING(ExInfo("curious power of dead fish")
-                    .addInfo("power", model->getPower()));
+            //LOG_WARNING(ExInfo("curious power of dead fish").addInfo("power", model->getPower()));
             break;
     }
 }

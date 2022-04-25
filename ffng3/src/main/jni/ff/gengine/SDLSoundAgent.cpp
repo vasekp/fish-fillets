@@ -89,8 +89,7 @@ SDLSoundAgent::playSound(Mix_Chunk *sound, int volume, int loops)
         channel = FFNGMusic::playChannel/*FFNG Mix_PlayChannel*/(-1, sound, loops);
         if (-1 == channel) {
             //NOTE: maybe there are too few open channels
-            LOG_WARNING(ExInfo("cannot play sound")
-                    /*FFNG .addInfo("Mix", Mix_GetError())*/);
+            Log::warn("cannot play sound");
         }
         else {
             FFNGMusic::volume/*FFNG Mix_Volume*/(channel, m_soundVolume * volume / 100);
@@ -153,9 +152,7 @@ SDLSoundAgent::playMusic(const File &file,
         FFNGMusic::hookMusicFinished/*FFNG Mix_HookMusicFinished*/(musicFinished);
     }
     else {
-        LOG_WARNING(ExInfo("cannot play music")
-                .addInfo("music", file.getPath())
-                /*FFNG .addInfo("Mix", Mix_GetError())*/);
+        Log::warn("cannot play music %s", file.getPath().c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -199,15 +196,14 @@ SDLSoundAgent::musicFinished()
             ms_finished->send();
         }
         else {
-            LOG_WARNING(ExInfo("NULL == ms_finished"));
+//            LOG_WARNING(ExInfo("NULL == ms_finished"));
         }
     }
     catch (std::exception &e) {
-        LOG_WARNING(ExInfo("musicFinished error")
-                .addInfo("what", e.what()));
+//        LOG_WARNING(ExInfo("musicFinished error").addInfo("what", e.what()));
     }
     catch (...) {
-        LOG_ERROR(ExInfo("musicFinished error - unknown exception"));
+//        LOG_ERROR(ExInfo("musicFinished error - unknown exception"));
     }
 }
 

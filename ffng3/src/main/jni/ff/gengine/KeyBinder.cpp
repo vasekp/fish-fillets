@@ -40,9 +40,7 @@ KeyBinder::addStroke(const KeyStroke &stroke, BaseMsg *msg)
                 .addInfo("keystroke", stroke.toString()));
     }
     else {
-        LOG_DEBUG(ExInfo("binding keystroke")
-                .addInfo("keystroke", stroke.toString())
-                .addInfo("msg", msg->toString()));
+        //Log::debug("binding keystroke %s %s", stroke.toString().c_str(), msg->toString().c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -55,8 +53,7 @@ KeyBinder::removeStroke(const KeyStroke &stroke)
         m_strokes.erase(it);
     }
     else {
-        LOG_WARNING(ExInfo("keystroke does not exist")
-                .addInfo("keystroke", stroke.toString()));
+        //LOG_WARNING(ExInfo("keystroke does not exist").addInfo("keystroke", stroke.toString()));
     }
 }
 //-----------------------------------------------------------------

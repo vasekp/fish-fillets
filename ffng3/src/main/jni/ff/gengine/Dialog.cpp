@@ -61,8 +61,7 @@ Dialog::talk(int volume, int loops) const
     void
 Dialog::runSubtitle(const StringTool::t_args &args) const
 {
-    LOG_INFO(ExInfo("subtitle")
-            .addInfo("content", getFormatedSubtitle(args)));
+//    LOG_INFO(ExInfo("subtitle").addInfo("content", getFormatedSubtitle(args)));
 }
 //-----------------------------------------------------------------
 /**

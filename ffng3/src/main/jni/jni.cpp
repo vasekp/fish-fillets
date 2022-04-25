@@ -42,10 +42,10 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
             printf("%s\n", e.what());
         }
         catch (BaseException &e) {
-            LOG_ERROR(e.info());
+            Log::error("%s", e.info().info().c_str());
         }
         app.shutdown();
-    	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "OK");
+        Log::info("Terminating gracefully");
         JNI::getInstance()->clearJavaContext();
 
         FFNGSurface::termEGL();
@@ -54,17 +54,16 @@ JNIEXPORT jint JNICALL Java_cz_ger_ffng_FFNGApp_ffngMain(JNIEnv * env, jobject o
         return 0;
     }
     catch (BaseException &e) {
-        LOG_ERROR(e.info());
+        Log::error("%s", e.info().info().c_str());
     }
     catch (std::exception &e) {
-        LOG_ERROR(ExInfo("std::exception")
-                .addInfo("what", e.what()));
+        Log::error("%s", e.what());
     }
     catch (...) {
-        LOG_ERROR(ExInfo("unknown exception"));
+        Log::error("unknown exception");
     }
 
-	__android_log_print(ANDROID_LOG_DEBUG, "FFNG", "FAIL");
+    Log::info("Terminating after error");
     JNI::getInstance()->clearJavaContext();
     return 1;
 }

@@ -33,8 +33,7 @@ File::internal(const std::string &path)
     if (localizedPath == path) {
         return localized;
     } else if (localized.exists()) {
-        LOG_INFO(ExInfo("localizedPath")
-                         .addInfo("path", localized.getPath()));
+        Log::info("found localized path %s -> %s", path.c_str(), localized.getPath().c_str());
         return localized;
     } else {
         return File(path, FileType::internal);

@@ -31,9 +31,7 @@ ResSoundPack::loadSound(const File &file)
     if (OptionAgent::agent()->getAsBool("sound", true)) {
         chunk = FFNGMusic::loadWAV /*FFNG Mix_LoadWAV*/(file.getPath().c_str());
         if (NULL == chunk) {
-            LOG_WARNING(ExInfo("cannot load sound")
-                .addInfo("path", file.getPath())
-                /*FFNG .addInfo("MixError", Mix_GetError())*/);
+            Log::warn("cannot load sound %s", file.getPath().c_str());
         }
     }
     return chunk;
