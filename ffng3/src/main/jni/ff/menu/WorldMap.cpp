@@ -15,13 +15,11 @@
 #include "StateManager.h"
 #include "WorldInput.h"
 
-#include "Log.h"
 #include "File.h"
 #include "WorldBranch.h"
 #include "OptionAgent.h"
 #include "VideoAgent.h"
 #include "SoundAgent.h"
-#include "LogicException.h"
 #include "ResDialogPack.h"
 #include "LevelDesc.h"
 #include "Level.h"
@@ -31,7 +29,6 @@
 #include "DemoMode.h"
 #include "PosterScroller.h"
 #include "MovieState.h"
-#include "Log.h"
 
 #include "FFNGApp.h"
 #include <queue>
@@ -97,8 +94,7 @@ WorldMap::initMap(const File &mapfile)
     WorldBranch parser(NULL);
     m_startNode = parser.parseMap(mapfile, &m_ending, m_descPack);
     if (NULL == m_startNode) {
-        throw LogicException(ExInfo("cannot create world map")
-                .addInfo("file", mapfile.getPath()));
+        throw std::logic_error("cannot create world map");
     }
 }
 //-----------------------------------------------------------------

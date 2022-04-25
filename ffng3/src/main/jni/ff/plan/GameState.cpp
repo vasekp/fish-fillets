@@ -12,8 +12,6 @@
 #include "InputHandler.h"
 #include "MultiDrawer.h"
 
-#include "Log.h"
-#include "LogicException.h"
 #include "InputAgent.h"
 #include "VideoAgent.h"
 #include "MessagerAgent.h"
@@ -77,8 +75,7 @@ GameState::initState(StateManager *manager)
 GameState::updateState()
 {
     if (!m_active) {
-        throw LogicException(ExInfo("update - state is not active")
-                .addInfo("name", getName()));
+        throw std::logic_error("update - state is not active");
     }
 
     own_updateState();
@@ -91,8 +88,7 @@ GameState::updateState()
 GameState::pauseState()
 {
     if (!m_active) {
-        throw LogicException(ExInfo("pause - state is not active")
-                .addInfo("name", getName()));
+        throw std::logic_error("pause - state is not active");
     }
 
     own_pauseState();
@@ -108,8 +104,7 @@ GameState::pauseState()
 GameState::resumeState()
 {
     if (m_active) {
-        throw LogicException(ExInfo("resume - state is already active")
-                .addInfo("name", getName()));
+        throw std::logic_error("resume - state is already active");
     }
     m_active = true;
     own_resumeState();
@@ -122,10 +117,9 @@ GameState::resumeState()
     void
 GameState::cleanState()
 {
-//    LOG_DEBUG(ExInfo("cleanState").addInfo("name", getName()));
+    Log::debug("cleanState: %s", getName());
     if (!m_active) {
-        throw LogicException(ExInfo("clean - state is not active")
-                .addInfo("name", getName()));
+        throw std::logic_error("clean - state is not active");
     }
     own_cleanState();
     unHandlers();

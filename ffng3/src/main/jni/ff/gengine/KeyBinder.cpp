@@ -8,11 +8,7 @@
  */
 #include "KeyBinder.h"
 
-#include "Log.h"
-#include "LogicException.h"
 #include "BaseMsg.h"
-
-//FFNG #include "SDL.h"
 
 //-----------------------------------------------------------------
 KeyBinder::~KeyBinder()
@@ -36,11 +32,10 @@ KeyBinder::addStroke(const KeyStroke &stroke, BaseMsg *msg)
         m_strokes.insert(
                 std::pair<KeyStroke,BaseMsg*>(stroke, msg));
     if (!status.second) {
-        throw LogicException(ExInfo("keystroke is occupied")
-                .addInfo("keystroke", stroke.toString()));
+        throw std::logic_error("keystroke is occupied: "s + stroke.toString());
     }
     else {
-        //Log::debug("binding keystroke %s %s", stroke.toString().c_str(), msg->toString().c_str());
+        Log::debug("binding keystroke %s %s", stroke.toString().c_str(), msg->toString().c_str());
     }
 }
 //-----------------------------------------------------------------
@@ -53,7 +48,7 @@ KeyBinder::removeStroke(const KeyStroke &stroke)
         m_strokes.erase(it);
     }
     else {
-        //LOG_WARNING(ExInfo("keystroke does not exist").addInfo("keystroke", stroke.toString()));
+        Log::warn("keystroke does not exist: %s", stroke.toString().c_str());
     }
 }
 //-----------------------------------------------------------------

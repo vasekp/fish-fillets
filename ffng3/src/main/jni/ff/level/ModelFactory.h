@@ -4,12 +4,10 @@
 class V2;
 class Unit;
 
+#include "common.h"
 #include "Cube.h"
 #include "ControlSym.h"
 #include "Dir.h"
-
-#include <string>
-#include <memory>
 
 /**
  * Knows how to create new models.

@@ -3,6 +3,7 @@
 
 class GameState;
 
+#include "common.h"
 #include "NoCopy.h"
 
 #include <list>

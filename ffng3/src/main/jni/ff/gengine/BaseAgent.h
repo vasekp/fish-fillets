@@ -1,13 +1,12 @@
 #ifndef HEADER_BASEAGENT_H
 #define HEADER_BASEAGENT_H
 
+#include "common.h"
 #include "NoCopy.h"
 #include "BaseListener.h"
 #include "ExInfo.h"
 #include "NameException.h"
 #include "AgentPack.h"
-
-#include <string>
 
 /**
  * Ancestor for all agents.

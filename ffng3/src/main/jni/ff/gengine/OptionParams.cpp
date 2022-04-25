@@ -8,9 +8,7 @@
  */
 #include "OptionParams.h"
 
-#include "Log.h"
 #include "Environ.h"
-#include "LogicException.h"
 
 //-----------------------------------------------------------------
 void
@@ -77,8 +75,7 @@ OptionParams::checkValidity(const std::string &name, const std::string &/*value*
 {
     t_params::const_iterator it = m_params.find(name);
     if (m_params.end() == it) {
-        throw LogicException(ExInfo("unknown option")
-                .addInfo("name", name));
+        throw std::logic_error("unknown option "s + name);
     }
 
     //TODO: check value type

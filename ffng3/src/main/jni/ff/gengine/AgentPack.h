@@ -3,8 +3,8 @@
 
 class BaseAgent;
 
+#include "common.h"
 #include "NoCopy.h"
-#include <string>
 
 #include <map>
 

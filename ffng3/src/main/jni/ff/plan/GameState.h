@@ -7,6 +7,7 @@ class InputProvider;
 class MultiDrawer;
 class Drawable;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "BaseListener.h"
 

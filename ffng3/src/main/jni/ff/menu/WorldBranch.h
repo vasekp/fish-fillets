@@ -6,9 +6,8 @@ class LevelNode;
 class LevelDesc;
 class ResDialogPack;
 
+#include "common.h"
 #include "Scripter.h"
-
-#include <string>
 
 /**
  * Can read graph of level nodes.

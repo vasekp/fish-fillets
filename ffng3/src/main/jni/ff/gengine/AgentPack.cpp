@@ -9,7 +9,6 @@
 #include "AgentPack.h"
 
 #include "BaseAgent.h"
-#include "LogicException.h"
 #include "NameException.h"
 #include "MessagerAgent.h"
 
@@ -19,7 +18,7 @@ AgentPack::AgentPack()
 {
     //NOTE: this is not thread safe
     if (ms_singleton) {
-        throw LogicException(ExInfo("AgentPack is singleton"));
+        throw std::logic_error("AgentPack is singleton");
     }
 
     ms_singleton = this;
@@ -87,7 +86,7 @@ AgentPack::removeAgent(const std::string &name)
 AgentPack::getAgent(const std::string &name)
 {
     if (NULL == ms_singleton) {
-        throw LogicException(ExInfo("AgentPack is not ready"));
+        throw std::logic_error("AgentPack is not ready");
     }
 
     t_agents::iterator it = ms_singleton->m_agents.find(name);
@@ -97,8 +96,7 @@ AgentPack::getAgent(const std::string &name)
     }
 
     if (!it->second->isInitialized()) {
-        throw LogicException(ExInfo("agent is not initialized")
-                .addInfo("name", name));
+        throw std::logic_error("agent is not initialized: "s + name);
     }
     return it->second;
 }

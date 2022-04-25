@@ -4,11 +4,11 @@
 class File;
 class ResImagePack;
 
+#include "common.h"
 #include "ViewEffect.h"
 #include "NoCopy.h"
 #include "V2.h"
 
-// FFNG #include "SDL.h"
 #include "FFNGSurface.h"
 
 /**

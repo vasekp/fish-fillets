@@ -17,12 +17,9 @@ class Decor;
 class InputProvider;
 class StepCounter;
 
+#include "common.h"
 #include "Drawable.h"
 #include "Cube.h"
-
-#include <string>
-#include <vector>
-#include <memory>
 
 /**
  * Room with level.

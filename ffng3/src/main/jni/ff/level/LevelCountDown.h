@@ -1,6 +1,8 @@
 #ifndef HEADER_LEVELCOUNTDOWN_H
 #define HEADER_LEVELCOUNTDOWN_H
 
+#include "common.h"
+
 class LevelStatus;
 class RoomAccess;
 class Room;

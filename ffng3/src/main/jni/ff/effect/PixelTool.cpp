@@ -8,7 +8,6 @@
  */
 #include "PixelTool.h"
 
-#include "LogicException.h"
 #include <cassert>
 
 //-----------------------------------------------------------------

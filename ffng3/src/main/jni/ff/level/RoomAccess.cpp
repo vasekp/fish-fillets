@@ -9,7 +9,6 @@
 #include "RoomAccess.h"
 
 #include "Room.h"
-#include "LogicException.h"
 
 //-----------------------------------------------------------------
 /**
@@ -52,7 +51,7 @@ void
 RoomAccess::checkRoom() const
 {
     if (NULL == m_room) {
-        throw LogicException(ExInfo("room is not ready"));
+        throw std::logic_error("room is not ready");
     }
 }
 //-----------------------------------------------------------------

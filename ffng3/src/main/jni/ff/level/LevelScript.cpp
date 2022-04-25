@@ -13,7 +13,6 @@
 #include "ScriptState.h"
 
 #include "ScriptCmd.h"
-#include "LogicException.h"
 #include "Cube.h"
 #include "Unit.h"
 

@@ -8,10 +8,8 @@
  */
 #include "VideoAgent.h"
 
-#include "Log.h"
 #include "File.h"
 #include "ImgException.h"
-#include "LogicException.h"
 #include "AgentPack.h"
 #include "SimpleMsg.h"
 #include "StringMsg.h"

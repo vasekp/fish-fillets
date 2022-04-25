@@ -3,13 +3,10 @@
 
 class File;
 
+#include "common.h"
 #include "BaseAgent.h"
 #include "MultiDrawer.h"
 #include "Name.h"
-
-//FFNG #include "SDL.h"
-
-#include <vector>
 
 /**
  * Video agent initializes video mode and

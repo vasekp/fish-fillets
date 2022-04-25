@@ -12,7 +12,6 @@
 
 #include "MessagerAgent.h"
 #include "SimpleMsg.h"
-#include "LogicException.h"
 
 //-----------------------------------------------------------------
 StateManager::~StateManager()
@@ -140,8 +139,7 @@ StateManager::findIter(GameState *who)
             return i;
         }
     }
-    throw LogicException(ExInfo("game state is not found in stack")
-            .addInfo("state", who ? who->getName() : "(null)"));
+    throw std::logic_error("game state is not found in stack");
 }
 //-----------------------------------------------------------------
 /**
@@ -154,7 +152,7 @@ void
 StateManager::checkStack()
 {
     if (m_states.empty()) {
-        throw LogicException(ExInfo("game state stack is empty"));
+        throw std::logic_error("game state stack is empty");
     }
 
     t_states::iterator topIt = m_states.end();

@@ -10,6 +10,7 @@ class LevelDesc;
 class LevelStatus;
 class LayeredPicture;
 
+#include "common.h"
 #include "Drawable.h"
 #include "GameState.h"
 #include "DescFinder.h"

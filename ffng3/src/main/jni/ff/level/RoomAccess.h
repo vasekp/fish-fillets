@@ -3,6 +3,7 @@
 
 class Room;
 
+#include "common.h"
 #include "NoCopy.h"
 
 /**

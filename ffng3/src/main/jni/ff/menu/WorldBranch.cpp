@@ -9,14 +9,12 @@
 #include "WorldBranch.h"
 
 #include "def-script.h"
-#include "Log.h"
 #include "File.h"
 #include "LevelNode.h"
 #include "LevelStatus.h"
 #include "ScriptState.h"
 #include "ResDialogPack.h"
 #include "LevelDesc.h"
-#include "LogicException.h"
 
 #include "worldmap-script.h"
 
@@ -54,8 +52,7 @@ WorldBranch::parseMap(const File &datafile, LevelNode **outEnding,
             *outEnding = m_ending;
         }
         else {
-            throw LogicException(ExInfo("cannot export ending node")
-                    .addInfo("ending", m_ending->getCodename()));
+            throw std::logic_error("cannot export ending node" + m_ending->getCodename());
         }
     }
 
@@ -72,8 +69,7 @@ WorldBranch::addDesc(const std::string &codename, LevelDesc *desc)
         m_outPack->addRes(codename, desc);
     }
     else {
-        throw LogicException(ExInfo("cannot export level description")
-                .addInfo("codename", codename));
+        throw std::logic_error("cannot export level description: " + codename);
     }
 }
 //-----------------------------------------------------------------
@@ -122,10 +118,7 @@ WorldBranch::bestSolution(const std::string &codename, int moves,
         node->bestSolution(moves, author);
     }
     else {
-        throw LogicException(ExInfo("there is no such node")
-                .addInfo("codename", codename)
-                .addInfo("moves", moves)
-                .addInfo("author", author));
+        throw std::logic_error("no such node: codename=" + codename);
     }
 }
 //-----------------------------------------------------------------
@@ -167,9 +160,7 @@ WorldBranch::insertNode(const std::string &parent, LevelNode *new_node)
 {
     try {
         if (parent == "" && m_root) {
-            throw LogicException(ExInfo("there is a one root node already")
-                    .addInfo("root", m_root->getCodename())
-                    .addInfo("new_node", new_node->getCodename()));
+            throw std::logic_error("root node already exists: " + m_root->getCodename());
         }
 
         if (m_root) {
@@ -178,9 +169,7 @@ WorldBranch::insertNode(const std::string &parent, LevelNode *new_node)
                 parentNode->addChild(new_node);
             }
             else {
-                throw LogicException(ExInfo("there is no such parent node")
-                        .addInfo("parent", parent)
-                        .addInfo("new_node", new_node->getCodename()));
+                throw std::logic_error("there is no such parent node: " + parent);
             }
         }
         else {

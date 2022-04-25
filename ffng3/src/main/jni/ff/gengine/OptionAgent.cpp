@@ -10,12 +10,10 @@
 
 #include "Environ.h"
 
-#include "Log.h"
 #include "File.h"
 #include "ScriptAgent.h"
 #include "StringTool.h"
 #include "HelpException.h"
-#include "LogicException.h"
 #include "ScriptException.h"
 #include "OptionParams.h"
 #include "StringMsg.h"
@@ -160,10 +158,7 @@ OptionAgent::parseDashOpt(const std::string &arg,
         throw HelpException(ExInfo(params.getConfig(m_environ)));
     }
     else {
-        throw LogicException(ExInfo("unknown option")
-                .addInfo("arg", arg)
-                .addInfo("use",
-                    getParam("program") + " --help"));
+        throw std::runtime_error("unknown option "s + arg);
     }
 }
 //-----------------------------------------------------------------
@@ -178,10 +173,7 @@ OptionAgent::parseParamOpt(const std::string &arg,
         setParam(name, value);
     }
     else {
-        throw LogicException(ExInfo("unknown option")
-                .addInfo("arg", arg)
-                .addInfo("use",
-                    getParam("program") + " --help"));
+        throw std::runtime_error("unknown option "s + arg);
     }
 }
 //-----------------------------------------------------------------

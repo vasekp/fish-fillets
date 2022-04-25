@@ -11,7 +11,6 @@
 #include "V2.h"
 #include "Unit.h"
 #include "Shape.h"
-#include "LogicException.h"
 #include "StringTool.h"
 
 //-----------------------------------------------------------------
@@ -82,8 +81,7 @@ ModelFactory::createParams(const std::string &kind,
             *out_weight = Cube::FIXED;
         }
         else {
-            throw LogicException(ExInfo("unknown model kind")
-                    .addInfo("kind", kind));
+            throw std::logic_error("unknown model kind");
         }
     }
 }
@@ -159,8 +157,7 @@ ModelFactory::createOutputItem(const std::string &kind, const V2 &loc,
         outDir = Dir::DIR_DOWN;
     }
     else {
-        throw LogicException(ExInfo("unknown border dir")
-                .addInfo("kind", kind));
+        throw std::logic_error("wrong border dir");
     }
 
     auto model = std::make_unique<Cube>(loc,
@@ -179,8 +176,7 @@ ModelFactory::parseExtraControlSym(const std::string &kind)
 {
     static const std::string PREFIX = "fish_extra-";
     if (kind.size() != PREFIX.size() + 4) {
-        throw LogicException(ExInfo("you must specify control symbols")
-                .addInfo("kind", kind));
+        throw std::logic_error("you must specify control symbols");
     }
 
     char up = kind[PREFIX.size()];

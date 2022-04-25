@@ -18,14 +18,12 @@
 #include "CommandQueue.h"
 #include "MultiDrawer.h"
 
-#include "Log.h"
 #include "Room.h"
 #include "StepCounter.h"
 #include "View.h"
 #include "OptionAgent.h"
 #include "VideoAgent.h"
 #include "ScriptException.h"
-#include "LogicException.h"
 #include "DemoMode.h"
 #include "SoundAgent.h"
 #include "SubTitleAgent.h"
@@ -91,8 +89,7 @@ Level::fillStatus(LevelStatus *status)
 Level::own_initState()
 {
     if (NULL == m_desc) {
-        throw LogicException(ExInfo("level description is NULL")
-                .addInfo("codename", m_codename));
+        throw std::logic_error("level description is NULL: "s + m_codename);
     }
     m_countdown->reset();
     m_loading->reset();

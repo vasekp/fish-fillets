@@ -3,6 +3,7 @@
 
 class BaseMsg;
 
+#include "common.h"
 #include "NoCopy.h"
 #include "KeyStroke.h"
 

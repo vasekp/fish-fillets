@@ -4,10 +4,10 @@
 class Environ;
 class OptionParams;
 
+#include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
 
-#include <string>
 #include <map>
 
 /**

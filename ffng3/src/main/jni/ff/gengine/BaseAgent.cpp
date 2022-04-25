@@ -8,9 +8,6 @@
  */
 #include "BaseAgent.h"
 
-#include "Log.h"
-#include "LogicException.h"
-
 //-----------------------------------------------------------------
 BaseAgent::BaseAgent()
 {
@@ -33,8 +30,7 @@ BaseAgent::init()
 BaseAgent::update()
 {
     if (!m_initialized) {
-        throw LogicException(ExInfo("agent is not ready")
-            .addInfo("name", getName()));
+        throw std::logic_error("agent is not ready: "s + getName());
     }
 
     own_update();

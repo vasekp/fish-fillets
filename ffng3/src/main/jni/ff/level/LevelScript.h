@@ -8,11 +8,9 @@ class Unit;
 class Level;
 class Command;
 
+#include "common.h"
 #include "Planner.h"
 #include "RoomAccess.h"
-
-#include <string>
-#include <memory>
 
 /**
  * Handle plan for dialogs and planned actions.

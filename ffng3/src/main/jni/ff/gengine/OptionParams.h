@@ -3,10 +3,10 @@
 
 class Environ;
 
+#include "common.h"
 #include "NoCopy.h"
 
 #include <map>
-#include <string>
 
 /**
  * Describe command line params.

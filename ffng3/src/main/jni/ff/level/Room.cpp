@@ -17,9 +17,7 @@
 #include "Planner.h"
 #include "View.h"
 
-#include "Log.h"
 #include "Rules.h"
-#include "LogicException.h"
 #include "LoadException.h"
 #include "Unit.h"
 #include "TimerAgent.h"
@@ -127,8 +125,7 @@ Room::getModel(int model_index)
         return m_models[model_index].get();
     }
     else {
-        throw LogicException(ExInfo("bad model index")
-                .addInfo("model_index", model_index));
+        throw std::logic_error("bad model index");
     }
 }
 //-----------------------------------------------------------------
@@ -188,7 +185,7 @@ Room::playImpact(Cube::eWeight impact)
             playSound("impact_heavy", 50);
             break;
         default:
-            throw std::logic_error("impact out of enum");
+            throw std::logic_error("unknown impact");
     }
 }
 //-----------------------------------------------------------------
@@ -208,7 +205,7 @@ Room::playDead(Cube *model)
             playSound("dead_big");
             break;
         default:
-            //LOG_WARNING(ExInfo("curious power of dead fish").addInfo("power", model->getPower()));
+            throw std::logic_error("unknown power");
             break;
     }
 }

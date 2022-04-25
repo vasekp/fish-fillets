@@ -18,11 +18,10 @@ class Command;
 class MultiDrawer;
 class StatusDisplay;
 
+#include "common.h"
 #include "File.h"
 #include "GameState.h"
 #include "CountAdvisor.h"
-
-#include <string>
 
 /**
  * Game level with room.

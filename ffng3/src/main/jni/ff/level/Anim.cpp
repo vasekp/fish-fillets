@@ -8,10 +8,8 @@
  */
 #include "Anim.h"
 
-#include "Log.h"
 #include "File.h"
 #include "ResImagePack.h"
-#include "LogicException.h"
 #include "StringTool.h"
 
 #include "EffectNone.h"
@@ -169,9 +167,7 @@ void
 Anim::changeEffect(ViewEffect *new_effect)
 {
     if (NULL == new_effect) {
-        throw LogicException(ExInfo("new_effect is NULL")
-                .addInfo("animName", m_animName)
-                .addInfo("specialAnimName", m_specialAnimName));
+        throw std::logic_error("new_effect is NULL: "s + m_animName);
     }
 
     delete m_effect;

@@ -12,7 +12,6 @@
 #include "RoomAccess.h"
 #include "Room.h"
 #include "StepCounter.h"
-#include "LogicException.h"
 #include "CountAdvisor.h"
 
 //-----------------------------------------------------------------
@@ -34,7 +33,7 @@ void
 LevelCountDown::reset()
 {
     if (NULL == m_levelStatus) {
-        throw LogicException(ExInfo("level status is NULL"));
+        throw std::logic_error("level status is NULL");
     }
     m_levelStatus->setRunning(true);
     m_countdown = -1;
