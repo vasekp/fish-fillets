@@ -22,6 +22,7 @@
 #include "Room.h"
 #include "RopeDecor.h"
 #include "ShapeBuilder.h"
+#include "ExInfo.h"
 
 #include "def-script.h"
 

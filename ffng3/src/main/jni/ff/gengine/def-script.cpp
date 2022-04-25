@@ -10,6 +10,7 @@
 
 #include "File.h"
 #include "Scripter.h"
+#include "ExInfo.h"
 
 //-----------------------------------------------------------------
     Scripter *

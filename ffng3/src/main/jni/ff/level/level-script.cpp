@@ -15,6 +15,7 @@
 #include "LevelScript.h"
 #include "Room.h"
 #include "Picture.h"
+#include "ExInfo.h"
 
 #include "def-script.h"
 
