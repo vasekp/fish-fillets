@@ -221,9 +221,7 @@ LevelNode::addChild(LevelNode *new_node)
     m_children.push_back(new_node);
 
     new_node->setDepth(m_depth + 1);
-    if (m_state == STATE_HIDDEN) {
-        new_node->setState(STATE_HIDDEN);
-    } else if (m_state == STATE_SOLVED && new_node->getState() < STATE_OPEN) {
+    if (m_state == STATE_SOLVED && new_node->getState() < STATE_OPEN) {
         new_node->setState(STATE_OPEN);
     }
 }
