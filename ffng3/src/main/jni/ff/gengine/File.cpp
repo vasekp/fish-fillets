@@ -8,17 +8,12 @@
  */
 #include "File.h"
 
-#include "Log.h"
-#include "OptionAgent.h"
-#include "Dialog.h"
-
-#include "FFNGFiles.h"
-#include "jnix.h"
-
-#include <filesystem>
 #include <sstream>
 #include <fstream>
-#include <utility>
+
+#include "OptionAgent.h"
+#include "Dialog.h"
+#include "jnix.h"
 
 /*
  * Tries to use path to a localized resource if it exists.
