@@ -6,13 +6,11 @@ class Anim;
 class Rules;
 class DialogStack;
 
+#include "common.h"
 #include "V2.h"
 #include "Goal.h"
 #include "NoCopy.h"
 #include "Dir.h"
-
-#include <vector>
-#include <memory>
 
 /**
  * A object in game.

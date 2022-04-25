@@ -13,6 +13,7 @@
 #include "Anim.h"
 #include "EffectDisintegrate.h"
 #include "DialogStack.h"
+#include "ExInfo.h"
 
 //-----------------------------------------------------------------
 /**

@@ -13,7 +13,6 @@
 #include "File.h"
 #include "ScriptAgent.h"
 #include "StringTool.h"
-#include "ScriptException.h"
 #include "OptionParams.h"
 #include "StringMsg.h"
 #include "minmax.h"
@@ -183,13 +182,8 @@ OptionAgent::setPersistent(const std::string &name, const std::string &value)
     Environ *swap_env = m_environ;
     m_environ = new Environ();
 
-    try {
-        if (config.exists()) {
-            ScriptAgent::agent()->scriptInclude(config);
-        }
-    }
-    catch (ScriptException &e) {
-        Log::warn("%s", e.info().info().c_str());
+    if (config.exists()) {
+        ScriptAgent::agent()->scriptInclude(config);
     }
     setParam(name, value);
     m_environ->store(config);
@@ -251,14 +245,9 @@ OptionAgent::receiveString(const StringMsg *msg)
 void
 OptionAgent::readUserConfig()
 {
-    try {
-        File userConfig = File::external(CONFIG_FILE);
-        if (userConfig.exists()) {
-            ScriptAgent::agent()->scriptInclude(userConfig);
-        }
-    }
-    catch (ScriptException &e) {
-        Log::warn("%s", e.info().info().c_str());
+    File userConfig = File::external(CONFIG_FILE);
+    if (userConfig.exists()) {
+        ScriptAgent::agent()->scriptInclude(userConfig);
     }
 }
 

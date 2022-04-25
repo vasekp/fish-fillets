@@ -23,7 +23,6 @@
 #include "View.h"
 #include "OptionAgent.h"
 #include "VideoAgent.h"
-#include "ScriptException.h"
 #include "DemoMode.h"
 #include "SoundAgent.h"
 #include "SubTitleAgent.h"

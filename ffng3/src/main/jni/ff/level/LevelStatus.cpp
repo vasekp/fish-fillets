@@ -11,13 +11,11 @@
 #include "def-script.h"
 #include "File.h"
 #include "ScriptState.h"
-#include "ScriptException.h"
 #include "DemoMode.h"
 
 extern "C" {
 #include "lua.h"
 }
-#include <stdio.h>
 
 //-----------------------------------------------------------------
    inline LevelStatus *
@@ -91,14 +89,9 @@ LevelStatus::readSolvedMoves()
 
     File oldSolution = File::external(getSolutionFilename());
     if (oldSolution.exists()) {
-        try {
-            scriptDo("saved_moves=nil");
-            scriptInclude(oldSolution);
-            scriptDo("status_readMoves(saved_moves)");
-        }
-        catch (ScriptException &e) {
-            Log::warn("%s", e.info().info().c_str());
-        }
+        scriptDo("saved_moves=nil");
+        scriptInclude(oldSolution);
+        scriptDo("status_readMoves(saved_moves)");
     }
 
     return m_savedMoves;

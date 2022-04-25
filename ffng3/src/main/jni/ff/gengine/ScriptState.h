@@ -4,9 +4,8 @@
 class File;
 class Scripter;
 
+#include "common.h"
 #include "NoCopy.h"
-
-#include <string>
 
 extern "C" {
 #include "lua.h"
