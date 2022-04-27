@@ -85,7 +85,7 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
 {
     OptionAgent *options = OptionAgent::agent();
     int screen_bpp = options->getAsInt("screen_bpp", 32);
-    int videoFlags = getVideoFlags();
+    int videoFlags = 0;
 
     //TODO: check VideoModeOK and available ListModes
     /* FFNG */ if(m_screen) { delete m_screen; m_screen = NULL; }
@@ -99,35 +99,3 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
         throw std::runtime_error("setVideoMode returned null");
     }
 }
-//-----------------------------------------------------------------
-/**
- * Obtain video information about best video mode.
- * @return best video flags
- */
-    int
-VideoAgent::getVideoFlags()
-{
-    int videoFlags  = 0;
-
-    return videoFlags;
-}
-//-----------------------------------------------------------------
-/**
- * Handle incoming message.
- */
-    void
-VideoAgent::receiveSimple(const SimpleMsg *msg)
-{
-    Log::warn("unknown msg %s", msg->toString().c_str());
-}
-//-----------------------------------------------------------------
-/**
- * Handle incoming message.
- * @throws UnknownMsgException
- */
-    void
-VideoAgent::receiveString(const StringMsg *msg)
-{
-    Log::warn("unknown msg %s", msg->toString().c_str());
-}
-

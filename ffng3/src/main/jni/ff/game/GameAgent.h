@@ -3,10 +3,9 @@
 
 class StateManager;
 
+#include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
-
-#include <string>
 
 /**
  * Create game.
@@ -17,10 +16,8 @@ class GameAgent : public BaseAgent {
     AGENT(GameAgent, Name::GAME_NAME);
     private:
         StateManager *m_manager;
-    private:
-        void replaySolution(const std::string &codename);
-        void keyBinding();
-    protected:
+
+protected:
         virtual void own_init();
         virtual void own_update();
         virtual void own_shutdown();

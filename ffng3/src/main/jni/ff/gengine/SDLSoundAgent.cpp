@@ -14,7 +14,6 @@
 #include "BaseMsg.h"
 #include "OptionAgent.h"
 
-BaseMsg *SDLSoundAgent::ms_finished = NULL;
 //-----------------------------------------------------------------
 /**
  * Init sound subsystem.
@@ -31,15 +30,13 @@ SDLSoundAgent::own_init()
 SDLSoundAgent::own_update()
 {
     SoundAgent::own_update();
-    // FFNG TODO test music finished and call hookMusicFinished
 }
 //-----------------------------------------------------------------
     void
 SDLSoundAgent::own_shutdown()
 {
     stopMusic();
-    FFNGMusic::closeAudio(); //FFNG Mix_CloseAudio();
-    //FFNG SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    FFNGMusic::closeAudio();
 }
 //-----------------------------------------------------------------
 /**
@@ -50,15 +47,8 @@ SDLSoundAgent::reinit()
 {
     m_music = NULL;
     m_soundVolume = MIX_MAX_VOLUME;
-    /* FFNG
-    if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
-        throw SDLException(ExInfo("SDL_InitSubSystem"));
-    }
-    */
 
-    int frequency =
-       OptionAgent::agent()->getAsInt("sound_frequency", 44100);
-    FFNGMusic::openAudio(frequency);
+    FFNGMusic::openAudio(44100);
 
     SoundAgent::reinit();
 }
@@ -120,12 +110,10 @@ SDLSoundAgent::setSoundVolume(int volume)
  * If finished is NULL, play music forever.
  */
 void
-SDLSoundAgent::playMusic(const File &file,
-        BaseMsg *finished)
+SDLSoundAgent::playMusic(const File &file)
 {
     // The same music is not restarted when it is not needed.
-    if (m_playingPath == file.getPath()
-            && ms_finished == NULL && finished == NULL) {
+    if (m_playingPath == file.getPath()) {
         return;
     }
 
@@ -133,14 +121,9 @@ SDLSoundAgent::playMusic(const File &file,
     m_playingPath = file.getPath();
 
     int loops = -1;
-    if (finished) {
-        ms_finished = finished;
-        loops = 1;
-    }
 
-    m_music = FFNGMusic::loadMUS/*FFNG Mix_LoadMUS*/(file.getPath().c_str());
-    if (m_music && (0 == FFNGMusic::playMusic/*FFNG Mix_PlayMusic*/(m_music, loops))) {
-        FFNGMusic::hookMusicFinished/*FFNG Mix_HookMusicFinished*/(musicFinished);
+    m_music = FFNGMusic::loadMUS(file.getPath().c_str());
+    if (m_music && (0 == FFNGMusic::playMusic(m_music, loops))) {
     }
     else {
         Log::warn("cannot play music %s", file.getPath().c_str());
@@ -153,49 +136,20 @@ SDLSoundAgent::playMusic(const File &file,
     void
 SDLSoundAgent::setMusicVolume(int volume)
 {
-    FFNGMusic::volumeMusic/*FFNG Mix_VolumeMusic*/(MIX_MAX_VOLUME * volume / 100);
+    FFNGMusic::volumeMusic(MIX_MAX_VOLUME * volume / 100);
 }
 //-----------------------------------------------------------------
     void
 SDLSoundAgent::stopMusic()
 {
-    if(FFNGMusic::playingMusic()/*FFNG Mix_PlayingMusic()*/) {
-        FFNGMusic::hookMusicFinished/*FFNG Mix_HookMusicFinished*/(NULL);
-        //FFNG Mix_HaltMusic();
+    if(FFNGMusic::playingMusic()) {
         FFNGMusic::haltMusic();
     }
     if (m_music) {
-        FFNGMusic::freeMusic/*FFNG Mix_FreeMusic*/(m_music);
+        FFNGMusic::freeMusic(m_music);
         m_music = NULL;
     }
-    if (ms_finished) {
-        delete ms_finished;
-        ms_finished = NULL;
-    }
     m_playingPath = "";
-}
-//-----------------------------------------------------------------
-/**
- * Callback called when music is finished.
- * NOTE: no one exception can be passed to "C" SDL_mixer code
- */
-    void
-SDLSoundAgent::musicFinished()
-{
-    try {
-        if (ms_finished) {
-            ms_finished->send();
-        }
-        else {
-//            LOG_WARNING(ExInfo("NULL == ms_finished"));
-        }
-    }
-    catch (std::exception &e) {
-//        LOG_WARNING(ExInfo("musicFinished error").addInfo("what", e.what()));
-    }
-    catch (...) {
-//        LOG_ERROR(ExInfo("musicFinished error - unknown exception"));
-    }
 }
 
 

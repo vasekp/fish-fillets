@@ -23,8 +23,6 @@ class ScriptAgent : public BaseAgent, public Scripter {
         virtual void own_init();
     public:
         void registerFunc(const char *name, lua_CFunction func);
-
-        virtual void receiveString(const StringMsg *msg);
 };
 
 #endif

@@ -16,8 +16,8 @@
     void
 TimerAgent::own_init()
 {
-    m_timeinterval = OptionAgent::agent()->getAsInt("timeinterval", 100);
-    m_lastTime = FFNGApp::getTicks();//FFNG SDL_GetTicks();
+    m_timeinterval = 100;
+    m_lastTime = FFNGApp::getTicks();
     m_nextTime = m_lastTime;
     m_deltaTime = 1;
     m_count = 0;
@@ -41,19 +41,19 @@ TimerAgent::getTimeInterval()
 }
 //-----------------------------------------------------------------
 /**
- * Sleep fixed number miliseconds.
+ * Sleep fixed number milliseconds.
  */
     void
 TimerAgent::own_update()
 {
     m_count++;
 
-    Uint32 now = FFNGApp::getTicks();//SDL_GetTicks();
+    Uint32 now = FFNGApp::getTicks();
     if (now < m_nextTime) {
-        FFNGApp::delay/*FFNG SDL_Delay*/(m_nextTime - now);
+        FFNGApp::delay(m_nextTime - now);
     }
 
-    now = FFNGApp::getTicks(); //FFNG SDL_GetTicks();
+    now = FFNGApp::getTicks();
     //NOTE: every cycle have fixed time interval
     m_nextTime = now + getTimeInterval();
 

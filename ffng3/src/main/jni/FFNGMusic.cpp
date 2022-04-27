@@ -116,10 +116,6 @@ void FFNGMusic::freeMusic(Mix_Music *music) {
 	}
 }
 
-void FFNGMusic::hookMusicFinished(void (*music_finished)(void)) {
-	// TODO store music_finished and call it when music is stop playing (SDLSoundAgent::own_update)
-}
-
 
 Mix_Music::Mix_Music(const char *file) {
 	music = loadMusic(file);

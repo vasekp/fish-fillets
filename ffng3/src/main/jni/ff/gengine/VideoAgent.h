@@ -20,16 +20,12 @@ class VideoAgent : public BaseAgent, public MultiDrawer {
 private:
         //FFNG void setIcon(const File &file);
         void changeVideoMode(int screen_width, int screen_height);
-        int getVideoFlags();
 
 protected:
         virtual void own_init();
         virtual void own_update();
         virtual void own_shutdown();
     public:
-        virtual void receiveSimple(const SimpleMsg *msg);
-        virtual void receiveString(const StringMsg *msg);
-
         void initVideoMode();
 };
 

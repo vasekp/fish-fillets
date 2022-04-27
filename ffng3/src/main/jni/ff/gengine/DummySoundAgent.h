@@ -15,12 +15,8 @@ class DummySoundAgent : public SoundAgent {
         virtual int playSound(Mix_Chunk *, int /*volume*/, int /*loops*/)
         { return -1; }
 
-        virtual void playMusic(const File &,
-                BaseMsg *finished)
+        virtual void playMusic(const File &)
         {
-            if (finished) {
-                delete finished;
-            }
         }
         virtual void stopMusic() {}
 };

@@ -2,30 +2,20 @@
 #define HEADER_SDLSOUNDAGENT_H
 
 #include "SoundAgent.h"
-
-//FFNG #include "SDL.h"
-//FFNG #include "SDL_mixer.h"
 #include "FFNGMusic.h"
-#include <string>
 
 /**
  * Sound and music.
  */
 class SDLSoundAgent : public SoundAgent {
     private:
-    static BaseMsg *ms_finished;
     Mix_Music *m_music;
     std::string m_playingPath;
     int m_soundVolume;
 
-    private:
-        std::string generateIdName(const File &file);
-        Mix_Chunk *findChunk(const std::string &name);
-
-        static void musicFinished();
-    protected:
+protected:
         virtual void own_init();
-        virtual void own_update(); // FFNG - hookMusicFinished
+        virtual void own_update();
         virtual void own_shutdown();
         virtual void reinit();
 
@@ -34,8 +24,7 @@ class SDLSoundAgent : public SoundAgent {
     public:
         virtual int playSound(Mix_Chunk *sound, int volume, int loops=0);
 
-        virtual void playMusic(const File &file,
-                BaseMsg *finished);
+        virtual void playMusic(const File &file);
         virtual void stopMusic();
 };
 

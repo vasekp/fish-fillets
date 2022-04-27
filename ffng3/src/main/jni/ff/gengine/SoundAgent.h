@@ -7,7 +7,6 @@ class BaseMsg;
 #include "common.h"
 #include "BaseAgent.h"
 #include "Name.h"
-#include "IntMsg.h"
 #include "FFNGMusic.h"
 
 /**
@@ -24,8 +23,7 @@ class SoundAgent : public BaseAgent {
         virtual int playSound(Mix_Chunk *sound, int volume,
                 int loops=0) = 0;
 
-        virtual void playMusic(const File &file,
-                BaseMsg *finished) = 0;
+        virtual void playMusic(const File &file) = 0;
         virtual void stopMusic() = 0;
         void receiveString(const StringMsg *msg);
 };

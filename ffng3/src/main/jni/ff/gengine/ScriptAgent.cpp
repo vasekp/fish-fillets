@@ -28,22 +28,3 @@ ScriptAgent::registerFunc(const char *name, lua_CFunction func)
 {
     m_script->registerFunc(name, func);
 }
-//-----------------------------------------------------------------
-/**
- * Messages:
- * - dostring("input") ... run string
- *
- * @throws UnknownMsgException
- */
-    void
-ScriptAgent::receiveString(const StringMsg *msg)
-{
-    if (msg->equalsName("dostring")) {
-        scriptDo(msg->getValue());
-    }
-    else {
-        Log::warn("unknown msg %s", msg->toString().c_str());
-    }
-}
-
-

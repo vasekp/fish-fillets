@@ -148,10 +148,3 @@ Application::receiveSimple(const SimpleMsg *msg)
         Log::warn("unknown msg %s", msg->toString().c_str());
     }
 }
-
-void
-Application::receiveString(const StringMsg *msg)
-{
-    Log::warn("unknown msg %s", msg->toString().c_str());
-}
-

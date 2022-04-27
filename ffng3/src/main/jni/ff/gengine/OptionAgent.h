@@ -19,8 +19,6 @@ class OptionAgent : public BaseAgent {
         static const char *CONFIG_FILE;
         Environ *m_environ;
     private:
-        void prepareVersion();
-        void prepareDataPaths();
         void prepareLang();
 
     void readUserConfig();
@@ -44,7 +42,6 @@ class OptionAgent : public BaseAgent {
 
         void addWatcher(const std::string &name, BaseMsg *msg);
         void removeWatchers(const std::string &listenerName);
-        void receiveString(const StringMsg *msg);
 };
 
 #endif

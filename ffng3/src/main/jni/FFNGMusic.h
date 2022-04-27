@@ -50,7 +50,6 @@ public:
 	static bool playingMusic();
 	static void haltMusic();
 	static void freeMusic(Mix_Music *music);
-	static void hookMusicFinished(void (*music_finished)(void));
 };
 
 #endif /* FFNGMUSIC_H_ */

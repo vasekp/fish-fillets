@@ -9,20 +9,9 @@
 #include "GameAgent.h"
 
 #include "StateManager.h"
-
-#include "Log.h"
 #include "WorldMap.h"
-#include "InputAgent.h"
-#include "KeyStroke.h"
-#include "KeyBinder.h"
-#include "SimpleMsg.h"
-#include "IntMsg.h"
 #include "File.h"
 #include "OptionAgent.h"
-#include "LevelStatus.h"
-#include "Level.h"
-
-//FFNG #include "SDL.h"
 #include "FFNGApp.h"
 
 //-----------------------------------------------------------------
@@ -30,46 +19,11 @@
 GameAgent::own_init()
 {
     m_manager = new StateManager();
-    std::string replayLevel = OptionAgent::agent()->getParam("replay_level");
-    if (replayLevel == "") {
-        File pathMap = File::internal(OptionAgent::agent()->getParam(
-                "worldmap", "script/worldmap.lua"));
-        WorldMap *worldmap = new WorldMap();
-        worldmap->initMap(pathMap);
-        m_manager->pushState(NULL, worldmap);
-    } else {
-        replaySolution(replayLevel);
-    }
-
-    keyBinding();
+    WorldMap *worldmap = new WorldMap();
+    worldmap->initMap(File::internal("script/worldmap.lua"));
+    m_manager->pushState(NULL, worldmap);
 }
 //-----------------------------------------------------------------
-/**
- * Replays the given solution instead of starting the game.
- * It is used only for testing.
- */
-void
-GameAgent::replaySolution(const std::string &codename)
-{
-    static LevelStatus *levelStatus = NULL;
-    static DescFinder *desc = NULL;
-    if (levelStatus == NULL) {
-        levelStatus = new LevelStatus();
-        desc = new WorldMap();
-    }
-
-    levelStatus->prepareRun(codename, "", 0, "");
-    std::string moves = levelStatus->readSolvedMoves();
-
-    File datafile = File::internal(
-            "script/" + codename + "/init.lua");
-    Level *level = new Level(codename, datafile, 0);
-    level->fillStatus(levelStatus);
-    level->fillDesc(desc);
-
-    m_manager->pushState(NULL, level);
-    level->loadReplay(moves);
-}
 //-----------------------------------------------------------------
 /**
  * Update game.
@@ -89,27 +43,8 @@ GameAgent::own_shutdown()
 {
     OptionAgent *options = OptionAgent::agent();
     int playtime = options->getAsInt("playtime");
-    playtime += /*FFNG SDL_GetTicks()*/ FFNGApp::getTicks() / 1000;
+    playtime += FFNGApp::getTicks() / 1000;
     options->setPersistent("playtime", playtime);
 
     delete m_manager;
 }
-
-//-----------------------------------------------------------------
-/**
- * Global keystrokes.
- */
-    void
-GameAgent::keyBinding()
-{
-    /* FFNG ignored for android
-    BaseMsg *msg;
-    KeyBinder *keyBinder = InputAgent::agent()->keyBinder();
-
-    // fullscreen
-    KeyStroke fs(SDLK_F11, KMOD_NONE);
-    msg = new SimpleMsg(Name::VIDEO_NAME, "fullscreen");
-    keyBinder->addStroke(fs, msg);
-    */
-}
-

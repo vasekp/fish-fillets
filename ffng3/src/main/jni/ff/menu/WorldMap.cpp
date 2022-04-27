@@ -144,8 +144,7 @@ WorldMap::own_resumeState()
     }
     m_selected = nextLevel;
 
-    SoundAgent::agent()->playMusic(
-            File::internal("music/menu.ogg"), NULL);
+    SoundAgent::agent()->playMusic(File::internal("music/menu.ogg"));
 }
 //-----------------------------------------------------------------
 /**

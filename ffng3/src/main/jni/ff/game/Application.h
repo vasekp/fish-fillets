@@ -29,7 +29,6 @@ class Application : public NoCopy, public BaseListener {
         void shutdown();
 
         virtual void receiveSimple(const SimpleMsg *msg);
-        virtual void receiveString(const StringMsg *msg);
 };
 
 #endif

@@ -36,8 +36,7 @@ const char *OptionAgent::CONFIG_FILE = "script/options.lua";
 OptionAgent::own_init()
 {
     m_environ = new Environ();
-    prepareVersion();
-    prepareDataPaths();
+    readUserConfig();
     prepareLang();
 }
 //-----------------------------------------------------------------
@@ -50,34 +49,7 @@ OptionAgent::own_shutdown()
 {
     delete m_environ;
 }
-//-----------------------------------------------------------------
-/**
- * Set program version.
- */
-    void
-OptionAgent::prepareVersion()
-{
-#ifdef VERSION
-    setParam("version", VERSION);
-#else
-    setParam("version", "0.0.1");
-#endif
-#ifdef PACKAGE
-    setParam("package", PACKAGE);
-#else
-    setParam("package", "A game");
-#endif
-}
-//-----------------------------------------------------------------
-/**
- * Set user and sytem dir options.
- * Userdir="$HOME/.fillets-ng" or ""
- */
-    void
-OptionAgent::prepareDataPaths()
-{
-    readUserConfig();
-}
+
 //-----------------------------------------------------------------
 /**
  * Prepare user lang option.
@@ -224,21 +196,6 @@ void
 OptionAgent::removeWatchers(const std::string &listenerName)
 {
     m_environ->removeWatchers(listenerName);
-}
-//-----------------------------------------------------------------
-//-----------------------------------------------------------------
-/**
- * Handle incoming message.
- * Messages:
- * - param_changed(systemdir) ... reread system options
- * - param_changed(userdir) ... reread user options
- *
- * @throws UnknownMsgException
- */
-    void
-OptionAgent::receiveString(const StringMsg *msg)
-{
-    Log::warn("unknown msg %s", msg->toString().c_str());
 }
 
 //-----------------------------------------------------------------
