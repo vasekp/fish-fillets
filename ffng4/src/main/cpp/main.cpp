@@ -1,21 +1,4 @@
-#include <initializer_list>
-#include <memory>
-#include <cstdlib>
-#include <cstring>
-#include <jni.h>
-#include <cerrno>
-#include <cassert>
-#include <cstdint>
-
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-
-#include <android/log.h>
-#include <android_native_app_glue.h>
-
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "fillets", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "fillets", __VA_ARGS__))
-#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "fillets", __VA_ARGS__))
+#include "fillets.h"
 
 struct saved_state {
     float angle;
