@@ -1,6 +1,6 @@
 #include "common.h"
 #include "files.h"
-#include "android/imagedecoder.h"
+#include "ndk.h"
 
 static int init_display(struct Instance* instance) {
     const EGLint attribs[] = {
@@ -156,18 +156,8 @@ void android_main(struct android_app* state) {
     if (state->savedState != nullptr)
         instance.state = *(struct saved_state*)state->savedState;
 
-    auto imageAsset = SystemFile("images/icon.png", instance).asset();
-    AImageDecoder* decoder;
-    assert(AImageDecoder_createFromAAsset(*imageAsset, &decoder) == ANDROID_IMAGE_DECODER_SUCCESS);
-    const AImageDecoderHeaderInfo* info = AImageDecoder_getHeaderInfo(decoder);
-    int32_t width = AImageDecoderHeaderInfo_getWidth(info);
-    int32_t height = AImageDecoderHeaderInfo_getHeight(info);
-    size_t stride = AImageDecoder_getMinimumStride(decoder);
-    size_t size = height * stride;
-    void* pixels = malloc(size);
-    assert(AImageDecoder_decodeImage(decoder, pixels, stride, size) == ANDROID_IMAGE_DECODER_SUCCESS);
-    AImageDecoder_delete(decoder);
-    free(pixels);
+    auto image = ndk::ImageDecoder{SystemFile("images/icon.png", instance).asset()}.decode();
+    LOGD("%d %d", image.width, image.height);
 
     while (true) {
         int ident;

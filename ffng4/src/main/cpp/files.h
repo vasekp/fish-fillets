@@ -2,7 +2,8 @@
 #define FISH_FILLETS_FILES_H
 
 #include "common.h"
-#include <android/asset_manager_jni.h>
+#include "ndk.h"
+
 #include <filesystem>
 #include <sstream>
 #include <fstream>
@@ -12,27 +13,6 @@ public:
     virtual bool exists() const = 0;
     virtual std::string read() const = 0;
     virtual bool write(const std::string& data) const = 0;
-};
-
-class Asset {
-    AAsset *asset;
-
-public:
-    Asset(AAssetManager *assets, const char* filename, int mode) :
-        asset(AAssetManager_open(assets, filename, mode))
-    { }
-
-    ~Asset() {
-        AAsset_close(asset);
-    }
-
-    bool valid() const {
-        return asset != nullptr;
-    }
-
-    AAsset* operator *() {
-        return asset;
-    }
 };
 
 class SystemFile : public AbstractFile {
@@ -46,11 +26,11 @@ public:
     { }
 
     virtual bool exists() const {
-        return Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN}.valid();
+        return ndk::Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN}.valid();
     }
 
     virtual std::string read() const {
-        Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
+        ndk::Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
         assert(asset.valid());
         auto size = AAsset_getLength(*asset);
         auto buffer = static_cast<const char *>(AAsset_getBuffer(*asset));
@@ -63,8 +43,8 @@ public:
         throw std::logic_error("write attempt to internal file");
     }
 
-    Asset asset(int mode = AASSET_MODE_UNKNOWN) const {
-        return Asset{assets, path.c_str(), mode};
+    ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const {
+        return ndk::Asset{assets, path.c_str(), mode};
     }
 
 private:
