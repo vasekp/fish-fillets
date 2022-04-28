@@ -13,6 +13,7 @@ public:
     virtual bool exists() const = 0;
     virtual std::string read() const = 0;
     virtual bool write(const std::string& data) const = 0;
+    virtual std::string getPath() const = 0;
 };
 
 class SystemFile : public AbstractFile {
@@ -25,11 +26,15 @@ public:
         path(localize(_path))
     { }
 
-    virtual bool exists() const {
+    std::string getPath() const override {
+        return path;
+    }
+
+    virtual bool exists() const override {
         return ndk::Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN}.valid();
     }
 
-    virtual std::string read() const {
+    virtual std::string read() const override {
         ndk::Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
         assert(asset.valid());
         auto size = AAsset_getLength(*asset);
@@ -39,7 +44,7 @@ public:
         return ret;
     }
 
-    virtual bool write(const std::string &data) const {
+    virtual bool write(const std::string &data) const override {
         throw std::logic_error("write attempt to internal file");
     }
 
@@ -64,18 +69,22 @@ public:
         fullPath(std::filesystem::path{instance.app->activity->externalDataPath} / _path)
     { }
 
-    virtual bool exists() const {
+    std::string getPath() const override {
+        return basePath;
+    }
+
+    virtual bool exists() const override {
         return std::filesystem::exists(fullPath);
     }
 
-    virtual std::string read() const {
+    virtual std::string read() const override {
         std::ostringstream oss;
         std::ifstream ifs{fullPath};
         oss << ifs.rdbuf();
         return oss.str();
     }
 
-    virtual bool write(const std::string &data) const {
+    virtual bool write(const std::string &data) const override {
         std::filesystem::path path{fullPath};
         std::filesystem::create_directories(path.parent_path());
         std::ofstream ofs{fullPath};

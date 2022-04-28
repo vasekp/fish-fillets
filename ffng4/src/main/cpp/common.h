@@ -35,7 +35,7 @@ struct saved_state {
 
 struct Instance {
     struct android_app* app;
-
+    JNIEnv* jni;
     bool animating;
     EGLDisplay display;
     EGLSurface surface;

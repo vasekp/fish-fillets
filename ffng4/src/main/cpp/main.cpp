@@ -1,6 +1,5 @@
 #include "common.h"
-#include "files.h"
-#include "ndk.h"
+#include "assets.h"
 
 static int init_display(struct Instance* instance) {
     const EGLint attribs[] = {
@@ -144,38 +143,44 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
     }
 }
 
-void android_main(struct android_app* state) {
+void android_main(struct android_app* app) {
     struct Instance instance{};
 
     memset(&instance, 0, sizeof(instance));
-    state->userData = &instance;
-    state->onAppCmd = handle_cmd;
-    state->onInputEvent = handle_input;
-    instance.app = state;
+    app->userData = &instance;
+    app->onAppCmd = handle_cmd;
+    app->onInputEvent = handle_input;
+    instance.app = app;
 
-    if (state->savedState != nullptr)
-        instance.state = *(struct saved_state*)state->savedState;
+    app->activity->vm->AttachCurrentThread(&instance.jni, nullptr);
 
-    auto image = ndk::ImageDecoder{SystemFile("images/icon.png", instance).asset()}.decode();
+    if (app->savedState != nullptr)
+        instance.state = *(struct saved_state*)app->savedState;
+
+    auto image = loadImage(SystemFile("images/icon.png", instance), instance);
     LOGD("%d %d", image.width, image.height);
 
     while (true) {
         int ident;
         int events;
         struct android_poll_source* source;
+        bool quit = false;
 
         while ((ident=ALooper_pollAll(instance.animating ? 0 : -1, nullptr, &events,
                                       (void**)&source)) >= 0) {
             if (source != nullptr)
-                source->process(state, source);
+                source->process(app, source);
             if (ident == LOOPER_ID_USER) {
                 // sensors...
             }
-            if (state->destroyRequested != 0) {
+            if (app->destroyRequested != 0) {
                 term_display(&instance);
-                return;
+                quit = true;
             }
         }
+
+        if(quit)
+            break;
 
         if (instance.animating) {
             instance.state.angle += .01f;
@@ -183,5 +188,7 @@ void android_main(struct android_app* state) {
                 instance.state.angle = 0;
             draw_frame(&instance);
         }
+
+        app->activity->vm->DetachCurrentThread();
     }
 }
