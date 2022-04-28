@@ -25,5 +25,5 @@ android {
             path "CMakeLists.txt"
         }
     }
-    ndkVersion '25.0.8221429 rc2'
+    ndkVersion '24.0.8215888'
 }
