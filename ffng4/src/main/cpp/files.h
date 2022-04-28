@@ -14,6 +14,27 @@ public:
     virtual bool write(const std::string& data) const = 0;
 };
 
+class Asset {
+    AAsset *asset;
+
+public:
+    Asset(AAssetManager *assets, const char* filename, int mode) :
+        asset(AAssetManager_open(assets, filename, mode))
+    { }
+
+    ~Asset() {
+        AAsset_close(asset);
+    }
+
+    bool valid() const {
+        return asset != nullptr;
+    }
+
+    AAsset* operator *() {
+        return asset;
+    }
+};
+
 class SystemFile : public AbstractFile {
     AAssetManager *assets;
     std::filesystem::path path;
@@ -25,28 +46,25 @@ public:
     { }
 
     virtual bool exists() const {
-        auto *asset = AAssetManager_open(assets, path.c_str(), AASSET_MODE_UNKNOWN);
-        if(asset) {
-            AAsset_close(asset);
-            return true;
-        } else
-            return false;
+        return Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN}.valid();
     }
 
     virtual std::string read() const {
-        auto *asset = AAssetManager_open(assets, path.c_str(), AASSET_MODE_BUFFER);
-        if(!asset)
-            throw std::runtime_error("internal file "s + path.c_str() + " not found");
-        auto size = AAsset_getLength(asset);
-        auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
+        Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
+        assert(asset.valid());
+        auto size = AAsset_getLength(*asset);
+        auto buffer = static_cast<const char *>(AAsset_getBuffer(*asset));
         LOGD("read %ld bytes from %s", size, path.c_str());
         std::string ret(buffer, buffer + size);
-        AAsset_close(asset);
         return ret;
     }
 
     virtual bool write(const std::string &data) const {
         throw std::logic_error("write attempt to internal file");
+    }
+
+    Asset asset(int mode = AASSET_MODE_UNKNOWN) const {
+        return Asset{assets, path.c_str(), mode};
     }
 
 private:

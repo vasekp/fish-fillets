@@ -20,6 +20,7 @@ target_include_directories(fillets PRIVATE
 target_link_libraries(fillets
     android
     native_app_glue
+    jnigraphics
     EGL
     GLESv1_CM
     log)
