@@ -1,0 +1,29 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 32
+    ndkVersion '24.0.8215888'
+
+    defaultConfig {
+        applicationId = 'cz.absolutno.fillets'
+        minSdkVersion 19
+        targetSdkVersion 32
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            version '3.18.1'
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+}
