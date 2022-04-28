@@ -12,7 +12,6 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <jni.h>
 #include <stdexcept>
 #include <cassert>
 #include <cerrno>
@@ -27,5 +26,25 @@
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "FFNG4", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "FFNG4", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "FFNG4", __VA_ARGS__))
+
+struct saved_state {
+    float angle;
+    float x;
+    float y;
+};
+
+struct Instance {
+    struct android_app* app;
+
+    bool animating;
+    EGLDisplay display;
+    EGLSurface surface;
+    EGLContext context;
+    std::int32_t width;
+    std::int32_t height;
+    struct saved_state state;
+};
+
+using namespace std::string_literals;
 
 #endif //FILLETS_H
