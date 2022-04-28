@@ -16,26 +16,12 @@
 #include "Name.h"
 #include "MouseStroke.h"
 
-//FFNG #include "SDL.h"
-
-//-----------------------------------------------------------------
-/**
- * Enable SDL_UNICODE.
- * Enable key repeat.
- * Set console handler to ScriptAgent.
- *
- * NOTE: every SDL_InitSubSystem will disable UNICODE
- * hence InputAgent init must be after VideoAgent and SoundAgent.
- * NOTE: KeyConsole() use File which asks OptionAgent
- */
     void
 InputAgent::own_init()
 {
     m_keyBinder = new KeyBinder();
     m_handler = NULL;
-    m_keys = /*FFNG SDL_GetKeyState*/FFNGInputEvent::getKeyState(NULL);
-
-    //FFNG bah SDL_EnableUNICODE(1);
+    m_keys = FFNGInputEvent::getKeyState(NULL);
 }
 //-----------------------------------------------------------------
     void
@@ -78,9 +64,6 @@ InputAgent::own_update()
     }
 }
 //-----------------------------------------------------------------
-/**
- * Delete console.
- */
     void
 InputAgent::own_shutdown()
 {

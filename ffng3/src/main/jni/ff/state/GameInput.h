@@ -4,7 +4,7 @@
 #include "StateInput.h"
 
 /**
- * Input which enables console and menu options.
+ * Input which enables menu options.
  */
 class GameInput : public StateInput {
     protected:

@@ -13,7 +13,6 @@
 
 #include "Log.h"
 #include "KeyStroke.h"
-#include "KeyConsole.h"
 #include "OptionAgent.h"
 
 //-----------------------------------------------------------------
@@ -26,11 +25,9 @@ StateInput::StateInput(GameState *state)
     m_state = state;
     m_keymap = new Keymap();
     KeyDesc key_quit(KEY_QUIT, "quit");
-    KeyDesc key_console(KEY_CONSOLE, "debug console");
     KeyDesc key_help(KEY_HELP, "help screen");
     KeyDesc key_menu(KEY_MENU, "game menu");
     m_keymap->registerKey(KeyStroke(SDLK_ESCAPE, KMOD_NONE), key_quit);
-    //FFNG m_keymap->registerKey(KeyStroke(SDLK_BACKQUOTE, KMOD_NONE), key_console);
     //FFNG m_keymap->registerKey(KeyStroke(SDLK_F1, KMOD_NONE), key_help);
     m_keymap->registerKey(KeyStroke(SDLK_F10, KMOD_NONE), key_menu);
     /*FFNG m_keymap->registerKey(KeyStroke(SDLK_F6, KMOD_NONE),
@@ -45,7 +42,7 @@ StateInput::~StateInput()
 //-----------------------------------------------------------------
 /**
  * Inspects keystroke and call:
- * - common function for quit, console, help, menu, subtitles
+ * - common function for quit, help, menu, subtitles
  * - specKey() for defined keystroke but unknown for us
  * - specStroke() for other keys
  */
@@ -56,9 +53,6 @@ StateInput::keyEvent(const KeyStroke &stroke)
     switch (index) {
         case KEY_QUIT:
             quitState();
-            break;
-        case KEY_CONSOLE:
-            enableConsole();
             break;
         case KEY_HELP:
             enableHelp();
@@ -89,12 +83,7 @@ StateInput::quitState()
 {
     m_state->quitState();
 }
-//-----------------------------------------------------------------
-    void
-StateInput::enableConsole()
-{
-    m_state->pushState(new KeyConsole());
-}
+
 //-----------------------------------------------------------------
     void
 StateInput::enableSubtitles()
