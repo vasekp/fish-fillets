@@ -11,7 +11,7 @@ Image loadImage(const SystemFile& filename, Instance& instance) {
 #if __ANDROID_API__ >= 30
         AImageDecoder* decoder;
         auto asset = filename.asset();
-        assert(AImageDecoder_createFromAAsset(*asset, &decoder) == ANDROID_IMAGE_DECODER_SUCCESS);
+        assert(AImageDecoder_createFromAAsset(asset, &decoder) == ANDROID_IMAGE_DECODER_SUCCESS);
         const AImageDecoderHeaderInfo* info = AImageDecoder_getHeaderInfo(decoder);
         std::uint32_t width = AImageDecoderHeaderInfo_getWidth(info);
         std::uint32_t height = AImageDecoderHeaderInfo_getHeight(info);

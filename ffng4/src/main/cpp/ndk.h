@@ -11,39 +11,23 @@ struct Image {
 };
 
 namespace ndk {
-    class Asset {
-        AAsset *asset;
+    template<typename T>
+    struct Deleter;
 
-    public:
-        Asset() : asset(nullptr) {}
+    template<>
+    struct Deleter<AAsset> {
+        void operator() (AAsset* asset) {
+            AAsset_close(asset);
+        }
+    };
 
+    struct Asset : public std::unique_ptr<AAsset, Deleter<AAsset>> {
         Asset(AAssetManager *assets, const char *filename, int mode) :
-                asset(AAssetManager_open(assets, filename, mode)) {}
+            std::unique_ptr<AAsset, Deleter<AAsset>>{AAssetManager_open(assets, filename, mode)}
+        { }
 
-        Asset(const Asset &) = delete;
-
-        Asset &operator=(const Asset &) = delete;
-
-        Asset(Asset &&other) : asset(other.asset) {
-            other.asset = nullptr;
-        }
-
-        Asset &operator=(Asset &&other) {
-            std::swap(asset, other.asset);
-            return *this;
-        }
-
-        ~Asset() {
-            if (asset != nullptr)
-                AAsset_close(asset);
-        }
-
-        bool valid() const {
-            return asset != nullptr;
-        }
-
-        AAsset *operator*() {
-            return asset;
+        operator AAsset*() const {
+            return get();
         }
     };
 }

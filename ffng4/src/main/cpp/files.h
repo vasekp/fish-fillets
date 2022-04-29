@@ -31,14 +31,14 @@ public:
     }
 
     virtual bool exists() const override {
-        return ndk::Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN}.valid();
+        return (bool) ndk::Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN};
     }
 
     virtual std::string read() const override {
         ndk::Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
-        assert(asset.valid());
-        auto size = AAsset_getLength(*asset);
-        auto buffer = static_cast<const char *>(AAsset_getBuffer(*asset));
+        assert(asset);
+        auto size = AAsset_getLength(asset);
+        auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
         LOGD("read %ld bytes from %s", size, path.c_str());
         std::string ret(buffer, buffer + size);
         return ret;
