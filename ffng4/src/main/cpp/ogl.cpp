@@ -55,9 +55,9 @@ namespace ogl {
         if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
             ::error("eglMakeCurrent failed");
 
-        width = height = 0;
-        eglQuerySurface(display, surface, EGL_WIDTH, &width);
-        eglQuerySurface(display, surface, EGL_HEIGHT, &height);
+        _width = _height = 0;
+        eglQuerySurface(display, surface, EGL_WIDTH, &_width);
+        eglQuerySurface(display, surface, EGL_HEIGHT, &_height);
 
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
@@ -68,7 +68,7 @@ namespace ogl {
         glEnable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
 
-        LOGD("display: opened %p [%d x %d]", display, width, height);
+        LOGD("display: opened %p [%d x %d]", display, _width, _height);
     }
 
     Display::~Display() {
@@ -80,60 +80,136 @@ namespace ogl {
         LOGD("display: closed %p", display);
     }
 
+    void Display::bind() const {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, width(), height());
+    }
+
     void Display::swap() const {
         eglSwapBuffers(display, surface);
     }
 
+    Texture::Texture(GLuint width, GLuint height) : _width(width), _height(height) {
+        glGenTextures(1, &name);
+        bind();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    Texture::Texture(Texture&& other) noexcept :
+        _width(other._width), _height(other._height), name(other.name)
+    {
+        other.name = 0;
+    }
+
+    Texture Texture::fromImageData(GLuint width, GLuint height, std::size_t stride, void *data) {
+        assert(stride == 4 * width); // GLES does not support GL_UNPACK_ROW_LENGTH
+        Texture ret{width, height};
+        ret.bind();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        return ret;
+    }
+
+    Texture Texture::empty(GLuint width, GLuint height) {
+        Texture ret{width, height};
+        ret.bind();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        return ret;
+    }
+
+    Texture& Texture::operator=(Texture&& other) noexcept {
+        _width = other._width;
+        _height = other._height;
+        std::swap(name, other.name);
+        return *this;
+    }
+
+    Texture::~Texture() {
+        if(name)
+            glDeleteTextures(1, &name);
+    }
+
+    void Texture::bind() const {
+        glBindTexture(GL_TEXTURE_2D, name);
+    };
+
     Shader::Shader(GLenum type, const std::string& code) {
-        handle = glCreateShader(type);
-        if(!handle)
+        name = glCreateShader(type);
+        if(!name)
             ::error("glCreateShader failed");
 
         const auto source = code.c_str();
-        glShaderSource(handle, 1, &source, nullptr);
-        glCompileShader(handle);
+        glShaderSource(name, 1, &source, nullptr);
+        glCompileShader(name);
 
         int status;
-        glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+        glGetShaderiv(name, GL_COMPILE_STATUS, &status);
 
         if(status == GL_FALSE) {
             int loglen, actlen;
-            glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &loglen);
+            glGetShaderiv(name, GL_INFO_LOG_LENGTH, &loglen);
             std::string error(loglen, '\0');
-            glGetShaderInfoLog(handle, loglen, &actlen, error.data());
-            glDeleteShader(handle);
+            glGetShaderInfoLog(name, loglen, &actlen, error.data());
+            glDeleteShader(name);
             ::error("glCompileShader failed", "%s", error.c_str());
         }
     }
 
     Shader::~Shader() {
-        glDeleteShader(handle);
+        glDeleteShader(name);
     }
 
     Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
-        handle = glCreateProgram();
-        if(!handle)
+        name = glCreateProgram();
+        if(!name)
             ::error("glCreateProgram failed");
 
-        glAttachShader(handle, vertexShader);
-        glAttachShader(handle, fragmentShader);
-        glLinkProgram(handle);
+        glAttachShader(name, vertexShader);
+        glAttachShader(name, fragmentShader);
+        glLinkProgram(name);
 
         int status;
-        glGetProgramiv(handle, GL_LINK_STATUS, &status);
+        glGetProgramiv(name, GL_LINK_STATUS, &status);
 
         if(status == GL_FALSE) {
             int loglen, actlen;
-            glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &loglen);
+            glGetProgramiv(name, GL_INFO_LOG_LENGTH, &loglen);
             std::string error(loglen, '\0');
-            glGetProgramInfoLog(handle, loglen, &actlen, error.data());
-            glDeleteProgram(handle);
+            glGetProgramInfoLog(name, loglen, &actlen, error.data());
+            glDeleteProgram(name);
             ::error("glLinkProgram failed", "%s", error.c_str());
         }
     }
 
     Program::~Program() {
-        glDeleteProgram(handle);
+        glDeleteProgram(name);
     }
 
+    Framebuffer::Framebuffer(GLuint maxWidth, GLuint maxHeight) :
+        _texture(Texture::empty(maxWidth, maxHeight)),
+        _width(maxWidth),
+        _height(maxHeight)
+    {
+        glGenFramebuffers(1, &name);
+        glBindFramebuffer(GL_FRAMEBUFFER, name);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    Framebuffer::~Framebuffer() {
+        glDeleteFramebuffers(1, &name);
+    }
+
+    void Framebuffer::bind() const {
+        glBindFramebuffer(GL_FRAMEBUFFER, name);
+        glViewport(0, 0, width(), height());
+    }
+
+    void Framebuffer::resize(GLuint width, GLuint height) {
+        assert(width <= _texture.width() && height <= _texture.height());
+        _width = width;
+        _height = height;
+    }
 }

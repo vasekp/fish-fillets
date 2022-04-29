@@ -8,7 +8,7 @@
 #include <android/bitmap.h>
 #endif
 
-ogl::Image Instance::loadImage(const std::string& filename) const {
+ogl::Texture Instance::loadImage(const std::string& filename) const {
 #if __ANDROID_API__ >= 30
     AImageDecoder* decoder;
     auto asset = systemFile(filename).asset();
@@ -21,7 +21,7 @@ ogl::Image Instance::loadImage(const std::string& filename) const {
     std::unique_ptr<std::byte[]> data(new std::byte[size]);
     assert(AImageDecoder_decodeImage(decoder, data.get(), _stride, size) == ANDROID_IMAGE_DECODER_SUCCESS);
     AImageDecoder_delete(decoder);
-    return {width, height, _stride, data.get()};
+    return ogl::Texture::fromImageData(width, height, stride, pixels);
 #else
     jclass clazz = jni->GetObjectClass(app->activity->clazz);
     jmethodID mid = jni->GetMethodID(clazz, "loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;"); // TODO cache
@@ -37,7 +37,7 @@ ogl::Image Instance::loadImage(const std::string& filename) const {
     void* pixels;
     std::unique_ptr<std::byte[]> data(new std::byte[size]);
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-    ogl::Image ret{width, height, stride, pixels};
+    auto ret = ogl::Texture::fromImageData(width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(clazz);
     jni->DeleteLocalRef(jPath);

@@ -13,74 +13,50 @@ namespace ogl {
         EGLSurface surface;
         EGLContext context;
 
+        std::int32_t _width;
+        std::int32_t _height;
+
     public:
-        std::int32_t width;
-        std::int32_t height;
 
         Display(ANativeWindow *window);
+        Display(const Display&) = delete;
+        Display& operator=(const Display&) = delete;
         ~Display();
+
+        auto width() const { return _width; }
+        auto height() const { return _height; }
+
+        void bind() const;
         void swap() const;
     };
 
     class Texture {
-        GLuint texture;
+        GLuint _width;
+        GLuint _height;
+        GLuint name{};
 
     public:
-        Texture() {
-            glGenTextures(1, &texture);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        }
+        static Texture fromImageData(GLuint width, GLuint height, std::size_t stride, void* data);
+        static Texture empty(GLuint width, GLuint height);
 
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
+        Texture(Texture&&) noexcept;
+        Texture& operator=(Texture&&) noexcept;
+        ~Texture();
 
-        Texture(Texture&& other) : texture(other.texture) {
-            other.texture = 0;
-        }
-
-        Texture& operator=(Texture&& other) {
-            std::swap(texture, other.texture);
-            return *this;
-        }
-
-        ~Texture() {
-            if(texture)
-                glDeleteTextures(1, &texture);
-        }
-
-        operator GLuint() const {
-            return texture;
-        }
-    };
-
-    class Image {
-    private:
-        Texture _texture;
-        std::uint32_t _width;
-        std::uint32_t _height;
-    public:
-
-        Image(const uint32_t width, const uint32_t height, const size_t stride, void* data) :
-                _texture(), _width(width), _height(height)
-        {
-            assert(stride == 4 * width); // GLES does not support GL_UNPACK_ROW_LENGTH
-            glBindTexture(GL_TEXTURE_2D, _texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        }
-
-        Image(Image&&) = default;
-
-        const Texture& texture() const { return _texture; }
+        operator GLuint() const { return name; }
         auto width() const { return _width; }
         auto height() const { return _height; }
+
+        void bind() const;
+
+    private:
+        Texture(GLuint width, GLuint height);
     };
 
     class Shader {
-        GLuint handle;
+        GLuint name;
 
     public:
         Shader(GLenum type, const std::string& code);
@@ -88,13 +64,11 @@ namespace ogl {
         Shader& operator=(const Shader&) = delete;
         ~Shader();
 
-        operator GLuint() const {
-            return handle;
-        }
+        operator GLuint() const { return name; }
     };
 
     class Program {
-        GLuint handle;
+        GLuint name;
 
     public:
         Program(const Shader& vertexShader, const Shader& fragmentShader);
@@ -102,9 +76,30 @@ namespace ogl {
         Program& operator=(const Program&) = delete;
         ~Program();
 
-        operator GLuint() const {
-            return handle;
-        }
+        operator GLuint() const { return name; }
+    };
+
+    class Framebuffer {
+        GLuint name;
+        Texture _texture;
+        GLuint _width;
+        GLuint _height;
+
+    public:
+        Framebuffer(GLuint maxWidth, GLuint maxHeight);
+        Framebuffer(const Framebuffer&) = delete;
+        Framebuffer& operator=(const Framebuffer&) = delete;
+        ~Framebuffer();
+
+        operator GLuint() const { return name; }
+        auto width() const { return _width; }
+        auto height() const { return _height; }
+        auto texWidth() const { return _texture.width(); }
+        auto texHeight() const { return _texture.height(); }
+        auto& texture() const { return _texture; }
+
+        void bind() const;
+        void resize(GLuint width, GLuint height);
     };
 }
 

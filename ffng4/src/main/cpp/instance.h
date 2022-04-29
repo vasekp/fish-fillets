@@ -12,7 +12,8 @@ struct android_app;
 
 namespace ogl {
     class Display;
-    class Image;
+    class Framebuffer;
+    class Texture;
 }
 
 struct Shaders;
@@ -24,9 +25,10 @@ struct Instance {
     android_app* app;
     ndk::JNIEnv jni;
 
-    std::unique_ptr<const ogl::Display> display;
+    std::unique_ptr<ogl::Display> display;
+    std::unique_ptr<ogl::Framebuffer> screen;
     std::unique_ptr<Shaders> shaders;
-    std::unique_ptr<ogl::Image> bg;
+    std::unique_ptr<ogl::Texture> bg;
 
     struct saved_state state;
     bool live;
@@ -45,7 +47,7 @@ struct Instance {
         return {path, app->activity->externalDataPath};
     }
 
-    ogl::Image loadImage(const std::string& path) const;
+    ogl::Texture loadImage(const std::string& path) const;
 };
 
 #endif //FISH_FILLETS_INSTANCE_H

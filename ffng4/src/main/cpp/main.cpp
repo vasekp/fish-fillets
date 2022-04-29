@@ -13,30 +13,45 @@ static void draw_frame(struct Instance* instance) {
         return;
 
     auto& display = instance->display;
+    auto& screen = instance->screen;
     auto& program = instance->shaders->copy;
     auto& image = instance->bg;
+
     glUseProgram(program);
-
-    glBindTexture(GL_TEXTURE_2D, image->texture());
-    int uTexture = glGetUniformLocation(program, "uSrcTexture");
-    glUniform1i(uTexture, 0);
-
+    auto uTexture = glGetUniformLocation(program, "uSrcTexture");
     auto uSrcSize = glGetUniformLocation(program, "uSrcSize");
     auto uDstSize = glGetUniformLocation(program, "uDstSize");
     auto uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
     auto uDstOffset = glGetUniformLocation(program, "uDstOffset");
+    auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+    glEnableVertexAttribArray(aPosition);
+
+    //screen->resize(500, 500);
+    screen->bind();
+    image->bind();
+
+    glUniform1i(uTexture, 0);
     glUniform2f(uSrcSize, (float)image->width(), (float)image->height());
-    glUniform2f(uDstSize, (float)display->width, (float)display->height);
+    glUniform2f(uDstSize, (float)screen->width(), (float)screen->height());
+    glUniform2f(uSrcOffset, 0.f, 0.f);
+    glUniform2f(uDstOffset, 250.f, 0.f);
+
+    float points1[4][2] = SQUARE(250.f,0.f,image->width(),image->height());
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points1[0][0]);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    display->bind();
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUniform1i(uTexture, 1);
+    glUniform2f(uSrcSize, (float)screen->texWidth(), (float)screen->texHeight());
+    glUniform2f(uDstSize, (float)display->width(), (float)display->height());
     glUniform2f(uSrcOffset, 0.f, 0.f);
     glUniform2f(uDstOffset, 0.f, 0.f);
 
-    float points[4][2] = SQUARE(0.f, 0.f, image->width(), image->height());
-    auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
-    glEnableVertexAttribArray(aPosition);
-
-    glClearColor(1.0, 0.0, 0.0, 0.5);
-    glClear(GL_COLOR_BUFFER_BIT);
+    float points2[4][2] = SQUARE(0.f, 0.f, screen->texWidth(), screen->texHeight());
+    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points2[0][0]);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     display->swap();
@@ -62,8 +77,12 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
                 instance->display = std::make_unique<ogl::Display>(instance->app->window);
+                instance->screen = std::make_unique<ogl::Framebuffer>(1000, 1000);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, instance->screen->texture());
+                glActiveTexture(GL_TEXTURE0);
                 instance->shaders = std::make_unique<Shaders>(*instance);
-                instance->bg = std::make_unique<ogl::Image>(instance->loadImage("images/crabshow/secret-p.png"));
+                instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/start/prvni-p.png"));
                 draw_frame(instance);
             }
             break;
