@@ -72,6 +72,8 @@ static int init_display(struct Instance* instance) {
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
 
+    instance->bg = std::make_unique<Image>(loadImage(SystemFile("images/icon.png", *instance), *instance));
+
     return 0;
 }
 
@@ -156,9 +158,6 @@ void android_main(struct android_app* app) {
 
     if (app->savedState != nullptr)
         instance.state = *(struct saved_state*)app->savedState;
-
-    auto image = loadImage(SystemFile("images/icon.png", instance), instance);
-    LOGD("%d %d", image.width, image.height);
 
     while (true) {
         int ident;

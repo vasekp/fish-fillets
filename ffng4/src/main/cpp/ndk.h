@@ -3,13 +3,6 @@
 
 #include <android/asset_manager_jni.h>
 
-struct Image {
-    std::uint32_t width;
-    std::uint32_t height;
-    std::size_t stride;
-    std::unique_ptr<std::byte[]> data;
-};
-
 namespace ndk {
     template<typename T>
     struct Deleter;
