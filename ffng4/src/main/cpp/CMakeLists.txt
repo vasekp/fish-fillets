@@ -5,6 +5,8 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
+find_package (oboe REQUIRED CONFIG)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
 set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
@@ -25,4 +27,5 @@ target_link_libraries(fillets
     jnigraphics
     EGL
     GLESv2
+    oboe::oboe
     log)
