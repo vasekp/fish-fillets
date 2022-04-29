@@ -8,6 +8,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <android_native_app_glue.h>
+
 class AbstractFile {
 public:
     virtual bool exists() const = 0;

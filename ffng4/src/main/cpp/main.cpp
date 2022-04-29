@@ -1,6 +1,8 @@
 #include "common.h"
 #include "assets.h"
 
+#include <android_native_app_glue.h>
+
 static int init_display(struct Instance* instance) {
     const EGLint attribs[] = {
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -148,7 +150,6 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
 void android_main(struct android_app* app) {
     struct Instance instance{};
 
-    memset(&instance, 0, sizeof(instance));
     app->userData = &instance;
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
