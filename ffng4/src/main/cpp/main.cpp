@@ -111,6 +111,10 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_TERM_WINDOW:
             instance->display.reset();
+            instance->canvas.reset();
+            instance->shaders.reset();
+            instance->bg.reset();
+            instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
             break;
