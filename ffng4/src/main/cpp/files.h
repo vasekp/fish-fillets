@@ -2,6 +2,7 @@
 #define FISH_FILLETS_FILES_H
 
 #include "common.h"
+#include "ndk.h"
 
 #include <filesystem>
 #include <sstream>

@@ -1,6 +1,6 @@
 #include "instance.h"
-#include "ogl.h"
 #include "shaders.h"
+#include "decoders.h"
 
 void GLRectangle(float x, float y, float w, float h) {
     float coords[4][2] = {
@@ -87,7 +87,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 glBindTexture(GL_TEXTURE_2D, instance->canvas->texture());
                 glActiveTexture(Shaders::texImage_gl);
                 instance->shaders = std::make_unique<Shaders>(*instance);
-                instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("orig/map.png"));
+                instance->bg = std::make_unique<ogl::Texture>(instance->decoders->loadImage("orig/map.png"));
                 instance->live = true;
                 draw_frame(instance);
             }
@@ -112,6 +112,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
 
 void android_main(struct android_app* app) {
     struct Instance instance{app};
+    instance.decoders = std::make_unique<Decoders>(app);
 
     app->userData = &instance;
     app->onAppCmd = handle_cmd;

@@ -35,6 +35,10 @@ namespace {
     [[maybe_unused]] void error(const char *desc) {
         error(desc, "%s", desc);
     }
+
+    [[maybe_unused]] void error(const std::string& desc) {
+        error(desc.c_str());
+    }
 }
 
 using namespace std::string_literals;
