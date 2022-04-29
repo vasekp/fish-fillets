@@ -69,6 +69,7 @@ namespace ogl {
 
     class Program {
         GLuint name;
+        mutable std::map<std::string, GLint> uniforms;
 
     public:
         Program(const Shader& vertexShader, const Shader& fragmentShader);
@@ -77,6 +78,10 @@ namespace ogl {
         ~Program();
 
         operator GLuint() const { return name; }
+
+        GLint uniform(const std::string&) const;
+
+        static constexpr GLint aPosition = 0;
     };
 
     class Framebuffer {

@@ -67,6 +67,7 @@ namespace ogl {
 
         glEnable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
+        glEnableVertexAttribArray(0);
 
         LOGD("display: opened %p [%d x %d]", display, _width, _height);
     }
@@ -171,6 +172,7 @@ namespace ogl {
 
         glAttachShader(name, vertexShader);
         glAttachShader(name, fragmentShader);
+        glBindAttribLocation(name, aPosition, "aPosition");
         glLinkProgram(name);
 
         int status;
@@ -188,6 +190,15 @@ namespace ogl {
 
     Program::~Program() {
         glDeleteProgram(name);
+    }
+
+    GLint Program::uniform(const std::string &ident) const {
+        auto entry = uniforms.find(ident);
+        if(entry == uniforms.end()) {
+            glUseProgram(name);
+            return uniforms[ident] = glGetUniformLocation(name, ident.c_str());
+        } else
+            return entry->second;
     }
 
     Framebuffer::Framebuffer(GLuint maxWidth, GLuint maxHeight) :

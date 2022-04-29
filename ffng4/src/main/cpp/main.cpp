@@ -2,12 +2,16 @@
 #include "ogl.h"
 #include "shaders.h"
 
-#define SQUARE(x, y, w, h) {\
-  {(float)(x), (float)(y)}, \
-  {(float)(x + w), (float)(y)}, \
-  {(float)(x), (float)(y + h)}, \
-  {(float)(x + w), (float)(y + h)} \
+void GLRectangle(float x, float y, float w, float h) {
+    float coords[4][2] = {
+        {x, y},
+        {x + w, y},
+        {x, y + h},
+        {x + w, y + h}};
+    glVertexAttribPointer(Shaders::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &coords[0][0]);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
+
 static void draw_frame(struct Instance* instance) {
     if (instance->display == nullptr)
         return;
@@ -23,24 +27,13 @@ static void draw_frame(struct Instance* instance) {
     {
         auto& program = instance->shaders->copy;
         glUseProgram(program);
-        auto uTexture = glGetUniformLocation(program, "uSrcTexture");
-        auto uSrcSize = glGetUniformLocation(program, "uSrcSize");
-        auto uDstSize = glGetUniformLocation(program, "uDstSize");
-        auto uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
-        auto uDstOffset = glGetUniformLocation(program, "uDstOffset");
-        auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
+        glUniform1i(program.uniform("uTexture"), Shaders::texImage_shader);
+        glUniform2f(program.uniform("uSrcSize"), (float) image->width(), (float) image->height());
+        glUniform2f(program.uniform("uDstSize"), (float) canvas->width(), (float) canvas->height());
+        glUniform2f(program.uniform("uSrcOffset"), 0.f, 0.f);
+        glUniform2f(program.uniform("uDstOffset"), 0.f, 0.f);
 
-        glUniform1i(uTexture, 0);
-        glUniform2f(uSrcSize, (float) image->width(), (float) image->height());
-        glUniform2f(uDstSize, (float) canvas->width(), (float) canvas->height());
-        glUniform2f(uSrcOffset, 0.f, 0.f);
-        glUniform2f(uDstOffset, 0.f, 0.f);
-
-        float points[4][2] = SQUARE(0.f, 0.f, image->width(), image->height());
-        glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
-        glEnableVertexAttribArray(aPosition);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glDisableVertexAttribArray(aPosition);
+        GLRectangle(0, 0, (float) image->width(), (float) image->height());
     }
 
     display->bind();
@@ -50,31 +43,21 @@ static void draw_frame(struct Instance* instance) {
     {
         auto& program = instance->shaders->fill;
         glUseProgram(program);
-        auto uTexture = glGetUniformLocation(program, "uScreenTexture");
-        auto uDisplaySize = glGetUniformLocation(program, "uDisplaySize");
-        auto uCanvasSize = glGetUniformLocation(program, "uCanvasSize");
-        auto uTextureSize = glGetUniformLocation(program, "uTextureSize");
-        auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-
         auto fsw = (float)canvas->width();
         auto fsh = (float)canvas->height();
         auto fdw = (float)display->width();
         auto fdh = (float)display->height();
-        glUniform1i(uTexture, 1);
-        glUniform2f(uDisplaySize, fdw, fdh);
-        glUniform2f(uCanvasSize, fsw, fsh);
-        glUniform2f(uTextureSize, (float) canvas->texWidth(), (float) canvas->texHeight());
+        glUniform1i(program.uniform("uScreenTexture"), Shaders::texCanvas_shader);
+        glUniform2f(program.uniform("uDisplaySize"), fdw, fdh);
+        glUniform2f(program.uniform("uCanvasSize"), fsw, fsh);
+        glUniform2f(program.uniform("uTextureSize"), (float) canvas->texWidth(), (float) canvas->texHeight());
 
         float scale = std::min(fdw / fsw, fdh / fsh);
         glViewport((int)(fdw - scale * fsw) / 2,
                    (int)(fdh - scale * fsh) / 2,
                    (int)(scale * fsw), (int)(scale * fsh));
 
-        float points[4][2] = SQUARE(-1.f, -1.f, 2.f, 2.f);
-        glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
-        glEnableVertexAttribArray(aPosition);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glDisableVertexAttribArray(aPosition);
+        GLRectangle(-1.f, -1.f, 2.f, 2.f);
     }
     display->swap();
 }
@@ -100,9 +83,9 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if (instance->app->window != nullptr) {
                 instance->display = std::make_unique<ogl::Display>(instance->app->window);
                 instance->canvas = std::make_unique<ogl::Framebuffer>(1000, 1000);
-                glActiveTexture(GL_TEXTURE1);
+                glActiveTexture(Shaders::texCanvas_gl);
                 glBindTexture(GL_TEXTURE_2D, instance->canvas->texture());
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(Shaders::texImage_gl);
                 instance->shaders = std::make_unique<Shaders>(*instance);
                 instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/menu/map_lower.png"));
                 instance->live = true;
