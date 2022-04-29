@@ -38,7 +38,6 @@ public:
         assert(asset);
         auto size = AAsset_getLength(asset);
         auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
-        LOGD("read %ld bytes from %s", size, path.c_str());
         std::string ret(buffer, buffer + size);
         return ret;
     }

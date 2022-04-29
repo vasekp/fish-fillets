@@ -1,5 +1,6 @@
 #include "instance.h"
 #include "ogl.h"
+#include "shaders.h"
 
 #if __ANDROID_API__ >= 30
 #include <android/imagedecoder.h>
@@ -15,15 +16,15 @@ ogl::Image Instance::loadImage(const std::string& filename) const {
     const AImageDecoderHeaderInfo* info = AImageDecoder_getHeaderInfo(decoder);
     std::uint32_t width = AImageDecoderHeaderInfo_getWidth(info);
     std::uint32_t height = AImageDecoderHeaderInfo_getHeight(info);
-    std::size_t stride = AImageDecoder_getMinimumStride(decoder);
-    std::size_t size = height * stride;
+    std::size_t _stride = AImageDecoder_getMinimumStride(decoder);
+    std::size_t size = height * _stride;
     std::unique_ptr<std::byte[]> data(new std::byte[size]);
-    assert(AImageDecoder_decodeImage(decoder, data.get(), stride, size) == ANDROID_IMAGE_DECODER_SUCCESS);
+    assert(AImageDecoder_decodeImage(decoder, data.get(), _stride, size) == ANDROID_IMAGE_DECODER_SUCCESS);
     AImageDecoder_delete(decoder);
-    return {width, height, stride, data.get()};
+    return {width, height, _stride, data.get()};
 #else
     jclass clazz = jni->GetObjectClass(app->activity->clazz);
-    jmethodID mid = jni->GetMethodID(clazz, "loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+    jmethodID mid = jni->GetMethodID(clazz, "loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;"); // TODO cache
     assert(mid);
     jstring jPath = jni->NewStringUTF(filename.c_str());
     jobject jBitmap = jni->CallObjectMethod(app->activity->clazz, mid, jPath);

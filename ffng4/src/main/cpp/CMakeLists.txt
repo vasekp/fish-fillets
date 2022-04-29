@@ -5,14 +5,16 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Werror")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
 set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
 
 set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-add_library(fillets SHARED main.cpp instance.cpp ogl.cpp)
+file(GLOB fillets_sources "*.cpp")
+
+add_library(fillets SHARED ${fillets_sources})
 
 target_include_directories(fillets PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)
@@ -22,5 +24,5 @@ target_link_libraries(fillets
     native_app_glue
     jnigraphics
     EGL
-    GLESv1_CM
+    GLESv2
     log)

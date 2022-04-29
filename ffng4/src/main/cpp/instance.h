@@ -9,37 +9,39 @@
 #include "files.h"
 
 struct android_app;
+
 namespace ogl {
-    struct Display;
-    struct Image;
+    class Display;
+    class Image;
 }
 
+struct Shaders;
+
 struct saved_state {
-    float angle;
-    float x;
-    float y;
 };
 
 struct Instance {
     android_app* app;
     ndk::JNIEnv jni;
 
-    std::unique_ptr<ogl::Display> display;
+    std::unique_ptr<const ogl::Display> display;
+    std::unique_ptr<Shaders> shaders;
     std::unique_ptr<ogl::Image> bg;
 
     struct saved_state state;
-    bool animating;
+    bool live;
 
     Instance(android_app* _app) :
             app(_app),
-            jni(app->activity->vm)
+            jni(app->activity->vm),
+            live(false)
     { }
 
-    SystemFile systemFile(const std::string& path) {
+    SystemFile systemFile(const std::string& path) const {
         return {path, app->activity->assetManager};
     }
 
-    UserFile userFile(const std::string& path) {
+    UserFile userFile(const std::string& path) const {
         return {path, app->activity->externalDataPath};
     }
 
