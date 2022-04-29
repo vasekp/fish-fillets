@@ -1,21 +1,8 @@
-#ifndef FISH_FILLETS_DISPLAY_H
-#define FISH_FILLETS_DISPLAY_H
+#include "ogl.h"
 
-#include "common.h"
+namespace ogl {
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-
-struct Display {
-    EGLDisplay display;
-    EGLSurface surface;
-    EGLContext context;
-
-    std::int32_t width;
-    std::int32_t height;
-
-public:
-    Display(ANativeWindow* window) {
+    Display::Display(ANativeWindow *window) {
         const EGLint attribs[] = {
                 EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                 EGL_BLUE_SIZE, 8,
@@ -23,21 +10,21 @@ public:
                 EGL_RED_SIZE, 8,
                 EGL_NONE
         };
-        EGLint w, h, format;
+        EGLint format;
         EGLint numConfigs;
         EGLConfig config = nullptr;
 
         display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
         eglInitialize(display, nullptr, nullptr);
-        eglChooseConfig(display, attribs, nullptr,0, &numConfigs);
-        std::unique_ptr<EGLConfig[]> supportedConfigs(new EGLConfig[numConfigs]);
+        eglChooseConfig(display, attribs, nullptr, 0, &numConfigs);
+        std::unique_ptr < EGLConfig[] > supportedConfigs(new EGLConfig[numConfigs]);
         assert(supportedConfigs);
         eglChooseConfig(display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
         assert(numConfigs);
 
         for (int i = 0; i < numConfigs; i++) {
-            auto& candidate = supportedConfigs[i];
+            auto &candidate = supportedConfigs[i];
             EGLint r, g, b;
             if (eglGetConfigAttrib(display, candidate, EGL_RED_SIZE, &r) &&
                 eglGetConfigAttrib(display, candidate, EGL_GREEN_SIZE, &g) &&
@@ -61,8 +48,9 @@ public:
         if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
             throw std::runtime_error("Unable to eglMakeCurrent");
 
-        width = eglQuerySurface(display, surface, EGL_WIDTH, &w);
-        height = eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+        width = height = 0;
+        eglQuerySurface(display, surface, EGL_WIDTH, &width);
+        eglQuerySurface(display, surface, EGL_HEIGHT, &height);
 
 //        instance->state.angle = 0;
 
@@ -77,12 +65,10 @@ public:
         glShadeModel(GL_SMOOTH);
         glDisable(GL_DEPTH_TEST);
 
-        LOGD("display: opened %p", display);
-
-//        instance->bg = std::make_unique<Image>(loadImage(SystemFile("images/icon.png", *instance), *instance));
+        LOGD("display: opened %p [%d x %d]", display, width, height);
     }
 
-    ~Display() {
+    Display::~Display() {
         eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         eglDestroyContext(display, context);
         eglDestroySurface(display, surface);
@@ -92,6 +78,5 @@ public:
 
         //instance->animating = false;
     }
-};
 
-#endif //FISH_FILLETS_DISPLAY_H
+}

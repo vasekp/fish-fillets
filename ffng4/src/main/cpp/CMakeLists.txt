@@ -12,7 +12,7 @@ set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
 set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-add_library(fillets SHARED main.cpp)
+add_library(fillets SHARED main.cpp instance.cpp ogl.cpp)
 
 target_include_directories(fillets PRIVATE
     ${ANDROID_NDK}/sources/android/native_app_glue)

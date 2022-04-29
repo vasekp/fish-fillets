@@ -2,13 +2,10 @@
 #define FISH_FILLETS_FILES_H
 
 #include "common.h"
-#include "ndk.h"
 
 #include <filesystem>
 #include <sstream>
 #include <fstream>
-
-#include <android_native_app_glue.h>
 
 class AbstractFile {
 public:
@@ -23,8 +20,8 @@ class SystemFile : public AbstractFile {
     std::filesystem::path path;
 
 public:
-    SystemFile(std::string _path, const Instance& instance) :
-        assets(instance.app->activity->assetManager),
+    SystemFile(std::string _path, AAssetManager* _assets) :
+        assets(_assets),
         path(localize(_path))
     { }
 
@@ -62,17 +59,17 @@ private:
 };
 
 class UserFile : public AbstractFile {
-    std::filesystem::path basePath;
+    std::filesystem::path relPath;
     std::filesystem::path fullPath;
 
 public:
-    UserFile(std::string _path, const Instance& instance) :
-        basePath(_path),
-        fullPath(std::filesystem::path{instance.app->activity->externalDataPath} / _path)
+    UserFile(std::string _path, std::filesystem::path basePath) :
+        relPath(_path),
+        fullPath(basePath / _path)
     { }
 
     std::string getPath() const override {
-        return basePath;
+        return relPath;
     }
 
     virtual bool exists() const override {

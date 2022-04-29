@@ -1,6 +1,5 @@
-#include "common.h"
-#include "assets.h"
-#include "display.h"
+#include "instance.h"
+#include "ogl.h"
 
 /*static void draw_frame(struct Instance* instance) {
     if (instance->display == nullptr)
@@ -35,7 +34,9 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
-                instance->display = std::make_unique<Display>(instance->app->window);
+                instance->display = std::make_unique<ogl::Display>(instance->app->window);
+                instance->bg = std::make_unique<ogl::Image>(instance->loadImage("images/icon.png"));
+                LOGD("%d %d %d", instance->bg->width, instance->bg->height, instance->bg->texture.id());
 //                draw_frame(instance);
             }
             break;
