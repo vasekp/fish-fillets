@@ -91,6 +91,7 @@ namespace ogl {
 
     Texture::Texture(GLuint width, GLuint height) : _width(width), _height(height) {
         glGenTextures(1, &name);
+        LOGD("texture: gen %d", name);
         bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -127,8 +128,10 @@ namespace ogl {
     }
 
     Texture::~Texture() {
-        if(name)
+        if(name) {
+            LOGD("texture: delete %d", name);
             glDeleteTextures(1, &name);
+        }
     }
 
     void Texture::bind() const {
@@ -193,6 +196,7 @@ namespace ogl {
         _height(maxHeight)
     {
         glGenFramebuffers(1, &name);
+        LOGD("framebuffer: gen %d", name);
         glBindFramebuffer(GL_FRAMEBUFFER, name);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -201,6 +205,7 @@ namespace ogl {
     }
 
     Framebuffer::~Framebuffer() {
+        LOGD("framebuffer: delete %d", name);
         glDeleteFramebuffers(1, &name);
     }
 

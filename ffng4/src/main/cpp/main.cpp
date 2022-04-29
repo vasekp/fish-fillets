@@ -42,6 +42,7 @@ static void draw_frame(struct Instance* instance) {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glDisableVertexAttribArray(aPosition);
     }
+
     display->bind();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -104,6 +105,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 glActiveTexture(GL_TEXTURE0);
                 instance->shaders = std::make_unique<Shaders>(*instance);
                 instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/start/prvni-p.png"));
+                instance->live = true;
                 draw_frame(instance);
             }
             break;
