@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+#include <EGL/egl.h>
+#include <GLES/gl.h>
+
 struct Display {
     EGLDisplay display;
     EGLSurface surface;
@@ -74,7 +77,7 @@ public:
         glShadeModel(GL_SMOOTH);
         glDisable(GL_DEPTH_TEST);
 
-        LOGD("opened %p", display);
+        LOGD("display: opened %p", display);
 
 //        instance->bg = std::make_unique<Image>(loadImage(SystemFile("images/icon.png", *instance), *instance));
     }
@@ -85,7 +88,7 @@ public:
         eglDestroySurface(display, surface);
         eglTerminate(display);
 
-        LOGD("closed %p", display);
+        LOGD("display: closed %p", display);
 
         //instance->animating = false;
     }

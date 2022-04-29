@@ -2,8 +2,6 @@
 #include "assets.h"
 #include "display.h"
 
-#include <android_native_app_glue.h>
-
 /*static void draw_frame(struct Instance* instance) {
     if (instance->display == nullptr)
         return;
@@ -56,14 +54,12 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
 }
 
 void android_main(struct android_app* app) {
-    struct Instance instance{};
+    struct Instance instance{app};
 
     app->userData = &instance;
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
     instance.app = app;
-
-    app->activity->vm->AttachCurrentThread(&instance.jni, nullptr);
 
     if (app->savedState != nullptr)
         instance.state = *(struct saved_state*)app->savedState;
@@ -72,7 +68,6 @@ void android_main(struct android_app* app) {
         int ident;
         int events;
         struct android_poll_source* source;
-        bool quit = false;
 
         while ((ident=ALooper_pollAll(instance.animating ? 0 : -1, nullptr, &events,
                                       (void**)&source)) >= 0) {
@@ -81,13 +76,9 @@ void android_main(struct android_app* app) {
             if (ident == LOOPER_ID_USER) {
                 // sensors...
             }
-            if (app->destroyRequested != 0) {
-                quit = true;
-            }
+            if (app->destroyRequested != 0)
+                return;
         }
-
-        if(quit)
-            break;
 
         if (instance.animating) {
             instance.state.angle += .01f;
@@ -95,7 +86,5 @@ void android_main(struct android_app* app) {
                 instance.state.angle = 0;
 //            draw_frame(&instance);
         }
-
-        app->activity->vm->DetachCurrentThread();
     }
 }

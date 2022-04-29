@@ -13,11 +13,10 @@
 #include <stdexcept>
 #include <cassert>
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-
-#include <jni.h>
 #include <android/log.h>
+#include <android_native_app_glue.h>
+
+#include "ndk.h"
 
 #define APP_TAG "FFNG4"
 
@@ -26,22 +25,30 @@
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_TAG, __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_TAG, __VA_ARGS__))
 
+struct android_app;
+struct Display;
+struct Image;
+
 struct saved_state {
     float angle;
     float x;
     float y;
 };
 
-struct Display;
-struct Image;
-
 struct Instance {
-    struct android_app* app;
-    JNIEnv* jni;
+    android_app* app;
+    ndk::JNIEnv jni;
+
     std::unique_ptr<Display> display;
-    bool animating;
     std::unique_ptr<Image> bg;
+
     struct saved_state state;
+    bool animating;
+
+    Instance(android_app* _app) :
+        app(_app),
+        jni(app->activity->vm)
+    { }
 };
 
 using namespace std::string_literals;
