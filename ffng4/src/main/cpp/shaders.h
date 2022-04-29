@@ -7,10 +7,13 @@
 struct Shaders {
     ogl::Shader vertCommon;
     ogl::Program copy;
+    ogl::Program fill;
 
     Shaders(const Instance& instance) :
-        vertCommon(GL_VERTEX_SHADER, instance.systemFile("shader/united.vert").read()),
-        copy(vertCommon, {GL_FRAGMENT_SHADER, instance.systemFile("shader/copy.frag").read()})
+        vertCommon(GL_VERTEX_SHADER, instance.systemFile("shader/pixel.vert").read()),
+        copy(vertCommon, {GL_FRAGMENT_SHADER, instance.systemFile("shader/copy.frag").read()}),
+        fill({GL_VERTEX_SHADER, instance.systemFile("shader/fill.vert").read()},
+             {GL_FRAGMENT_SHADER, instance.systemFile("shader/fill.frag").read()})
     { }
 };
 

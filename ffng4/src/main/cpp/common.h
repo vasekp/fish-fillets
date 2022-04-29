@@ -9,7 +9,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
-#include <initializer_list>
+#include <algorithm>
 
 #include <stdexcept>
 #include <cassert>

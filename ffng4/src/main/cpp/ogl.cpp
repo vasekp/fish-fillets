@@ -196,6 +196,8 @@ namespace ogl {
         glBindFramebuffer(GL_FRAMEBUFFER, name);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        _texture.bind();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     Framebuffer::~Framebuffer() {

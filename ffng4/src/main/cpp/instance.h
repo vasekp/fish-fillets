@@ -26,7 +26,7 @@ struct Instance {
     ndk::JNIEnv jni;
 
     std::unique_ptr<ogl::Display> display;
-    std::unique_ptr<ogl::Framebuffer> screen;
+    std::unique_ptr<ogl::Framebuffer> canvas;
     std::unique_ptr<Shaders> shaders;
     std::unique_ptr<ogl::Texture> bg;
 

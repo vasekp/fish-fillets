@@ -13,47 +13,68 @@ static void draw_frame(struct Instance* instance) {
         return;
 
     auto& display = instance->display;
-    auto& screen = instance->screen;
-    auto& program = instance->shaders->copy;
+    auto& canvas = instance->canvas;
     auto& image = instance->bg;
 
-    glUseProgram(program);
-    auto uTexture = glGetUniformLocation(program, "uSrcTexture");
-    auto uSrcSize = glGetUniformLocation(program, "uSrcSize");
-    auto uDstSize = glGetUniformLocation(program, "uDstSize");
-    auto uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
-    auto uDstOffset = glGetUniformLocation(program, "uDstOffset");
-    auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
-    glEnableVertexAttribArray(aPosition);
-
-    //screen->resize(500, 500);
-    screen->bind();
+    canvas->resize(image->width(), image->height());
+    canvas->bind();
     image->bind();
 
-    glUniform1i(uTexture, 0);
-    glUniform2f(uSrcSize, (float)image->width(), (float)image->height());
-    glUniform2f(uDstSize, (float)screen->width(), (float)screen->height());
-    glUniform2f(uSrcOffset, 0.f, 0.f);
-    glUniform2f(uDstOffset, 250.f, 0.f);
+    {
+        auto& program = instance->shaders->copy;
+        glUseProgram(program);
+        auto uTexture = glGetUniformLocation(program, "uSrcTexture");
+        auto uSrcSize = glGetUniformLocation(program, "uSrcSize");
+        auto uDstSize = glGetUniformLocation(program, "uDstSize");
+        auto uSrcOffset = glGetUniformLocation(program, "uSrcOffset");
+        auto uDstOffset = glGetUniformLocation(program, "uDstOffset");
+        auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
 
-    float points1[4][2] = SQUARE(250.f,0.f,image->width(),image->height());
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points1[0][0]);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glUniform1i(uTexture, 0);
+        glUniform2f(uSrcSize, (float) image->width(), (float) image->height());
+        glUniform2f(uDstSize, (float) canvas->width(), (float) canvas->height());
+        glUniform2f(uSrcOffset, 0.f, 0.f);
+        glUniform2f(uDstOffset, 0.f, 0.f);
 
+        float points[4][2] = SQUARE(0.f, 0.f, image->width(), image->height());
+        glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
+        glEnableVertexAttribArray(aPosition);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDisableVertexAttribArray(aPosition);
+    }
     display->bind();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUniform1i(uTexture, 1);
-    glUniform2f(uSrcSize, (float)screen->texWidth(), (float)screen->texHeight());
-    glUniform2f(uDstSize, (float)display->width(), (float)display->height());
-    glUniform2f(uSrcOffset, 0.f, 0.f);
-    glUniform2f(uDstOffset, 0.f, 0.f);
+    {
+        auto& program = instance->shaders->fill;
+        glUseProgram(program);
+        auto uTexture = glGetUniformLocation(program, "uScreenTexture");
+        auto uDisplaySize = glGetUniformLocation(program, "uDisplaySize");
+        auto uCanvasSize = glGetUniformLocation(program, "uCanvasSize");
+        auto uTextureSize = glGetUniformLocation(program, "uTextureSize");
+        auto aPosition = (GLuint) glGetAttribLocation(program, "aPosition");
 
-    float points2[4][2] = SQUARE(0.f, 0.f, screen->texWidth(), screen->texHeight());
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points2[0][0]);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        auto fsw = (float)canvas->width();
+        auto fsh = (float)canvas->height();
+        auto fdw = (float)display->width();
+        auto fdh = (float)display->height();
+        glUniform1i(uTexture, 1);
+        glUniform2f(uDisplaySize, fdw, fdh);
+        glUniform2f(uCanvasSize, fsw, fsh);
+        glUniform2f(uTextureSize, (float) canvas->texWidth(), (float) canvas->texHeight());
 
+        float scale = std::min(fdw / fsw, fdh / fsh);
+        glViewport((int)(fdw - scale * fsw) / 2,
+                   (int)(fdh - scale * fsh) / 2,
+                   (int)(scale * fsw), (int)(scale * fsh));
+
+        float points[4][2] = SQUARE(-1.f, -1.f, 2.f, 2.f);
+        glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &points[0][0]);
+        glEnableVertexAttribArray(aPosition);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDisableVertexAttribArray(aPosition);
+    }
     display->swap();
 }
 
@@ -77,9 +98,9 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
                 instance->display = std::make_unique<ogl::Display>(instance->app->window);
-                instance->screen = std::make_unique<ogl::Framebuffer>(1000, 1000);
+                instance->canvas = std::make_unique<ogl::Framebuffer>(1000, 1000);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, instance->screen->texture());
+                glBindTexture(GL_TEXTURE_2D, instance->canvas->texture());
                 glActiveTexture(GL_TEXTURE0);
                 instance->shaders = std::make_unique<Shaders>(*instance);
                 instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/start/prvni-p.png"));
