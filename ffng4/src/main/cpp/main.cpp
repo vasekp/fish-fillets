@@ -1,5 +1,5 @@
 #include "instance.h"
-#include "shaders.h"
+#include "graphics.h"
 #include "decoders.h"
 
 void GLRectangle(float x, float y, float w, float h) {
@@ -8,24 +8,24 @@ void GLRectangle(float x, float y, float w, float h) {
         {x + w, y},
         {x, y + h},
         {x + w, y + h}};
-    glVertexAttribPointer(Shaders::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &coords[0][0]);
+    glVertexAttribPointer(ogl::Program::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &coords[0][0]);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 static void draw_frame(struct Instance* instance) {
-    if (instance->display == nullptr)
+    if (!instance->graphics)
         return;
 
-    auto& display = instance->display;
-    auto& canvas = instance->canvas;
-    auto& image = instance->bg;
+    auto& display = instance->graphics->display;
+    auto& canvas = instance->graphics->canvas;
+    auto& image = instance->graphics->bg;
 
     canvas->resize(image->width(), image->height());
     canvas->bind();
     image->bind();
 
     {
-        auto& program = instance->shaders->copy;
+        auto& program = instance->graphics->shaders->copy;
         glUseProgram(program);
         glUniform1i(program.uniform("uTexture"), Shaders::texImage_shader);
         glUniform2f(program.uniform("uSrcSize"), (float) image->width(), (float) image->height());
@@ -41,7 +41,7 @@ static void draw_frame(struct Instance* instance) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     {
-        auto& program = instance->shaders->fill;
+        auto& program = instance->graphics->shaders->fill;
         glUseProgram(program);
         auto fsw = (float)canvas->width();
         auto fsh = (float)canvas->height();
@@ -81,22 +81,13 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
-                instance->display = std::make_unique<ogl::Display>(instance->app->window);
-                instance->canvas = std::make_unique<ogl::Framebuffer>(1000, 1000);
-                glActiveTexture(Shaders::texCanvas_gl);
-                glBindTexture(GL_TEXTURE_2D, instance->canvas->texture());
-                glActiveTexture(Shaders::texImage_gl);
-                instance->shaders = std::make_unique<Shaders>(*instance);
-                instance->bg = std::make_unique<ogl::Texture>(instance->decoders->loadImage("orig/map.png"));
+                instance->graphics = std::make_unique<Graphics>(instance);
                 instance->live = true;
                 draw_frame(instance);
             }
             break;
         case APP_CMD_TERM_WINDOW:
-            instance->display.reset();
-            instance->canvas.reset();
-            instance->shaders.reset();
-            instance->bg.reset();
+            instance->graphics.reset();
             instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:

@@ -1,6 +1,5 @@
 #include "decoders.h"
 #include "ogl.h"
-#include "shaders.h"
 
 #include <android/bitmap.h>
 

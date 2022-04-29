@@ -8,13 +8,7 @@
 
 struct android_app;
 
-namespace ogl {
-    class Display;
-    class Framebuffer;
-    class Texture;
-}
-
-struct Shaders;
+struct Graphics;
 class Decoders;
 
 struct saved_state {
@@ -23,11 +17,7 @@ struct saved_state {
 struct Instance {
     android_app* app;
 
-    std::unique_ptr<ogl::Display> display;
-    std::unique_ptr<ogl::Framebuffer> canvas;
-    std::unique_ptr<Shaders> shaders;
-    std::unique_ptr<ogl::Texture> bg;
-
+    std::unique_ptr<Graphics> graphics;
     std::unique_ptr<Decoders> decoders;
 
     struct saved_state state;
