@@ -104,7 +104,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 glBindTexture(GL_TEXTURE_2D, instance->canvas->texture());
                 glActiveTexture(GL_TEXTURE0);
                 instance->shaders = std::make_unique<Shaders>(*instance);
-                instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/start/prvni-p.png"));
+                instance->bg = std::make_unique<ogl::Texture>(instance->loadImage("images/menu/map_lower.png"));
                 instance->live = true;
                 draw_frame(instance);
             }
