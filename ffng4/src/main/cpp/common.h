@@ -32,18 +32,15 @@ struct saved_state {
     float y;
 };
 
+struct Display;
 struct Image;
 
 struct Instance {
     struct android_app* app;
     JNIEnv* jni;
+    std::unique_ptr<Display> display;
     bool animating;
-    EGLDisplay display;
-    EGLSurface surface;
-    EGLContext context;
     std::unique_ptr<Image> bg;
-    std::int32_t width;
-    std::int32_t height;
     struct saved_state state;
 };
 
