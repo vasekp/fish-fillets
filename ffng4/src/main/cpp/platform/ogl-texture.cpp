@@ -1,4 +1,4 @@
-#include "ogl-texture.h"
+#include "ogl.h"
 
 namespace ogl {
 
@@ -32,7 +32,7 @@ namespace ogl {
         return ret;
     }
 
-    Texture::Texture(Texture &&other) noexcept :
+    Texture::Texture(Texture&& other) noexcept :
         _width(other._width),
         _height(other._height),
         name(other.name)
@@ -40,7 +40,7 @@ namespace ogl {
         other.name = 0;
     }
 
-    Texture& Texture::operator=(Texture &&other) noexcept {
+    Texture& Texture::operator=(Texture&& other) noexcept {
         _width = other._width;
         _height = other._height;
         std::swap(name, other.name);

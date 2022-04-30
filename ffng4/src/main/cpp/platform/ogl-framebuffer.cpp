@@ -1,4 +1,4 @@
-#include "ogl-framebuffer.h"
+#include "ogl.h"
 
 namespace ogl {
 
@@ -20,7 +20,6 @@ namespace ogl {
 
     void Framebuffer::bind() {
         glBindFramebuffer(GL_FRAMEBUFFER, name);
-        glViewport(0, 0, (GLint)width(), (GLint)height());
     }
 
 }

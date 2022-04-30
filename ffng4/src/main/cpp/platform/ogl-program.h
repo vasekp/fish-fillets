@@ -8,9 +8,12 @@ namespace ogl {
         std::map<std::string, GLint> uniforms;
 
     public:
+        Program() = default;
         Program(const Shader& vertexShader, const Shader& fragmentShader);
         Program(const Program &) = delete;
         Program &operator=(const Program &) = delete;
+        Program(Program&&) noexcept;
+        Program& operator=(Program&&) noexcept;
         ~Program();
 
         operator GLuint() { return name; }

@@ -1,4 +1,4 @@
-#include "ogl-program.h"
+#include "ogl.h"
 
 namespace ogl {
 
@@ -23,6 +23,19 @@ namespace ogl {
             glDeleteProgram(name);
             ::error("glLinkProgram failed", "%s", error.c_str());
         }
+    }
+
+    Program::Program(Program&& other) noexcept :
+        name(other.name),
+        uniforms(std::move(other.uniforms))
+    {
+        other.name = 0;
+    }
+
+    Program& Program::operator=(Program&& other) noexcept {
+        std::swap(name, other.name);
+        std::swap(uniforms, other.uniforms);
+        return *this;
     }
 
     Program::~Program() {

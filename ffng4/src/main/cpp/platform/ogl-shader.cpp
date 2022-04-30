@@ -1,4 +1,4 @@
-#include "ogl-shader.h"
+#include "ogl.h"
 
 namespace ogl {
 
@@ -22,6 +22,15 @@ namespace ogl {
             glDeleteShader(name);
             ::error("glCompileShader failed", "%s", error.c_str());
         }
+    }
+
+    Shader::Shader(Shader&& other) noexcept : name(other.name) {
+        other.name = 0;
+    }
+
+    Shader& Shader::operator=(Shader&& other) noexcept {
+        std::swap(name, other.name);
+        return *this;
     }
 
     Shader::~Shader() {

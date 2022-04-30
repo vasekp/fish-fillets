@@ -4,10 +4,7 @@
 Graphics::Graphics(Instance* instance) {
     display = std::make_unique<ogl::Display>(instance->app->window);
 
-    canvas = std::make_unique<ogl::Framebuffer>(1000, 1000);
-    glActiveTexture(Shaders::texCanvas_gl);
-    glBindTexture(GL_TEXTURE_2D, canvas->texture());
-    glActiveTexture(Shaders::texImage_gl);
+    canvas = std::make_unique<Canvas>(1000, 1000);
 
     shaders = std::make_unique<Shaders>(*instance);
 
