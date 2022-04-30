@@ -25,6 +25,7 @@ target_link_libraries(fillets
     android
     native_app_glue
     jnigraphics
+    mediandk
     EGL
     GLESv2
     oboe::oboe

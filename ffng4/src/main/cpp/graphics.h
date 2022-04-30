@@ -22,7 +22,8 @@ struct Shaders {
     { }
 };
 
-struct Graphics {
+class Graphics {
+public:
     std::unique_ptr<ogl::Display> display;
     std::unique_ptr<ogl::Framebuffer> canvas;
     std::unique_ptr<Shaders> shaders;

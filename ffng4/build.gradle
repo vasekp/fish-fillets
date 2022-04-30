@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId = 'cz.absolutno.fillets'
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 32
         externalNativeBuild {
             cmake {

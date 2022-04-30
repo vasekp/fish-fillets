@@ -1,6 +1,7 @@
 #include "instance.h"
 #include "graphics.h"
 #include "decoders.h"
+#include "audio.h"
 
 void GLRectangle(float x, float y, float w, float h) {
     float coords[4][2] = {
@@ -82,12 +83,14 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
                 instance->graphics = std::make_unique<Graphics>(instance);
+                instance->audio = std::make_unique<AudioStream>(instance);
                 instance->live = true;
                 draw_frame(instance);
             }
             break;
         case APP_CMD_TERM_WINDOW:
             instance->graphics.reset();
+            instance->audio.reset();
             instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
