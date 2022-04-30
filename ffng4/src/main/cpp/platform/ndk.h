@@ -10,41 +10,42 @@ namespace ndk {
         ::JNIEnv* env;
 
     public:
-        JNIEnv(JavaVM* _vm) : vm(_vm) {
-            vm->AttachCurrentThread(&env, nullptr);
-        }
+        JNIEnv(JavaVM* _vm) : vm(_vm) { vm->AttachCurrentThread(&env, nullptr); }
+        ~JNIEnv() { vm->DetachCurrentThread(); }
 
-        ~JNIEnv() {
-            vm->DetachCurrentThread();
-        }
-
-        operator ::JNIEnv*() const {
-            return env;
-        }
-
-        ::JNIEnv* operator->() const {
-            return env;
-        };
+        operator ::JNIEnv*() const { return env; }
+        ::JNIEnv* operator->() const { return env; };
     };
 
-    template<typename T>
-    struct Deleter;
+    class Asset {
+        AAsset *asset;
 
-    template<>
-    struct Deleter<AAsset> {
-        void operator() (AAsset* asset) {
-            AAsset_close(asset);
-        }
-    };
+    public:
+        Asset() = default;
 
-    struct Asset : public std::unique_ptr<AAsset, Deleter<AAsset>> {
         Asset(AAssetManager *assets, const char *filename, int mode) :
-            std::unique_ptr<AAsset, Deleter<AAsset>>{AAssetManager_open(assets, filename, mode)}
-        { }
+                asset(AAssetManager_open(assets, filename, mode)) {}
 
-        operator AAsset*() const {
-            return get();
+        Asset(const Asset &) = delete;
+
+        Asset &operator=(const Asset &) = delete;
+
+        Asset(Asset &&other) : asset(other.asset) {
+            other.asset = nullptr;
         }
+
+        Asset &operator=(Asset &&other) {
+            std::swap(asset, other.asset);
+            return *this;
+        }
+
+        ~Asset() {
+            if (asset)
+                AAsset_close(asset);
+        }
+
+        operator AAsset *() { return asset; }
+        operator bool() { return asset != nullptr; }
     };
 }
 

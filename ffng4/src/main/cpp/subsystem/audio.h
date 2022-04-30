@@ -10,7 +10,7 @@
 
 class AudioStream : public oboe::AudioStreamDataCallback, oboe::AudioStreamErrorCallback {
     oboe::AudioStream* stream{};
-    std::unique_ptr<ndk::Asset> asset;
+    ndk::Asset asset;
     AMediaExtractor* extractor;
     AMediaCodec *codec;
     std::unique_ptr<float[]> dataF;
