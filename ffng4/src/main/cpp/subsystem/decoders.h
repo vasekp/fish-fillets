@@ -2,7 +2,7 @@
 #define FISH_FILLETS_DECODERS_H
 
 #include "common.h"
-#include "ndk.h"
+#include "platform/ndk.h"
 
 #include <android_native_app_glue.h>
 #include <jni.h>

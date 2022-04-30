@@ -1,4 +1,5 @@
 #include "audio.h"
+#include "files.h"
 #include <numeric>
 
 AudioStream::AudioStream(Instance* instance) {
@@ -17,7 +18,7 @@ AudioStream::AudioStream(Instance* instance) {
     if(auto result = builder.openStream(&stream); result != oboe::Result::OK)
         ::error("Failed to open stream.",  "oboe: %s", convertToText(result));
 
-    asset = std::make_unique<ndk::Asset>(instance->systemFile("music/menu.ogg").asset());
+    asset = std::make_unique<ndk::Asset>(instance->files->system("music/menu.ogg").asset());
 
     off64_t start, length;
     auto fd = AAsset_openFileDescriptor64(*asset, &start, &length);

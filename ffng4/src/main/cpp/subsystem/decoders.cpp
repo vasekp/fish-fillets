@@ -1,5 +1,5 @@
 #include "decoders.h"
-#include "ogl.h"
+#include "platform/ogl.h"
 
 #include <android/bitmap.h>
 

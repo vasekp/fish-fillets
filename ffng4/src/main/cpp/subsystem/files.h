@@ -1,22 +1,19 @@
 #ifndef FISH_FILLETS_FILES_H
 #define FISH_FILLETS_FILES_H
 
-#include "common.h"
-#include "ndk.h"
+#include "instance.h"
+#include "platform/ndk.h"
 
+#include <android_native_app_glue.h>
 #include <filesystem>
 #include <sstream>
 #include <fstream>
 
-class AbstractFile {
-public:
-    virtual bool exists() const = 0;
-    virtual std::string read() const = 0;
-    virtual bool write(const std::string& data) const = 0;
-    virtual std::string getPath() const = 0;
-};
+class SystemFile;
+class UserFile;
 
-class SystemFile : public AbstractFile {
+
+class SystemFile {
     AAssetManager *assets;
     std::filesystem::path path;
 
@@ -26,25 +23,21 @@ public:
         path(localize(_path))
     { }
 
-    std::string getPath() const override {
+    std::string getPath() const {
         return path;
     }
 
-    virtual bool exists() const override {
+    virtual bool exists() const {
         return (bool) ndk::Asset{assets, path.c_str(), AASSET_MODE_UNKNOWN};
     }
 
-    virtual std::string read() const override {
+    virtual std::string read() const {
         ndk::Asset asset{assets, path.c_str(), AASSET_MODE_BUFFER};
         assert(asset);
         auto size = AAsset_getLength(asset);
         auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
         std::string ret(buffer, buffer + size);
         return ret;
-    }
-
-    virtual bool write(const std::string &data) const override {
-        throw std::logic_error("write attempt to internal file");
     }
 
     ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const {
@@ -58,7 +51,7 @@ private:
     }
 };
 
-class UserFile : public AbstractFile {
+class UserFile {
     std::filesystem::path relPath;
     std::filesystem::path fullPath;
 
@@ -68,27 +61,43 @@ public:
         fullPath(basePath / _path)
     { }
 
-    std::string getPath() const override {
+    std::string getPath() const {
         return relPath;
     }
 
-    virtual bool exists() const override {
+    virtual bool exists() const {
         return std::filesystem::exists(fullPath);
     }
 
-    virtual std::string read() const override {
+    virtual std::string read() const {
         std::ostringstream oss;
         std::ifstream ifs{fullPath};
         oss << ifs.rdbuf();
         return oss.str();
     }
 
-    virtual bool write(const std::string &data) const override {
+    virtual bool write(const std::string &data) const {
         std::filesystem::path path{fullPath};
         std::filesystem::create_directories(path.parent_path());
         std::ofstream ofs{fullPath};
         ofs << data;
         return true;
+    }
+};
+
+
+class Files {
+    Instance* instance;
+
+public:
+    Files(Instance* instance_) : instance(instance_) { }
+
+    SystemFile system(const std::string& path) const {
+        return {path, instance->app->activity->assetManager};
+    }
+
+    UserFile user(const std::string& path) const {
+        return {path, instance->app->activity->externalDataPath};
     }
 };
 

@@ -2,7 +2,7 @@
 #define FISH_FILLETS_AUDIO_H
 
 #include "instance.h"
-#include "ndk.h"
+#include "platform/ndk.h"
 
 #include <android_native_app_glue.h>
 #include <oboe/Oboe.h>

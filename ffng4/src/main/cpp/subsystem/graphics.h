@@ -2,7 +2,8 @@
 #define FISH_FILLETS_GRAPHICS_H
 
 #include "instance.h"
-#include "ogl.h"
+#include "platform/ogl.h"
+#include "subsystem/files.h"
 
 struct Shaders {
     ogl::Shader vertCommon;
@@ -15,10 +16,10 @@ struct Shaders {
     constexpr static GLint texCanvas_gl = GL_TEXTURE1;
 
     Shaders(const Instance& instance) :
-            vertCommon(GL_VERTEX_SHADER, instance.systemFile("shader/pixel.vert").read()),
-            copy(vertCommon, {GL_FRAGMENT_SHADER, instance.systemFile("shader/copy.frag").read()}),
-            fill({GL_VERTEX_SHADER, instance.systemFile("shader/fill.vert").read()},
-                 {GL_FRAGMENT_SHADER, instance.systemFile("shader/fill.frag").read()})
+            vertCommon(GL_VERTEX_SHADER, instance.files->system("shader/pixel.vert").read()),
+            copy(vertCommon, {GL_FRAGMENT_SHADER, instance.files->system("shader/copy.frag").read()}),
+            fill({GL_VERTEX_SHADER, instance.files->system("shader/fill.vert").read()},
+                 {GL_FRAGMENT_SHADER, instance.files->system("shader/fill.frag").read()})
     { }
 };
 
@@ -29,7 +30,7 @@ public:
     std::unique_ptr<Shaders> shaders;
     std::unique_ptr<ogl::Texture> bg;
 
-    Graphics(Instance* instance);
+    Graphics(Instance*);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H
