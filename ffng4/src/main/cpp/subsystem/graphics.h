@@ -12,7 +12,7 @@
 
 class Graphics {
     Instance *m_instance;
-    std::unique_ptr<GraphicsSystem> m_system;
+    std::shared_ptr<GraphicsSystem> m_system;
 
 public:
     Graphics(Instance* instance) : m_instance(instance) { }
@@ -20,6 +20,7 @@ public:
     void activate();
     void shutdown();
 
+    const auto system() const { return m_system; }
     const auto* display() const { return &m_system->m_display; }
     const auto* canvas() const { return &m_system->m_canvas; }
     const auto* shaders() const { return &m_system->m_shaders; }

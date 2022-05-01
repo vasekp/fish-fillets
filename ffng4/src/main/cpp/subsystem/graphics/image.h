@@ -1,11 +1,11 @@
 #ifndef FISH_FILLETS_GRAPHICS_IMAGE_H
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
-class Graphics;
+class GraphicsSystem;
 
 class Image {
     std::string m_filename;
-    std::weak_ptr<Graphics> m_ref{}; // TODO GraphicsSystem!
+    std::weak_ptr<const GraphicsSystem> m_ref{};
     ogl::Texture m_texture{};
 
 public:

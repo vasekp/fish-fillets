@@ -18,7 +18,7 @@ struct Instance {
     jni::Env jni;
 
     std::unique_ptr<Files> files;
-    std::shared_ptr<Graphics> graphics;
+    std::unique_ptr<Graphics> graphics;
     std::unique_ptr<Audio> audio;
 
     std::unique_ptr<Image> bg;

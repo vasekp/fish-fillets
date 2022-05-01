@@ -3,7 +3,7 @@
 
 void Graphics::activate() {
     LOGD("graphics: activate");
-    m_system = std::make_unique<GraphicsSystem>(m_instance);
+    m_system = std::make_shared<GraphicsSystem>(m_instance);
 }
 
 void Graphics::shutdown() {
