@@ -11,7 +11,10 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             auto start = std::chrono::steady_clock::now();
             dynamic_cast<WorldMap*>(instance->screen())->prep_loading();
             instance->screen()->drawFrame();
-            instance->screens.push_back(std::make_unique<TestScreen>(instance, "images/start/prvni-p.png", "music/rybky04.ogg"));
+            instance->screens.push_back(std::make_unique<TestScreen>(instance,
+                 "images/start/prvni-p.png",
+                 "images/start/prvni-w.png",
+                 "music/rybky04.ogg"));
             instance->screen()->start();
             auto end = std::chrono::steady_clock::now();
             std::chrono::duration<double> diff = end - start;

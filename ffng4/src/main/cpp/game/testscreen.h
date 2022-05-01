@@ -4,12 +4,13 @@
 #include "screen.h"
 
 class TestScreen : public GameScreen {
-    AudioSource music;
+    std::chrono::steady_clock::time_point m_loadTime;
 
 public:
-    TestScreen(Instance*, const char*, const char*);
+    TestScreen(Instance*, const char*, const char*, const char*);
 
 private:
+    void own_load() override;
     void own_draw() override;
 };
 

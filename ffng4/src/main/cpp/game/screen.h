@@ -33,6 +33,7 @@ protected:
 
     void reloadImages();
     virtual void own_draw() = 0;
+    virtual void own_load() { }
 };
 
 #endif //FISH_FILLETS_GAME_SCREEN_H

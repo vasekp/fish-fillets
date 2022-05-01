@@ -38,6 +38,10 @@ void GameScreen::load() {
         ::error("Level has no background set.");
     }
 
+    own_load();
+
+    // Music is playing with the last shown frame while this thread is busy (loadMusic, reloadImages),
+    // so make this the very last thing
     m_instance->audio->clear();
     m_instance->audio->addSource(m_music);
 }
@@ -62,10 +66,8 @@ void GameScreen::drawFrame() {
     auto fsh = (float)canvas->height();
     auto fdw = (float)display->width();
     auto fdh = (float)display->height();
-    glUniform1i(program.uniform("uScreenTexture"), Shaders::texCanvas_shader);
     glUniform2f(program.uniform("uDisplaySize"), fdw, fdh);
     glUniform2f(program.uniform("uCanvasSize"), fsw, fsh);
-    glUniform2f(program.uniform("uTextureSize"), (float) canvas->texWidth(), (float) canvas->texHeight());
 
     float scale = std::min(fdw / fsw, fdh / fsh);
     glViewport((int)(fdw - scale * fsw) / 2,
