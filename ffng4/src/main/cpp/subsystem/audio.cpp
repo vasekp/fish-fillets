@@ -1,5 +1,6 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
+#include "sstream"
 
 #include <media/NdkMediaExtractor.h>
 
@@ -28,7 +29,7 @@ void Audio::clear() {
     m_sources.clear();
 }
 
-AudioSource Audio::loadAudio(const std::string& filename) {
+AudioSource Audio::loadSound(const std::string& filename) {
     auto asset = m_instance->files->system(filename).asset();
 
     off64_t start, length;
@@ -103,7 +104,7 @@ AudioSource Audio::loadAudio(const std::string& filename) {
                     ::error("AMediaCodec_dequeueOutputBuffer failed", "outIndex = %d", outIndex);
             }
     } while(!(extractorDone && codecDone));
-    LOGD("loadAudio %s: decoded %ld bytes", filename.c_str(), dataRaw.size());
+    LOGD("loadSound %s: decoded %ld bytes", filename.c_str(), dataRaw.size());
 
     AMediaFormat_delete(format);
     AMediaCodec_delete(codec);
@@ -114,4 +115,18 @@ AudioSource Audio::loadAudio(const std::string& filename) {
     oboe::convertPcm16ToFloat(reinterpret_cast<std::int16_t*>(dataRaw.data()), data.get(), (std::int32_t)numSamples);
 
     return {filename, numSamples, std::move(data)};
+}
+
+AudioSource Audio::loadMusic(const std::string& filename) {
+    auto ret = loadSound(filename);
+    auto meta = m_instance->files->system(filename + ".meta");
+    if(meta.exists()) {
+        auto contents = meta.read();
+        std::istringstream iss{contents};
+        std::size_t start, end;
+        iss >> start >> end;
+        ret.setLoop(start, end);
+    } else
+        ret.setLoop();
+    return ret;
 }

@@ -3,8 +3,6 @@
 #include "game/worldmap.h"
 #include "game/testscreen.h"
 
-#include <chrono>
-
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {

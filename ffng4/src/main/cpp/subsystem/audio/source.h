@@ -6,6 +6,9 @@ class AudioSource {
     std::size_t m_samplesTotal;
     std::size_t m_sampleIndex;
     std::unique_ptr<float[]> m_data;
+    bool m_loop = false;
+    std::size_t m_loopStart;
+    std::size_t m_loopEnd;
 
 public:
     AudioSource() = default;
@@ -27,6 +30,7 @@ public:
 
     bool done() const;
     void mixin(float output[], std::size_t numSamples);
+    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
     void rewind();
 };
 

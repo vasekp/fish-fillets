@@ -21,7 +21,8 @@ public:
     void removeSource(const std::string& name);
     void clear();
 
-    AudioSource loadAudio(const std::string& filename);
+    AudioSource loadSound(const std::string& filename);
+    AudioSource loadMusic(const std::string& filename);
 
     friend class AudioStream;
 };

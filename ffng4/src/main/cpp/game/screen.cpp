@@ -9,7 +9,7 @@ void GameScreen::setBackground(const std::string &filename) {
 }
 
 void GameScreen::setMusic(const std::string& filename) {
-    m_music = std::make_shared<AudioSource>(m_instance->audio->loadAudio(filename));
+    m_music = std::make_shared<AudioSource>(m_instance->audio->loadMusic(filename));
 }
 
 const Image* GameScreen::getImage(const std::string& name) {
