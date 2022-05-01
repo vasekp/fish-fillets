@@ -20,6 +20,7 @@ Decoders::~Decoders() {
 }
 
 ogl::Texture Decoders::loadImage(const std::string& filename) const {
+    LOGD("loadImage %s", filename.c_str());
     jstring jPath = jni->NewStringUTF(filename.c_str());
     jobject jBitmap = jni->CallObjectMethod(app->activity->clazz, methods.at("loadBitmap"), jPath);
     AndroidBitmapInfo info;

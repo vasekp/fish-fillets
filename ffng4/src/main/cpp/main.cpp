@@ -19,11 +19,11 @@ static void draw_frame(struct Instance* instance) {
 
     auto& display = instance->graphics->display;
     auto& canvas = instance->graphics->canvas;
-    auto& image = instance->graphics->bg;
+    auto& image = instance->bg;
 
     canvas->resize(image->width(), image->height());
     canvas->bind();
-    image->bind();
+    image->texture().bind();
 
     {
         auto& program = instance->graphics->shaders->copy;
@@ -84,6 +84,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if (instance->app->window != nullptr) {
                 instance->graphics = std::make_unique<Graphics>(instance);
                 instance->audio = std::make_unique<AudioStream>(instance);
+                instance->bg->reload(*instance->decoders, instance->graphics);
                 instance->live = true;
                 draw_frame(instance);
             }
@@ -105,22 +106,24 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
 }
 
 void android_main(struct android_app* app) {
-    struct Instance instance{app};
+    auto instance = std::make_unique<Instance>(app);
 
-    app->userData = &instance;
+    app->userData = instance.get();
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
-    instance.app = app;
+    instance->app = app;
+
+    instance->bg = std::make_unique<Image>("orig/map.png");
 
     if (app->savedState != nullptr)
-        instance.state = *(struct saved_state*)app->savedState;
+        instance->state = *(struct saved_state*)app->savedState;
 
     while (true) {
         int ident;
         int events;
         struct android_poll_source* source;
 
-        while ((ident=ALooper_pollAll(instance.live ? 0 : -1, nullptr, &events,
+        while ((ident=ALooper_pollAll(instance->live ? 0 : -1, nullptr, &events,
                                       (void**)&source)) >= 0) {
             if (source != nullptr)
                 source->process(app, source);
@@ -131,8 +134,8 @@ void android_main(struct android_app* app) {
                 return;
         }
 
-        if (instance.live) {
-            draw_frame(&instance);
+        if (instance->live) {
+            draw_frame(instance.get());
         }
     }
 }

@@ -12,6 +12,7 @@ namespace ogl {
         static Texture fromImageData(GLuint width, GLuint height, std::size_t stride, void *data);
         static Texture empty(GLuint width, GLuint height);
 
+        Texture() = default;
         Texture(const Texture &) = delete;
         Texture& operator=(const Texture &) = delete;
         Texture(Texture&& other) noexcept;

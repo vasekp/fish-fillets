@@ -18,7 +18,7 @@ AudioStream::AudioStream(Instance* instance) {
     if(auto result = builder.openStream(&stream); result != oboe::Result::OK)
         ::error("Failed to open stream.",  "oboe: %s", convertToText(result));
 
-    asset = instance->files->system("music/menu.ogg").asset();
+    auto asset = instance->files->system("music/menu.ogg").asset();
 
     off64_t start, length;
     auto fd = AAsset_openFileDescriptor64(asset, &start, &length);

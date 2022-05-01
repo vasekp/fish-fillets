@@ -6,6 +6,7 @@
 struct android_app;
 class Files;
 class Graphics;
+class Image;
 class Decoders;
 class AudioStream;
 
@@ -16,9 +17,11 @@ struct Instance {
     android_app* app;
 
     std::unique_ptr<Files> files;
-    std::unique_ptr<Graphics> graphics;
+    std::shared_ptr<Graphics> graphics;
     std::unique_ptr<AudioStream> audio;
     std::unique_ptr<Decoders> decoders;
+
+    std::unique_ptr<Image> bg;
 
     struct saved_state state;
     bool live;
