@@ -6,9 +6,9 @@
 #include "subsystem/files.h"
 #include "subsystem/decoders.h"
 
-#include "graphics-shaders.h"
-#include "graphics-canvas.h"
-#include "graphics-image.h"
+#include "graphics/shaders.h"
+#include "graphics/canvas.h"
+#include "graphics/image.h"
 
 class Graphics {
 public:

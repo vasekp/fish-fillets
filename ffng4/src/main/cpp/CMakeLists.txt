@@ -17,12 +17,13 @@ set(CMAKE_SHARED_LINKER_FLAGS
 file(GLOB fillets_sources
     "*.cpp"
     "platform/*.cpp"
-    "subsystem/*.cpp")
+    "platform/*/*.cpp"
+    "subsystem/*.cpp"
+    "subsystem/*/*.cpp")
 
 add_library(fillets SHARED ${fillets_sources})
 
-target_include_directories(fillets PRIVATE
-    .
+target_include_directories(fillets PRIVATE .
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_libraries(fillets

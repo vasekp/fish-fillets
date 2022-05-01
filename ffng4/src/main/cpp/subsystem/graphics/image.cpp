@@ -1,4 +1,4 @@
-#include "graphics.h"
+#include "subsystem/graphics.h"
 
 Image::~Image() {
     if(_ref.expired())
