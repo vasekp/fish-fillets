@@ -5,7 +5,7 @@ namespace ogl {
     Framebuffer::Framebuffer(GLuint width, GLuint height) :
             _texture(Texture::empty(width, height)) {
         glGenFramebuffers(1, &name);
-        LOGD("framebuffer: generate %d", name);
+        LOGV("framebuffer: generate %d", name);
         glBindFramebuffer(GL_FRAMEBUFFER, name);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -15,7 +15,7 @@ namespace ogl {
 
     Framebuffer::~Framebuffer() {
         if(name)
-            LOGD("framebuffer: delete %d", name);
+            LOGV("framebuffer: delete %d", name);
         glDeleteFramebuffers(1, &name);
     }
 

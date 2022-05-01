@@ -4,7 +4,7 @@ namespace ogl {
 
     Program::Program(const Shader &vertexShader, const Shader &fragmentShader) {
         name = glCreateProgram();
-        LOGD("program: generate %d", name);
+        LOGV("program: generate %d", name);
         if (!name)
             ::error("glCreateProgram failed");
 
@@ -41,7 +41,7 @@ namespace ogl {
 
     Program::~Program() {
         if(name)
-            LOGD("program: delete %d", name);
+            LOGV("program: delete %d", name);
         glDeleteProgram(name);
     }
 

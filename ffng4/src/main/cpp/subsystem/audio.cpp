@@ -14,6 +14,7 @@ void Audio::shutdown() {
 }
 
 void Audio::addSource(AudioSource&& source) {
+    LOGD("adding audio source %s", source.name().c_str());
     sources.push_back(std::make_shared<AudioSource>(std::move(source)));
 }
 

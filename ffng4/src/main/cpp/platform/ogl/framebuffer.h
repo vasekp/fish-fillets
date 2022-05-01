@@ -19,7 +19,7 @@ namespace ogl {
         auto& texture() const { return _texture; }
 
         void bind() const;
-        void invalidate() { LOGD("framebuffer: detach %d", name); name = 0; }
+        void invalidate() { LOGV("framebuffer: detach %d", name); name = 0; }
     };
 
 }

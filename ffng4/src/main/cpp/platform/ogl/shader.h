@@ -16,7 +16,7 @@ namespace ogl {
         ~Shader();
 
         operator GLuint() const { return name; }
-        void invalidate() { LOGD("shader: detach %d", name); name = 0; }
+        void invalidate() { if(name) LOGV("shader: detach %d", name); name = 0; }
     };
 
 }

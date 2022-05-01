@@ -4,7 +4,7 @@ namespace ogl {
 
     Texture::Texture(GLuint width, GLuint height) : _width(width), _height(height) {
         glGenTextures(1, &name);
-        LOGD("texture: generate %d", name);
+        LOGV("texture: generate %d", name);
         bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -14,7 +14,7 @@ namespace ogl {
 
     Texture::~Texture() {
         if(name)
-            LOGD("texture: delete %d", name);
+            LOGV("texture: delete %d", name);
         glDeleteTextures(1, &name);
     }
 

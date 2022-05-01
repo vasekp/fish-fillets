@@ -62,7 +62,7 @@ namespace ogl {
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
             auto info = glGetString(name);
-            LOGI("OpenGL Info: %s", info);
+            LOGV("OpenGL Info: %s", info);
         }
 
         glEnable(GL_CULL_FACE);

@@ -24,7 +24,7 @@ namespace ogl {
         auto height() const { return _height; }
 
         void bind() const;
-        void invalidate() { LOGD("texture: detach %d", name); name = 0; }
+        void invalidate() { if(name) LOGV("texture: detach %d", name); name = 0; }
 
     private:
         Texture(GLuint width, GLuint height);

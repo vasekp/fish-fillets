@@ -19,7 +19,7 @@ namespace ogl {
         operator GLuint() const { return name; }
 
         GLint uniform(const std::string &ident) const;
-        void invalidate() { LOGD("program: detach %d", name); name = 0; }
+        void invalidate() { if(name) LOGV("program: detach %d", name); name = 0; }
 
         static constexpr GLint aPosition = 0;
     };
