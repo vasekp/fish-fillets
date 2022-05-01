@@ -6,6 +6,7 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
+#include "game/screen.h"
 
 Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(false) {
     files = std::make_unique<Files>(this);

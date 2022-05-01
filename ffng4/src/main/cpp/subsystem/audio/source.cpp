@@ -10,3 +10,7 @@ void AudioSource::mixin(float *output, std::size_t numSamples) {
 bool AudioSource::done() const {
     return m_sampleIndex == m_samplesTotal;
 }
+
+void AudioSource::rewind() {
+    m_sampleIndex = 0;
+}

@@ -9,6 +9,7 @@ class Files;
 class Graphics;
 class Image;
 class Audio;
+class GameScreen;
 
 struct saved_state {
 };
@@ -21,7 +22,7 @@ struct Instance {
     std::unique_ptr<Graphics> graphics;
     std::unique_ptr<Audio> audio;
 
-    std::unique_ptr<Image> bg;
+    std::unique_ptr<GameScreen> screen;
 
     struct saved_state state;
     bool live;

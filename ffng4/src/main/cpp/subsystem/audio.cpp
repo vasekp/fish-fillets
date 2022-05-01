@@ -13,9 +13,19 @@ void Audio::shutdown() {
     m_stream.reset();
 }
 
-void Audio::addSource(AudioSource&& source) {
-    LOGD("adding audio source %s", source.name().c_str());
-    m_sources.push_back(std::make_shared<AudioSource>(std::move(source)));
+void Audio::addSource(std::shared_ptr<AudioSource>& source) {
+    LOGD("adding audio source %s", source->name().c_str());
+    m_sources.push_back(source);
+}
+
+void Audio::removeSource(const std::string &name) {
+    auto newEnd = std::remove_if(m_sources.begin(), m_sources.end(), [&](const auto& source) { return source->name() == name; });
+    LOGD("removeSource: name matched %ld sources", std::distance(newEnd, m_sources.end()));
+    m_sources.erase(newEnd, m_sources.end());
+}
+
+void Audio::clear() {
+    m_sources.clear();
 }
 
 AudioSource Audio::loadAudio(const std::string& filename) {

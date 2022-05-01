@@ -17,7 +17,9 @@ public:
     void activate();
     void shutdown();
 
-    void addSource(AudioSource&& source);
+    void addSource(std::shared_ptr<AudioSource>& source);
+    void removeSource(const std::string& name);
+    void clear();
 
     AudioSource loadAudio(const std::string& filename);
 

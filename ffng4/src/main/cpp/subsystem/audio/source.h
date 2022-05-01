@@ -8,6 +8,8 @@ class AudioSource {
     std::unique_ptr<float[]> m_data;
 
 public:
+    AudioSource() = default;
+
     AudioSource(const std::string& filename, std::size_t num_samples, std::unique_ptr<float[]>&& data) :
             m_name(filename),
             m_samplesTotal(num_samples),
@@ -25,6 +27,7 @@ public:
 
     bool done() const;
     void mixin(float output[], std::size_t numSamples);
+    void rewind();
 };
 
 #endif //FISH_FILLETS_AUDIO_SOURCE_H

@@ -7,7 +7,7 @@ add_library(native_app_glue STATIC
 
 find_package (oboe REQUIRED CONFIG)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
 set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
 
@@ -19,7 +19,8 @@ file(GLOB fillets_sources
     "platform/*.cpp"
     "platform/*/*.cpp"
     "subsystem/*.cpp"
-    "subsystem/*/*.cpp")
+    "subsystem/*/*.cpp"
+    "game/*.cpp")
 
 add_library(fillets SHARED ${fillets_sources})
 
