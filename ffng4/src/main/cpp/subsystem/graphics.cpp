@@ -25,9 +25,7 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     std::uint32_t width = info.width;
     std::uint32_t height = info.height;
     std::size_t stride = info.stride;
-    std::size_t size = height * stride;
     void* pixels;
-    std::unique_ptr<std::byte[]> data(new std::byte[size]);
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     auto ret = ogl::Texture::fromImageData(width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);

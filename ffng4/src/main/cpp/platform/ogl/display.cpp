@@ -67,7 +67,12 @@ namespace ogl {
 
         glEnable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+
         glEnableVertexAttribArray(0);
+
+        glClearColor(0, 0, 0, 1);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
         LOGD("display: opened %p [%d x %d]", m_display, m_width, m_height);
     }

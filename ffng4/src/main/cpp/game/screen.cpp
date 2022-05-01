@@ -57,7 +57,6 @@ void GameScreen::drawFrame() {
     own_draw();
 
     display->bind();
-    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     auto& program = m_instance->graphics->shaders()->fill;
