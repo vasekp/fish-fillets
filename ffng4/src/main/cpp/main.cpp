@@ -82,7 +82,8 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
                 instance->graphics = std::make_unique<Graphics>(instance);
-                instance->audio = std::make_unique<AudioStream>(instance);
+                instance->audio = std::make_unique<Audio>(instance);
+                instance->audio->addSource(instance->audio->loadAudio("music/menu.ogg"));
                 instance->bg->reload(instance);
                 instance->live = true;
                 draw_frame(instance);

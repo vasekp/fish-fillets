@@ -8,7 +8,7 @@ struct android_app;
 class Files;
 class Graphics;
 class Image;
-class AudioStream;
+class Audio;
 
 struct saved_state {
 };
@@ -19,7 +19,7 @@ struct Instance {
 
     std::unique_ptr<Files> files;
     std::shared_ptr<Graphics> graphics;
-    std::unique_ptr<AudioStream> audio;
+    std::unique_ptr<Audio> audio;
 
     std::unique_ptr<Image> bg;
 

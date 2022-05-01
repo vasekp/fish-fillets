@@ -2,27 +2,22 @@
 #define FISH_FILLETS_AUDIO_H
 
 #include "instance.h"
-#include "platform/ndk.h"
 
-#include <android_native_app_glue.h>
-#include <oboe/Oboe.h>
-#include <media/NdkMediaExtractor.h>
+#include "audio/source.h"
+#include "audio/stream.h"
 
-class AudioStream : public oboe::AudioStreamDataCallback, oboe::AudioStreamErrorCallback {
-    oboe::AudioStream* stream{};
-    AMediaExtractor* extractor;
-    AMediaCodec *codec;
-    std::unique_ptr<float[]> dataF;
+class Audio {
+    Instance* instance;
+    AudioStream stream;
 
 public:
-    AudioStream(Instance*);
-    AudioStream(const AudioStream&) = delete;
-    AudioStream& operator=(const AudioStream&) = delete;
-    ~AudioStream();
+    Audio(Instance* instance_) : instance(instance_), stream() { }
 
-private:
-    oboe::DataCallbackResult
-    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
+    void addSource(AudioSource&& source) {
+        stream.addSource(std::move(source));
+    }
+
+    AudioSource loadAudio(const std::string& filename);
 };
 
 #endif //FISH_FILLETS_AUDIO_H
