@@ -6,10 +6,8 @@ namespace ogl {
             m_texture(Texture::empty(width, height)) {
         glGenFramebuffers(1, &m_name);
         LOGV("framebuffer: generate %d", m_name);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_name);
+        bind();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        m_texture.bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
@@ -19,8 +17,9 @@ namespace ogl {
         glDeleteFramebuffers(1, &m_name);
     }
 
-    void Framebuffer::bind() const {
+    void Framebuffer::bind(GLuint texture) const {
         glBindFramebuffer(GL_FRAMEBUFFER, m_name);
+        glBindTexture(GL_TEXTURE_2D, texture != 0 ? texture : m_texture);
     }
 
 }

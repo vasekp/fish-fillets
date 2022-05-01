@@ -9,6 +9,7 @@
 #include "graphics/canvas.h"
 #include "graphics/system.h"
 #include "graphics/image.h"
+#include "graphics/utils.h"
 
 class Graphics {
     Instance *m_instance;

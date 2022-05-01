@@ -72,7 +72,7 @@ void GameScreen::drawFrame() {
                (int)(fdh - scale * fsh) / 2,
                (int)(scale * fsw), (int)(scale * fsh));
 
-    ogl::rect(-1.f, -1.f, 2.f, 2.f);
+    GraphicsUtils::rect(-1.f, -1.f, 2.f, 2.f);
 
     display->swap();
 }

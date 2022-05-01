@@ -9,9 +9,11 @@
 class GameScreen {
 protected:
     Instance* m_instance;
-    std::map<std::string, Image> m_images;
     std::shared_ptr<AudioSource> m_music;
     std::map<std::string, AudioSource> m_sounds;
+
+private:
+    std::map<std::string, Image> m_images;
 
 public:
     virtual ~GameScreen() { }
