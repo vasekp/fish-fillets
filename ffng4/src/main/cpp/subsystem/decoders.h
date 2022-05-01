@@ -2,7 +2,7 @@
 #define FISH_FILLETS_DECODERS_H
 
 #include "common.h"
-#include "platform/ndk.h"
+#include "platform/jni.h"
 
 #include <android_native_app_glue.h>
 #include <jni.h>
@@ -12,16 +12,10 @@ namespace ogl {
 }
 
 class Decoders {
-    android_app* app;
-    ndk::JNIEnv jni;
-    jclass clazz;
-    std::map<std::string, jmethodID> methods;
+    jni::Env jni;
 
 public:
-    Decoders(android_app* app_);
-    Decoders(const Decoders&) = delete;
-    Decoders& operator=(const Decoders&) = delete;
-    ~Decoders();
+    Decoders(android_app* app) : jni(app) { }
 
     ogl::Texture loadImage(const std::string& path) const;
 };
