@@ -18,6 +18,7 @@
 
 #define APP_TAG "FFNG4"
 
+#define LOGV(...) ((void)__android_log_print(ANDROID_LOG_VERBOSE, APP_TAG, __VA_ARGS__))
 #define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, APP_TAG, __VA_ARGS__))
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_TAG, __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, APP_TAG, __VA_ARGS__))

@@ -4,7 +4,7 @@
 namespace ogl {
 
     class Framebuffer {
-        GLuint name{};
+        GLuint name = 0;
         Texture _texture;
 
     public:
@@ -13,12 +13,13 @@ namespace ogl {
         Framebuffer& operator=(const Framebuffer&) = delete;
         ~Framebuffer();
 
-        operator GLuint() { return name; }
-        auto width() { return _texture.width(); }
-        auto height() { return _texture.height(); }
-        auto& texture() { return _texture; }
+        operator GLuint() const { return name; }
+        auto width() const { return _texture.width(); }
+        auto height() const { return _texture.height(); }
+        auto& texture() const { return _texture; }
 
-        void bind();
+        void bind() const;
+        void invalidate() { LOGD("framebuffer: detach %d", name); name = 0; }
     };
 
 }

@@ -6,7 +6,7 @@ namespace ogl {
     class Texture {
         GLuint _width;
         GLuint _height;
-        GLuint name{};
+        GLuint name = 0;
 
     public:
         static Texture fromImageData(GLuint width, GLuint height, std::size_t stride, void *data);
@@ -22,7 +22,8 @@ namespace ogl {
         auto width() const { return _width; }
         auto height() const { return _height; }
 
-        void bind();
+        void bind() const;
+        void invalidate() { LOGD("texture: detach %d", name); name = 0; }
 
     private:
         Texture(GLuint width, GLuint height);

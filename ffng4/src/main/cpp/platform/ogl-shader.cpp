@@ -4,6 +4,7 @@ namespace ogl {
 
     Shader::Shader(GLenum type, const std::string& code) {
         name = glCreateShader(type);
+        LOGD("shader: generate %d", name);
         if (!name)
             ::error("glCreateShader failed");
 
@@ -34,6 +35,8 @@ namespace ogl {
     }
 
     Shader::~Shader() {
+        if(name)
+            LOGD("shader: delete %d", name);
         glDeleteShader(name);
     }
 

@@ -4,7 +4,7 @@
 namespace ogl {
 
     class Shader {
-        GLuint name;
+        GLuint name = 0;
 
     public:
         Shader() = default;
@@ -16,6 +16,7 @@ namespace ogl {
         ~Shader();
 
         operator GLuint() const { return name; }
+        void invalidate() { LOGD("shader: detach %d", name); name = 0; }
     };
 
 }
