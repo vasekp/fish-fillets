@@ -8,16 +8,20 @@
 
 class Audio {
     Instance* instance;
-    AudioStream stream;
+    std::vector<std::shared_ptr<AudioSource>> sources;
+    std::unique_ptr<AudioStream> stream;
 
 public:
-    Audio(Instance* instance_) : instance(instance_), stream() { }
+    Audio(Instance* instance_) : instance(instance_) { }
 
-    void addSource(AudioSource&& source) {
-        stream.addSource(std::move(source));
-    }
+    void activate();
+    void shutdown();
+
+    void addSource(AudioSource&& source);
 
     AudioSource loadAudio(const std::string& filename);
+
+    friend class AudioStream;
 };
 
 #endif //FISH_FILLETS_AUDIO_H

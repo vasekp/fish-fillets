@@ -1,10 +1,18 @@
 #include "graphics.h"
 #include <android/bitmap.h>
 
-Graphics::Graphics(Instance* instance_) : instance(instance_) {
-    display = std::make_unique<ogl::Display>(instance->app->window);
-    canvas = std::make_unique<Canvas>(1000, 1000);
-    shaders = std::make_unique<Shaders>(*instance);
+void Graphics::activate() {
+    LOGD("graphics: activate");
+    system = std::make_unique<GraphicsSystem>(instance);
+}
+
+void Graphics::shutdown() {
+    LOGD("graphics: shutdown");
+    system.reset();
+}
+
+void Graphics::setCanvasSize(unsigned width, unsigned height) {
+    system->canvas.resize(width, height);
 }
 
 ogl::Texture Graphics::loadImage(const std::string& filename) const {

@@ -17,10 +17,10 @@ public:
         glActiveTexture(Shaders::texImage_gl);
     }
 
-    auto width() { return _width; }
-    auto height() { return _height; }
-    auto texWidth() { return framebuffer.width(); }
-    auto texHeight() { return framebuffer.height(); }
+    auto width() const { return _width; }
+    auto height() const { return _height; }
+    auto texWidth() const { return framebuffer.width(); }
+    auto texHeight() const { return framebuffer.height(); }
 
     void resize(unsigned width, unsigned height) {
         assert(width <= framebuffer.width() && height <= framebuffer.height());
@@ -28,7 +28,7 @@ public:
         _height = height;
     }
 
-    void bind() {
+    void bind() const {
         framebuffer.bind();
         glViewport(0, 0, (GLint)width(), (GLint)height());
     }

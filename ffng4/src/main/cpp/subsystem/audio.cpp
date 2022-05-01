@@ -3,6 +3,20 @@
 
 #include <media/NdkMediaExtractor.h>
 
+void Audio::activate() {
+    LOGD("audio: activate");
+    stream = std::make_unique<AudioStream>(this);
+}
+
+void Audio::shutdown() {
+    LOGD("audio: shutdown");
+    stream.reset();
+}
+
+void Audio::addSource(AudioSource&& source) {
+    sources.push_back(std::make_shared<AudioSource>(std::move(source)));
+}
+
 AudioSource Audio::loadAudio(const std::string& filename) {
     auto asset = instance->files->system(filename).asset();
 

@@ -81,12 +81,12 @@ namespace ogl {
         LOGD("display: closed %p", display);
     }
 
-    void Display::bind() {
+    void Display::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, width(), height());
     }
 
-    void Display::swap() {
+    void Display::swap() const {
         eglSwapBuffers(display, surface);
     }
 

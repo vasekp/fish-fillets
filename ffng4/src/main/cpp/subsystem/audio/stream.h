@@ -4,18 +4,14 @@
 #include <oboe/Oboe.h>
 
 class AudioStream : public oboe::AudioStreamDataCallback, oboe::AudioStreamErrorCallback {
-    oboe::AudioStream* stream;
-    std::vector<std::shared_ptr<AudioSource>> sources;
+    Audio* _iface;
+    oboe::AudioStream* _stream;
 
 public:
-    AudioStream();
+    AudioStream(Audio* iface);
     AudioStream(const AudioStream&) = delete;
     AudioStream& operator=(const AudioStream&) = delete;
     ~AudioStream();
-
-    void addSource(AudioSource&& source) {
-        sources.push_back(std::make_shared<AudioSource>(std::move(source)));
-    }
 
 private:
     oboe::DataCallbackResult

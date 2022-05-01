@@ -11,11 +11,11 @@ struct Shaders {
     constexpr static GLint texImage_gl = GL_TEXTURE0;
     constexpr static GLint texCanvas_gl = GL_TEXTURE1;
 
-    Shaders(const Instance& instance) {
-        vertCommon = ogl::Shader(GL_VERTEX_SHADER, instance.files->system("shader/pixel.vert").read());
-        copy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance.files->system("shader/copy.frag").read()});
-        fill = ogl::Program({GL_VERTEX_SHADER, instance.files->system("shader/fill.vert").read()},
-             {GL_FRAGMENT_SHADER, instance.files->system("shader/fill.frag").read()});
+    Shaders(const Instance* instance) {
+        vertCommon = ogl::Shader(GL_VERTEX_SHADER, instance->files->system("shader/pixel.vert").read());
+        copy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance->files->system("shader/copy.frag").read()});
+        fill = ogl::Program({GL_VERTEX_SHADER, instance->files->system("shader/fill.vert").read()},
+             {GL_FRAGMENT_SHADER, instance->files->system("shader/fill.frag").read()});
     }
 };
 

@@ -16,16 +16,16 @@ static void draw_frame(struct Instance* instance) {
     if (!instance->graphics)
         return;
 
-    auto& display = instance->graphics->display;
-    auto& canvas = instance->graphics->canvas;
-    auto& image = instance->bg;
+    const auto* display = instance->graphics->display();
+    const auto* canvas = instance->graphics->canvas();
+    const auto* image = instance->bg.get();
 
-    canvas->resize(image->width(), image->height());
+    instance->graphics->setCanvasSize(image->width(), image->height());
     canvas->bind();
     image->texture().bind();
 
     {
-        auto& program = instance->graphics->shaders->copy;
+        auto& program = instance->graphics->shaders()->copy;
         glUseProgram(program);
         glUniform1i(program.uniform("uTexture"), Shaders::texImage_shader);
         glUniform2f(program.uniform("uSrcSize"), (float) image->width(), (float) image->height());
@@ -41,7 +41,7 @@ static void draw_frame(struct Instance* instance) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     {
-        auto& program = instance->graphics->shaders->fill;
+        auto& program = instance->graphics->shaders()->fill;
         glUseProgram(program);
         auto fsw = (float)canvas->width();
         auto fsh = (float)canvas->height();
@@ -81,17 +81,16 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             if (instance->app->window != nullptr) {
-                instance->graphics = std::make_unique<Graphics>(instance);
-                instance->audio = std::make_unique<Audio>(instance);
-                instance->audio->addSource(instance->audio->loadAudio("music/menu.ogg"));
+                instance->graphics->activate();
+                instance->audio->activate();
                 instance->bg->reload(instance);
                 instance->live = true;
                 draw_frame(instance);
             }
             break;
         case APP_CMD_TERM_WINDOW:
-            instance->graphics.reset();
-            instance->audio.reset();
+            instance->graphics->shutdown();
+            instance->audio->shutdown();
             instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
@@ -114,6 +113,7 @@ void android_main(struct android_app* app) {
     instance->app = app;
 
     instance->bg = std::make_unique<Image>("orig/map.png");
+    instance->audio->addSource(instance->audio->loadAudio("music/menu.ogg"));
 
     if (app->savedState != nullptr)
         instance->state = *(struct saved_state*)app->savedState;

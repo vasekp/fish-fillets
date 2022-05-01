@@ -8,16 +8,23 @@
 #include "graphics/shaders.h"
 #include "graphics/canvas.h"
 #include "graphics/image.h"
+#include "graphics/system.h"
 
 class Graphics {
     Instance *instance;
+    std::unique_ptr<GraphicsSystem> system;
 
 public:
-    std::unique_ptr<ogl::Display> display;
-    std::unique_ptr<Canvas> canvas;
-    std::unique_ptr<Shaders> shaders;
+    Graphics(Instance* instance_) : instance(instance_) { }
 
-    Graphics(Instance*);
+    void activate();
+    void shutdown();
+
+    const auto* display() const { return &system->display; }
+    const auto* canvas() const { return &system->canvas; }
+    const auto* shaders() const { return &system->shaders; }
+
+    void setCanvasSize(unsigned width, unsigned height);
 
     ogl::Texture loadImage(const std::string& path) const;
 };

@@ -18,11 +18,11 @@ namespace ogl {
         Display &operator=(const Display &) = delete;
         ~Display();
 
-        auto width() { return _width; }
-        auto height() { return _height; }
+        auto width() const { return _width; }
+        auto height() const { return _height; }
 
-        void bind();
-        void swap();
+        void bind() const;
+        void swap() const;
     };
 
 }
