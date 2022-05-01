@@ -20,7 +20,7 @@ public:
 
     virtual void start();
     virtual void load();
-    void drawFrame();
+    void draw() { own_draw(); };
 
 protected:
     GameScreen(Instance* instance) : m_instance(instance) { }

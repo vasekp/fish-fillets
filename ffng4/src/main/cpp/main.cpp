@@ -10,7 +10,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             LOGD("Load start");
             auto start = std::chrono::steady_clock::now();
             dynamic_cast<WorldMap*>(instance->screen())->prep_loading();
-            instance->screen()->drawFrame();
+            instance->graphics->drawFrame();
             instance->screens.push_back(std::make_unique<TestScreen>(instance,
                  "images/start/prvni-p.png",
                  "images/start/prvni-w.png",
@@ -47,7 +47,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance->audio->activate();
                 instance->live = true;
                 instance->screen()->load();
-                instance->screen()->drawFrame();
+                instance->screen()->draw();
             }
             break;
         case APP_CMD_TERM_WINDOW:
@@ -59,7 +59,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_LOST_FOCUS:
             instance->live = false;
-            instance->screen()->drawFrame();
+            instance->graphics->drawFrame();
             break;
         default:
             break;
@@ -96,6 +96,6 @@ void android_main(struct android_app* app) {
         }
 
         if (instance->live)
-            instance->screen()->drawFrame();
+            instance->graphics->drawFrame();
     }
 }

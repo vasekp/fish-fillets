@@ -13,7 +13,11 @@
 
 class Graphics {
     Instance *m_instance;
-    std::shared_ptr<GraphicsSystem> m_system;
+    std::shared_ptr<GraphicsSystem> m_system; // Never really shared, but has weak_ptrs
+    struct {
+        int vx, vy, vw, vh;
+        float scale;
+    } viewport;
 
 public:
     Graphics(Instance* instance) : m_instance(instance) { }
@@ -27,6 +31,7 @@ public:
     const auto* shaders() const { return &m_system->m_shaders; }
 
     void setCanvasSize(unsigned width, unsigned height);
+    void drawFrame();
 
     ogl::Texture loadImage(const std::string& path) const;
 };

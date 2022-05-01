@@ -45,35 +45,3 @@ void GameScreen::load() {
     m_instance->audio->clear();
     m_instance->audio->addSource(m_music);
 }
-
-void GameScreen::drawFrame() {
-    if (!m_instance->graphics)
-        return;
-
-    const auto* display = m_instance->graphics->display();
-    const auto* canvas = m_instance->graphics->canvas();
-
-    canvas->bind();
-    own_draw();
-
-    display->bind();
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    auto& program = m_instance->graphics->shaders()->fill;
-    glUseProgram(program);
-    auto fsw = (float)canvas->width();
-    auto fsh = (float)canvas->height();
-    auto fdw = (float)display->width();
-    auto fdh = (float)display->height();
-    glUniform2f(program.uniform("uDisplaySize"), fdw, fdh);
-    glUniform2f(program.uniform("uCanvasSize"), fsw, fsh);
-
-    float scale = std::min(fdw / fsw, fdh / fsh);
-    glViewport((int)(fdw - scale * fsw) / 2,
-               (int)(fdh - scale * fsh) / 2,
-               (int)(scale * fsw), (int)(scale * fsh));
-
-    GraphicsUtils::rect(-1.f, -1.f, 2.f, 2.f);
-
-    display->swap();
-}
