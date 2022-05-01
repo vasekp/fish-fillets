@@ -8,23 +8,25 @@
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-        LOGD("Load start");
-        auto start = std::chrono::steady_clock::now();
-        instance->screen = std::make_unique<TestScreen>(instance, "images/start/prvni-p.png", "music/rybky04.ogg");
-        instance->screen->start();
-        auto end = std::chrono::steady_clock::now();
-        std::chrono::duration<double> diff = end - start;
-        LOGD("Load finished, duration = %f s", diff.count());
-        return 1;
-    }
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
-        LOGD("Load start");
-        auto start = std::chrono::steady_clock::now();
-        instance->screen = std::make_unique<WorldMap>(instance);
-        instance->screen->start();
-        auto end = std::chrono::steady_clock::now();
-        std::chrono::duration<double> diff = end - start;
-        LOGD("Load finished, duration = %f s", diff.count());
+        if(instance->screens.size() == 1) {
+            LOGD("Load start");
+            auto start = std::chrono::steady_clock::now();
+            dynamic_cast<WorldMap*>(instance->screen())->prep_loading();
+            instance->screen()->drawFrame();
+            instance->screens.push_back(std::make_unique<TestScreen>(instance, "images/start/prvni-p.png", "music/rybky04.ogg"));
+            instance->screen()->start();
+            auto end = std::chrono::steady_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            LOGD("Load finished, duration = %f s", diff.count());
+        } else {
+            LOGD("Resume start");
+            auto start = std::chrono::steady_clock::now();
+            instance->screens.pop_back();
+            instance->screen()->start();
+            auto end = std::chrono::steady_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            LOGD("Resume finished, duration = %f s", diff.count());
+        }
         return 1;
     }
     return 0;
@@ -43,8 +45,8 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance->graphics->activate();
                 instance->audio->activate();
                 instance->live = true;
-                instance->screen->load();
-                instance->screen->drawFrame();
+                instance->screen()->load();
+                instance->screen()->drawFrame();
             }
             break;
         case APP_CMD_TERM_WINDOW:
@@ -56,7 +58,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_LOST_FOCUS:
             instance->live = false;
-            instance->screen->drawFrame();
+            instance->screen()->drawFrame();
             break;
         default:
             break;
@@ -74,7 +76,7 @@ void android_main(struct android_app* app) {
     if (app->savedState != nullptr)
         instance->state = *(struct saved_state*)app->savedState;
 
-    instance->screen = std::make_unique<WorldMap>(instance.get());
+    instance->screens.push_back(std::make_unique<WorldMap>(instance.get()));
 
     while (true) {
         int ident;
@@ -93,6 +95,6 @@ void android_main(struct android_app* app) {
         }
 
         if (instance->live)
-            instance->screen->drawFrame();
+            instance->screen()->drawFrame();
     }
 }

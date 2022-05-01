@@ -14,16 +14,20 @@ protected:
     std::map<std::string, AudioSource> m_sounds;
 
 public:
+    virtual ~GameScreen() { }
+
     virtual void start();
     virtual void load();
     void drawFrame();
-    virtual ~GameScreen() { }
 
 protected:
     GameScreen(Instance* instance) : m_instance(instance) { }
 
     void setBackground(const std::string& filename);
     void setMusic(const std::string& filename);
+
+    void addImage(const std::string& name, const std::string& path);
+    const Image* getImage(const std::string& name);
 
     void reloadImages();
     virtual void own_draw() = 0;

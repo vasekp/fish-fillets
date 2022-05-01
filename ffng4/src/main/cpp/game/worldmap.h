@@ -4,10 +4,11 @@
 #include "screen.h"
 
 class WorldMap : public GameScreen {
-    AudioSource music;
+    bool m_loadingFrame;
 
 public:
     WorldMap(Instance*);
+    void prep_loading() { m_loadingFrame = true; }
 
 private:
     void own_draw() override;

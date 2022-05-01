@@ -1,11 +1,19 @@
 #include "game/screen.h"
 
+void GameScreen::addImage(const std::string& name, const std::string &filename) {
+    m_images.insert_or_assign(name, Image(filename));
+}
+
 void GameScreen::setBackground(const std::string &filename) {
-    m_images.insert_or_assign("background", Image(filename));
+    addImage("background", filename);
 }
 
 void GameScreen::setMusic(const std::string& filename) {
     m_music = std::make_shared<AudioSource>(m_instance->audio->loadAudio(filename));
+}
+
+const Image* GameScreen::getImage(const std::string& name) {
+    return &m_images.at(name);
 }
 
 void GameScreen::reloadImages() {

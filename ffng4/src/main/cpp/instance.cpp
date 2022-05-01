@@ -13,3 +13,7 @@ Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(fa
     graphics = std::make_unique<Graphics>(this);
     audio = std::make_unique<Audio>(this);
 }
+
+GameScreen* Instance::screen() {
+    return screens.back().get();
+}
