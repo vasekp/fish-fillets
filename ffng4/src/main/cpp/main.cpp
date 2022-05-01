@@ -1,11 +1,30 @@
 #include "instance.h"
 
 #include "game/worldmap.h"
+#include "game/testscreen.h"
+
+#include <chrono>
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+        LOGD("Load start");
+        auto start = std::chrono::steady_clock::now();
+        instance->screen = std::make_unique<TestScreen>(instance, "images/start/prvni-p.png", "music/rybky04.ogg");
         instance->screen->start();
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> diff = end - start;
+        LOGD("Load finished, duration = %f s", diff.count());
+        return 1;
+    }
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
+        LOGD("Load start");
+        auto start = std::chrono::steady_clock::now();
+        instance->screen = std::make_unique<WorldMap>(instance);
+        instance->screen->start();
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> diff = end - start;
+        LOGD("Load finished, duration = %f s", diff.count());
         return 1;
     }
     return 0;

@@ -32,7 +32,6 @@ void GameScreen::load() {
 
     m_instance->audio->clear();
     m_instance->audio->addSource(m_music);
-    LOGD("screen: load done");
 }
 
 void GameScreen::drawFrame() {
