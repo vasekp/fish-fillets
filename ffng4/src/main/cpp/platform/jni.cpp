@@ -2,27 +2,27 @@
 
 namespace jni {
     Env::Env(android_app* app) :
-        vm(app->activity->vm),
-        env(),
-        obj(app->activity->clazz) // android NDK misnomer
+            m_vm(app->activity->vm),
+            m_env(),
+            m_obj(app->activity->clazz) // android NDK misnomer
     {
-        vm->AttachCurrentThread(&env, nullptr);
-        clazz = env->GetObjectClass(obj);
-        methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+        m_vm->AttachCurrentThread(&m_env, nullptr);
+        m_class = m_env->GetObjectClass(m_obj);
+        m_methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
     }
 
     Env::~Env() {
-        env->DeleteLocalRef(clazz);
-        vm->DetachCurrentThread();
+        m_env->DeleteLocalRef(m_class);
+        m_vm->DetachCurrentThread();
     }
 
     jmethodID Env::getMethodID(const char *name, const char *sig) {
-        auto ret = env->GetMethodID(clazz, name, sig);
+        auto ret = m_env->GetMethodID(m_class, name, sig);
         assert(ret);
         return ret;
     }
 
     jmethodID Env::method(const std::string &name) const {
-        return methods.at(name);
+        return m_methods.at(name);
     }
 }

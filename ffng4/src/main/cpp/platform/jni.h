@@ -7,11 +7,11 @@
 
 namespace jni {
     class Env {
-        JavaVM *vm;
-        ::JNIEnv *env;
-        jclass clazz;
-        jobject obj;
-        std::map<std::string, jmethodID> methods;
+        JavaVM *m_vm;
+        ::JNIEnv *m_env;
+        jclass m_class;
+        jobject m_obj;
+        std::map<std::string, jmethodID> m_methods;
 
     public:
         Env(android_app* app);
@@ -19,10 +19,10 @@ namespace jni {
         Env& operator=(const Env&) = delete;
         ~Env();
 
-        operator ::JNIEnv *() const { return env; }
-        ::JNIEnv *operator->() const { return env; }
+        operator ::JNIEnv *() const { return m_env; }
+        ::JNIEnv *operator->() const { return m_env; }
 
-        jobject object() const { return obj; }
+        jobject object() const { return m_obj; }
         jmethodID method(const std::string& name) const;
 
     private:

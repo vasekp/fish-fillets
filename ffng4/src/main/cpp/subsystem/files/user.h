@@ -5,13 +5,13 @@
 #include <fstream>
 
 class UserFile {
-    std::filesystem::path relPath;
-    std::filesystem::path fullPath;
+    std::filesystem::path m_relPath;
+    std::filesystem::path m_fullPath;
 
 public:
-    UserFile(std::string _path, const std::filesystem::path& basePath);
+    UserFile(std::string path, const std::filesystem::path& basePath);
 
-    std::string getPath() const { return relPath; }
+    std::string getPath() const { return m_relPath; }
 
     bool exists() const;
     std::string read() const;

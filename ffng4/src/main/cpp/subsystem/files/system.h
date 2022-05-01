@@ -4,13 +4,13 @@
 #include "platform/ndk.h"
 
 class SystemFile {
-    AAssetManager *assets;
-    std::filesystem::path path;
+    AAssetManager *m_assets;
+    std::filesystem::path m_path;
 
 public:
-    SystemFile(std::string _path, AAssetManager* _assets);
+    SystemFile(std::string path, AAssetManager* assets);
 
-    std::string getPath() const { return path; }
+    std::string getPath() const { return m_path; }
 
     bool exists() const;
     std::string read() const;

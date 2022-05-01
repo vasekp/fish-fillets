@@ -1,12 +1,12 @@
 #include "subsystem/graphics.h"
 
 Image::~Image() {
-    if(_ref.expired())
-        _texture.invalidate();
+    if(m_ref.expired())
+        m_texture.invalidate();
 }
 
 void Image::reload(Instance* instance) {
-    _texture.invalidate();
-    _ref = {instance->graphics};
-    _texture = instance->graphics->loadImage(_filename);
+    m_texture.invalidate();
+    m_ref = {instance->graphics};
+    m_texture = instance->graphics->loadImage(m_filename);
 }

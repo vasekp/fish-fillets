@@ -11,18 +11,18 @@
 #include "graphics/system.h"
 
 class Graphics {
-    Instance *instance;
-    std::unique_ptr<GraphicsSystem> system;
+    Instance *m_instance;
+    std::unique_ptr<GraphicsSystem> m_system;
 
 public:
-    Graphics(Instance* instance_) : instance(instance_) { }
+    Graphics(Instance* instance) : m_instance(instance) { }
 
     void activate();
     void shutdown();
 
-    const auto* display() const { return &system->display; }
-    const auto* canvas() const { return &system->canvas; }
-    const auto* shaders() const { return &system->shaders; }
+    const auto* display() const { return &m_system->m_display; }
+    const auto* canvas() const { return &m_system->m_canvas; }
+    const auto* shaders() const { return &m_system->m_shaders; }
 
     void setCanvasSize(unsigned width, unsigned height);
 

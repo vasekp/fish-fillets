@@ -3,21 +3,21 @@
 
 void Graphics::activate() {
     LOGD("graphics: activate");
-    system = std::make_unique<GraphicsSystem>(instance);
+    m_system = std::make_unique<GraphicsSystem>(m_instance);
 }
 
 void Graphics::shutdown() {
     LOGD("graphics: shutdown");
-    system.reset();
+    m_system.reset();
 }
 
 void Graphics::setCanvasSize(unsigned width, unsigned height) {
-    system->canvas.resize(width, height);
+    m_system->m_canvas.resize(width, height);
 }
 
 ogl::Texture Graphics::loadImage(const std::string& filename) const {
     LOGD("loadImage %s", filename.c_str());
-    auto& jni = instance->jni;
+    auto& jni = m_instance->jni;
     jstring jPath = jni->NewStringUTF(filename.c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
     AndroidBitmapInfo info;

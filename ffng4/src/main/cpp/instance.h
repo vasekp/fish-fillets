@@ -26,7 +26,7 @@ struct Instance {
     struct saved_state state;
     bool live;
 
-    Instance(android_app* _app);
+    Instance(android_app*);
 };
 
 #endif //FISH_FILLETS_INSTANCE_H

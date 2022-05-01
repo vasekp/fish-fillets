@@ -7,7 +7,7 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 
-Instance::Instance(android_app* _app) : app(_app), jni(app), live(false) {
+Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(false) {
     files = std::make_unique<Files>(this);
     graphics = std::make_unique<Graphics>(this);
     audio = std::make_unique<Audio>(this);

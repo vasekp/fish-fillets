@@ -4,8 +4,8 @@
 namespace ogl {
 
     class Program {
-        GLuint name = 0;
-        mutable std::map<std::string, GLint> uniforms;
+        GLuint m_name = 0;
+        mutable std::map<std::string, GLint> m_uniforms;
 
     public:
         Program() = default;
@@ -16,10 +16,10 @@ namespace ogl {
         Program& operator=(Program&&) noexcept;
         ~Program();
 
-        operator GLuint() const { return name; }
+        operator GLuint() const { return m_name; }
 
         GLint uniform(const std::string &ident) const;
-        void invalidate() { if(name) LOGV("program: detach %d", name); name = 0; }
+        void invalidate() { if(m_name) LOGV("program: detach %d", m_name); m_name = 0; }
 
         static constexpr GLint aPosition = 0;
     };

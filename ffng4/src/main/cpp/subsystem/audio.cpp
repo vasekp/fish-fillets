@@ -5,21 +5,21 @@
 
 void Audio::activate() {
     LOGD("audio: activate");
-    stream = std::make_unique<AudioStream>(this);
+    m_stream = std::make_unique<AudioStream>(this);
 }
 
 void Audio::shutdown() {
     LOGD("audio: shutdown");
-    stream.reset();
+    m_stream.reset();
 }
 
 void Audio::addSource(AudioSource&& source) {
     LOGD("adding audio source %s", source.name().c_str());
-    sources.push_back(std::make_shared<AudioSource>(std::move(source)));
+    m_sources.push_back(std::make_shared<AudioSource>(std::move(source)));
 }
 
 AudioSource Audio::loadAudio(const std::string& filename) {
-    auto asset = instance->files->system(filename).asset();
+    auto asset = m_instance->files->system(filename).asset();
 
     off64_t start, length;
     auto fd = AAsset_openFileDescriptor64(asset, &start, &length);

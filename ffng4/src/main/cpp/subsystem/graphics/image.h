@@ -4,19 +4,19 @@
 class Graphics;
 
 class Image {
-    std::string _filename;
-    std::weak_ptr<Graphics> _ref{};
-    ogl::Texture _texture{};
+    std::string m_filename;
+    std::weak_ptr<Graphics> m_ref{}; // TODO GraphicsSystem!
+    ogl::Texture m_texture{};
 
 public:
-    Image(std::string filename) : _filename(std::move(filename)) { }
+    Image(std::string filename) : m_filename(std::move(filename)) { }
     Image(Image&&) = default;
     Image& operator=(Image&&) = default;
     ~Image();
 
-    auto& texture() const { return _texture; }
-    auto width() const { return _texture.width(); }
-    auto height() const { return _texture.height(); }
+    auto& texture() const { return m_texture; }
+    auto width() const { return m_texture.width(); }
+    auto height() const { return m_texture.height(); }
 
     void reload(Instance* instance);
 };

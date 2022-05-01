@@ -4,9 +4,9 @@
 namespace ogl {
 
     class Texture {
-        GLuint _width;
-        GLuint _height;
-        GLuint name = 0;
+        GLuint m_width;
+        GLuint m_height;
+        GLuint m_name = 0;
 
     public:
         static Texture fromImageData(GLuint width, GLuint height, std::size_t stride, void *data);
@@ -19,12 +19,12 @@ namespace ogl {
         Texture& operator=(Texture&& other) noexcept;
         ~Texture();
 
-        operator GLuint() const { return name; }
-        auto width() const { return _width; }
-        auto height() const { return _height; }
+        operator GLuint() const { return m_name; }
+        auto width() const { return m_width; }
+        auto height() const { return m_height; }
 
         void bind() const;
-        void invalidate() { if(name) LOGV("texture: detach %d", name); name = 0; }
+        void invalidate() { if(m_name) LOGV("texture: detach %d", m_name); m_name = 0; }
 
     private:
         Texture(GLuint width, GLuint height);

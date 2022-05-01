@@ -7,12 +7,12 @@
 #include "audio/stream.h"
 
 class Audio {
-    Instance* instance;
-    std::vector<std::shared_ptr<AudioSource>> sources;
-    std::unique_ptr<AudioStream> stream;
+    Instance* m_instance;
+    std::vector<std::shared_ptr<AudioSource>> m_sources;
+    std::unique_ptr<AudioStream> m_stream;
 
 public:
-    Audio(Instance* instance_) : instance(instance_) { }
+    Audio(Instance* instance) : m_instance(instance) { }
 
     void activate();
     void shutdown();

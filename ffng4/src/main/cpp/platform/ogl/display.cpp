@@ -3,8 +3,8 @@
 namespace ogl {
 
     Display::Display(ANativeWindow *window) {
-        display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        eglInitialize(display, nullptr, nullptr);
+        m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        eglInitialize(m_display, nullptr, nullptr);
 
         EGLConfig config = [&]() {
             const EGLint attribs[] = {
@@ -18,20 +18,20 @@ namespace ogl {
 
             EGLint numConfigs;
 
-            eglChooseConfig(display, attribs, nullptr, 0, &numConfigs);
+            eglChooseConfig(m_display, attribs, nullptr, 0, &numConfigs);
             std::unique_ptr<EGLConfig[]> supportedConfigs(new EGLConfig[numConfigs]);
             if(!supportedConfigs)
                 ::error("supportedConfigs failed");
-            eglChooseConfig(display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
+            eglChooseConfig(m_display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
             if(!numConfigs)
                 ::error("eglChooseConfig failed");
 
             for (int i = 0; i < numConfigs; i++) {
                 auto &config = supportedConfigs[i];
                 EGLint r, g, b;
-                if (eglGetConfigAttrib(display, config, EGL_RED_SIZE, &r) &&
-                    eglGetConfigAttrib(display, config, EGL_GREEN_SIZE, &g) &&
-                    eglGetConfigAttrib(display, config, EGL_BLUE_SIZE, &b) &&
+                if (eglGetConfigAttrib(m_display, config, EGL_RED_SIZE, &r) &&
+                    eglGetConfigAttrib(m_display, config, EGL_GREEN_SIZE, &g) &&
+                    eglGetConfigAttrib(m_display, config, EGL_BLUE_SIZE, &b) &&
                     r == 8 && g == 8 && b == 8) {
 
                     return config;
@@ -42,22 +42,22 @@ namespace ogl {
             return supportedConfigs[0];
         }();
 
-        context = [&]() -> EGLContext {
+        m_context = [&]() -> EGLContext {
             EGLint attribs[] = {
                     EGL_CONTEXT_CLIENT_VERSION, 2,
                     EGL_NONE
             };
-            return eglCreateContext(display, config, nullptr, attribs);
+            return eglCreateContext(m_display, config, nullptr, attribs);
         }();
 
-        surface = eglCreateWindowSurface(display, config, window, nullptr);
+        m_surface = eglCreateWindowSurface(m_display, config, window, nullptr);
 
-        if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+        if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
             ::error("eglMakeCurrent failed");
 
-        _width = _height = 0;
-        eglQuerySurface(display, surface, EGL_WIDTH, &_width);
-        eglQuerySurface(display, surface, EGL_HEIGHT, &_height);
+        m_width = m_height = 0;
+        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
+        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
 
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
@@ -69,16 +69,16 @@ namespace ogl {
         glDisable(GL_DEPTH_TEST);
         glEnableVertexAttribArray(0);
 
-        LOGD("display: opened %p [%d x %d]", display, _width, _height);
+        LOGD("display: opened %p [%d x %d]", m_display, m_width, m_height);
     }
 
     Display::~Display() {
-        eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        eglDestroyContext(display, context);
-        eglDestroySurface(display, surface);
-        eglTerminate(display);
+        eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        eglDestroyContext(m_display, m_context);
+        eglDestroySurface(m_display, m_surface);
+        eglTerminate(m_display);
 
-        LOGD("display: closed %p", display);
+        LOGD("display: closed %p", m_display);
     }
 
     void Display::bind() const {
@@ -87,7 +87,7 @@ namespace ogl {
     }
 
     void Display::swap() const {
-        eglSwapBuffers(display, surface);
+        eglSwapBuffers(m_display, m_surface);
     }
 
 }

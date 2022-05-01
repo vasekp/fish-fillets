@@ -4,8 +4,8 @@
 #include <oboe/Oboe.h>
 
 class AudioStream : public oboe::AudioStreamDataCallback, oboe::AudioStreamErrorCallback {
-    Audio* _iface;
-    oboe::AudioStream* _stream;
+    Audio* m_iface;
+    oboe::AudioStream* m_stream;
 
 public:
     AudioStream(Audio* iface);

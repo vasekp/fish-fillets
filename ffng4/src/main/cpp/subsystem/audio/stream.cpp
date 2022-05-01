@@ -2,7 +2,7 @@
 
 #include "platform/ndk.h"
 
-AudioStream::AudioStream(Audio* iface) : _iface(iface), _stream() {
+AudioStream::AudioStream(Audio* iface) : m_iface(iface), m_stream() {
     oboe::AudioStreamBuilder builder;
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setFormatConversionAllowed(true);
@@ -15,24 +15,24 @@ AudioStream::AudioStream(Audio* iface) : _iface(iface), _stream() {
     builder.setDataCallback(this);
     //builder.setErrorCallback(this);
 
-    if (auto result = builder.openStream(&_stream); result != oboe::Result::OK)
-        ::error("Failed to open stream.", "oboe: %s", convertToText(result));
+    if (auto result = builder.openStream(&m_stream); result != oboe::Result::OK)
+        ::error("Failed to open m_stream.", "oboe: %s", convertToText(result));
 
-    oboe::Result result = _stream->requestStart();
+    oboe::Result result = m_stream->requestStart();
     if (result != oboe::Result::OK)
-        LOGE("Failed to start audio stream. Error: %s", convertToText(result));
+        LOGE("Failed to start audio m_stream. Error: %s", convertToText(result));
 }
 
 AudioStream::~AudioStream() {
-    _stream->stop();
-    _stream->close();
+    m_stream->stop();
+    m_stream->close();
 }
 
 oboe::DataCallbackResult
 AudioStream::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto outData = reinterpret_cast<float*>(audioData);
     std::memset(audioData, 0, sizeof(float) * numFrames);
-    auto& sources = _iface->sources;
+    auto& sources = m_iface->m_sources;
     for(const auto& source : sources)
         source->mixin(outData, numFrames);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),

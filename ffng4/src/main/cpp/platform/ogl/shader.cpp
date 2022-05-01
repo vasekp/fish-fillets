@@ -3,41 +3,41 @@
 namespace ogl {
 
     Shader::Shader(GLenum type, const std::string& code) {
-        name = glCreateShader(type);
-        LOGV("shader: generate %d", name);
-        if (!name)
+        m_name = glCreateShader(type);
+        LOGV("shader: generate %d", m_name);
+        if (!m_name)
             ::error("glCreateShader failed");
 
         const auto source = code.c_str();
-        glShaderSource(name, 1, &source, nullptr);
-        glCompileShader(name);
+        glShaderSource(m_name, 1, &source, nullptr);
+        glCompileShader(m_name);
 
         int status;
-        glGetShaderiv(name, GL_COMPILE_STATUS, &status);
+        glGetShaderiv(m_name, GL_COMPILE_STATUS, &status);
 
         if (status == GL_FALSE) {
             int loglen, actlen;
-            glGetShaderiv(name, GL_INFO_LOG_LENGTH, &loglen);
+            glGetShaderiv(m_name, GL_INFO_LOG_LENGTH, &loglen);
             std::string error(loglen, '\0');
-            glGetShaderInfoLog(name, loglen, &actlen, error.data());
-            glDeleteShader(name);
+            glGetShaderInfoLog(m_name, loglen, &actlen, error.data());
+            glDeleteShader(m_name);
             ::error("glCompileShader failed", "%s", error.c_str());
         }
     }
 
-    Shader::Shader(Shader&& other) noexcept : name(other.name) {
-        other.name = 0;
+    Shader::Shader(Shader&& other) noexcept : m_name(other.m_name) {
+        other.m_name = 0;
     }
 
     Shader& Shader::operator=(Shader&& other) noexcept {
-        std::swap(name, other.name);
+        std::swap(m_name, other.m_name);
         return *this;
     }
 
     Shader::~Shader() {
-        if(name)
-            LOGV("shader: delete %d", name);
-        glDeleteShader(name);
+        if(m_name)
+            LOGV("shader: delete %d", m_name);
+        glDeleteShader(m_name);
     }
 
 }
