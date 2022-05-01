@@ -28,3 +28,10 @@ void Canvas::drawImage(const Image* image, const ogl::Program& program, GLuint d
     glUniform2f(program.uniform("uDstOffset"), (float)destX, (float)destY);
     GraphicsUtils::rect(0u, 0u, image->width(), image->height());
 }
+
+Color Canvas::getPixel(unsigned x, unsigned y) const {
+    std::uint8_t pixels[4];
+    bind();
+    glReadPixels((GLint)x, (GLint)y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    return {pixels[0], pixels[1], pixels[2], pixels[3]};
+}

@@ -16,7 +16,6 @@ class Graphics {
     std::shared_ptr<GraphicsSystem> m_system; // Never really shared, but has weak_ptrs
     struct {
         int vx, vy, vw, vh;
-        float scale;
     } viewport;
 
 public:
@@ -32,6 +31,8 @@ public:
 
     void setCanvasSize(unsigned width, unsigned height);
     void drawFrame();
+    std::pair<int, int> screen2canvas(int x, int y);
+    std::pair<int, int> canvas2screen(int x, int y);
 
     ogl::Texture loadImage(const std::string& path) const;
 };

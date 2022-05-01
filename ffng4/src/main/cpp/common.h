@@ -19,6 +19,8 @@
 
 #include <android/log.h>
 
+#include "types.h"
+
 #define APP_TAG "FFNG4"
 
 #define LOGV(...) ((void)__android_log_print(ANDROID_LOG_VERBOSE, APP_TAG, __VA_ARGS__))

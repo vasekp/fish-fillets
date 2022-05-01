@@ -6,7 +6,7 @@
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-        if(instance->screens.size() == 1) {
+        /*if(instance->screens.size() == 1) {
             LOGD("Load start");
             auto start = std::chrono::steady_clock::now();
             dynamic_cast<WorldMap*>(instance->screen())->prep_loading();
@@ -27,7 +27,12 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             auto end = std::chrono::steady_clock::now();
             std::chrono::duration<double> diff = end - start;
             LOGD("Resume finished, duration = %f s", diff.count());
-        }
+        }*/
+        auto sx = (int)AMotionEvent_getX(event, 0);
+        auto sy = (int)AMotionEvent_getY(event, 0);
+        auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
+        LOGD("%d %d", cx, cy);
+        LOGD("%08X", instance->graphics->canvas()->getPixel(cx, cy).rgba());
         return 1;
     }
     return 0;

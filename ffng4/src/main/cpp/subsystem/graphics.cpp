@@ -26,8 +26,7 @@ void Graphics::setCanvasSize(unsigned width, unsigned height) {
     float scale = std::min(fdw / fsw, fdh / fsh);
     viewport = {(int)(fdw - scale * fsw) / 2,
                 (int)(fdh - scale * fsh) / 2,
-                (int)(scale * fsw), (int)(scale * fsh),
-                scale};
+                (int)(scale * fsw), (int)(scale * fsh)};
 
     glViewport(viewport.vx, viewport.vy, viewport.vw, viewport.vh);
 }
@@ -49,6 +48,20 @@ void Graphics::drawFrame() {
     GraphicsUtils::rect(-1.f, -1.f, 2.f, 2.f);
 
     m_system->m_display.swap();
+}
+
+std::pair<int, int> Graphics::screen2canvas(int x, int y) {
+    return {
+    (int)((float) (x - viewport.vx) / (float) viewport.vw * (float) m_system->m_canvas.width()),
+    (int)((float) (y - viewport.vy) / (float) viewport.vh * (float) m_system->m_canvas.height())
+    };
+}
+
+std::pair<int, int> Graphics::canvas2screen(int x, int y) {
+    return {
+    (int)((float) x / (float) m_system->m_canvas.width() * (float) viewport.vw) + viewport.vx,
+    (int)((float) y / (float) m_system->m_canvas.height() * (float) viewport.vh) + viewport.vy
+    };
 }
 
 ogl::Texture Graphics::loadImage(const std::string& filename) const {
