@@ -7,8 +7,8 @@
 
 #include "graphics/shaders.h"
 #include "graphics/canvas.h"
-#include "graphics/image.h"
 #include "graphics/system.h"
+#include "graphics/image.h"
 
 class Graphics {
     Instance *m_instance;

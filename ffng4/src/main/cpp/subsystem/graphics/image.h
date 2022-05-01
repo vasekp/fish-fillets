@@ -1,8 +1,6 @@
 #ifndef FISH_FILLETS_GRAPHICS_IMAGE_H
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
-class GraphicsSystem;
-
 class Image {
     std::string m_filename;
     std::weak_ptr<const GraphicsSystem> m_ref{};
