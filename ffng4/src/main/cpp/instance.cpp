@@ -4,11 +4,9 @@
 // Can not be incomplete at that point.
 
 #include "subsystem/graphics.h"
-#include "subsystem/decoders.h"
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 
-Instance::Instance(android_app* _app) : app(_app), live(false) {
+Instance::Instance(android_app* _app) : app(_app), jni(app), live(false) {
     files = std::make_unique<Files>(this);
-    decoders = std::make_unique<Decoders>(app);
 }

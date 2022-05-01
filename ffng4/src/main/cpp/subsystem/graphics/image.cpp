@@ -5,8 +5,8 @@ Image::~Image() {
         _texture.invalidate();
 }
 
-void Image::reload(const Decoders& decoder, const std::shared_ptr<Graphics>& ref) {
+void Image::reload(Instance* instance) {
     _texture.invalidate();
-    _ref = {ref};
-    _texture = decoder.loadImage(_filename);
+    _ref = {instance->graphics};
+    _texture = instance->graphics->loadImage(_filename);
 }

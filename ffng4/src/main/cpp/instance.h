@@ -2,12 +2,12 @@
 #define FISH_FILLETS_INSTANCE_H
 
 #include "common.h"
+#include "platform/jni.h"
 
 struct android_app;
 class Files;
 class Graphics;
 class Image;
-class Decoders;
 class AudioStream;
 
 struct saved_state {
@@ -15,11 +15,11 @@ struct saved_state {
 
 struct Instance {
     android_app* app;
+    jni::Env jni;
 
     std::unique_ptr<Files> files;
     std::shared_ptr<Graphics> graphics;
     std::unique_ptr<AudioStream> audio;
-    std::unique_ptr<Decoders> decoders;
 
     std::unique_ptr<Image> bg;
 

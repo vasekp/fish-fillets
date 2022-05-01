@@ -18,7 +18,7 @@ public:
     auto width() const { return _texture.width(); }
     auto height() const { return _texture.height(); }
 
-    void reload(const Decoders& decoder, const std::shared_ptr<Graphics>& ref);
+    void reload(Instance* instance);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H
