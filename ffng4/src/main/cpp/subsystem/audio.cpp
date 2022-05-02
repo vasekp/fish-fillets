@@ -90,7 +90,6 @@ AudioSource Audio::loadSound(const std::string& filename) {
 
             std::size_t outBufferSize;
             std::uint8_t *outBuffer = AMediaCodec_getOutputBuffer(codec, outIndex, &outBufferSize);
-            LOGV("codec: buffer size %d", info.size);
             auto prevSize = dataRaw.size();
             dataRaw.resize(prevSize + info.size);
             std::memcpy(dataRaw.data() + prevSize, outBuffer, info.size);
