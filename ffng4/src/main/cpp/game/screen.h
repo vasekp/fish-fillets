@@ -11,6 +11,7 @@ protected:
     Instance* m_instance;
     std::shared_ptr<AudioSource> m_music;
     std::map<std::string, AudioSource> m_sounds;
+    std::chrono::steady_clock::time_point m_loadTime;
 
 private:
     std::map<std::string, std::unique_ptr<Image>> m_images;
@@ -25,13 +26,13 @@ public:
 protected:
     GameScreen(Instance* instance) : m_instance(instance) { }
 
-    void setBackground(const std::string& filename);
-    void setMusic(const std::string& filename);
-
     const Image* addImage(const std::string& name, const std::string& path);
     const Image* getImage(const std::string& name);
-
+    void setBackground(const std::string& filename);
+    void setMusic(const std::string& filename);
     void reloadImages();
+    float timeSinceLoad();
+
     virtual void own_draw() = 0;
     virtual void own_load() { }
 };

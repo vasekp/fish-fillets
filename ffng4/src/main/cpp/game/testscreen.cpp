@@ -12,7 +12,6 @@ void TestScreen::own_load() {
     glUniform1f(program.uniform("uAmplitude"), 4.0);
     glUniform1f(program.uniform("uPeriod"), 12.0);
     glUniform1f(program.uniform("uSpeed"), 5.0);
-    m_loadTime = std::chrono::steady_clock::now();
 }
 
 void TestScreen::own_draw() {
@@ -20,10 +19,9 @@ void TestScreen::own_draw() {
     const auto& copyProgram = m_instance->graphics->shaders()->copy;
     const auto& wavyProgram = m_instance->graphics->shaders()->wavyImage;
 
-    float time = std::chrono::duration<float>(std::chrono::steady_clock::now() - m_loadTime).count();
-    float phase = std::fmod(time, (float)(2*M_PI));
+    float phase = std::fmod(timeSinceLoad(), (float)(2*M_PI));
     glUseProgram(wavyProgram);
-    glUniform1f(wavyProgram.uniform("uShift"), phase);
+    glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
     canvas->drawImage(getImage("background"), wavyProgram);
     canvas->drawImage(getImage("walls"), copyProgram);

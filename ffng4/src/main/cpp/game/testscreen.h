@@ -4,7 +4,6 @@
 #include "screen.h"
 
 class TestScreen : public GameScreen {
-    std::chrono::steady_clock::time_point m_loadTime;
 
 public:
     TestScreen(Instance*, const char*, const char*, const char*);

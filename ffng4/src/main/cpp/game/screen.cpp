@@ -40,9 +40,14 @@ void GameScreen::load() {
     }
 
     own_load();
+    m_loadTime = std::chrono::steady_clock::now();
 
     // Music is playing with the last shown frame while this thread is busy (loadMusic, reloadImages),
     // so make this the very last thing
     m_instance->audio->clear();
     m_instance->audio->addSource(m_music);
+}
+
+float GameScreen::timeSinceLoad() {
+    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_loadTime).count();
 }
