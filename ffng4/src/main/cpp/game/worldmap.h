@@ -6,11 +6,11 @@
 class WorldMap : public GameScreen {
 public:
     struct MaskColors {
-        static constexpr Color exit = 0x008080FF;
-        static constexpr Color options = 0x008000FF;
-        static constexpr Color intro = 0x000080FF;
-        static constexpr Color credits = 0x808000FF;
-        static constexpr Color mainBranch = 0xFFFFFFFF;
+        static constexpr Color exit = 0x008080;
+        static constexpr Color options = 0x008000;
+        static constexpr Color intro = 0x000080;
+        static constexpr Color credits = 0x808000;
+        static constexpr Color mainBranch = 0xFFFFFF;
     };
 
     enum class Frames {

@@ -32,7 +32,7 @@ namespace ogl {
     Color Framebuffer::getPixel(unsigned x, unsigned y) const {
         std::uint8_t pixels[4];
         glReadPixels((GLint)x, (GLint)y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        return {pixels[0], pixels[1], pixels[2], pixels[3]};
+        return {pixels[0], pixels[1], pixels[2]};
     }
 
 }
