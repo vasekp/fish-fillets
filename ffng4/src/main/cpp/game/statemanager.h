@@ -6,7 +6,8 @@
 
 enum class GameState {
     WorldMap,
-    TestScreen
+    TestScreen,
+    Intro
 };
 
 class StateManager {
@@ -21,6 +22,8 @@ public:
     void setState(GameState state);
     GameScreen* curScreen() { return m_screens.back().get(); }
 
+private:
+    void playIntro();
 };
 
 #endif //FISH_FILLETS_STATEMANAGER_H

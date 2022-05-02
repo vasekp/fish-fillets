@@ -9,6 +9,7 @@ namespace jni {
         m_vm->AttachCurrentThread(&m_env, nullptr);
         m_class = m_env->GetObjectClass(m_obj);
         m_methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+        m_methods["playIntro"] = getMethodID("playIntro", "()V");
     }
 
     Env::~Env() {

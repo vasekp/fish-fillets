@@ -22,17 +22,28 @@ void StateManager::setState(GameState state) {
             break;
         case GameState::TestScreen:
             assert(m_screens.size() == 1);
-            auto screen = std::make_unique<TestScreen>(m_instance,
-                                                      "images/start/prvni-p.png",
-                                                      "images/start/prvni-w.png",
-                                                      "music/rybky04.ogg");
-            m_screens.push_back(std::move(screen));
+            {
+                auto screen = std::make_unique<TestScreen>(m_instance,
+                                                           "images/start/prvni-p.png",
+                                                           "images/start/prvni-w.png",
+                                                           "music/rybky04.ogg");
+                m_screens.push_back(std::move(screen));
+            }
             if(m_instance->live)
                 curScreen()->start();
             break;
+        case GameState::Intro:
+            playIntro();
+            // Don't set m_state.
+            return;
     }
     m_state = state;
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
     LOGD("setState duration = %f s", diff.count());
+}
+
+void StateManager::playIntro() {
+    auto& jni = m_instance->jni;
+    jni->CallVoidMethod(jni.object(), jni.method("playIntro"));
 }

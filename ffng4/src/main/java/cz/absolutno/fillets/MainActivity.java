@@ -1,6 +1,7 @@
 package cz.absolutno.fillets;
 
 import android.app.NativeActivity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,9 +27,6 @@ public class MainActivity extends NativeActivity {
         } else {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-
-        /*Intent intent = new Intent(this, VideoActivity.class);
-        startActivity(intent);*/
     }
 
     Bitmap loadBitmap(String filename) {
@@ -40,5 +38,10 @@ public class MainActivity extends NativeActivity {
             Log.e(TAG, "asset not found: " + filename);
             return null;
         }
+    }
+
+    void playIntro() {
+        Intent intent = new Intent(this, VideoActivity.class);
+        startActivity(intent);
     }
 }

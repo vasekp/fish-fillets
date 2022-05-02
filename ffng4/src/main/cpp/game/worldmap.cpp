@@ -40,7 +40,7 @@ void WorldMap::own_draw() {
         float phase = std::fmod(timeSinceLoad(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = (int)sin2;
-        canvas->drawImage(*nodeImages[base + 1], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
+        canvas->drawImage(*nodeImages[std::max(base + 1, 3)], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
         const auto& alphaProgram = m_instance->graphics->shaders()->alpha;
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
@@ -73,6 +73,8 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         staticFrame(WorldMap::Frames::options);
     } else if(mask_color == WorldMap::MaskColors::intro) {
         staticFrame(WorldMap::Frames::intro);
+        m_instance->live = false;
+        m_instance->states->setState(GameState::Intro);
     } else if(mask_color == WorldMap::MaskColors::credits) {
         staticFrame(WorldMap::Frames::credits);
     } else {
