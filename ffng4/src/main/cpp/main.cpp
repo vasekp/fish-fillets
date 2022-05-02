@@ -75,24 +75,29 @@ void android_main(struct android_app* app) {
         instance->state = *(struct saved_state*)app->savedState;*/
 
     while(true) {
-        int ident;
-        int events;
-        struct android_poll_source* source;
+        try {
+            int ident;
+            int events;
+            struct android_poll_source *source;
 
-        while ((ident=ALooper_pollAll(instance->live ? 0 : -1, nullptr, &events,
-                                      (void**)&source)) >= 0) {
-            if (source != nullptr)
-                source->process(app, source);
-            if (ident == LOOPER_ID_USER) {
-                // sensors...
+            while ((ident = ALooper_pollAll(instance->live ? 0 : -1, nullptr, &events,
+                                            (void **) &source)) >= 0) {
+                if (source != nullptr)
+                    source->process(app, source);
+                if (ident == LOOPER_ID_USER) {
+                    // sensors...
+                }
+                if (app->destroyRequested) {
+                    LOGD("exiting");
+                    return;
+                }
             }
-            if(app->destroyRequested) {
-                LOGD("exiting");
-                return;
-            }
+
+            if (instance->live)
+                instance->graphics->drawFrame();
+        } catch(std::exception& e) {
+            LOGE("Caught exception: %s", e.what());
+            instance->quit();
         }
-
-        if (instance->live)
-            instance->graphics->drawFrame();
     }
 }

@@ -76,6 +76,8 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     std::size_t stride = info.stride;
     void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
+    if(!jBitmap)
+        throw std::runtime_error("bitmap data null");
     auto ret = ogl::Texture::fromImageData(width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jPath);
