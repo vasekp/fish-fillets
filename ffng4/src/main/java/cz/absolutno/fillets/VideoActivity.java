@@ -1,20 +1,19 @@
 package cz.absolutno.fillets;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.VideoView;
 
-public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
+public class VideoActivity extends Activity implements MediaPlayer.OnCompletionListener {
 
     private VideoView videoView;
 
@@ -44,11 +43,6 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnCo
         layout.addView(videoView);
         setContentView(layout);
         getWindow().getDecorView().setBackgroundColor(Color.BLACK);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
 
         if (Build.VERSION.SDK_INT >= 30) {
             videoView.getWindowInsetsController().hide(
