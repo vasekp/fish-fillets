@@ -27,6 +27,7 @@ public:
     const auto system() const { return m_system; }
     const auto* display() const { return &m_system->m_display; }
     const auto* canvas() const { return &m_system->m_canvas; }
+    const auto* readBuffer() const { return &m_system->m_readBuffer; }
     const auto* shaders() const { return &m_system->m_shaders; }
 
     void setCanvasSize(unsigned width, unsigned height);

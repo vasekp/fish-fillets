@@ -32,7 +32,8 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         auto sy = (int)AMotionEvent_getY(event, 0);
         auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
         LOGD("%d %d", cx, cy);
-        LOGD("%08X", instance->graphics->canvas()->getPixel(cx, cy).rgba());
+        instance->graphics->readBuffer()->bind();
+        LOGD("%08X", instance->graphics->readBuffer()->getPixel(cx, cy).rgba());
         return 1;
     }
     return 0;
@@ -52,7 +53,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance->audio->activate();
                 instance->live = true;
                 instance->screen()->load();
-                instance->screen()->draw();
+                instance->graphics->drawFrame();
             }
             break;
         case APP_CMD_TERM_WINDOW:

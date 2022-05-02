@@ -11,6 +11,7 @@ public:
     void prep_loading() { m_loadingFrame = true; }
 
 private:
+    void own_load() override;
     void own_draw() override;
 };
 

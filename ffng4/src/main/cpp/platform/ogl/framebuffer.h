@@ -8,6 +8,7 @@ namespace ogl {
         Texture m_texture;
 
     public:
+        Framebuffer();
         Framebuffer(GLuint width, GLuint height);
         Framebuffer(const Framebuffer&) = delete;
         Framebuffer& operator=(const Framebuffer&) = delete;
@@ -18,8 +19,11 @@ namespace ogl {
         auto height() const { return m_texture.height(); }
         auto& texture() const { return m_texture; }
 
-        void bind(GLuint texture = 0) const;
+        void bind() const;
+        void bindWith(const Texture&) const;
         void invalidate() { LOGV("framebuffer: detach %d", m_name); m_name = 0; }
+
+        Color getPixel(unsigned x, unsigned y) const;
     };
 
 }

@@ -4,6 +4,11 @@ WorldMap::WorldMap(Instance* instance) : GameScreen(instance), m_loadingFrame(fa
     setBackground("orig/map.png");
     setMusic("music/menu.ogg");
     addImage("loading", "orig/loading.png");
+    addImage("mask", "orig/map-mask.png");
+}
+
+void WorldMap::own_load() {
+    m_instance->graphics->readBuffer()->bindWith(getImage("mask")->texture());
 }
 
 void WorldMap::own_draw() {

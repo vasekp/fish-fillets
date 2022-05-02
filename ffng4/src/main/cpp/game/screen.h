@@ -13,7 +13,7 @@ protected:
     std::map<std::string, AudioSource> m_sounds;
 
 private:
-    std::map<std::string, Image> m_images;
+    std::map<std::string, std::unique_ptr<Image>> m_images;
 
 public:
     virtual ~GameScreen() { }
@@ -28,7 +28,7 @@ protected:
     void setBackground(const std::string& filename);
     void setMusic(const std::string& filename);
 
-    void addImage(const std::string& name, const std::string& path);
+    const Image* addImage(const std::string& name, const std::string& path);
     const Image* getImage(const std::string& name);
 
     void reloadImages();
