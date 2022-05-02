@@ -10,9 +10,10 @@ class Graphics;
 class Image;
 class Audio;
 class GameScreen;
+class StateManager;
 
-struct saved_state {
-};
+/*struct saved_state {
+};*/
 
 struct Instance {
     android_app* app;
@@ -21,12 +22,11 @@ struct Instance {
     std::unique_ptr<Files> files;
     std::unique_ptr<Graphics> graphics;
     std::unique_ptr<Audio> audio;
+    std::unique_ptr<StateManager> states;
 
-    std::vector<std::unique_ptr<GameScreen>> screens;
-    GameScreen* screen();
-
-    struct saved_state state;
+    //struct saved_state state;
     bool live;
+    GameScreen* curScreen();
 
     Instance(android_app*);
 };

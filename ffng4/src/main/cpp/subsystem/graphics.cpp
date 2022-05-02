@@ -38,7 +38,7 @@ void Graphics::drawFrame() {
     }
 
     m_system->m_canvas.bind();
-    m_instance->screen()->draw();
+    m_instance->curScreen()->draw();
 
     m_system->m_display.bind();
     glClear(GL_COLOR_BUFFER_BIT);
