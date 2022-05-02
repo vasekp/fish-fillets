@@ -12,12 +12,17 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             auto sx = (int)AMotionEvent_getX(event, 0);
             auto sy = (int)AMotionEvent_getY(event, 0);
             auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
-            instance->graphics->readBuffer()->bind();
-            auto mask_color = instance->graphics->readBuffer()->getPixel(cx, cy).rgba();
-            if(mask_color == (uint32_t)WorldMap::MaskColors::exit) {
+            instance->graphics->maskBuffer()->bind();
+            auto mask_color = instance->graphics->maskBuffer()->getPixel(cx, cy);
+            if(mask_color == WorldMap::MaskColors::exit) {
+                screen->staticFrame(WorldMap::Frames::exit);
+                instance->graphics->drawFrame();
                 instance->quit();
+            } else if(mask_color == WorldMap::MaskColors::options) {
+                screen->staticFrame(WorldMap::Frames::options);
+                instance->graphics->drawFrame();
             } else {
-                screen->prep_loading();
+                screen->staticFrame(WorldMap::Frames::loading);
                 instance->graphics->drawFrame();
                 instance->states->setState(GameState::TestScreen);
             }
@@ -56,7 +61,6 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_LOST_FOCUS:
             instance->live = false;
-            instance->graphics->drawFrame();
             break;
         default:
             break;

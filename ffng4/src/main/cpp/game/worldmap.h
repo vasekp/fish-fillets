@@ -4,17 +4,27 @@
 #include "screen.h"
 
 class WorldMap : public GameScreen {
-    bool m_loadingFrame;
-
 public:
-    WorldMap(Instance*);
-    void prep_loading() { m_loadingFrame = true; }
-
-    enum class MaskColors : uint32_t {
-        exit = 0x008080FF
+    struct MaskColors {
+        static constexpr Color exit = 0x008080FF;
+        static constexpr Color options = 0x008000FF;
     };
 
+    enum class Frames {
+        none,
+        loading,
+        exit,
+        options,
+        intro,
+        credits
+    };
+
+    WorldMap(Instance*);
+    void staticFrame(Frames frame);
+
 private:
+    Frames m_nextFrame;
+
     void own_load() override;
     void own_draw() override;
 };
