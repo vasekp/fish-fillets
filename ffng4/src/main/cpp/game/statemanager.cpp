@@ -2,7 +2,11 @@
 #include "game/worldmap.h"
 #include "game/testscreen.h"
 
-StateManager::StateManager(Instance *instance) : m_instance(instance) {
+StateManager::StateManager(Instance *instance) :
+    m_instance(instance),
+    m_screens(),
+    m_state(GameState::WorldMap)
+{
     m_screens.push_back(std::make_unique<WorldMap>(m_instance));
 }
 

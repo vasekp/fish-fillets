@@ -8,18 +8,22 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
         if(instance->states->getState() == GameState::WorldMap) {
-            dynamic_cast<WorldMap*>(instance->curScreen())->prep_loading();
-            instance->graphics->drawFrame();
-            instance->states->setState(GameState::TestScreen);
+            auto* screen = dynamic_cast<WorldMap*>(instance->curScreen());
+            auto sx = (int)AMotionEvent_getX(event, 0);
+            auto sy = (int)AMotionEvent_getY(event, 0);
+            auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
+            instance->graphics->readBuffer()->bind();
+            auto mask_color = instance->graphics->readBuffer()->getPixel(cx, cy).rgba();
+            if(mask_color == (uint32_t)WorldMap::MaskColors::exit) {
+                instance->quit();
+            } else {
+                screen->prep_loading();
+                instance->graphics->drawFrame();
+                instance->states->setState(GameState::TestScreen);
+            }
         } else {
             instance->states->setState(GameState::WorldMap);
         }
-        /*auto sx = (int)AMotionEvent_getX(event, 0);
-        auto sy = (int)AMotionEvent_getY(event, 0);
-        auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
-        LOGD("%d %d", cx, cy);
-        instance->graphics->readBuffer()->bind();
-        LOGD("%08X", instance->graphics->readBuffer()->getPixel(cx, cy).rgba());*/
         return 1;
     }
     return 0;
@@ -48,6 +52,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
+            instance->live = true;
             break;
         case APP_CMD_LOST_FOCUS:
             instance->live = false;
@@ -69,7 +74,7 @@ void android_main(struct android_app* app) {
     /*if (app->savedState != nullptr)
         instance->state = *(struct saved_state*)app->savedState;*/
 
-    while (true) {
+    while(true) {
         int ident;
         int events;
         struct android_poll_source* source;
@@ -81,12 +86,13 @@ void android_main(struct android_app* app) {
             if (ident == LOOPER_ID_USER) {
                 // sensors...
             }
-            if (app->destroyRequested != 0)
+            if(app->destroyRequested) {
+                LOGD("exiting");
                 return;
+            }
         }
 
         if (instance->live)
             instance->graphics->drawFrame();
     }
-    LOGD("exiting");
 }

@@ -8,7 +8,7 @@
 #include "subsystem/files.h"
 #include "game/statemanager.h"
 
-Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(false) {
+Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(false), quit_request(false) {
     files = std::make_unique<Files>(this);
     graphics = std::make_unique<Graphics>(this);
     audio = std::make_unique<Audio>(this);
@@ -17,4 +17,10 @@ Instance::Instance(android_app* androidApp) : app(androidApp), jni(app), live(fa
 
 GameScreen* Instance::curScreen() {
     return states->curScreen();
+}
+
+void Instance::quit() {
+    live = false;
+    audio->clear();
+    ANativeActivity_finish(app->activity);
 }

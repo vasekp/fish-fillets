@@ -10,6 +10,10 @@ public:
     WorldMap(Instance*);
     void prep_loading() { m_loadingFrame = true; }
 
+    enum class MaskColors : uint32_t {
+        exit = 0x008080FF
+    };
+
 private:
     void own_load() override;
     void own_draw() override;

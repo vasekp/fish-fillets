@@ -26,9 +26,13 @@ struct Instance {
 
     //struct saved_state state;
     bool live;
-    GameScreen* curScreen();
+    bool quit_request;
 
     Instance(android_app*);
+
+    GameScreen* curScreen();
+
+    void quit();
 };
 
 #endif //FISH_FILLETS_INSTANCE_H
