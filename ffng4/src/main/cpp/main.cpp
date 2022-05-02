@@ -21,6 +21,12 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             } else if(mask_color == WorldMap::MaskColors::options) {
                 screen->staticFrame(WorldMap::Frames::options);
                 instance->graphics->drawFrame();
+            } else if(mask_color == WorldMap::MaskColors::intro) {
+                screen->staticFrame(WorldMap::Frames::intro);
+                instance->graphics->drawFrame();
+            } else if(mask_color == WorldMap::MaskColors::credits) {
+                screen->staticFrame(WorldMap::Frames::credits);
+                instance->graphics->drawFrame();
             } else {
                 screen->staticFrame(WorldMap::Frames::loading);
                 instance->graphics->drawFrame();

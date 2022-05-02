@@ -9,6 +9,11 @@ WorldMap::WorldMap(Instance* instance) :
     addImage("loading", "orig/loading.png");
     addImage("mask", "orig/map-mask.png");
     addImage("masked", "images/menu/map_lower.png");
+
+    maskColors.insert({Frames::exit, MaskColors::exit});
+    maskColors.insert({Frames::options, MaskColors::options});
+    maskColors.insert({Frames::intro, MaskColors::intro});
+    maskColors.insert({Frames::credits, MaskColors::credits});
 }
 
 void WorldMap::own_load() {
@@ -27,13 +32,11 @@ void WorldMap::own_draw() {
             canvas->drawImage(getImage("loading"), copyProgram, 227, 160);
             break;
         case Frames::exit:
-            glUseProgram(maskProgram);
-            glUniform4fv(maskProgram.uniform("uMaskColor"), 1, MaskColors::exit.gl().get());
-            canvas->drawImage(getImage("masked"), maskProgram);
-            break;
         case Frames::options:
+        case Frames::intro:
+        case Frames::credits:
             glUseProgram(maskProgram);
-            glUniform4fv(maskProgram.uniform("uMaskColor"), 1, MaskColors::options.gl().get());
+            glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColors.at(m_nextFrame).gl().get());
             canvas->drawImage(getImage("masked"), maskProgram);
             break;
         default:

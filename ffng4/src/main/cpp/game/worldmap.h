@@ -8,6 +8,8 @@ public:
     struct MaskColors {
         static constexpr Color exit = 0x008080FF;
         static constexpr Color options = 0x008000FF;
+        static constexpr Color intro = 0x000080FF;
+        static constexpr Color credits = 0x808000FF;
     };
 
     enum class Frames {
@@ -27,6 +29,8 @@ private:
 
     void own_load() override;
     void own_draw() override;
+
+    std::map<Frames, Color> maskColors;
 };
 
 #endif //FISH_FILLETS_WORLDMAP_H
