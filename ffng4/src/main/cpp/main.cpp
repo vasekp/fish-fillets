@@ -7,35 +7,10 @@
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto* instance = (struct Instance*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-        if(instance->states->getState() == GameState::WorldMap) {
-            auto* screen = dynamic_cast<WorldMap*>(instance->curScreen());
-            auto sx = (int)AMotionEvent_getX(event, 0);
-            auto sy = (int)AMotionEvent_getY(event, 0);
-            auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
-            instance->graphics->maskBuffer()->bind();
-            auto mask_color = instance->graphics->maskBuffer()->getPixel(cx, cy);
-            if(mask_color == WorldMap::MaskColors::exit) {
-                screen->staticFrame(WorldMap::Frames::exit);
-                instance->graphics->drawFrame();
-                instance->quit();
-            } else if(mask_color == WorldMap::MaskColors::options) {
-                screen->staticFrame(WorldMap::Frames::options);
-                instance->graphics->drawFrame();
-            } else if(mask_color == WorldMap::MaskColors::intro) {
-                screen->staticFrame(WorldMap::Frames::intro);
-                instance->graphics->drawFrame();
-            } else if(mask_color == WorldMap::MaskColors::credits) {
-                screen->staticFrame(WorldMap::Frames::credits);
-                instance->graphics->drawFrame();
-            } else {
-                screen->staticFrame(WorldMap::Frames::loading);
-                instance->graphics->drawFrame();
-                instance->states->setState(GameState::TestScreen);
-            }
-        } else {
-            instance->states->setState(GameState::WorldMap);
-        }
-        return 1;
+        auto sx = (int)AMotionEvent_getX(event, 0);
+        auto sy = (int)AMotionEvent_getY(event, 0);
+        auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
+        return instance->curScreen()->mouse(cx, cy) ? 1 : 0;
     }
     return 0;
 }

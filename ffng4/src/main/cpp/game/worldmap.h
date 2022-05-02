@@ -29,6 +29,7 @@ private:
 
     void own_load() override;
     void own_draw() override;
+    bool own_mouse(unsigned, unsigned) override;
 
     std::map<Frames, Color> maskColors;
 };

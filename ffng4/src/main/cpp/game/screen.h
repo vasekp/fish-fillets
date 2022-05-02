@@ -19,9 +19,10 @@ private:
 public:
     virtual ~GameScreen() { }
 
-    virtual void start();
-    virtual void load();
-    void draw() { own_draw(); };
+    void start();
+    void load();
+    void draw() { own_draw(); }
+    bool mouse(unsigned x, unsigned y) { return own_mouse(x, y); }
 
 protected:
     GameScreen(Instance* instance) : m_instance(instance) { }
@@ -35,6 +36,7 @@ protected:
 
     virtual void own_draw() = 0;
     virtual void own_load() { }
+    virtual bool own_mouse(unsigned x, unsigned y) { return false; }
 };
 
 #endif //FISH_FILLETS_GAME_SCREEN_H

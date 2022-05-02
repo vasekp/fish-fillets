@@ -1,4 +1,5 @@
 #include "testscreen.h"
+#include "statemanager.h"
 
 TestScreen::TestScreen(Instance* instance, const char* a, const char* b, const char *c) : GameScreen(instance) {
     setBackground(a);
@@ -25,4 +26,9 @@ void TestScreen::own_draw() {
 
     canvas->drawImage(getImage("background"), wavyProgram);
     canvas->drawImage(getImage("walls"), copyProgram);
+}
+
+bool TestScreen::own_mouse(unsigned int x, unsigned int y) {
+    m_instance->states->setState(GameState::WorldMap);
+    return true;
 }

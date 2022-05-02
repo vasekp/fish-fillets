@@ -11,6 +11,7 @@ public:
 private:
     void own_load() override;
     void own_draw() override;
+    bool own_mouse(unsigned, unsigned) override;
 };
 
 #endif //FISH_FILLETS_WORLDMAP_H2

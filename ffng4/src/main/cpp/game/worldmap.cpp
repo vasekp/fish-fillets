@@ -1,4 +1,5 @@
 #include "worldmap.h"
+#include "statemanager.h"
 
 WorldMap::WorldMap(Instance* instance) :
     GameScreen(instance),
@@ -14,6 +15,11 @@ WorldMap::WorldMap(Instance* instance) :
     maskColors.insert({Frames::options, MaskColors::options});
     maskColors.insert({Frames::intro, MaskColors::intro});
     maskColors.insert({Frames::credits, MaskColors::credits});
+}
+
+void WorldMap::staticFrame(Frames frame) {
+    m_nextFrame = frame;
+    m_instance->graphics->drawFrame();
 }
 
 void WorldMap::own_load() {
@@ -45,6 +51,21 @@ void WorldMap::own_draw() {
     m_nextFrame = Frames::none;
 }
 
-void WorldMap::staticFrame(Frames frame) {
-    m_nextFrame = frame;
+bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
+    m_instance->graphics->maskBuffer()->bind();
+    auto mask_color = m_instance->graphics->maskBuffer()->getPixel(x, y);
+    if(mask_color == WorldMap::MaskColors::exit) {
+        staticFrame(WorldMap::Frames::exit);
+        m_instance->quit();
+    } else if(mask_color == WorldMap::MaskColors::options) {
+        staticFrame(WorldMap::Frames::options);
+    } else if(mask_color == WorldMap::MaskColors::intro) {
+        staticFrame(WorldMap::Frames::intro);
+    } else if(mask_color == WorldMap::MaskColors::credits) {
+        staticFrame(WorldMap::Frames::credits);
+    } else {
+        staticFrame(WorldMap::Frames::loading);
+        m_instance->states->setState(GameState::TestScreen);
+    }
+    return true;
 }
