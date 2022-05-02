@@ -5,8 +5,9 @@ struct Shaders {
     ogl::Shader vertCommon;
     ogl::Program copy;
     ogl::Program maskCopy;
-    ogl::Program fill;
+    ogl::Program alpha;
     ogl::Program wavyImage;
+    ogl::Program fill;
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texCanvas_shader = 1;
@@ -20,9 +21,10 @@ struct Shaders {
 
         copy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance->files->system("shader/copy.frag").read()});
         maskCopy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance->files->system("shader/mask-copy.frag").read()});
+        alpha = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance->files->system("shader/alpha.frag").read()});
         wavyImage = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance->files->system("shader/wavy-image.frag").read()});
 
-        for(const auto* program : {&copy, &maskCopy, &wavyImage}) {
+        for(const auto* program : {&copy, &maskCopy, &alpha, &wavyImage}) {
             glUseProgram(*program);
             glUniform1i(program->uniform("uTexture"), Shaders::texImage_shader);
             glUniform2f(program->uniform("uSrcOffset"), 0.f, 0.f);

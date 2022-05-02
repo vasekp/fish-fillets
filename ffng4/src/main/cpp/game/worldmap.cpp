@@ -34,14 +34,17 @@ void WorldMap::own_draw() {
     const auto& canvas = m_instance->graphics->canvas();
     const auto& copyProgram = m_instance->graphics->shaders()->copy;
 
-    constexpr std::array nodeAnim{1, 2, 3, 4, 4, 4, 3, 2, 1, 1};
-
     canvas->drawImage(*getImage("background"), copyProgram);
     if(m_nextFrame != Frames::loading) {
         drawMasked(MaskColors::mainBranch);
-        int ticks = (int)(timeSinceLoad() * 10.f);
-        int phase = nodeAnim[ticks % nodeAnim.size()];
-        canvas->drawImage(*nodeImages[nodeAnim[phase]], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
+        float phase = std::fmod(timeSinceLoad(), 10.f);
+        float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
+        auto base = (int)sin2;
+        canvas->drawImage(*nodeImages[base + 1], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
+        const auto& alphaProgram = m_instance->graphics->shaders()->alpha;
+        glUseProgram(alphaProgram);
+        glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
+        canvas->drawImage(*nodeImages[base + 2], alphaProgram, 320 - nodeRadius, 121 - nodeRadius);
     }
 
     switch(m_nextFrame) {
