@@ -19,11 +19,13 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
     auto* instance = (struct Instance*)app->userData;
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
+            LOGI("APP_CMD_SAVE_STATE");
             /*instance->app->savedState = malloc(sizeof(struct saved_state));
             *((struct saved_state*)instance->app->savedState) = instance->state;
             instance->app->savedStateSize = sizeof(struct saved_state);*/
             break;
         case APP_CMD_INIT_WINDOW:
+            LOGI("APP_CMD_INIT_WINDOW");
             if (instance->app->window != nullptr) {
                 instance->graphics->activate();
                 instance->audio->activate();
@@ -33,15 +35,33 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             }
             break;
         case APP_CMD_TERM_WINDOW:
+            LOGI("APP_CMD_TERM_WINDOW");
             instance->graphics->shutdown();
             instance->audio->shutdown();
             instance->live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
+            LOGI("APP_CMD_GAINED_FOCUS");
             instance->live = true;
             break;
         case APP_CMD_LOST_FOCUS:
+            LOGI("APP_CMD_LOST_FOCUS");
             instance->live = false;
+            break;
+        case APP_CMD_START:
+            LOGI("APP_CMD_START");
+            break;
+        case APP_CMD_PAUSE:
+            LOGI("APP_CMD_PAUSE");
+            break;
+        case APP_CMD_RESUME:
+            LOGI("APP_CMD_RESUME");
+            break;
+        case APP_CMD_STOP:
+            LOGI("APP_CMD_STOP");
+            break;
+        case APP_CMD_DESTROY:
+            LOGI("APP_CMD_DESTROY");
             break;
         default:
             break;
