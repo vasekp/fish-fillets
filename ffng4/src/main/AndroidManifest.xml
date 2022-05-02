@@ -25,6 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".VideoActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:screenOrientation="landscape"
+            android:exported="false">
+        </activity>
     </application>
 
 </manifest>
