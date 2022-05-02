@@ -10,6 +10,7 @@ public:
         static constexpr Color options = 0x008000FF;
         static constexpr Color intro = 0x000080FF;
         static constexpr Color credits = 0x808000FF;
+        static constexpr Color mainBranch = 0xFFFFFFFF;
     };
 
     enum class Frames {
@@ -32,6 +33,7 @@ private:
     bool own_mouse(unsigned, unsigned) override;
 
     std::map<Frames, Color> maskColors;
+    void drawMasked(Color c);
 };
 
 #endif //FISH_FILLETS_WORLDMAP_H

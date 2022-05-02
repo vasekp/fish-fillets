@@ -29,9 +29,10 @@ void WorldMap::own_load() {
 void WorldMap::own_draw() {
     const auto& canvas = m_instance->graphics->canvas();
     const auto& copyProgram = m_instance->graphics->shaders()->copy;
-    const auto& maskProgram = m_instance->graphics->shaders()->maskCopy;
 
     canvas->drawImage(getImage("background"), copyProgram);
+    if(m_nextFrame != Frames::loading)
+        drawMasked(MaskColors::mainBranch);
 
     switch(m_nextFrame) {
         case Frames::loading:
@@ -41,9 +42,7 @@ void WorldMap::own_draw() {
         case Frames::options:
         case Frames::intro:
         case Frames::credits:
-            glUseProgram(maskProgram);
-            glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColors.at(m_nextFrame).gl().get());
-            canvas->drawImage(getImage("masked"), maskProgram);
+            drawMasked(maskColors.at(m_nextFrame));
             break;
         default:
             break;
@@ -68,4 +67,11 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         m_instance->states->setState(GameState::TestScreen);
     }
     return true;
+}
+
+void WorldMap::drawMasked(Color c) {
+    const auto& maskProgram = m_instance->graphics->shaders()->maskCopy;
+    glUseProgram(maskProgram);
+    glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
+    m_instance->graphics->canvas()->drawImage(getImage("masked"), maskProgram);
 }
