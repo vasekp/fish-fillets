@@ -15,7 +15,7 @@ public:
     void resize(unsigned width, unsigned height);
     void bind() const;
 
-    void drawImage(const Image* image, const ogl::Program& program, GLuint destX = 0, GLuint destY = 0) const;
+    void drawImage(const Image& image, const ogl::Program& program, GLuint destX = 0, GLuint destY = 0) const;
 
     static constexpr unsigned texWidth = 1000;
     static constexpr unsigned texHeight = 1000;

@@ -1,16 +1,16 @@
 #include "game/screen.h"
 
-const Image* GameScreen::addImage(const std::string& name, const std::string &filename) {
-    auto [iterator, _] = m_images.insert_or_assign(name, std::make_unique<Image>(filename));
-    return iterator->second.get();
+std::shared_ptr<Image> GameScreen::addImage(const std::string &filename, const std::string& name) {
+    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, std::make_shared<Image>(filename));
+    return iterator->second;
 }
 
-const Image* GameScreen::getImage(const std::string& name) {
-    return m_images.at(name).get();
+std::shared_ptr<Image> GameScreen::getImage(const std::string& name) {
+    return m_images.at(name);
 }
 
 void GameScreen::setBackground(const std::string &filename) {
-    addImage("background", filename);
+    addImage(filename, "background");
 }
 
 void GameScreen::setMusic(const std::string& filename) {

@@ -7,9 +7,13 @@ WorldMap::WorldMap(Instance* instance) :
 {
     setBackground("orig/map.png");
     setMusic("music/menu.ogg");
-    addImage("loading", "orig/loading.png");
-    addImage("mask", "orig/map-mask.png");
-    addImage("masked", "images/menu/map_lower.png");
+    addImage("orig/loading.png", "loading");
+    addImage("orig/map-mask.png", "mask");
+    addImage("images/menu/map_lower.png", "masked");
+    for(int i = 0; i < 5; i++) {
+        auto name = "images/menu/n"s + (char)('0' + i) + ".png";
+        nodeImages.push_back(addImage(name));
+    }
 
     maskColors.insert({Frames::exit, MaskColors::exit});
     maskColors.insert({Frames::options, MaskColors::options});
@@ -23,20 +27,26 @@ void WorldMap::staticFrame(Frames frame) {
 }
 
 void WorldMap::own_load() {
-    m_instance->graphics->setMask(getImage("mask"));
+    m_instance->graphics->setMask(*getImage("mask"));
 }
 
 void WorldMap::own_draw() {
     const auto& canvas = m_instance->graphics->canvas();
     const auto& copyProgram = m_instance->graphics->shaders()->copy;
 
-    canvas->drawImage(getImage("background"), copyProgram);
-    if(m_nextFrame != Frames::loading)
+    constexpr std::array nodeAnim{1, 2, 3, 4, 4, 4, 3, 2, 1, 1};
+
+    canvas->drawImage(*getImage("background"), copyProgram);
+    if(m_nextFrame != Frames::loading) {
         drawMasked(MaskColors::mainBranch);
+        int ticks = (int)(timeSinceLoad() * 10.f);
+        int phase = nodeAnim[ticks % nodeAnim.size()];
+        canvas->drawImage(*nodeImages[nodeAnim[phase]], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
+    }
 
     switch(m_nextFrame) {
         case Frames::loading:
-            canvas->drawImage(getImage("loading"), copyProgram, 227, 160);
+            canvas->drawImage(*getImage("loading"), copyProgram, 227, 160);
             break;
         case Frames::exit:
         case Frames::options:
@@ -73,5 +83,5 @@ void WorldMap::drawMasked(Color c) {
     const auto& maskProgram = m_instance->graphics->shaders()->maskCopy;
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
-    m_instance->graphics->canvas()->drawImage(getImage("masked"), maskProgram);
+    m_instance->graphics->canvas()->drawImage(*getImage("masked"), maskProgram);
 }

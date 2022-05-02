@@ -20,11 +20,11 @@ void Canvas::bind() const {
     glViewport(0, 0, (GLint)width(), (GLint)height());
 }
 
-void Canvas::drawImage(const Image* image, const ogl::Program& program, GLuint destX, GLuint destY) const {
+void Canvas::drawImage(const Image& image, const ogl::Program& program, GLuint destX, GLuint destY) const {
     glUseProgram(program);
-    image->texture().bind();
-    glUniform2f(program.uniform("uSrcSize"), (float) image->width(), (float) image->height());
+    image.texture().bind();
+    glUniform2f(program.uniform("uSrcSize"), (float) image.width(), (float) image.height());
     glUniform2f(program.uniform("uDstSize"), (float) m_width, (float) m_height);
     glUniform2f(program.uniform("uDstOffset"), (float)destX, (float)destY);
-    GraphicsUtils::rect(0u, 0u, image->width(), image->height());
+    GraphicsUtils::rect(0u, 0u, image.width(), image.height());
 }

@@ -31,7 +31,7 @@ public:
     const auto* shaders() const { return &m_system->m_shaders; }
 
     void setCanvasSize(unsigned width, unsigned height);
-    void setMask(const Image* image);
+    void setMask(const Image& image);
     void drawFrame();
     std::pair<int, int> screen2canvas(int x, int y);
     std::pair<int, int> canvas2screen(int x, int y);

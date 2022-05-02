@@ -31,11 +31,11 @@ void Graphics::setCanvasSize(unsigned width, unsigned height) {
     glViewport(viewport.vx, viewport.vy, viewport.vw, viewport.vh);
 }
 
-void Graphics::setMask(const Image* image) {
-    m_system->m_maskBuffer.bindWith(image->texture());
+void Graphics::setMask(const Image& image) {
+    m_system->m_maskBuffer.bindWith(image.texture());
 
     glActiveTexture(Shaders::texMask_gl);
-    glBindTexture(GL_TEXTURE_2D, image->texture());
+    glBindTexture(GL_TEXTURE_2D, image.texture());
     glActiveTexture(Shaders::texImage_gl);
 }
 

@@ -3,7 +3,7 @@
 
 TestScreen::TestScreen(Instance* instance, const char* a, const char* b, const char *c) : GameScreen(instance) {
     setBackground(a);
-    addImage("walls", b);
+    addImage(b, "walls");
     setMusic(c);
 }
 
@@ -24,8 +24,8 @@ void TestScreen::own_draw() {
     glUseProgram(wavyProgram);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
-    canvas->drawImage(getImage("background"), wavyProgram);
-    canvas->drawImage(getImage("walls"), copyProgram);
+    canvas->drawImage(*getImage("background"), wavyProgram);
+    canvas->drawImage(*getImage("walls"), copyProgram);
 }
 
 bool TestScreen::own_mouse(unsigned int x, unsigned int y) {
