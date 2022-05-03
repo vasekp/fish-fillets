@@ -27,6 +27,7 @@ public:
     ~AudioSource() { if(m_data) LOGD("freeing audio source: %s", m_name.c_str()); }
 
     const std::string& name() const { return m_name; }
+    float* data() const { return m_data.get(); }
 
     bool done() const;
     void mixin(float output[], std::size_t numSamples);

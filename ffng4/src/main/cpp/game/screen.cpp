@@ -14,7 +14,7 @@ void GameScreen::setBackground(const std::string &filename) {
 }
 
 void GameScreen::setMusic(const std::string& filename) {
-    m_music = std::make_shared<AudioSource>(m_instance->audio->loadMusic(filename));
+    m_music = m_instance->audio->loadMusic(filename);
 }
 
 void GameScreen::reloadImages() {

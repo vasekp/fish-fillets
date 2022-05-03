@@ -21,8 +21,8 @@ public:
     void removeSource(const std::string& name);
     void clear();
 
-    AudioSource loadSound(const std::string& filename);
-    AudioSource loadMusic(const std::string& filename);
+    std::shared_ptr<AudioSource> loadSound(const std::string& filename);
+    std::shared_ptr<AudioSource> loadMusic(const std::string& filename);
 
     friend class AudioStream;
 };

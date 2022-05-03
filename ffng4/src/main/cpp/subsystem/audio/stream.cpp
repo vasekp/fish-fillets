@@ -16,11 +16,11 @@ AudioStream::AudioStream(Audio* iface) : m_iface(iface), m_stream() {
     //builder.setErrorCallback(this);
 
     if (auto result = builder.openStream(&m_stream); result != oboe::Result::OK)
-        ::error("Failed to open m_stream.", "oboe: %s", convertToText(result));
+        ::error("Failed to open stream.", "oboe: %s", convertToText(result));
 
     oboe::Result result = m_stream->requestStart();
     if (result != oboe::Result::OK)
-        LOGE("Failed to start audio m_stream. Error: %s", convertToText(result));
+        LOGE("Failed to start audio stream. Error: %s", convertToText(result));
 }
 
 AudioStream::~AudioStream() {

@@ -4,7 +4,7 @@ void AudioSource::mixin(float *output, std::size_t numSamples) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);
     for (auto i = 0u; i < countRead; i++)
         output[i] += m_data[m_sampleIndex++];
-    if(m_sampleIndex >= m_loopEnd) {
+    if(m_loop && m_sampleIndex >= m_loopEnd) {
         LOGD("music loop");
         m_sampleIndex = m_loopStart;
         mixin(output + countRead, numSamples - countRead);
