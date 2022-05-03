@@ -59,9 +59,16 @@ AudioSource Audio::loadSound(const std::string& filename) {
     AMediaCodec* codec = AMediaCodec_createDecoderByType(mimeType);
     AMediaCodec_configure(codec, format, nullptr, nullptr, 0);
     AMediaCodec_start(codec);
+    LOGV("input format: %s", AMediaFormat_toString(format));
 
     bool extractorDone = false, codecDone = false;
     std::vector<std::uint8_t> dataRaw;
+    std::int64_t numFramesEstimate;
+    AMediaFormat_getInt64(format, AMEDIAFORMAT_KEY_DURATION, &numFramesEstimate);
+    numFramesEstimate = 1 + numFramesEstimate * 22050 / 1000000;
+    LOGV("numFramesEstimate %ld", numFramesEstimate);
+    assert(numFramesEstimate > 0);
+    dataRaw.reserve(numFramesEstimate * 2);
 
     do {
         auto inIndex = AMediaCodec_dequeueInputBuffer(codec, 2000);
@@ -95,9 +102,13 @@ AudioSource Audio::loadSound(const std::string& filename) {
             std::memcpy(dataRaw.data() + prevSize, outBuffer, info.size);
             AMediaCodec_releaseOutputBuffer(codec, outIndex, false);
         } else switch(outIndex) {
+                case AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED: {
+                    auto ff = AMediaCodec_getOutputFormat(codec);
+                    LOGV("output format: %s", AMediaFormat_toString(ff));
+                    AMediaFormat_delete(ff);
+                }
                 case AMEDIACODEC_INFO_TRY_AGAIN_LATER:
                 case AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED:
-                case AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED:
                     break;
                 default:
                     ::error("AMediaCodec_dequeueOutputBuffer failed", "outIndex = %d", outIndex);
@@ -110,6 +121,7 @@ AudioSource Audio::loadSound(const std::string& filename) {
     AMediaExtractor_delete(extractor);
 
     std::size_t numSamples = dataRaw.size() / 2;
+    LOGV("numSamples %ld", numSamples);
     auto data = std::make_unique<float[]>(numSamples);
     oboe::convertPcm16ToFloat(reinterpret_cast<std::int16_t*>(dataRaw.data()), data.get(), (std::int32_t)numSamples);
 

@@ -23,5 +23,5 @@ void AudioSource::setLoop(std::size_t start, std::size_t end) {
     m_loop = true;
     m_loopStart = start;
     m_loopEnd = std::min(end, m_samplesTotal);
-    LOGD("setLoop: %ld %ld", m_loopStart, m_loopEnd);
+    LOGV("setLoop: %ld %ld", m_loopStart, m_loopEnd);
 }
