@@ -8,8 +8,9 @@
 #include "graphics/coords.h"
 #include "graphics/canvas.h"
 #include "graphics/shaders.h"
-#include "graphics/system.h"
 #include "graphics/image.h"
+#include "graphics/readbuffer.h"
+#include "graphics/system.h"
 #include "graphics/utils.h"
 
 class Graphics {
@@ -25,10 +26,11 @@ public:
     const auto system() const { return m_system; }
     const auto* display() const { return &m_system->m_display; }
     auto* canvas() const { return &m_system->m_canvas; }
-    const auto* maskBuffer() const { return &m_system->m_maskBuffer; }
+    const auto* readBuffer() const { return &m_system->m_readBuffer; }
     const auto* shaders() const { return &m_system->m_shaders; }
 
-    void setMask(const Image& image);
+    static void setMask(const Image &image);
+
     void drawFrame();
 
     ogl::Texture loadImage(const std::string& path) const;

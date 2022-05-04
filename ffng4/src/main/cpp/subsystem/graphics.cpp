@@ -13,8 +13,6 @@ void Graphics::shutdown() {
 }
 
 void Graphics::setMask(const Image& image) {
-    m_system->m_maskBuffer.bindWith(image.texture());
-
     glActiveTexture(Shaders::texMask_gl);
     glBindTexture(GL_TEXTURE_2D, image.texture());
     glActiveTexture(Shaders::texImage_gl);

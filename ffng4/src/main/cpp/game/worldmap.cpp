@@ -27,6 +27,7 @@ void WorldMap::staticFrame(Frames frame) {
 }
 
 void WorldMap::own_load() {
+    m_instance->graphics->readBuffer()->setImage(*getImage("mask"));
     m_instance->graphics->setMask(*getImage("mask"));
 }
 
@@ -64,8 +65,7 @@ void WorldMap::own_draw() {
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
-    m_instance->graphics->maskBuffer()->bind();
-    auto mask_color = m_instance->graphics->maskBuffer()->getPixel(x, y);
+    auto mask_color = m_instance->graphics->readBuffer()->getPixel(x, y);
     if(mask_color == WorldMap::MaskColors::exit) {
         staticFrame(WorldMap::Frames::exit);
         m_instance->quit();
