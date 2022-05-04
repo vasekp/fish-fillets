@@ -1,22 +1,22 @@
 #include "subsystem/graphics.h"
 
 Canvas::Canvas(unsigned displayWidth, unsigned displayHeight) :
-        m_displayDim(displayHeight, displayHeight),
-        m_windowDim(0, 0),
+        m_displayDim(displayWidth, displayHeight),
+        m_windowDim(),
         m_viewport()
 { }
 
 void Canvas::setWindowSize(unsigned width, unsigned height) {
     m_windowDim = {width, height};
     float scale = std::min(m_displayDim.fx() / m_windowDim.fx(), m_displayDim.fy() / m_windowDim.fy());
-    m_viewport = {(int)(m_displayDim.fx() - scale * m_windowDim.fx()) / 2,
-                  (int)(m_displayDim.fy() - scale * m_windowDim.fy()) / 2,
-                  (int)(scale * m_windowDim.fx()), (int)(scale * m_windowDim.fy())};
-    LOGV("Viewport: %d %d %d %d (scale %f)", m_viewport.vx, m_viewport.vy, m_viewport.vw, m_viewport.vh, scale);
+    m_viewport = {{(m_displayDim.fx() - scale * m_windowDim.fx()) / 2,
+                   (m_displayDim.fy() - scale * m_windowDim.fy()) / 2},
+                  {scale * m_windowDim.fx(), scale * m_windowDim.fy()}};
+    LOGV("Viewport: %d %d %d %d (scale %f)", m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y(), scale);
 }
 
 void Canvas::bind() const {
-    glViewport(m_viewport.vx, m_viewport.vy, m_viewport.vw, m_viewport.vh);
+    glViewport(m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y());
 }
 
 void Canvas::drawImage(const Image& image, const ogl::Program& program, GLuint destX, GLuint destY) const {
@@ -30,14 +30,14 @@ void Canvas::drawImage(const Image& image, const ogl::Program& program, GLuint d
 
 std::pair<int, int> Canvas::screen2canvas(int x, int y) {
     return {
-            (int)((float) (x - m_viewport.vx) / (float) m_viewport.vw * m_windowDim.fx()),
-            (int)((float) (y - m_viewport.vy) / (float) m_viewport.vh * m_windowDim.fy())
+            (int)((float) (x - m_viewport.origin.x()) / m_viewport.extent.fx() * m_windowDim.fx()),
+            (int)((float) (y - m_viewport.origin.y()) / m_viewport.extent.fy() * m_windowDim.fy())
     };
 }
 
 std::pair<int, int> Canvas::canvas2screen(int x, int y) {
     return {
-            (int)((float) x / m_windowDim.fx() * (float) m_viewport.vw) + m_viewport.vx,
-            (int)((float) y / m_windowDim.fy() * (float) m_viewport.vh) + m_viewport.vy
+            (int)((float) x / m_windowDim.fx() * m_viewport.extent.fx()) + m_viewport.origin.x(),
+            (int)((float) y / m_windowDim.fy() * m_viewport.extent.fy()) + m_viewport.origin.y()
     };
 }

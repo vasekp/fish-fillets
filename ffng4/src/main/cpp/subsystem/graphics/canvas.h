@@ -2,8 +2,8 @@
 #define FISH_FILLETS_GRAPHICS_CANVAS_H
 
 class Coords {
-    unsigned m_x;
-    unsigned m_y;
+    int m_x;
+    int m_y;
     float m_fx;
     float m_fy;
 
@@ -13,8 +13,20 @@ public:
             m_fx(x), m_fy(y)
     { }
 
-    unsigned x() const { return m_x; }
-    unsigned y() const { return m_y; }
+    Coords(int x, int y) :
+            m_x(x), m_y(y),
+            m_fx(x), m_fy(y)
+    { }
+
+    Coords(float fx, float fy) :
+            m_x(fx), m_y(fy),
+            m_fx(fx), m_fy(fy)
+    { }
+
+    Coords() : Coords(0, 0) { }
+
+    int x() const { return m_x; }
+    int y() const { return m_y; }
     float fx() const { return m_fx; }
     float fy() const { return m_fy; }
 };
@@ -22,9 +34,9 @@ public:
 class Canvas {
     Coords m_displayDim;
     Coords m_windowDim;
-
     struct {
-        int vx, vy, vw, vh;
+        Coords origin;
+        Coords extent;
     } m_viewport;
 
 public:
