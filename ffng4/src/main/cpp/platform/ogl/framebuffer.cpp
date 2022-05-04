@@ -11,7 +11,6 @@ namespace ogl {
         m_texture = Texture::empty(width, height);
         bind();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     Framebuffer::~Framebuffer() {
