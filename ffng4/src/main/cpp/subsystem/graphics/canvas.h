@@ -1,24 +1,42 @@
 #ifndef FISH_FILLETS_GRAPHICS_CANVAS_H
 #define FISH_FILLETS_GRAPHICS_CANVAS_H
 
-class Canvas {
-    ogl::Framebuffer m_framebuffer;
-    unsigned m_width;
-    unsigned m_height;
+class Coords {
+    unsigned m_x;
+    unsigned m_y;
+    float m_fx;
+    float m_fy;
 
 public:
-    Canvas();
+    Coords(unsigned x, unsigned y) :
+            m_x(x), m_y(y),
+            m_fx(x), m_fy(y)
+    { }
 
-    auto width() const { return m_width; }
-    auto height() const { return m_height; }
+    unsigned x() const { return m_x; }
+    unsigned y() const { return m_y; }
+    float fx() const { return m_fx; }
+    float fy() const { return m_fy; }
+};
 
-    void resize(unsigned width, unsigned height);
+class Canvas {
+    Coords m_displayDim;
+    Coords m_windowDim;
+
+    struct {
+        int vx, vy, vw, vh;
+    } m_viewport;
+
+public:
+    Canvas(unsigned displayWidth, unsigned displayHeight);
+
+    void setWindowSize(unsigned width, unsigned height);
     void bind() const;
 
     void drawImage(const Image& image, const ogl::Program& program, GLuint destX = 0, GLuint destY = 0) const;
 
-    static constexpr unsigned texWidth = 1000;
-    static constexpr unsigned texHeight = 1000;
+    std::pair<int, int> screen2canvas(int x, int y);
+    std::pair<int, int> canvas2screen(int x, int y);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_CANVAS_H

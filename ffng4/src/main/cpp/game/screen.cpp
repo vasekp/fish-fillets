@@ -34,7 +34,7 @@ void GameScreen::load() {
 
     try {
         auto& bgImage = m_images.at("background");
-        m_instance->graphics->setCanvasSize(bgImage->width(), bgImage->height());
+        m_instance->graphics->canvas()->setWindowSize(bgImage->width(), bgImage->height());
     } catch(std::out_of_range& e) {
         ::error("Level has no background set.");
     }

@@ -9,7 +9,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
         auto sx = (int)AMotionEvent_getX(event, 0);
         auto sy = (int)AMotionEvent_getY(event, 0);
-        auto [cx, cy] = instance->graphics->screen2canvas(sx, sy);
+        auto [cx, cy] = instance->graphics->canvas()->screen2canvas(sx, sy);
         return instance->curScreen()->mouse(cx, cy) ? 1 : 0;
     }
     return 0;

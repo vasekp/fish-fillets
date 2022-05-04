@@ -10,7 +10,7 @@ class GraphicsSystem {
 public:
     GraphicsSystem(Instance* instance) :
             m_display(instance->app->window),
-            m_canvas(),
+            m_canvas(m_display.width(), m_display.height()),
             m_maskBuffer(),
             m_shaders(instance)
     { }

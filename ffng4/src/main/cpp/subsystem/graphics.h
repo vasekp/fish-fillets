@@ -14,9 +14,6 @@
 class Graphics {
     Instance *m_instance;
     std::shared_ptr<GraphicsSystem> m_system; // Never really shared, but has weak_ptrs
-    struct {
-        int vx, vy, vw, vh;
-    } viewport;
 
 public:
     Graphics(Instance* instance) : m_instance(instance) { }
@@ -26,15 +23,12 @@ public:
 
     const auto system() const { return m_system; }
     const auto* display() const { return &m_system->m_display; }
-    const auto* canvas() const { return &m_system->m_canvas; }
+    auto* canvas() const { return &m_system->m_canvas; }
     const auto* maskBuffer() const { return &m_system->m_maskBuffer; }
     const auto* shaders() const { return &m_system->m_shaders; }
 
-    void setCanvasSize(unsigned width, unsigned height);
     void setMask(const Image& image);
     void drawFrame();
-    std::pair<int, int> screen2canvas(int x, int y);
-    std::pair<int, int> canvas2screen(int x, int y);
 
     ogl::Texture loadImage(const std::string& path) const;
 };
