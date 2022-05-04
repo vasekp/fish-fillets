@@ -10,17 +10,17 @@
 #include "files/user.h"
 
 class Files {
-    Instance* m_instance;
+    Instance& m_instance;
 
 public:
-    Files(Instance* instance) : m_instance(instance) { }
+    Files(Instance& instance) : m_instance(instance) { }
 
     SystemFile system(const std::string& path) const {
-        return {path, m_instance->app->activity->assetManager};
+        return {path, m_instance.app()->activity->assetManager};
     }
 
     UserFile user(const std::string& path) const {
-        return {path, m_instance->app->activity->externalDataPath};
+        return {path, m_instance.app()->activity->externalDataPath};
     }
 };
 

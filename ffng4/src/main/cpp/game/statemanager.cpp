@@ -2,7 +2,7 @@
 #include "game/worldmap.h"
 #include "game/testscreen.h"
 
-StateManager::StateManager(Instance *instance) :
+StateManager::StateManager(Instance& instance) :
     m_instance(instance),
     m_screens(),
     m_state(GameState::WorldMap)
@@ -17,8 +17,8 @@ void StateManager::setState(GameState state) {
     switch(state) {
         case GameState::WorldMap:
             m_screens.erase(m_screens.begin() + 1, m_screens.end());
-            if(m_instance->live)
-                curScreen()->start();
+            if(m_instance.live)
+                curScreen().start();
             break;
         case GameState::TestScreen:
             assert(m_screens.size() == 1);
@@ -29,8 +29,8 @@ void StateManager::setState(GameState state) {
                                                            "music/rybky04.ogg");
                 m_screens.push_back(std::move(screen));
             }
-            if(m_instance->live)
-                curScreen()->start();
+            if(m_instance.live)
+                curScreen().start();
             break;
         case GameState::Intro:
             playIntro();
@@ -44,6 +44,6 @@ void StateManager::setState(GameState state) {
 }
 
 void StateManager::playIntro() {
-    auto& jni = m_instance->jni;
+    auto& jni = m_instance.jni();
     jni->CallVoidMethod(jni.object(), jni.method("playIntro"));
 }

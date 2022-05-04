@@ -11,16 +11,16 @@ enum class GameState {
 };
 
 class StateManager {
-    Instance* m_instance;
+    Instance& m_instance;
     std::vector<std::unique_ptr<GameScreen>> m_screens;
     GameState m_state;
 
 public:
-    StateManager(Instance* instance);
+    StateManager(Instance& instance);
 
     GameState getState() const { return m_state; }
     void setState(GameState state);
-    GameScreen* curScreen() { return m_screens.back().get(); }
+    GameScreen& curScreen() { return *m_screens.back(); }
 
 private:
     void playIntro();

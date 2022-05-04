@@ -31,7 +31,7 @@ void Audio::clear() {
     m_sources.clear();
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance* instance);
+void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance& instance);
 
 std::shared_ptr<AudioSource> Audio::loadSound(const std::string& filename) {
     std::promise<std::shared_ptr<AudioSource>> promise;
@@ -47,7 +47,7 @@ std::shared_ptr<AudioSource> Audio::loadMusic(const std::string& filename) {
     std::thread([this, filename, &promise]() { return loadSoundAsync(filename, promise, m_instance); }).detach();
     future.wait();
     auto ret = future.get();
-    auto meta = m_instance->files->system(filename + ".meta");
+    auto meta = m_instance.files().system(filename + ".meta");
     if(meta.exists()) {
         auto contents = meta.read();
         std::istringstream iss{contents};
@@ -59,8 +59,8 @@ std::shared_ptr<AudioSource> Audio::loadMusic(const std::string& filename) {
     return ret;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance* instance) {
-    auto asset = instance->files->system(filename).asset();
+void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance& instance) {
+    auto asset = instance.files().system(filename).asset();
 
     off64_t start, length;
     auto fd = AAsset_openFileDescriptor64(asset, &start, &length);

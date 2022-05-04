@@ -18,7 +18,7 @@ public:
     auto width() const { return m_texture.width(); }
     auto height() const { return m_texture.height(); }
 
-    void reload(Instance* instance);
+    void reload(Instance& instance);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

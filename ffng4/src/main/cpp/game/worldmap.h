@@ -22,7 +22,7 @@ public:
         credits
     };
 
-    WorldMap(Instance*);
+    WorldMap(Instance&);
     void staticFrame(Frames frame);
 
 private:

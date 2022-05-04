@@ -5,8 +5,8 @@ Image::~Image() {
         m_texture.invalidate();
 }
 
-void Image::reload(Instance* instance) {
+void Image::reload(Instance& instance) {
     m_texture.invalidate();
-    m_ref = {instance->graphics->system()};
-    m_texture = instance->graphics->loadImage(m_filename);
+    m_ref = {instance.graphics().system()};
+    m_texture = instance.graphics().loadImage(m_filename);
 }

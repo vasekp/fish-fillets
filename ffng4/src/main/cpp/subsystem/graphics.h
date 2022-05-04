@@ -14,22 +14,22 @@
 #include "graphics/utils.h"
 
 class Graphics {
-    Instance *m_instance;
+    Instance& m_instance;
     std::shared_ptr<GraphicsSystem> m_system; // Never really shared, but has weak_ptrs
 
 public:
-    Graphics(Instance* instance) : m_instance(instance) { }
+    Graphics(Instance& instance) : m_instance(instance) { }
 
     void activate();
     void shutdown();
 
-    const auto system() const { return m_system; }
-    const auto* display() const { return &m_system->m_display; }
-    auto* canvas() const { return &m_system->m_canvas; }
-    const auto* readBuffer() const { return &m_system->m_readBuffer; }
-    const auto* shaders() const { return &m_system->m_shaders; }
+    auto& system() const { return m_system; }
+    auto& display() const { return m_system->m_display; }
+    auto& canvas() const { return m_system->m_canvas; }
+    auto& readBuffer() const { return m_system->m_readBuffer; }
+    auto& shaders() const { return m_system->m_shaders; }
 
-    static void setMask(const Image &image);
+    void setMask(const Image &image);
 
     void drawFrame();
 

@@ -6,7 +6,7 @@
 class TestScreen : public GameScreen {
 
 public:
-    TestScreen(Instance*, const char*, const char*, const char*);
+    TestScreen(Instance&, const char*, const char*, const char*);
 
 private:
     void own_load() override;

@@ -8,7 +8,7 @@
 
 class GameScreen {
 protected:
-    Instance* m_instance;
+    Instance& m_instance;
     std::shared_ptr<AudioSource> m_music;
     std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_loadTime;
@@ -25,10 +25,10 @@ public:
     bool mouse(Coords coords) { return own_mouse(coords.x(), coords.y()); }
 
 protected:
-    GameScreen(Instance* instance) : m_instance(instance) { }
+    GameScreen(Instance& instance) : m_instance(instance) { }
 
     std::shared_ptr<Image> addImage(const std::string& path, const std::string& name = "");
-    std::shared_ptr<Image> getImage(const std::string& name);
+    Image& getImage(const std::string& name);
     void setBackground(const std::string& filename);
     void setMusic(const std::string& filename);
     void reloadImages();

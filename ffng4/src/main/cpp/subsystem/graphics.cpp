@@ -28,14 +28,13 @@ void Graphics::drawFrame() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_system->m_canvas.bind();
-    m_instance->curScreen()->draw();
-
+    m_instance.curScreen().draw();
     m_system->m_display.swap();
 }
 
 ogl::Texture Graphics::loadImage(const std::string& filename) const {
     LOGD("loadImage %s", filename.c_str());
-    auto& jni = m_instance->jni;
+    auto& jni = m_instance.jni();
     jstring jPath = jni->NewStringUTF(filename.c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
     AndroidBitmapInfo info;

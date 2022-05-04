@@ -8,8 +8,8 @@ class GraphicsSystem {
     Shaders m_shaders;
 
 public:
-    GraphicsSystem(Instance* instance) :
-            m_display(instance->app->window),
+    GraphicsSystem(Instance& instance) :
+            m_display(instance.app()->window),
             m_canvas(m_display.width(), m_display.height()),
             m_readBuffer(),
             m_shaders(instance)

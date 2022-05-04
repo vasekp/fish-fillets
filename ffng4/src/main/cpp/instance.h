@@ -15,22 +15,32 @@ class StateManager;
 /*struct saved_state {
 };*/
 
-struct Instance {
-    android_app* app;
-    jni::Env jni;
+class Instance {
+    android_app* m_app;
+    jni::Env m_jni;
 
-    std::unique_ptr<Files> files;
-    std::unique_ptr<Graphics> graphics;
-    std::unique_ptr<Audio> audio;
-    std::unique_ptr<StateManager> states;
+    std::unique_ptr<Files> m_files;
+    std::unique_ptr<Graphics> m_graphics;
+    std::unique_ptr<Audio> m_audio;
+    std::unique_ptr<StateManager> m_states;
 
-    //struct saved_state state;
+    //struct saved_state m_state;
+
+public:
+    Instance(android_app*);
+    static Instance& get(android_app*);
+
+    auto* app() { return m_app; }
+    auto& jni() { return m_jni; }
+    auto& files() { return *m_files; }
+    auto& graphics() { return *m_graphics; }
+    auto& audio() { return *m_audio; }
+    auto& states() { return *m_states; }
+
     bool live;
     bool quit_request;
 
-    Instance(android_app*);
-
-    GameScreen* curScreen();
+    GameScreen& curScreen();
 
     void quit();
 };
