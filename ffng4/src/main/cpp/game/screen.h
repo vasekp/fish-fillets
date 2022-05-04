@@ -22,7 +22,7 @@ public:
     void start();
     void load();
     void draw() { own_draw(); }
-    bool mouse(unsigned x, unsigned y) { return own_mouse(x, y); }
+    bool mouse(Coords coords) { return own_mouse(coords.x(), coords.y()); }
 
 protected:
     GameScreen(Instance* instance) : m_instance(instance) { }

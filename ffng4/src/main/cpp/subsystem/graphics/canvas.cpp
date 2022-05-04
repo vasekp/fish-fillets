@@ -28,16 +28,16 @@ void Canvas::drawImage(const Image& image, const ogl::Program& program, GLuint d
     GraphicsUtils::rect(0u, 0u, image.width(), image.height());
 }
 
-std::pair<int, int> Canvas::screen2canvas(int x, int y) {
+Coords Canvas::screen2canvas(Coords screen) {
     return {
-            (int)((float) (x - m_viewport.origin.x()) / m_viewport.extent.fx() * m_windowDim.fx()),
-            (int)((float) (y - m_viewport.origin.y()) / m_viewport.extent.fy() * m_windowDim.fy())
+        (screen.fx() - m_viewport.origin.fx()) / m_viewport.extent.fx() * m_windowDim.fx(),
+        (screen.fy() - m_viewport.origin.fy()) / m_viewport.extent.fy() * m_windowDim.fy()
     };
 }
 
-std::pair<int, int> Canvas::canvas2screen(int x, int y) {
+Coords Canvas::canvas2screen(Coords canvas) {
     return {
-            (int)((float) x / m_windowDim.fx() * m_viewport.extent.fx()) + m_viewport.origin.x(),
-            (int)((float) y / m_windowDim.fy() * m_viewport.extent.fy()) + m_viewport.origin.y()
+        canvas.fx() / m_windowDim.fx() * m_viewport.extent.fx() + m_viewport.origin.fx(),
+        canvas.fy() / m_windowDim.fy() * m_viewport.extent.fy() + m_viewport.origin.fy()
     };
 }

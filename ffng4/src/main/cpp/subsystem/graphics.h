@@ -5,6 +5,7 @@
 #include "platform/ogl.h"
 #include "subsystem/files.h"
 
+#include "graphics/coords.h"
 #include "graphics/canvas.h"
 #include "graphics/shaders.h"
 #include "graphics/system.h"
