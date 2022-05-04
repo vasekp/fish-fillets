@@ -14,7 +14,7 @@ protected:
     std::chrono::steady_clock::time_point m_loadTime;
 
 private:
-    std::map<std::string, std::shared_ptr<Image>> m_images;
+    std::map<std::string, Image> m_images;
 
 public:
     virtual ~GameScreen() { }
@@ -27,7 +27,7 @@ public:
 protected:
     GameScreen(Instance& instance) : m_instance(instance) { }
 
-    std::shared_ptr<Image> addImage(const std::string& path, const std::string& name = "");
+    Image& addImage(const std::string& path, const std::string& name = "");
     Image& getImage(const std::string& name);
     void setBackground(const std::string& filename);
     void setMusic(const std::string& filename);

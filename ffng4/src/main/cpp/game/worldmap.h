@@ -36,7 +36,7 @@ private:
     void drawMasked(Color c);
 
     static constexpr int nodeRadius = 9;
-    std::vector<std::shared_ptr<Image>> nodeImages;
+    std::vector<Image> nodeImages;
 };
 
 #endif //FISH_FILLETS_WORLDMAP_H

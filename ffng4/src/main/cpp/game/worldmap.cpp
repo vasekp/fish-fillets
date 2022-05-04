@@ -41,11 +41,11 @@ void WorldMap::own_draw() {
         float phase = std::fmod(timeSinceLoad(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
-        canvas.drawImage(*nodeImages[base + 1], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
+        canvas.drawImage(nodeImages[base + 1], copyProgram, 320 - nodeRadius, 121 - nodeRadius);
         const auto& alphaProgram = m_instance.graphics().shaders().alpha;
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
-        canvas.drawImage(*nodeImages[base + 2], alphaProgram, 320 - nodeRadius, 121 - nodeRadius);
+        canvas.drawImage(nodeImages[base + 2], alphaProgram, 320 - nodeRadius, 121 - nodeRadius);
     }
 
     switch(m_nextFrame) {

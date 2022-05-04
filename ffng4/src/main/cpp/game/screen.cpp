@@ -1,12 +1,12 @@
-#include "game/screen.h"
+#include "screen.h"
 
-std::shared_ptr<Image> GameScreen::addImage(const std::string &filename, const std::string& name) {
-    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, std::make_shared<Image>(filename));
+Image& GameScreen::addImage(const std::string &filename, const std::string& name) {
+    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, Image{filename});
     return iterator->second;
 }
 
 Image& GameScreen::getImage(const std::string& name) {
-    return *m_images.at(name);
+    return m_images.at(name);
 }
 
 void GameScreen::setBackground(const std::string &filename) {
@@ -19,7 +19,7 @@ void GameScreen::setMusic(const std::string& filename) {
 
 void GameScreen::reloadImages() {
     for(auto& [_, image] : m_images)
-        image->reload(m_instance);
+        image.reload(m_instance);
 }
 
 void GameScreen::start() {
@@ -34,7 +34,7 @@ void GameScreen::load() {
 
     try {
         auto& bgImage = m_images.at("background");
-        m_instance.graphics().canvas().setWindowSize(bgImage->width(), bgImage->height());
+        m_instance.graphics().canvas().setWindowSize(bgImage.width(), bgImage.height());
     } catch(std::out_of_range& e) {
         ::error("Level has no background set.");
     }
