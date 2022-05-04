@@ -2,7 +2,7 @@
 
 #include "platform/ndk.h"
 
-AudioStream::AudioStream(Audio* iface) : m_iface(iface), m_stream() {
+AudioStream::AudioStream(Audio& iface) : m_iface(iface), m_stream() {
     oboe::AudioStreamBuilder builder;
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setFormatConversionAllowed(true);
@@ -32,7 +32,7 @@ oboe::DataCallbackResult
 AudioStream::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto outData = reinterpret_cast<float*>(audioData);
     std::memset(audioData, 0, sizeof(float) * numFrames);
-    auto& sources = m_iface->m_sources;
+    auto& sources = m_iface.m_sources;
     for(const auto& source : sources)
         source->mixin(outData, numFrames);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),

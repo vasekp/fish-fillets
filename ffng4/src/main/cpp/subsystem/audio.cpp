@@ -8,7 +8,7 @@
 
 void Audio::activate() {
     LOGD("audio: activate");
-    m_stream = std::make_unique<AudioStream>(this);
+    m_stream = std::make_unique<AudioStream>(*this);
 }
 
 void Audio::shutdown() {

@@ -4,11 +4,11 @@
 #include <oboe/Oboe.h>
 
 class AudioStream : public oboe::AudioStreamDataCallback, oboe::AudioStreamErrorCallback {
-    Audio* m_iface;
+    Audio& m_iface;
     oboe::AudioStream* m_stream;
 
 public:
-    AudioStream(Audio* iface);
+    AudioStream(Audio& iface);
     AudioStream(const AudioStream&) = delete;
     AudioStream& operator=(const AudioStream&) = delete;
     ~AudioStream();
