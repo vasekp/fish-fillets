@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Shader::Shader(GLenum type, const std::string& code) {
+    Shader::Shader(const std::shared_ptr<ogl::Display>& ref, GLenum type, const std::string& code) : m_ref(ref) {
         m_name = glCreateShader(type);
         LOGV("shader: generate %d", m_name);
         if (!m_name)
@@ -35,9 +35,10 @@ namespace ogl {
     }
 
     Shader::~Shader() {
-        if(m_name)
+        if(m_name && !m_ref.expired()) {
             LOGV("shader: delete %d", m_name);
-        glDeleteShader(m_name);
+            glDeleteShader(m_name);
+        }
     }
 
 }

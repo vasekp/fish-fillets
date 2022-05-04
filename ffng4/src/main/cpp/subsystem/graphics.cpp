@@ -4,7 +4,7 @@
 
 void Graphics::activate() {
     LOGD("graphics: activate");
-    m_system = std::make_shared<GraphicsSystem>(m_instance);
+    m_system = std::make_unique<GraphicsSystem>(m_instance);
 }
 
 void Graphics::shutdown() {
@@ -24,12 +24,12 @@ void Graphics::drawFrame() {
         return;
     }
 
-    m_system->m_display.bind();
+    system().display().bind();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_system->m_canvas.bind();
+    system().m_canvas.bind();
     m_instance.curScreen().draw();
-    m_system->m_display.swap();
+    system().display().swap();
 }
 
 ogl::Texture Graphics::loadImage(const std::string& filename) const {
@@ -46,7 +46,7 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     if(!jBitmap)
         throw std::runtime_error("bitmap data null");
-    auto ret = ogl::Texture::fromImageData(width, height, stride, pixels);
+    auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jPath);
     jni->DeleteLocalRef(jBitmap);

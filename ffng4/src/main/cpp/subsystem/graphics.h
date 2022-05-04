@@ -15,7 +15,7 @@
 
 class Graphics {
     Instance& m_instance;
-    std::shared_ptr<GraphicsSystem> m_system; // Never really shared, but has weak_ptrs
+    std::unique_ptr<GraphicsSystem> m_system;
 
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
@@ -23,7 +23,7 @@ public:
     void activate();
     void shutdown();
 
-    auto& system() const { return m_system; }
+    auto& system() const { return *m_system; }
     auto& display() const { return m_system->m_display; }
     auto& canvas() const { return m_system->m_canvas; }
     auto& readBuffer() const { return m_system->m_readBuffer; }

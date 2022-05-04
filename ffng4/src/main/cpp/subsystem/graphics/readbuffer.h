@@ -5,7 +5,7 @@ class ReadBuffer {
     ogl::Framebuffer m_buffer;
 
 public:
-    ReadBuffer() : m_buffer() { }
+    ReadBuffer(const std::shared_ptr<ogl::Display>& ref) : m_buffer(ref) { }
 
     void setImage(const Image& image) const {
         m_buffer.bind();

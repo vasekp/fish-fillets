@@ -4,10 +4,11 @@
 namespace ogl {
 
     class Framebuffer {
+        std::weak_ptr<const Display> m_ref;
         GLuint m_name = 0;
 
     public:
-        Framebuffer();
+        Framebuffer(const std::shared_ptr<ogl::Display>& ref);
         Framebuffer(const Framebuffer&) = delete;
         Framebuffer& operator=(const Framebuffer&) = delete;
         ~Framebuffer();
@@ -15,8 +16,7 @@ namespace ogl {
         operator GLuint() const { return m_name; }
 
         void bind() const;
-        static void unbind() ;
-        void invalidate() { LOGV("framebuffer: detach %d", m_name); m_name = 0; }
+        void unbind() const;
     };
 
 }

@@ -4,11 +4,12 @@
 namespace ogl {
 
     class Shader {
+        std::weak_ptr<const Display> m_ref;
         GLuint m_name = 0;
 
     public:
         Shader() = default;
-        Shader(GLenum type, const std::string &code);
+        Shader(const std::shared_ptr<ogl::Display>& ref, GLenum type, const std::string &code);
         Shader(const Shader&) = delete;
         Shader& operator=(const Shader&) = delete;
         Shader(Shader&&) noexcept;
@@ -16,7 +17,6 @@ namespace ogl {
         ~Shader();
 
         operator GLuint() const { return m_name; }
-        void invalidate() { if(m_name) LOGV("shader: detach %d", m_name); m_name = 0; }
     };
 
 }

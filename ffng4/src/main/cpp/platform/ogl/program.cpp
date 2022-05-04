@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Program::Program(const Shader &vertexShader, const Shader &fragmentShader) {
+    Program::Program(const std::shared_ptr<ogl::Display>& ref, const Shader &vertexShader, const Shader &fragmentShader) : m_ref(ref) {
         m_name = glCreateProgram();
         LOGV("program: generate %d", m_name);
         if (!m_name)
@@ -40,9 +40,10 @@ namespace ogl {
     }
 
     Program::~Program() {
-        if(m_name)
+        if(m_name && !m_ref.expired()) {
             LOGV("program: delete %d", m_name);
-        glDeleteProgram(m_name);
+            glDeleteProgram(m_name);
+        }
     }
 
     GLint Program::uniform(const std::string &ident) const {

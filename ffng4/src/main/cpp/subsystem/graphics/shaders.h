@@ -13,13 +13,13 @@ struct Shaders {
     constexpr static GLint texImage_gl = GL_TEXTURE0;
     constexpr static GLint texMask_gl = GL_TEXTURE1;
 
-    Shaders(Instance& instance) {
-        vertCommon = ogl::Shader(GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert").read());
+    Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
+        vertCommon = ogl::Shader(ref, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert").read());
 
-        copy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag").read()});
-        maskCopy = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance.files().system("shader/mask-copy.frag").read()});
-        alpha = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance.files().system("shader/alpha.frag").read()});
-        wavyImage = ogl::Program(vertCommon, {GL_FRAGMENT_SHADER, instance.files().system("shader/wavy-image.frag").read()});
+        copy = ogl::Program(ref, vertCommon,{ref, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag").read()});
+        maskCopy = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/mask-copy.frag").read()});
+        alpha = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/alpha.frag").read()});
+        wavyImage = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/wavy-image.frag").read()});
 
         for(const auto* program : {&copy, &maskCopy, &alpha, &wavyImage}) {
             glUseProgram(*program);

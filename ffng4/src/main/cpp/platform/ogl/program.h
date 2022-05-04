@@ -4,12 +4,13 @@
 namespace ogl {
 
     class Program {
+        std::weak_ptr<const Display> m_ref;
         GLuint m_name = 0;
         mutable std::map<std::string, GLint> m_uniforms;
 
     public:
         Program() = default;
-        Program(const Shader& vertexShader, const Shader& fragmentShader);
+        Program(const std::shared_ptr<ogl::Display>& ref, const Shader& vertexShader, const Shader& fragmentShader);
         Program(const Program &) = delete;
         Program &operator=(const Program &) = delete;
         Program(Program&&) noexcept;
@@ -19,7 +20,6 @@ namespace ogl {
         operator GLuint() const { return m_name; }
 
         GLint uniform(const std::string &ident) const;
-        void invalidate() { if(m_name) LOGV("program: detach %d", m_name); m_name = 0; }
 
         static constexpr GLint aPosition = 0;
     };
