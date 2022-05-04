@@ -24,8 +24,16 @@ file(GLOB fillets_sources
 
 add_library(fillets SHARED ${fillets_sources})
 
-target_include_directories(fillets PRIVATE .
-    ${ANDROID_NDK}/sources/android/native_app_glue)
+file(GLOB lua_sources "lua/*.c")
+
+add_library(lua
+        STATIC
+        ${lua_sources} )
+
+target_compile_definitions(lua PRIVATE -DLUA_USE_POSIX)
+
+target_include_directories(fillets PRIVATE . lua
+        ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_libraries(fillets
     android
@@ -35,4 +43,5 @@ target_link_libraries(fillets
     EGL
     GLESv2
     oboe::oboe
+    lua
     log)
