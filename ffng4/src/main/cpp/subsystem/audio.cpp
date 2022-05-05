@@ -18,6 +18,7 @@ void Audio::shutdown() {
 
 void Audio::addSource(std::shared_ptr<AudioSource>& source) {
     LOGD("adding audio source %s", source->name().c_str());
+    source->rewind();
     m_sources.local()->push_back(source);
 }
 

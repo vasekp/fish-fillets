@@ -4,6 +4,7 @@
 #include "screen.h"
 
 class TestScreen : public GameScreen {
+    std::shared_ptr<AudioSource> m_sound[6];
 
 public:
     TestScreen(Instance&, const char*, const char*, const char*);

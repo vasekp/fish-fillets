@@ -5,6 +5,11 @@ TestScreen::TestScreen(Instance& instance, const char* a, const char* b, const c
     setBackground(a);
     addImage(b, "walls");
     setMusic(c);
+    for(int i = 0; i < 6; i++) {
+        std::stringstream oss;
+        oss << "sound/share/sp-bubles_0" << i << ".ogg";
+        m_sound[i] = instance.audio().loadSound(oss.str());
+    }
 }
 
 void TestScreen::own_load() {
@@ -29,6 +34,11 @@ void TestScreen::own_draw() {
 }
 
 bool TestScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.states().setState(GameState::WorldMap);
+    //m_instance.states().setState(GameState::WorldMap);
+    static int j = 0;
+    auto& sound = m_sound[j++];
+    if(j == 6)
+        j = 0;
+    m_instance.audio().addSource(sound);
     return true;
 }
