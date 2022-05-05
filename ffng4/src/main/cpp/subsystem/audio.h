@@ -5,10 +5,11 @@
 
 #include "audio/source.h"
 #include "audio/stream.h"
+#include "audio/sourcelist.h"
 
-class Audio {
+class Audio : public oboe::AudioStreamDataCallback {
     Instance& m_instance;
-    std::vector<std::shared_ptr<AudioSource>> m_sources;
+    AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
 
 public:
@@ -24,7 +25,9 @@ public:
     std::shared_ptr<AudioSource> loadSound(const std::string& filename);
     std::shared_ptr<AudioSource> loadMusic(const std::string& filename);
 
-    friend class AudioStream;
+private:
+    oboe::DataCallbackResult
+    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
 };
 
 #endif //FISH_FILLETS_AUDIO_H

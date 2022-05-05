@@ -18,17 +18,34 @@ void Audio::shutdown() {
 
 void Audio::addSource(std::shared_ptr<AudioSource>& source) {
     LOGD("adding audio source %s", source->name().c_str());
-    m_sources.push_back(source);
+    m_sources.local()->push_back(source);
 }
 
 void Audio::removeSource(const std::string &name) {
-    auto newEnd = std::remove_if(m_sources.begin(), m_sources.end(), [&](const auto& source) { return source->name() == name; });
-    LOGD("removeSource: name matched %ld sources", std::distance(newEnd, m_sources.end()));
-    m_sources.erase(newEnd, m_sources.end());
+    auto sources = m_sources.local();
+    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& source) { return source->name() == name; });
+    LOGD("removeSource: name matched %ld sources", std::distance(newEnd, sources->end()));
+    sources->erase(newEnd, sources->end());
 }
 
 void Audio::clear() {
-    m_sources.clear();
+    m_sources.local()->clear();
+}
+
+oboe::DataCallbackResult
+Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
+    auto outData = reinterpret_cast<float*>(audioData);
+    std::memset(audioData, 0, sizeof(float) * numFrames);
+    auto& sources = m_sources.thread();
+    for(const auto& source : sources)
+        source->mixin(outData, numFrames);
+    auto newEnd = std::remove_if(sources.begin(), sources.end(),
+                                 [](auto& source) { return source->done(); });
+    if(newEnd != sources.end()) {
+        LOGD("AudioStream: removing %lu sources", std::distance(newEnd, sources.end()));
+        sources.erase(newEnd, sources.end());
+    }
+    return oboe::DataCallbackResult::Continue;
 }
 
 void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance& instance);
