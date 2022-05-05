@@ -19,9 +19,7 @@ namespace ogl {
             EGLint numConfigs;
 
             eglChooseConfig(m_display, attribs, nullptr, 0, &numConfigs);
-            std::unique_ptr<EGLConfig[]> supportedConfigs(new EGLConfig[numConfigs]);
-            if(!supportedConfigs)
-                ::error("supportedConfigs failed");
+            auto supportedConfigs = std::make_unique<EGLConfig[]>(numConfigs);
             eglChooseConfig(m_display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
             if(!numConfigs)
                 ::error("eglChooseConfig failed");
