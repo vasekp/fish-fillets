@@ -1,5 +1,5 @@
-#ifndef FISH_FILLETS_WORLDMAP_H
-#define FISH_FILLETS_WORLDMAP_H
+#ifndef FISH_FILLETS_GAME_WORLDMAP_H
+#define FISH_FILLETS_GAME_WORLDMAP_H
 
 #include "screen.h"
 
@@ -39,4 +39,4 @@ private:
     std::vector<Image> nodeImages;
 };
 
-#endif //FISH_FILLETS_WORLDMAP_H
+#endif //FISH_FILLETS_GAME_WORLDMAP_H

@@ -1,5 +1,5 @@
-#ifndef FISH_FILLETS_STATEMANAGER_H
-#define FISH_FILLETS_STATEMANAGER_H
+#ifndef FISH_FILLETS_GAME_STATEMANAGER_H
+#define FISH_FILLETS_GAME_STATEMANAGER_H
 
 #include "instance.h"
 #include "screen.h"
@@ -26,4 +26,4 @@ private:
     void playIntro();
 };
 
-#endif //FISH_FILLETS_STATEMANAGER_H
+#endif //FISH_FILLETS_GAME_STATEMANAGER_H

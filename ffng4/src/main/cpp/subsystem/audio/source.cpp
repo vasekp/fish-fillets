@@ -1,4 +1,16 @@
+#include <utility>
+
 #include "subsystem/audio.h"
+
+AudioSource::AudioSource(std::string filename, std::size_t num_samples, std::unique_ptr<float[]>&& data) :
+        m_name(std::move(filename)),
+        m_samplesTotal(num_samples),
+        m_sampleIndex(0),
+        m_data(std::move(data)),
+        m_loop(false),
+        m_loopStart(0),
+        m_loopEnd(0)
+{ }
 
 void AudioSource::mixin(float *output, std::size_t numSamples) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);

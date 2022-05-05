@@ -17,6 +17,10 @@ AudioSourceList::SourcesGuard::~SourcesGuard() {
     m_parent.m_sources_lock.store(false, std::memory_order_release);
 }
 
+AudioSourceList::Sources * AudioSourceList::SourcesGuard::operator->() {
+    return m_parent.m_sources_local.get();
+}
+
 AudioSourceList::SourcesGuard AudioSourceList::local() {
     return {*this};
 }

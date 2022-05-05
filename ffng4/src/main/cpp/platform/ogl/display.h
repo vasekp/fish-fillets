@@ -12,7 +12,6 @@ namespace ogl {
         std::int32_t m_height;
 
     public:
-
         Display(ANativeWindow *window);
         Display(const Display &) = delete;
         Display &operator=(const Display &) = delete;

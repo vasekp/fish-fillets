@@ -1,5 +1,5 @@
-#ifndef FISH_FILLETS_WORLDMAP_H2
-#define FISH_FILLETS_WORLDMAP_H2
+#ifndef FISH_FILLETS_GAME_TESTSCREEN_H
+#define FISH_FILLETS_GAME_TESTSCREEN_H
 
 #include "screen.h"
 
@@ -15,4 +15,4 @@ private:
     bool own_mouse(unsigned, unsigned) override;
 };
 
-#endif //FISH_FILLETS_WORLDMAP_H2
+#endif //FISH_FILLETS_GAME_TESTSCREEN_H

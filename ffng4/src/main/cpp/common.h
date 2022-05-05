@@ -1,5 +1,5 @@
-#ifndef FILLETS_H
-#define FILLETS_H
+#ifndef FIST_FILLETS_COMMON_H
+#define FIST_FILLETS_COMMON_H
 
 #include <cstddef>
 #include <cstdint>
@@ -50,4 +50,4 @@ namespace {
 
 using namespace std::string_literals;
 
-#endif //FILLETS_H
+#endif //FIST_FILLETS_COMMON_H

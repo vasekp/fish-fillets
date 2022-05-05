@@ -13,7 +13,7 @@ class AudioSourceList {
         SourcesGuard(AudioSourceList& parent);
         ~SourcesGuard();
 
-        Sources* operator->() { return m_parent.m_sources_local.get(); }
+        Sources* operator->();
     };
 
 public:

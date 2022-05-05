@@ -6,19 +6,13 @@ class AudioSource {
     std::size_t m_samplesTotal;
     std::size_t m_sampleIndex;
     std::unique_ptr<float[]> m_data;
-    bool m_loop = false;
+    bool m_loop;
     std::size_t m_loopStart;
     std::size_t m_loopEnd;
 
 public:
     AudioSource() = default;
-
-    AudioSource(const std::string& filename, std::size_t num_samples, std::unique_ptr<float[]>&& data) :
-            m_name(filename),
-            m_samplesTotal(num_samples),
-            m_sampleIndex(0),
-            m_data(std::move(data))
-    { }
+    AudioSource(std::string  filename, std::size_t num_samples, std::unique_ptr<float[]>&& data);
 
     AudioSource(AudioSource&) = delete;
     AudioSource& operator=(const AudioSource&) = delete;

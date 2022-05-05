@@ -8,7 +8,7 @@ class Image {
     std::shared_ptr<ogl::Texture> m_texture;
 
 public:
-    Image(std::string filename) : m_filename(std::move(filename)), m_texture(std::make_shared<ogl::Texture>()) { }
+    Image(std::string filename);
 
     auto& texture() const { return *m_texture; }
     auto width() const { return m_texture->width(); }

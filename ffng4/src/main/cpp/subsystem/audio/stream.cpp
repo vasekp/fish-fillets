@@ -24,4 +24,3 @@ AudioStream::~AudioStream() {
     m_stream->stop();
     m_stream->close();
 }
-
