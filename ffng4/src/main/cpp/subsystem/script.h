@@ -6,11 +6,14 @@
 
 class Script {
     Instance& m_instance;
+    GameScreen& m_screen;
     lua::Env m_env;
 
 public:
-    Script(Instance& instance);
+    Script(Instance& instance, GameScreen& screen);
     static Script& from(lua_State*);
+
+    GameScreen& screen() const { return m_screen; }
 
     void registerFn(const std::string& name, lua_CFunction function);
     void doString(const std::string& string);

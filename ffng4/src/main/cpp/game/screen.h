@@ -11,7 +11,7 @@ class GameScreen {
 protected:
     Instance& m_instance;
     std::shared_ptr<AudioSource> m_music;
-    std::map<std::string, AudioSource> m_sounds;
+    std::map<std::string, std::shared_ptr<AudioSource>> m_sounds;
     std::chrono::steady_clock::time_point m_loadTime;
     Script m_script;
 
@@ -27,7 +27,7 @@ public:
     bool mouse(Coords coords) { return own_mouse(coords.x(), coords.y()); }
 
 protected:
-    GameScreen(Instance& instance) : m_instance(instance), m_script(instance) { }
+    GameScreen(Instance& instance) : m_instance(instance), m_script(instance, *this) { }
 
     Image& addImage(const std::string& path, const std::string& name = "");
     Image& getImage(const std::string& name);

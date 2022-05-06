@@ -34,7 +34,7 @@ void TestScreen::own_draw() {
 }
 
 bool TestScreen::own_mouse(unsigned int x, unsigned int y) {
-    //m_instance.states().setState(GameState::WorldMap);
+    m_instance.states().setState(GameState::WorldMap);
     static int j = 0;
     auto& sound = m_sound[j++];
     if(j == 6)

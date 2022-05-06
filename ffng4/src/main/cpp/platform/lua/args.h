@@ -8,15 +8,15 @@ namespace lua {
 
     template<>
     struct lua_accessor<types::string> {
-        static auto get(lua_State* L, std::size_t index) {
+        static const char* get(lua_State* L, std::size_t index) {
             return luaL_checkstring(L, index);
         }
     };
 
     template<>
     struct lua_accessor<types::integer> {
-        static auto get(lua_State* L, std::size_t index) {
-            return luaL_checkinteger(L, index);
+        static int get(lua_State* L, std::size_t index) {
+            return (int)luaL_checkinteger(L, index);
         }
     };
 
@@ -29,7 +29,7 @@ namespace lua {
 
     template<types::string V>
     struct lua_accessor<optional<types::string, V>> {
-        static auto get(lua_State* L, std::size_t index) {
+        static const char* get(lua_State* L, std::size_t index) {
             static_assert(V == nullptr);
             return luaL_optstring(L, index, "");
         }
@@ -37,8 +37,8 @@ namespace lua {
 
     template<types::integer V>
     struct lua_accessor<optional<types::integer, V>> {
-        static auto get(lua_State* L, std::size_t index) {
-            return luaL_optinteger(L, index, V);
+        static int get(lua_State* L, std::size_t index) {
+            return (int)luaL_optinteger(L, index, V);
         }
     };
 
