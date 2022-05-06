@@ -5,7 +5,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const std::string filename
     m_instance(instance),
     m_screen(screen),
     m_filename(filename),
-    m_script(instance, *this)
+    m_script(instance, *this),
+    m_models()
 {
     m_script.registerFn("game_setRoomWaves", game_setRoomWaves);
     m_script.registerFn("game_addModel", game_addModel);
@@ -105,9 +106,10 @@ int Level::game_setRoomWaves(lua_State* L) {
 }
 
 int Level::game_addModel(lua_State* L) {
-    [[maybe_unused]] auto [type, x, y, shape] = lua::args<lua::types::string, lua::types::integer, lua::types::integer, lua::types::string>(L);
-    // TODO
-    lua_pushnumber(L, 0);
+    auto [type, x, y, shape] = lua::args<lua::types::string, lua::types::integer, lua::types::integer, lua::types::string>(L);
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    self.m_models.emplace_back(type, x, y, shape);
+    lua_pushinteger(L, (lua_Integer)self.m_models.size() - 1);
     return 1;
 }
 
@@ -118,40 +120,48 @@ int Level::game_getCycles(lua_State* L) {
 }
 
 int Level::model_addAnim(lua_State* L) {
-    [[maybe_unused]] auto [index, name, filename, direction] = lua::args<lua::types::integer,
-        lua::types::string, lua::types::string, lua::optional<lua::types::integer, 0> // TODO default = look left
-    >(L);
-    //TODO
+    auto [index, name, filename, direction] = lua::args<lua::types::integer,
+        lua::types::string, lua::types::string,
+        lua::optional<lua::types::integer, Model::dir::left>>(L);
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    auto image = self.m_screen.addImage(filename);
+    model.anim().add(name, direction, image);
     return 0;
 }
 
 int Level::model_runAnim(lua_State* L) {
-    [[maybe_unused]] auto [index, name, phase] = lua::args<lua::types::integer,
-            lua::types::string, lua::optional<lua::types::integer, 0>
-    >(L);
-    //TODO
+    auto [index, name, phase] = lua::args<lua::types::integer,
+            lua::types::string, lua::optional<lua::types::integer, 0>>(L);
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    model.anim().set(name, phase); // TODO: run
     return 0;
 }
 
 int Level::model_setAnim(lua_State* L) {
-    [[maybe_unused]] auto [index, name, phase] = lua::args<lua::types::integer,
+    auto [index, name, phase] = lua::args<lua::types::integer,
             lua::types::string, lua::types::integer>(L);
-    //TODO
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    model.anim().set(name, phase);
     return 0;
 }
 
 int Level::model_getLoc(lua_State* L) {
-    [[maybe_unused]] auto [index] = lua::args<lua::types::integer>(L);
-    //TODO
-    lua_pushnumber(L, 0);
-    lua_pushnumber(L, 0);
+    auto [index] = lua::args<lua::types::integer>(L);
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    lua_pushinteger(L, model.x());
+    lua_pushinteger(L, model.y());
     return 2;
 }
 
 int Level::model_isLeft(lua_State* L) {
-    [[maybe_unused]] auto [index] = lua::args<lua::types::integer>(L);
-    //TODO
-    lua_pushboolean(L, true);
+    auto [index] = lua::args<lua::types::integer>(L);
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    lua_pushboolean(L, model.direction() == Model::dir::left);
     return 1;
 }
 

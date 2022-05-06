@@ -1,4 +1,5 @@
 #include "levelscreen.h"
+#include "level.h"
 
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
@@ -31,7 +32,7 @@ void LevelScreen::own_load() {
 
 void LevelScreen::own_draw() {
     const auto& canvas = m_instance.graphics().canvas();
-//    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
 
     float phase = std::fmod(timeSinceLoad(), (float)(2*M_PI));
@@ -39,7 +40,10 @@ void LevelScreen::own_draw() {
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
     canvas.drawImage(getImage("background"), wavyProgram);
-    //canvas.drawImage(getImage("walls"), copyProgram);
+
+    for(const auto& model : m_level.models()) {
+        canvas.drawImage(model.anim().get(), copyProgram, model.x() * size_unit, model.y() * size_unit);
+    }
 }
 
 void LevelScreen::addSound(const std::string &name, const std::string &filename) {

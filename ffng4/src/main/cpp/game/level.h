@@ -2,6 +2,7 @@
 #define FISH_FILLETS_LEVEL_H
 
 #include "subsystem/script.h"
+#include "model.h"
 
 class LevelScreen;
 
@@ -10,9 +11,12 @@ class Level : public ScriptReferrer {
     LevelScreen& m_screen;
     std::string m_filename;
     Script m_script;
+    std::vector<Model> m_models;
 
 public:
     Level(Instance&, LevelScreen&, std::string);
+
+    const std::vector<Model>& models() { return m_models; }
 
     void init();
 
