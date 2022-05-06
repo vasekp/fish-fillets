@@ -13,7 +13,9 @@ namespace lua {
     }
 
     void Env::doString(const std::string &string) {
-        luaL_dostring(m_state, string.c_str());
+        if(luaL_dostring(m_state, string.c_str()) != LUA_OK) {
+            LOGE("Lua error: %s", lua_tostring(m_state, -1));
+        }
     }
 
 }

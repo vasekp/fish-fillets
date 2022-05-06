@@ -9,19 +9,8 @@ extern "C" {
 #include "lua/lauxlib.h"
 }
 
-namespace lua {
-
-    class Env {
-        lua_State* m_state;
-
-    public:
-        Env();
-        ~Env();
-
-        void registerFn(const std::string& name, lua_CFunction function);
-        void doString(const std::string& string);
-    };
-
-}
+#include "platform/lua/types.h"
+#include "platform/lua/args.h"
+#include "platform/lua/env.h"
 
 #endif //FISH_FILLETS_LUA_H

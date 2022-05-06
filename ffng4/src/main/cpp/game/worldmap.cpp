@@ -103,12 +103,16 @@ void WorldMap::drawMasked(Color c) {
 namespace lcb {
 
     int branch_addNode(lua_State *L) {
-        [[maybe_unused]] const char *parent = luaL_checkstring(L, 1);
-        const char *name = luaL_checkstring(L, 2);
-        [[maybe_unused]] const char *filename = luaL_checkstring(L, 3);
-        lua_Integer x = luaL_checkinteger(L, 4);
-        lua_Integer y = luaL_checkinteger(L, 5);
-        LOGD("name %s (%lld, %lld)", name, x, y);
+        [[maybe_unused]] auto [parent, name, filename, x, y, hidden, poster] = lua::args<
+                lua::types::string,
+                lua::types::string,
+                lua::types::string,
+                lua::types::integer,
+                lua::types::integer,
+                lua::types::boolean,
+                lua::optional<lua::types::string>
+                >(L);
+        LOGD("name %s (%lld, %lld) %s", name, x, y, hidden ? "HIDDEN" : "");
         return 0;
     }
 
