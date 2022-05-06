@@ -11,7 +11,8 @@ bool SystemFile::exists() const {
 
 std::string SystemFile::read() const {
     ndk::Asset asset{m_assets, m_path.c_str(), AASSET_MODE_BUFFER};
-    assert(asset);
+    if(!asset)
+        ::error("System file not found: " + m_path.string());
     auto size = AAsset_getLength(asset);
     auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
     std::string ret(buffer, buffer + size);

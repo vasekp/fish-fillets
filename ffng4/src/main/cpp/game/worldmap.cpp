@@ -1,6 +1,11 @@
 #include "worldmap.h"
 #include "statemanager.h"
 
+namespace lcb {
+    int branch_addNode(lua_State*);
+    int file_include(lua_State*);
+}
+
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
     m_nextFrame(Frames::none)
@@ -19,6 +24,10 @@ WorldMap::WorldMap(Instance& instance) :
     maskColors.insert({Frames::options, MaskColors::options});
     maskColors.insert({Frames::intro, MaskColors::intro});
     maskColors.insert({Frames::credits, MaskColors::credits});
+
+    m_lua.registerFn("branch_addNode", lcb::branch_addNode);
+    m_lua.registerFn("file_include", lcb::file_include);
+    m_lua.doString(instance.files().system("script/worldmap.lua").read());
 }
 
 void WorldMap::staticFrame(Frames frame) {
@@ -89,4 +98,22 @@ void WorldMap::drawMasked(Color c) {
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
     m_instance.graphics().canvas().drawImage(getImage("masked"), maskProgram);
+}
+
+namespace lcb {
+
+    int branch_addNode(lua_State *L) {
+        [[maybe_unused]] const char *parent = luaL_checkstring(L, 1);
+        const char *name = luaL_checkstring(L, 2);
+        [[maybe_unused]] const char *filename = luaL_checkstring(L, 3);
+        lua_Integer x = luaL_checkinteger(L, 4);
+        lua_Integer y = luaL_checkinteger(L, 5);
+        LOGD("name %s (%lld, %lld)", name, x, y);
+        return 0;
+    }
+
+    int file_include(lua_State *L) {
+        return 0;
+    }
+
 }

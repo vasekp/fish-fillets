@@ -5,6 +5,7 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
+#include "platform/lua.h"
 
 class GameScreen {
 protected:
@@ -12,6 +13,7 @@ protected:
     std::shared_ptr<AudioSource> m_music;
     std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_loadTime;
+    lua::Env m_lua;
 
 private:
     std::map<std::string, Image> m_images;
