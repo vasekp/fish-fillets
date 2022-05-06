@@ -13,10 +13,10 @@ WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
     m_nextFrame(Frames::none)
 {
-    setBackground("orig/map.png");
+    setBackground("override/map.png");
     setMusic("music/menu.ogg");
-    addImage("orig/loading.png", "loading");
-    addImage("orig/map-mask.png", "mask");
+    addImage("override/loading.png", "loading");
+    addImage("override/map-mask.png", "mask");
     addImage("images/menu/map_lower.png", "masked");
     for(int i = 0; i < 5; i++) {
         auto name = "images/menu/n"s + (char)('0' + i) + ".png";
