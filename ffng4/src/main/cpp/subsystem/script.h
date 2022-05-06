@@ -23,6 +23,8 @@ public:
     void registerFn(const std::string& name, lua_CFunction function);
     void doString(const std::string& string);
     void loadFile(const std::string& filename);
+
+    static int file_include(lua_State*);
 };
 
 #endif //FISH_FILLETS_SCRIPT_H

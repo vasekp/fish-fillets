@@ -1,18 +1,11 @@
 #include "levels.h"
 
 Levels::Levels(Instance& instance) : m_levels(), m_script(instance, *this) {
-    m_script.registerFn("file_include", file_include);
     m_script.registerFn("branch_addNode", branch_addNode);
     m_script.registerFn("branch_setEnding", branch_setEnding);
     m_script.registerFn("worldmap_addDesc", worldmap_addDesc);
     m_script.registerFn("node_bestSolution", node_bestSolution);
     m_script.loadFile("override/worldmap.lua");
-}
-
-int Levels::file_include(lua_State* L) {
-    auto [filename] = lua::args<lua::types::string>(L);
-    Script::from(L).loadFile(filename);
-    return 0;
 }
 
 int Levels::branch_addNode(lua_State* L) {

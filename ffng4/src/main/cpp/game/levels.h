@@ -17,7 +17,6 @@ public:
     auto end() const { return m_levels.cend(); }
 
 private:
-    static int file_include(lua_State*);
     static int branch_addNode(lua_State*);
     static int branch_setEnding(lua_State*);
     static int worldmap_addDesc(lua_State*);

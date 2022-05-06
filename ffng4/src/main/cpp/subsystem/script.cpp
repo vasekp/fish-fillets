@@ -7,6 +7,8 @@ Script::Script(Instance &instance, ScriptReferrer& ref) :
     lua_pushstring(m_env, "leader");
     lua_pushlightuserdata(m_env, this);
     lua_rawset(m_env, LUA_REGISTRYINDEX);
+
+    registerFn("file_include", file_include);
 }
 
 Script& Script::from(lua_State* L) {
@@ -30,4 +32,10 @@ void Script::doString(const std::string& string) {
 
 void Script::loadFile(const std::string& filename) {
     doString(m_instance.files().system(filename).read());
+}
+
+int Script::file_include(lua_State* L) {
+    auto [filename] = lua::args<lua::types::string>(L);
+    Script::from(L).loadFile(filename);
+    return 0;
 }
