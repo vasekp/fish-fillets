@@ -18,7 +18,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const std::string filename
 //    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
 //
     m_script.registerFn("model_addAnim", model_addAnim);
-//    m_script.registerFn("model_runAnim", script_model_runAnim);
+    m_script.registerFn("model_runAnim", model_runAnim);
     m_script.registerFn("model_setAnim", model_setAnim);
 //    m_script.registerFn("model_useSpecialAnim", script_model_useSpecialAnim);
 //    m_script.registerFn("model_countAnims", script_model_countAnims);
@@ -30,12 +30,12 @@ Level::Level(Instance& instance, LevelScreen& screen, const std::string filename
 //    m_script.registerFn("model_getTouchDir", script_model_getTouchDir);
 //    m_script.registerFn("model_isAlive", script_model_isAlive);
 //    m_script.registerFn("model_isOut", script_model_isOut);
-//    m_script.registerFn("model_isLeft", script_model_isLeft);
+    m_script.registerFn("model_isLeft", model_isLeft);
 //    m_script.registerFn("model_isAtBorder", script_model_isAtBorder);
 //    m_script.registerFn("model_getW", script_model_getW);
 //    m_script.registerFn("model_getH", script_model_getH);
-//    m_script.registerFn("model_setGoal", script_model_setGoal);
-//    m_script.registerFn("model_change_turnSide", script_model_change_turnSide);
+    m_script.registerFn("model_setGoal", model_setGoal);
+    m_script.registerFn("model_change_turnSide", model_change_turnSide);
 //    m_script.registerFn("model_change_setLocation", script_model_change_setLocation);
 //    m_script.registerFn("model_setViewShift", script_model_setViewShift);
 //    m_script.registerFn("model_getViewShift", script_model_getViewShift);
@@ -125,6 +125,14 @@ int Level::model_addAnim(lua_State* L) {
     return 0;
 }
 
+int Level::model_runAnim(lua_State* L) {
+    [[maybe_unused]] auto [index, name, phase] = lua::args<lua::types::integer,
+            lua::types::string, lua::optional<lua::types::integer, 0>
+    >(L);
+    //TODO
+    return 0;
+}
+
 int Level::model_setAnim(lua_State* L) {
     [[maybe_unused]] auto [index, name, phase] = lua::args<lua::types::integer,
             lua::types::string, lua::types::integer>(L);
@@ -138,6 +146,25 @@ int Level::model_getLoc(lua_State* L) {
     lua_pushnumber(L, 0);
     lua_pushnumber(L, 0);
     return 2;
+}
+
+int Level::model_isLeft(lua_State* L) {
+    [[maybe_unused]] auto [index] = lua::args<lua::types::integer>(L);
+    //TODO
+    lua_pushboolean(L, true);
+    return 1;
+}
+
+int Level::model_setGoal(lua_State* L) {
+    [[maybe_unused]] auto [index, goal] = lua::args<lua::types::integer, lua::types::string>(L);
+    //TODO
+    return 0;
+}
+
+int Level::model_change_turnSide(lua_State* L) {
+    [[maybe_unused]] auto [index] = lua::args<lua::types::integer>(L);
+    //TODO
+    return 0;
 }
 
 int Level::sound_addSound(lua_State* L) {

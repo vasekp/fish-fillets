@@ -22,8 +22,12 @@ public:
     static int game_addModel(lua_State*);
     static int game_getCycles(lua_State*);
     static int model_addAnim(lua_State*);
+    static int model_runAnim(lua_State*);
     static int model_setAnim(lua_State*);
     static int model_getLoc(lua_State*);
+    static int model_isLeft(lua_State*);
+    static int model_setGoal(lua_State*);
+    static int model_change_turnSide(lua_State*);
     static int sound_addSound(lua_State*);
     static int sound_playMusic(lua_State*);
     static int dialog_addFont(lua_State*);

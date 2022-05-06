@@ -8,7 +8,7 @@
 
 class LevelScreen : public GameScreen {
     Level m_level;
-    std::map<std::string, std::shared_ptr<AudioSource>> m_sounds;
+    std::multimap<std::string, std::shared_ptr<AudioSource>> m_sounds;
     std::shared_ptr<AudioSource> m_music;
     std::array<float, 3> m_waves;
 
