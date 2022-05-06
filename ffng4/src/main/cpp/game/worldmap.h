@@ -20,7 +20,7 @@ class WorldMap : public GameScreen {
     };
 
     std::shared_ptr<AudioSource> m_music;
-    std::vector<Image> nodeImages;
+    std::vector<std::shared_ptr<Image>> nodeImages;
     std::map<Frames, Color> m_maskColors;
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;

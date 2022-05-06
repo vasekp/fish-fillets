@@ -57,7 +57,7 @@ void WorldMap::own_draw() {
                 drawMasked(record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)
-                canvas.drawImage(nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+                canvas.drawImage(*nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         float phase = std::fmod(timeSinceLoad(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -65,8 +65,8 @@ void WorldMap::own_draw() {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            canvas.drawImage(nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
-            canvas.drawImage(nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            canvas.drawImage(*nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            canvas.drawImage(*nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         }
     }
 

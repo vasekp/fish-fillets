@@ -15,7 +15,7 @@ protected:
     unsigned m_width, m_height;
 
 private:
-    std::map<std::string, Image> m_images;
+    std::map<std::string, std::shared_ptr<Image>> m_images;
 
 public:
     virtual ~GameScreen() { }
@@ -32,7 +32,7 @@ protected:
     GameScreen(Instance& instance, unsigned width = baseWidth, unsigned height = baseHeight);
 
     void setSize(unsigned width, unsigned height);
-    Image& addImage(const std::string& path, const std::string& name = "");
+    std::shared_ptr<Image> addImage(const std::string& path, const std::string& name = "");
     Image& getImage(const std::string& name);
     void reloadImages();
     float timeSinceLoad();
