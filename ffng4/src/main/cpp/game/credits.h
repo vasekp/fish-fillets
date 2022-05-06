@@ -4,6 +4,7 @@
 #include "screen.h"
 
 class CreditsScreen : public GameScreen {
+    std::shared_ptr<AudioSource> m_music;
     unsigned m_viewWidth;
     unsigned m_viewHeight;
     unsigned m_totalHeight;

@@ -19,11 +19,12 @@ class WorldMap : public GameScreen {
         Color maskColor;
     };
 
-    Frames m_nextFrame;
+    std::shared_ptr<AudioSource> m_music;
     std::vector<Image> nodeImages;
     std::map<Frames, Color> m_maskColors;
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;
+    Frames m_nextFrame;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
@@ -41,6 +42,7 @@ public:
     void staticFrame(Frames frame);
 
 private:
+    void own_start() override;
     void own_load() override;
     void own_draw() override;
     bool own_mouse(unsigned, unsigned) override;

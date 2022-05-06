@@ -2,9 +2,10 @@
 #include "statemanager.h"
 
 TestScreen::TestScreen(Instance& instance, const char* a, const char* b, const char *c) : GameScreen(instance) {
-    setBackground(a);
+    addImage(a, "background");
     addImage(b, "walls");
-    setMusic(c);
+    // TODO: currently missing setSize
+    m_music = m_instance.audio().loadMusic(c);
     for(int i = 0; i < 6; i++) {
         std::stringstream oss;
         oss << "sound/share/sp-bubles_0" << i << ".ogg";
@@ -18,6 +19,9 @@ void TestScreen::own_load() {
     glUniform1f(program.uniform("uAmplitude"), 4.0);
     glUniform1f(program.uniform("uPeriod"), 12.0);
     glUniform1f(program.uniform("uSpeed"), 5.0);
+
+    m_instance.audio().clear();
+    m_instance.audio().addSource(m_music);
 }
 
 void TestScreen::own_draw() {

@@ -1,5 +1,11 @@
 #include "screen.h"
 
+GameScreen::GameScreen(Instance &instance, unsigned int width, unsigned int height) :
+    m_instance(instance),
+    m_width(width),
+    m_height(height)
+{ }
+
 Image& GameScreen::addImage(const std::string &filename, const std::string& name) {
     auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, Image{filename});
     return iterator->second;
@@ -9,12 +15,9 @@ Image& GameScreen::getImage(const std::string& name) {
     return m_images.at(name);
 }
 
-void GameScreen::setBackground(const std::string &filename) {
-    addImage(filename, "background");
-}
-
-void GameScreen::setMusic(const std::string& filename) {
-    m_music = m_instance.audio().loadMusic(filename);
+void GameScreen::setSize(unsigned int width, unsigned int height) {
+    m_width = width;
+    m_height = height;
 }
 
 void GameScreen::reloadImages() {
@@ -24,7 +27,7 @@ void GameScreen::reloadImages() {
 
 void GameScreen::start() {
     LOGD("screen: start");
-    m_music->rewind();
+    own_start();
     load();
 }
 
@@ -32,20 +35,10 @@ void GameScreen::load() {
     LOGD("screen: load");
     reloadImages();
 
-    try {
-        auto& bgImage = m_images.at("background");
-        m_instance.graphics().canvas().setWindowSize(bgImage.width(), bgImage.height());
-    } catch(std::out_of_range& e) {
-        ::error("Level has no background set.");
-    }
+    m_instance.graphics().canvas().setWindowSize(m_width, m_height);
 
     own_load();
     m_loadTime = std::chrono::steady_clock::now();
-
-    // Music is playing with the last shown frame while this thread is busy (loadMusic, reloadImages),
-    // so make this the very last thing
-    m_instance.audio().clear();
-    m_instance.audio().addSource(m_music);
 }
 
 float GameScreen::timeSinceLoad() {

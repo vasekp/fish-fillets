@@ -5,8 +5,8 @@ WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
     m_nextFrame(Frames::none)
 {
-    setBackground("override/map.png");
-    setMusic("music/menu.ogg");
+    m_music = m_instance.audio().loadMusic("music/menu.ogg");
+    addImage("override/map.png", "background");
     addImage("override/loading.png", "loading");
     addImage("override/map-mask.png", "mask");
     addImage("images/menu/map_lower.png", "masked");
@@ -31,11 +31,18 @@ void WorldMap::staticFrame(Frames frame) {
     m_instance.graphics().drawFrame();
 }
 
+void WorldMap::own_start() {
+    m_music->rewind();
+}
+
 void WorldMap::own_load() {
     m_instance.graphics().readBuffer().setImage(getImage("mask"));
     m_instance.graphics().setMask(getImage("mask"));
 
     refresh();
+
+    m_instance.audio().clear();
+    m_instance.audio().addSource(m_music);
 }
 
 void WorldMap::own_draw() {
