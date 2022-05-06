@@ -24,8 +24,20 @@ void Canvas::drawImage(const Image& image, const ogl::Program& program, GLuint d
     image.texture().bind();
     glUniform2f(program.uniform("uSrcSize"), (float) image.width(), (float) image.height());
     glUniform2f(program.uniform("uDstSize"), m_windowDim.fx(), m_windowDim.fy());
-    glUniform2f(program.uniform("uDstOffset"), (float)destX, (float)destY);
+    glUniform2f(program.uniform("uSrcOffset"), 0.f, 0.f);
+    glUniform2f(program.uniform("uDstOffset"), (float) destX, (float) destY);
     GraphicsUtils::rect(0u, 0u, image.width(), image.height());
+}
+
+void Canvas::blit(const Image& image, const ogl::Program &program, int srcX, int srcY,
+                  int destX, int destY, GLuint width, GLuint height) const {
+    glUseProgram(program);
+    image.texture().bind();
+    glUniform2f(program.uniform("uSrcSize"), (float) image.width(), (float) image.height());
+    glUniform2f(program.uniform("uDstSize"), m_windowDim.fx(), m_windowDim.fy());
+    glUniform2f(program.uniform("uSrcOffset"), (float) srcX, (float) srcY);
+    glUniform2f(program.uniform("uDstOffset"), (float) destX, (float) destY);
+    GraphicsUtils::rect(0u, 0u, width, height);
 }
 
 Coords Canvas::screen2canvas(Coords screen) {

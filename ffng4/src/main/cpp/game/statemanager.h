@@ -7,7 +7,8 @@
 enum class GameState {
     WorldMap,
     TestScreen,
-    Intro
+    Intro,
+    Credits
 };
 
 class StateManager {

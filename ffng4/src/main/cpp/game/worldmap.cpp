@@ -92,6 +92,7 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         m_instance.states().setState(GameState::Intro);
     } else if(mask_color == WorldMap::MaskColors::credits) {
         staticFrame(WorldMap::Frames::credits);
+        m_instance.states().setState(GameState::Credits);
     } else {
         auto fx = (float)x, fy = (float)y;
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {

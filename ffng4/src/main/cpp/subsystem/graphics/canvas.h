@@ -16,6 +16,7 @@ public:
     void bind() const;
 
     void drawImage(const Image& image, const ogl::Program& program, GLuint destX = 0, GLuint destY = 0) const;
+    void blit(const Image& image, const ogl::Program& program, int srcX, int srcY, int destX, int destY, GLuint width, GLuint height) const;
 
     Coords screen2canvas(Coords screen);
     Coords canvas2screen(Coords canvas);

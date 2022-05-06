@@ -11,7 +11,6 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     for(const auto* program : {&copy, &maskCopy, &alpha, &wavyImage}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uTexture"), Shaders::texImage_shader);
-        glUniform2f(program->uniform("uSrcOffset"), 0.f, 0.f);
     }
 
     glUseProgram(maskCopy);

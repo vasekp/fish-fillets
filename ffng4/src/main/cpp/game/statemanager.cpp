@@ -1,6 +1,7 @@
 #include "statemanager.h"
 #include "game/worldmap.h"
 #include "game/testscreen.h"
+#include "game/credits.h"
 
 StateManager::StateManager(Instance& instance) :
     m_instance(instance),
@@ -17,6 +18,15 @@ void StateManager::setState(GameState state) {
     switch(state) {
         case GameState::WorldMap:
             m_screens.erase(m_screens.begin() + 1, m_screens.end());
+            if(m_instance.live)
+                curScreen().start();
+            break;
+        case GameState::Credits:
+            assert(m_screens.size() == 1);
+            {
+                auto screen = std::make_unique<CreditsScreen>(m_instance);
+                m_screens.push_back(std::move(screen));
+            }
             if(m_instance.live)
                 curScreen().start();
             break;
