@@ -11,8 +11,8 @@ class AudioSource {
     std::size_t m_loopEnd;
 
 public:
-    AudioSource() = default;
-    AudioSource(std::string  filename, std::size_t num_samples, std::unique_ptr<float[]>&& data);
+    AudioSource() = delete;
+    AudioSource(std::string filename, std::size_t num_samples, std::unique_ptr<float[]>&& data);
 
     AudioSource(AudioSource&) = delete;
     AudioSource& operator=(const AudioSource&) = delete;

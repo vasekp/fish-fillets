@@ -6,6 +6,7 @@ namespace lua {
     namespace types {
         using string = const char *;
         using integer = lua_Integer;
+        using number = double;
         using boolean = bool;
     }
 

@@ -18,7 +18,7 @@ namespace lua {
         lua_State* m_state;
 
     public:
-        Env() : m_state(luaL_newstate()) { }
+        Env() : m_state(luaL_newstate()) { luaL_openlibs(m_state); }
         ~Env() { lua_close(m_state); }
 
         operator lua_State*() { return m_state; }

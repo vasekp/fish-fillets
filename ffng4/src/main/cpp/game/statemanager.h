@@ -3,12 +3,14 @@
 
 #include "instance.h"
 #include "screen.h"
+#include "levelrecord.h"
 
 enum class GameState {
     WorldMap,
     TestScreen,
     Intro,
-    Credits
+    Credits,
+    Game
 };
 
 class StateManager {
@@ -19,8 +21,9 @@ class StateManager {
 public:
     StateManager(Instance& instance);
 
-    GameState getState() const { return m_state; }
     void setState(GameState state);
+    void startLevel(const LevelRecord& record);
+    GameState getState() const { return m_state; }
     GameScreen& curScreen() { return *m_screens.back(); }
 
 private:

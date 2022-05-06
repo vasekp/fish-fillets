@@ -1,7 +1,7 @@
 #include "statemanager.h"
 #include "game/worldmap.h"
-#include "game/testscreen.h"
 #include "game/credits.h"
+#include "game/levelscreen.h"
 
 StateManager::StateManager(Instance& instance) :
     m_instance(instance),
@@ -12,8 +12,10 @@ StateManager::StateManager(Instance& instance) :
 }
 
 void StateManager::setState(GameState state) {
-    if(state == getState())
+    if(state == getState()) {
+        LOGE("setState to current state");
         return;
+    }
     auto start = std::chrono::steady_clock::now();
     switch(state) {
         case GameState::WorldMap:
@@ -30,27 +32,30 @@ void StateManager::setState(GameState state) {
             if(m_instance.live)
                 curScreen().start();
             break;
-        case GameState::TestScreen:
-            assert(m_screens.size() == 1);
-            {
-                auto screen = std::make_unique<TestScreen>(m_instance,
-                                                           "images/start/prvni-p.png",
-                                                           "images/start/prvni-w.png",
-                                                           "music/rybky04.ogg");
-                m_screens.push_back(std::move(screen));
-            }
-            if(m_instance.live)
-                curScreen().start();
-            break;
         case GameState::Intro:
             playIntro();
             // Don't set m_state.
             return;
+        default:
+            throw std::logic_error("can't change to this state directly");
     }
     m_state = state;
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
     LOGD("setState duration = %f s", diff.count());
+}
+
+void StateManager::startLevel(const LevelRecord& record) {
+    auto start = std::chrono::steady_clock::now();
+    assert(m_screens.size() == 1);
+    auto screen = std::make_unique<LevelScreen>(m_instance, record);
+    m_screens.push_back(std::move(screen));
+    if(m_instance.live)
+        curScreen().start();
+    m_state = GameState::Game;
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    LOGD("startLevel duration = %f s", diff.count());
 }
 
 void StateManager::playIntro() {

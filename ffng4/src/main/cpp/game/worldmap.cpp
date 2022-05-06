@@ -107,12 +107,9 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
             return std::hypot(coords.fx() - fx, coords.fy() - fy) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
-            LOGD("%s", it->first.c_str());
-            it->second->solved = true;
-            refresh();
+            staticFrame(WorldMap::Frames::loading);
+            m_instance.states().startLevel(*it->second);
         }
-        /*staticFrame(WorldMap::Frames::loading);
-        m_instance.states().setState(GameState::TestScreen);*/
     }
     return true;
 }

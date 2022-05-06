@@ -21,6 +21,13 @@ namespace lua {
     };
 
     template<>
+    struct lua_accessor<types::number> {
+        static float get(lua_State* L, std::size_t index) {
+            return (float)luaL_checknumber(L, index);
+        }
+    };
+
+    template<>
     struct lua_accessor<types::boolean> {
         static bool get(lua_State* L, std::size_t index) {
             return lua_toboolean(L, index);
