@@ -27,9 +27,8 @@ void Script::registerFn(const std::string& name, lua_CFunction function) {
 }
 
 void Script::doString(const std::string& string) {
-    if(luaL_dostring(m_env, string.c_str()) != LUA_OK) {
+    if(luaL_dostring(m_env, string.c_str()))
         LOGE("Lua error: %s", lua_tostring(m_env, -1));
-    }
 }
 
 void Script::loadFile(const std::string& filename) {
@@ -50,7 +49,7 @@ int Script::file_exists(lua_State* L) {
     return 1;
 }
 
-int Script::sendMsg(lua_State *) {
+int Script::sendMsg(lua_State* L) {
     auto [target, text] = lua::args<lua::types::string, lua::types::string>(L);
     LOGD("sendMsg %s -> %s IGNORED", target, text);
     return 0;
