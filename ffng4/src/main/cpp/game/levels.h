@@ -2,30 +2,12 @@
 #define FISH_FILLETS_LEVELS_H
 
 #include "instance.h"
+#include "levelrecord.h"
 #include "subsystem/script.h"
-
-enum class LevelState {
-    locked,
-    open,
-    solved
-};
-
-struct LevelRecord {
-    std::shared_ptr<LevelRecord> parent;
-    std::string filename;
-    bool solved;
-
-    Coords coords;
-    int maskColor;
-
-    LevelRecord(std::shared_ptr<LevelRecord>, std::string, bool, Coords, int);
-    LevelState state() const;
-
-    constexpr static int no_color = -1;
-};
 
 class Levels : public ScriptReferrer {
     std::map<std::string, std::shared_ptr<LevelRecord>> m_levels;
+    std::shared_ptr<LevelRecord> m_finale;
     Script m_script;
 
 public:

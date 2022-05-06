@@ -1,24 +1,5 @@
 #include "levels.h"
 
-LevelRecord::LevelRecord(std::shared_ptr<LevelRecord> parent_, std::string filename_, bool solved_,
-                         Coords coords_, int maskColor_) :
-    parent(std::move(parent_)),
-    filename(std::move(filename_)),
-    solved(solved_),
-    coords(coords_),
-    maskColor(maskColor_)
-{ }
-
-LevelState LevelRecord::state() const {
-    return solved
-        ? LevelState::solved
-        : !parent
-        ? LevelState::open
-        : parent->solved
-        ? LevelState::open
-        : LevelState::locked;
-}
-
 Levels::Levels(Instance& instance) : m_levels(), m_script(instance, *this) {
     m_script.registerFn("file_include", file_include);
     m_script.registerFn("branch_addNode", branch_addNode);
@@ -35,50 +16,55 @@ int Levels::file_include(lua_State* L) {
 }
 
 int Levels::branch_addNode(lua_State* L) {
-    [[maybe_unused]] auto [parent, codename, filename, x, y, color, poster] = lua::args<
+    auto [parent, codename, filename, x, y, color, ending] = lua::args<
             lua::types::string,
             lua::types::string,
             lua::types::string,
             lua::types::integer,
             lua::types::integer,
-            lua::optional<lua::types::integer, -1>,
+            lua::optional<lua::types::integer, LevelRecord::no_color>,
             lua::optional<lua::types::string>
     >(L);
     auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
     std::shared_ptr<LevelRecord> parentRecord = *parent
-            ? self.m_levels[parent]
+            ? self.m_levels.at(parent)
             : decltype(parentRecord){};
-    self.m_levels[codename] = std::make_shared<LevelRecord>(parentRecord, filename, false, Coords{x, y}, color);
+    self.m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending, false, Coords{x, y}, color)});
     return 0;
 }
 
 int Levels::branch_setEnding(lua_State* L) {
-    [[maybe_unused]] auto [codename, filename, poster] = lua::args<
+    auto [codename, filename, ending] = lua::args<
             lua::types::string,
             lua::types::string,
             lua::types::string
     >(L);
-    LOGV("branchEnding");
+    auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
+    self.m_finale = std::make_shared<LevelRecord>(std::shared_ptr<LevelRecord>(), filename, ending, false, Coords{}, LevelRecord::no_color);
     return 0;
 }
 
 int Levels::worldmap_addDesc(lua_State* L) {
-    [[maybe_unused]] auto [codename, lang, levelname, branch] = lua::args<
+    auto [codename, lang, levelname, branch] = lua::args<
             lua::types::string,
             lua::types::string,
             lua::types::string,
             lua::types::string
     >(L);
-    LOGV("addDesc");
+    auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
+    if(self.m_levels.contains(codename))
+        self.m_levels.at(codename)->description[lang] = levelname;
     return 0;
 }
 
 int Levels::node_bestSolution(lua_State* L) {
-    [[maybe_unused]] auto [codename, moves, name] = lua::args<
+    auto [codename, moves, name] = lua::args<
             lua::types::string,
             lua::types::integer,
             lua::types::string
     >(L);
-    LOGV("bestSolution");
+    auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
+    if(self.m_levels.contains(codename))
+        self.m_levels.at(codename)->best = {name, moves};
     return 0;
 }
