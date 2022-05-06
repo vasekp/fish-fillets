@@ -7,11 +7,13 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "game/statemanager.h"
+#include "game/levels.h"
 
 Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), live(false), quit_request(false) {
     m_files = std::make_unique<Files>(*this);
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this);
+    m_levels = std::make_unique<Levels>(*this);
     m_states = std::make_unique<StateManager>(*this);
 }
 

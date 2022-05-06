@@ -4,16 +4,21 @@
 #include "instance.h"
 #include "platform/lua.h"
 
+class ScriptReferrer {
+public:
+    virtual ~ScriptReferrer() { }
+};
+
 class Script {
     Instance& m_instance;
-    GameScreen& m_screen;
+    ScriptReferrer& m_ref;
     lua::Env m_env;
 
 public:
-    Script(Instance& instance, GameScreen& screen);
+    Script(Instance& instance, ScriptReferrer& ref);
     static Script& from(lua_State*);
 
-    GameScreen& screen() const { return m_screen; }
+    ScriptReferrer& ref() const { return m_ref; }
 
     void registerFn(const std::string& name, lua_CFunction function);
     void doString(const std::string& string);

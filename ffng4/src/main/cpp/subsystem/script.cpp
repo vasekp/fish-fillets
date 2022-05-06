@@ -1,7 +1,9 @@
 #include "subsystem/script.h"
 #include "subsystem/files.h"
 
-Script::Script(Instance &instance, GameScreen& screen) : m_instance(instance), m_screen(screen), m_env() {
+Script::Script(Instance &instance, ScriptReferrer& ref) :
+        m_instance(instance), m_ref(ref), m_env()
+{
     lua_pushstring(m_env, "leader");
     lua_pushlightuserdata(m_env, this);
     lua_rawset(m_env, LUA_REGISTRYINDEX);

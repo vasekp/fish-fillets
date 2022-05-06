@@ -2,7 +2,7 @@
 #define FISH_FILLETS_GAME_WORLDMAP_H
 
 #include "screen.h"
-#include "levelinfo.h"
+#include "game/levels.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {
@@ -22,9 +22,8 @@ class WorldMap : public GameScreen {
     Frames m_nextFrame;
     std::vector<Image> nodeImages;
     std::map<Frames, Color> m_maskColors;
-    std::map<std::string, LevelInfo> m_levels;
-    std::vector<Branch> m_branches;
-    std::vector<LevelInfo> m_open;
+    std::vector<std::shared_ptr<LevelRecord>> m_open;
+    std::vector<std::shared_ptr<LevelRecord>> m_forks;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
@@ -47,12 +46,7 @@ private:
     bool own_mouse(unsigned, unsigned) override;
 
     void drawMasked(Color c);
-
-    static int file_include(lua_State*);
-    static int branch_addNode(lua_State*);
-    static int branch_setEnding(lua_State*);
-    static int worldmap_addDesc(lua_State*);
-    static int node_bestSolution(lua_State*);
+    void refresh();
 };
 
 #endif //FISH_FILLETS_GAME_WORLDMAP_H
