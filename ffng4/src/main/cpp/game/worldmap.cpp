@@ -2,8 +2,11 @@
 #include "statemanager.h"
 
 namespace lcb {
-    int branch_addNode(lua_State*);
     int file_include(lua_State*);
+    int branch_addNode(lua_State*);
+    int branch_setEnding(lua_State*);
+    int worldmap_addDesc(lua_State*);
+    int node_bestSolution(lua_State*);
 }
 
 WorldMap::WorldMap(Instance& instance) :
@@ -25,9 +28,12 @@ WorldMap::WorldMap(Instance& instance) :
     maskColors.insert({Frames::intro, MaskColors::intro});
     maskColors.insert({Frames::credits, MaskColors::credits});
 
-    m_lua.registerFn("branch_addNode", lcb::branch_addNode);
-    m_lua.registerFn("file_include", lcb::file_include);
-    m_lua.doString(instance.files().system("script/worldmap.lua").read());
+    m_script.registerFn("file_include", lcb::file_include);
+    m_script.registerFn("branch_addNode", lcb::branch_addNode);
+    m_script.registerFn("branch_setEnding", lcb::branch_setEnding);
+    m_script.registerFn("worldmap_addDesc", lcb::worldmap_addDesc);
+    m_script.registerFn("node_bestSolution", lcb::node_bestSolution);
+    m_script.loadFile("script/worldmap.lua");
 }
 
 void WorldMap::staticFrame(Frames frame) {
@@ -102,8 +108,14 @@ void WorldMap::drawMasked(Color c) {
 
 namespace lcb {
 
-    int branch_addNode(lua_State *L) {
-        [[maybe_unused]] auto [parent, name, filename, x, y, hidden, poster] = lua::args<
+    int file_include(lua_State* L) {
+        auto [filename] = lua::args<lua::types::string>(L);
+        Script::from(L).loadFile(filename);
+        return 0;
+    }
+
+    int branch_addNode(lua_State* L) {
+        [[maybe_unused]] auto [parent, codename, filename, x, y, hidden, poster] = lua::args<
                 lua::types::string,
                 lua::types::string,
                 lua::types::string,
@@ -111,12 +123,39 @@ namespace lcb {
                 lua::types::integer,
                 lua::types::boolean,
                 lua::optional<lua::types::string>
-                >(L);
-        LOGD("name %s (%lld, %lld) %s", name, x, y, hidden ? "HIDDEN" : "");
+        >(L);
+        LOGV("name %s (%lld, %lld) %s", codename, x, y, hidden ? "HIDDEN" : "");
         return 0;
     }
 
-    int file_include(lua_State *L) {
+    int branch_setEnding(lua_State* L) {
+        [[maybe_unused]] auto [codename, filename, poster] = lua::args<
+                lua::types::string,
+                lua::types::string,
+                lua::types::string
+        >(L);
+        LOGV("branchEnding");
+        return 0;
+    }
+
+    int worldmap_addDesc(lua_State* L) {
+        [[maybe_unused]] auto [codename, lang, levelname, branch] = lua::args<
+                lua::types::string,
+                lua::types::string,
+                lua::types::string,
+                lua::types::string
+        >(L);
+        LOGV("addDesc");
+        return 0;
+    }
+
+    int node_bestSolution(lua_State* L) {
+        [[maybe_unused]] auto [codename, moves, name] = lua::args<
+                lua::types::string,
+                lua::types::integer,
+                lua::types::string
+        >(L);
+        LOGV("bestSolution");
         return 0;
     }
 

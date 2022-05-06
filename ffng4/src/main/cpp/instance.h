@@ -11,6 +11,7 @@ class Image;
 class Audio;
 class GameScreen;
 class StateManager;
+class Script;
 
 /*struct saved_state {
 };*/
@@ -23,6 +24,7 @@ class Instance {
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
     std::unique_ptr<StateManager> m_states;
+    std::unique_ptr<Script> m_script;
 
     //struct saved_state m_state;
 
@@ -36,6 +38,7 @@ public:
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
     auto& states() { return *m_states; }
+    auto& script() { return *m_script; }
 
     bool live;
     bool quit_request;
