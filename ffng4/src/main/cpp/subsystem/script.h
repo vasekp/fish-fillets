@@ -25,6 +25,8 @@ public:
     void loadFile(const std::string& filename);
 
     static int file_include(lua_State*);
+    static int file_exists(lua_State*);
+    static int sendMsg(lua_State*);
 };
 
 #endif //FISH_FILLETS_SCRIPT_H
