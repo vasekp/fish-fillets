@@ -8,16 +8,27 @@ void timer_thread(Timer& timer) {
         timer.m_tick.store(true, std::memory_order::relaxed);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    timer.m_stop.store(false, std::memory_order::release);
     LOGD("timer thread exited");
 }
 
-Timer::Timer() : m_tick(false), m_stop(false), m_tickCount(0) {
-    m_thread = std::thread([&]() { timer_thread(*this); });
+Timer::Timer() : m_thread(), m_tick(false), m_stop(false), m_tickCount(0) {
 }
 
 Timer::~Timer() {
-    m_stop.store(false, std::memory_order::release);
-    m_thread.join();
+    stop();
+}
+
+void Timer::start() {
+    if(!m_thread.joinable())
+        m_thread = std::thread([&]() { timer_thread(*this); });
+}
+
+void Timer::stop() {
+    if(m_thread.joinable()) {
+        m_stop.store(true, std::memory_order::release);
+        m_thread.join();
+    }
 }
 
 bool Timer::ticked() {

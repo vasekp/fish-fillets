@@ -30,7 +30,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance.graphics().activate();
                 instance.audio().activate();
                 instance.live = true;
-                instance.curScreen().load();
+                instance.curScreen().refresh();
                 instance.graphics().drawFrame();
             }
             break;
@@ -42,10 +42,12 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_GAINED_FOCUS:
             LOGI("APP_CMD_GAINED_FOCUS");
+            instance.curScreen().resume();
             instance.live = true;
             break;
         case APP_CMD_LOST_FOCUS:
             LOGI("APP_CMD_LOST_FOCUS");
+            instance.curScreen().pause();
             instance.live = false;
             break;
         case APP_CMD_START:

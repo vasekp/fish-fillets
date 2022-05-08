@@ -3,7 +3,8 @@
 GameScreen::GameScreen(Instance &instance, unsigned int width, unsigned int height) :
     m_instance(instance),
     m_width(width),
-    m_height(height)
+    m_height(height),
+    m_running(false)
 { }
 
 std::shared_ptr<Image> GameScreen::addImage(const std::string &filename, const std::string& name) {
@@ -28,19 +29,36 @@ void GameScreen::reloadImages() {
 void GameScreen::start() {
     LOGD("screen: start");
     own_start();
-    load();
+    m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
 
-void GameScreen::load() {
-    LOGD("screen: load");
+void GameScreen::refresh() {
+    LOGD("screen: refresh");
     reloadImages();
 
     m_instance.graphics().canvas().setWindowSize(m_width, m_height);
 
-    own_load();
-    m_loadTime = std::chrono::steady_clock::now();
+    own_refresh();
 }
 
-float GameScreen::timeSinceLoad() {
-    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_loadTime).count();
+void GameScreen::pause() {
+    LOGD("screen: pause");
+    if(!m_running)
+        throw std::logic_error("pause() while not running");
+    m_pauseTime = std::chrono::steady_clock::now();
+    m_running = false;
+    own_pause();
+}
+
+void GameScreen::resume() {
+    LOGD("screen: resume");
+    if(m_running)
+        throw std::logic_error("resume() while already running");
+    m_relStartTime = std::chrono::steady_clock::now() - (m_pauseTime - m_relStartTime);
+    m_running = true;
+    own_resume();
+}
+
+float GameScreen::timeAlive() {
+    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count();
 }

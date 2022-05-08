@@ -33,16 +33,20 @@ void WorldMap::staticFrame(Frames frame) {
 
 void WorldMap::own_start() {
     m_music->rewind();
-}
 
-void WorldMap::own_load() {
-    m_instance.graphics().readBuffer().setImage(getImage("mask"));
-    m_instance.graphics().setMask(getImage("mask"));
-
-    refresh();
+    m_open.clear();
+    for(const auto& [name, record] : m_instance.levels()) {
+        if(record->state() == LevelState::open)
+            m_open.push_back(record);
+    }
 
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
+}
+
+void WorldMap::own_refresh() {
+    m_instance.graphics().readBuffer().setImage(getImage("mask"));
+    m_instance.graphics().setMask(getImage("mask"));
 }
 
 void WorldMap::own_draw() {
@@ -58,7 +62,7 @@ void WorldMap::own_draw() {
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)
                 canvas.drawImage(*nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
-        float phase = std::fmod(timeSinceLoad(), 10.f);
+        float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
         const auto& alphaProgram = m_instance.graphics().shaders().alpha;
@@ -119,12 +123,4 @@ void WorldMap::drawMasked(Color c) {
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
     m_instance.graphics().canvas().drawImage(getImage("masked"), maskProgram);
-}
-
-void WorldMap::refresh() {
-    m_open.clear();
-    for(const auto& [name, record] : m_instance.levels()) {
-        if(record->state() == LevelState::open)
-            m_open.push_back(record);
-    }
 }

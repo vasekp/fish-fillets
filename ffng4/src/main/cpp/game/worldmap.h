@@ -41,14 +41,14 @@ public:
     WorldMap(Instance&);
     void staticFrame(Frames frame);
 
-private:
+protected:
     void own_start() override;
-    void own_load() override;
+    void own_refresh() override;
     void own_draw() override;
     bool own_mouse(unsigned, unsigned) override;
 
+private:
     void drawMasked(Color c);
-    void refresh();
 };
 
 #endif //FISH_FILLETS_GAME_WORLDMAP_H

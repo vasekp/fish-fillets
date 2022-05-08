@@ -22,7 +22,9 @@ public:
 
 protected:
     void own_start() override;
-    void own_load() override;
+    void own_refresh() override;
+    void own_pause() override;
+    void own_resume() override;
     void own_draw() override;
 
     void create(int width, int height, const std::string& background);

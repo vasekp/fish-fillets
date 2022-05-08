@@ -22,7 +22,7 @@ void LevelScreen::own_start() {
         m_instance.audio().addSource(m_music);
 }
 
-void LevelScreen::own_load() {
+void LevelScreen::own_refresh() {
     auto& program = m_instance.graphics().shaders().wavyImage;
     glUseProgram(program);
     glUniform1f(program.uniform("uAmplitude"), m_waves[0]);
@@ -41,7 +41,7 @@ void LevelScreen::own_draw() {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
 
-    float phase = std::fmod(timeSinceLoad(), (float)(2*M_PI));
+    float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     glUseProgram(wavyProgram);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
@@ -63,4 +63,12 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 void LevelScreen::playMusic(const std::string &filename) {
     auto x = m_instance.audio().loadMusic(filename);
     m_music = x;
+}
+
+void LevelScreen::own_pause() {
+    m_timer.stop();
+}
+
+void LevelScreen::own_resume() {
+    m_timer.start();
 }

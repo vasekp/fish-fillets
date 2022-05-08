@@ -10,15 +10,17 @@ CreditsScreen::CreditsScreen(Instance& instance) : GameScreen(instance) {
     m_totalHeight = 0;
 }
 
-void CreditsScreen::own_load() {
-    m_totalHeight = getImage("credits").height();
-
+void CreditsScreen::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
 }
 
+void CreditsScreen::own_refresh() {
+    m_totalHeight = getImage("credits").height();
+}
+
 void CreditsScreen::own_draw() {
-    auto offset = (int)(std::min(timeSinceLoad() / 50.0f, 1.0f) * (float) m_totalHeight);
+    auto offset = (int)(std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight);
     const auto& canvas = m_instance.graphics().canvas();
     const auto& program = m_instance.graphics().shaders().copy;
     canvas.blit(getImage("credits"), program, 0, offset - (int)m_viewHeight, 0, 0, m_viewWidth, m_viewHeight);

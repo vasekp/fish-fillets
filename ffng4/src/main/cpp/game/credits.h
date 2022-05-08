@@ -12,8 +12,9 @@ class CreditsScreen : public GameScreen {
 public:
     CreditsScreen(Instance &);
 
-private:
-    void own_load() override;
+protected:
+    void own_start() override;
+    void own_refresh() override;
     void own_draw() override;
     bool own_mouse(unsigned, unsigned) override;
 };

@@ -15,6 +15,9 @@ public:
     Timer();
     ~Timer();
 
+    void start();
+    void stop();
+
     bool ticked();
     int tickCount();
 

@@ -9,6 +9,7 @@ StateManager::StateManager(Instance& instance) :
     m_state(GameState::WorldMap)
 {
     m_screens.push_back(std::make_unique<WorldMap>(m_instance));
+    curScreen().start();
 }
 
 void StateManager::setState(GameState state) {
@@ -20,17 +21,24 @@ void StateManager::setState(GameState state) {
     switch(state) {
         case GameState::WorldMap:
             m_screens.erase(m_screens.begin() + 1, m_screens.end());
-            if(m_instance.live)
-                curScreen().start();
+            curScreen().start();
+            if(m_instance.live) {
+                curScreen().refresh();
+                curScreen().resume();
+            }
             break;
         case GameState::Credits:
             assert(m_screens.size() == 1);
+            curScreen().pause();
             {
                 auto screen = std::make_unique<CreditsScreen>(m_instance);
                 m_screens.push_back(std::move(screen));
             }
-            if(m_instance.live)
-                curScreen().start();
+            curScreen().start();
+            if(m_instance.live) {
+                curScreen().refresh();
+                curScreen().resume();
+            }
             break;
         case GameState::Intro:
             playIntro();
@@ -48,10 +56,14 @@ void StateManager::setState(GameState state) {
 void StateManager::startLevel(const LevelRecord& record) {
     auto start = std::chrono::steady_clock::now();
     assert(m_screens.size() == 1);
+    curScreen().pause();
     auto screen = std::make_unique<LevelScreen>(m_instance, record);
     m_screens.push_back(std::move(screen));
-    if(m_instance.live)
-        curScreen().start();
+    curScreen().start();
+    if(m_instance.live) {
+        curScreen().refresh();
+        curScreen().resume();
+    }
     m_state = GameState::Game;
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
