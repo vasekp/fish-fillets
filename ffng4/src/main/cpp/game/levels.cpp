@@ -9,12 +9,12 @@ Levels::Levels(Instance& instance) : m_levels(), m_script(instance, *this) {
 }
 
 void Levels::branch_addNode(lua_State* L, const std::string& parent, const std::string& codename, const std::string& filename,
-                            int x, int y, lua::optional<int, -1> color, const lua::optional<std::string>& ending) {
+                            int x, int y, std::optional<int> color, const std::optional<std::string>& ending) {
     auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
     std::shared_ptr<LevelRecord> parentRecord = parent.empty()
             ? decltype(parentRecord){}
             : self.m_levels.at(parent);
-    self.m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending, false, Coords{x, y}, color)});
+    self.m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending.value_or(""), false, Coords{x, y}, color.value_or(-1))});
 }
 
 void Levels::branch_setEnding(lua_State* L, const std::string& codename, const std::string& filename, const std::string& ending) {

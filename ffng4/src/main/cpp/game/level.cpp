@@ -113,17 +113,17 @@ int Level::game_getCycles(lua_State* L) {
 }
 
 void Level::model_addAnim(lua_State* L, int index, const std::string& name, const std::string& filename,
-                          lua::optional<int, Model::dir::left> direction) {
+                          std::optional<int> direction) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
     auto image = self.m_screen.addImage(filename);
-    model.anim().add(name, direction, image);
+    model.anim().add(name, direction.value_or(Model::dir::left), image);
 }
 
-void Level::model_runAnim(lua_State* L, int index, const std::string& name, lua::optional<int, 0> phase) {
+void Level::model_runAnim(lua_State* L, int index, const std::string& name, std::optional<int> phase) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
-    model.anim().set(name, phase); // TODO: run
+    model.anim().set(name, phase.value_or(0)); // TODO: run
 }
 
 void Level::model_setAnim(lua_State* L, int index, const std::string& name, int phase) {
@@ -144,11 +144,11 @@ bool Level::model_isLeft(lua_State* L, int index) {
     return model.direction() == Model::dir::left;
 }
 
-void Level::model_setGoal(lua_State* L, int /*index*/, const std::string& /*goal*/) {
+void Level::model_setGoal(lua_State* L, int index, const std::string& goal) {
     //TODO
 }
 
-void Level::model_change_turnSide(lua_State* L, int /*index*/) {
+void Level::model_change_turnSide(lua_State* L, int index) {
     //TODO
 }
 
@@ -167,7 +167,7 @@ void Level::dialog_addFont(lua_State* L, const std::string& name, int r, int g, 
 }
 
 void Level::dialog_addDialog(lua_State* L, const std::string& name, const std::string& lang, const std::string& soundfile,
-                             const lua::optional<std::string>& fontname, const lua::optional<std::string>& subtitle) {
+                             const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
     // TODO
 }
 
