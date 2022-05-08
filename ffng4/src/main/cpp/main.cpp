@@ -29,7 +29,6 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if (instance.app()->window != nullptr) {
                 instance.graphics().activate();
                 instance.audio().activate();
-                instance.live = true;
                 instance.curScreen().refresh();
                 instance.graphics().drawFrame();
             }
@@ -38,16 +37,17 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             LOGI("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
             instance.audio().shutdown();
-            instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
             LOGI("APP_CMD_GAINED_FOCUS");
             instance.curScreen().resume();
+            instance.audio().resume();
             instance.live = true;
             break;
         case APP_CMD_LOST_FOCUS:
             LOGI("APP_CMD_LOST_FOCUS");
             instance.curScreen().pause();
+            instance.audio().pause();
             instance.live = false;
             break;
         case APP_CMD_START:

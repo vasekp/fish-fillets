@@ -11,6 +11,9 @@ public:
     AudioStream(const AudioStream&) = delete;
     AudioStream& operator=(const AudioStream&) = delete;
     ~AudioStream();
+
+    void start();
+    void stop();
 };
 
 #endif //FISH_FILLETS_AUDIO_STREAM_H

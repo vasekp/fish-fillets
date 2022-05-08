@@ -16,6 +16,14 @@ void Audio::shutdown() {
     m_stream.reset();
 }
 
+void Audio::pause() {
+    m_stream->stop();
+}
+
+void Audio::resume() {
+    m_stream->start();
+}
+
 void Audio::addSource(std::shared_ptr<AudioSource>& source) {
     LOGD("adding audio source %s", source->name().c_str());
     source->rewind();
