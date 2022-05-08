@@ -17,10 +17,12 @@ public:
     auto end() const { return m_levels.cend(); }
 
 private:
-    static int branch_addNode(lua_State*);
-    static int branch_setEnding(lua_State*);
-    static int worldmap_addDesc(lua_State*);
-    static int node_bestSolution(lua_State*);
+    static void branch_addNode(lua_State* L,
+                               const std::string& parent, const std::string& codename, const std::string& filename,
+                               int x, int y, lua::optional<int, -1> color, const lua::optional<std::string>& ending);
+    static void branch_setEnding(lua_State* L, const std::string& codename, const std::string& filename, const std::string& ending);
+    static void worldmap_addDesc(lua_State* L, const std::string& codename, const std::string& lang, const std::string& levelname, const std::string& branch);
+    static void node_bestSolution(lua_State* L, const std::string& codename, int moves, const std::string& name);
 };
 
 #endif //FISH_FILLETS_LEVELS_H

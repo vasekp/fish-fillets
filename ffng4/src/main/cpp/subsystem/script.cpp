@@ -8,9 +8,9 @@ Script::Script(Instance &instance, ScriptReferrer& ref) :
     lua_pushlightuserdata(m_env, this);
     lua_rawset(m_env, LUA_REGISTRYINDEX);
 
-    registerFn("file_include", file_include);
-    registerFn("file_exists", file_exists);
-    registerFn("sendMsg", sendMsg);
+    registerFn("file_include", lua::wrap<file_include>);
+    registerFn("file_exists", lua::wrap<file_exists>);
+    registerFn("sendMsg", lua::wrap<sendMsg>);
 }
 
 Script& Script::from(lua_State* L) {
@@ -35,22 +35,14 @@ void Script::loadFile(const std::string& filename) {
     doString(m_instance.files().system(filename).read());
 }
 
-int Script::file_include(lua_State* L) {
-    auto [filename] = lua::args<lua::types::string>(L);
+void Script::file_include(lua_State* L, const std::string& filename) {
     Script::from(L).loadFile(filename);
-    return 0;
 }
 
-int Script::file_exists(lua_State* L) {
-    auto [filename] = lua::args<lua::types::string>(L);
-    auto& self = Script::from(L);
-    bool ret = self.m_instance.files().system(filename).exists();
-    lua_pushboolean(L, ret);
-    return 1;
+bool Script::file_exists(lua_State* L, const std::string& filename) {
+    return Script::from(L).m_instance.files().system(filename).exists();
 }
 
-int Script::sendMsg(lua_State* L) {
-    auto [target, text] = lua::args<lua::types::string, lua::types::string>(L);
-    LOGD("sendMsg %s -> %s IGNORED", target, text);
-    return 0;
+void Script::sendMsg(lua_State* L, const std::string& target, const std::string& text) {
+    LOGD("sendMsg %s -> %s IGNORED", target.c_str(), text.c_str());
 }
