@@ -5,12 +5,15 @@
 #include "levelrecord.h"
 #include "level.h"
 #include "subsystem/audio.h"
+#include "timer.h"
+
 
 class LevelScreen : public GameScreen {
     Level m_level;
     std::multimap<std::string, std::shared_ptr<AudioSource>> m_sounds;
     std::shared_ptr<AudioSource> m_music;
     std::array<float, 3> m_waves;
+    Timer m_timer;
 
 public:
     LevelScreen(Instance&, const LevelRecord&);

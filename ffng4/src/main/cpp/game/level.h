@@ -16,7 +16,7 @@ class Level : public ScriptReferrer {
 public:
     Level(Instance&, LevelScreen&, std::string);
 
-    const std::vector<Model>& models() { return m_models; }
+    std::vector<Model>& models() { return m_models; }
 
     void init();
 

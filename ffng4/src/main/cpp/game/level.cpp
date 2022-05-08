@@ -123,13 +123,13 @@ void Level::model_addAnim(lua_State* L, int index, const std::string& name, cons
 void Level::model_runAnim(lua_State* L, int index, const std::string& name, std::optional<int> phase) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
-    model.anim().set(name, phase.value_or(0)); // TODO: run
+    model.anim().set(name, phase.value_or(0), true);
 }
 
 void Level::model_setAnim(lua_State* L, int index, const std::string& name, int phase) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
-    model.anim().set(name, phase);
+    model.anim().set(name, phase, false);
 }
 
 std::pair<int, int> Level::model_getLoc(lua_State* L, int index) {

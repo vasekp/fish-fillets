@@ -31,6 +31,12 @@ void LevelScreen::own_load() {
 }
 
 void LevelScreen::own_draw() {
+    if(m_timer.ticked()) {
+        for(auto& model : m_level.models()) {
+            model.anim().update();
+        }
+    }
+
     const auto& canvas = m_instance.graphics().canvas();
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
