@@ -53,8 +53,11 @@ void LevelScreen::own_draw() {
     }
 }
 
-void LevelScreen::addSound(const std::string &name, const std::string &filename) {
-    m_sounds.insert({name, m_instance.audio().loadSound(filename)});
+AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
+    if(single && m_sounds.contains(name))
+        return m_sounds.find(name)->second;
+    auto it = m_sounds.insert({name, m_instance.audio().loadSound(filename)});
+    return it->second;
 }
 
 void LevelScreen::setWaves(float amplitude, float period, float speed) {

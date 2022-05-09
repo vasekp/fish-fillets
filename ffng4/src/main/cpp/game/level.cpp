@@ -43,11 +43,11 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 //    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams);
 //    m_script.registerFn("model_equals", script_model_equals);
     m_script.registerFn("model_isTalking", lua::wrap<&Level::model_isTalking>);
-//    m_script.registerFn("model_talk", script_model_talk);
+    m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
 //    m_script.registerFn("model_killSound", script_model_killSound);
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
-//    m_script.registerFn("sound_playSound", script_sound_playSound);
+    m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);
     m_script.registerFn("sound_playMusic", lua::wrap<&Level::sound_playMusic>);
 //    m_script.registerFn("sound_stopMusic", script_sound_stopMusic);
 
@@ -186,8 +186,21 @@ bool Level::model_isTalking(int index) {
     return false;
 }
 
+void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
+    // TODO
+    const auto& source = m_screen.addSound(name, m_dialogs.at(name), true);
+    m_instance.audio().addSource(source);
+}
+
 void Level::sound_addSound(const std::string& name, const std::string& filename) {
     m_screen.addSound(name, filename);
+}
+
+void Level::sound_playSound(const std::string& name) {
+    // TODO random
+    const auto& multimap = m_screen.m_sounds;
+    //multimap.count(name);
+    m_instance.audio().addSource(multimap.lower_bound(name)->second);
 }
 
 void Level::sound_playMusic(const std::string& filename) {
@@ -215,6 +228,8 @@ void Level::dialog_addFont(const std::string& name, int r, int g, int b) {
 void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                              const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
     // TODO
+    if(!soundfile.empty() && (lang == "cs" || lang == "en"))
+        m_dialogs.insert({name, soundfile});
 }
 
 std::string Level::options_getParam(const std::string& name) {

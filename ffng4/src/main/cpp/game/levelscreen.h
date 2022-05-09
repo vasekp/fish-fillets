@@ -29,7 +29,7 @@ protected:
 
     void create(int width, int height, const std::string& background);
     void setWaves(float amplitude, float period, float speed);
-    void addSound(const std::string& name, const std::string& filename);
+    AudioSource& addSound(const std::string& name, const std::string& filename, bool single = false);
     void playMusic(const std::string& filename);
 
     bool own_mouse(unsigned int x, unsigned int y) override;

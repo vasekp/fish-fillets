@@ -46,7 +46,7 @@ void Audio::resume() {
     m_stream->start();
 }
 
-void Audio::addSource(AudioSource& source) {
+void Audio::addSource(const AudioSource& source) {
     LOGD("adding audio source %s", source.name().c_str());
     source.rewind();
     m_sources.local()->push_back(source);

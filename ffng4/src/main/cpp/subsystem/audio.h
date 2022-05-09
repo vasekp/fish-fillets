@@ -22,7 +22,7 @@ public:
     void pause();
     void resume();
 
-    void addSource(AudioSource& source);
+    void addSource(const AudioSource& source);
     void removeSource(const std::string& name);
     void clear();
 

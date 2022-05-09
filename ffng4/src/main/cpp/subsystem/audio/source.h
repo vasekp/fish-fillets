@@ -45,7 +45,7 @@ public:
     bool done() const { return m_impl->done(); }
     void mixin(float output[], std::size_t numSamples) const { m_impl->mixin(output, numSamples); }
     void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1)) { m_impl->setLoop(start, end); }
-    void rewind() { m_impl->rewind(); };
+    void rewind() const { m_impl->rewind(); };
 };
 
 #endif //FISH_FILLETS_AUDIO_SOURCE_H

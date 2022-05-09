@@ -57,7 +57,7 @@ void WorldMap::own_draw() {
     if(m_nextFrame != Frames::loading) {
         drawMasked(MaskColors::mainBranch);
         for(const auto& record : m_forks)
-            if(record->solved)
+//            if(record->solved)
                 drawMasked(record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)

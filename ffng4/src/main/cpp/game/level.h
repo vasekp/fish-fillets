@@ -13,6 +13,7 @@ class Level : public ScriptReferrer {
     const LevelRecord& m_record;
     Script m_script;
     std::vector<Model> m_models;
+    std::map<std::string, std::string> m_dialogs;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
@@ -44,7 +45,9 @@ public:
     void model_setGoal(int index, const std::string& goal);
     void model_change_turnSide(int index);
     bool model_isTalking(int index);
+    void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
     void sound_addSound(const std::string& name, const std::string& filename);
+    void sound_playSound(const std::string& name);
     void sound_playMusic(const std::string& filename);
     bool game_isPlanning();
     void game_planAction(/*TODO */);
