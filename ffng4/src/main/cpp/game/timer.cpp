@@ -39,6 +39,6 @@ bool Timer::ticked() {
         return false;
 }
 
-int Timer::tickCount() {
+int Timer::tickCount() const {
     return m_tickCount;
 }

@@ -19,7 +19,7 @@ public:
     void stop();
 
     bool ticked();
-    int tickCount();
+    int tickCount() const;
 
     friend void timer_thread(Timer&);
 };

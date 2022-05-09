@@ -58,6 +58,7 @@ public:
     void sound_stopMusic();
     bool game_isPlanning();
     void game_planAction(DelayedFunction function);
+    void game_killPlan();
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r, int g, int b);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,

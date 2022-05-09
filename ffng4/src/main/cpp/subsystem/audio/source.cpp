@@ -10,7 +10,8 @@ AudioSource::Impl::Impl(std::string filename, std::size_t num_samples, std::uniq
         m_loop(false),
         m_loopStart(0),
         m_loopEnd(0),
-        m_volume(1.f)
+        m_volume(1.f),
+        m_dialog(false)
 { }
 
 void AudioSource::Impl::mixin(float *output, std::size_t numSamples) const {

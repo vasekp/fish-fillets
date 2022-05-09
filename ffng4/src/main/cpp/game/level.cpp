@@ -68,7 +68,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 
     m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
     m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
-//    m_script.registerFn("game_killPlan", script_game_killPlan);
+    m_script.registerFn("game_killPlan", lua::wrap<&Level::game_killPlan>);
 
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_addFont", lua::wrap<&Level::dialog_addFont>);
@@ -266,6 +266,11 @@ bool Level::game_isPlanning() {
 
 void Level::game_planAction(DelayedFunction function) {
     m_plan.push(std::move(function));
+}
+
+void Level::game_killPlan() {
+    decltype(m_plan) empty{};
+    m_plan.swap(empty);
 }
 
 bool Level::dialog_isDialog() {
