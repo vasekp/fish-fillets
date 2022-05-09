@@ -15,6 +15,7 @@ class Level : public ScriptReferrer {
     std::vector<Model> m_models;
     std::map<std::string, std::string> m_dialogs;
     std::queue<DelayedFunction> m_plan;
+    std::map<int, std::size_t> m_virtModels;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
@@ -23,6 +24,8 @@ public:
 
     void init();
     void tick();
+
+    Model& getModel(int index);
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();

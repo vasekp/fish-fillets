@@ -47,6 +47,8 @@ void LevelScreen::own_draw() {
     canvas.drawImage(getImage("background"), wavyProgram);
 
     for(const auto& model : m_level.models()) {
+        if(model.isVirtual())
+            continue;
         const auto& images = model.anim().get();
         for(auto i = 0u; i < images.size(); i++)
             canvas.drawImage(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);

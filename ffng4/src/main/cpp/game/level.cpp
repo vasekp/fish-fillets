@@ -92,6 +92,17 @@ void Level::tick() {
     }
 }
 
+Model& Level::getModel(int index) {
+    if(index >= 0 && index < m_models.size())
+        return m_models[index];
+    if(m_virtModels.contains(index))
+        return m_models[m_virtModels.at(index)];
+    std::size_t realIndex = m_models.size();
+    m_models.push_back({"virtual", 0, 0, ""});
+    m_virtModels.insert({index, realIndex});
+    return m_models.back();
+}
+
 void Level::level_createRoom(int width, int height, const std::string& bg) {
     m_screen.create(width, height, bg);
 }
@@ -129,34 +140,34 @@ int Level::game_getCycles() {
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> direction) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     auto image = m_screen.addImage(filename);
     model.anim().add(name, direction.value_or(Model::dir::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     model.anim().set(name, phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     model.anim().set(name, phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     model.anim().setExtra(name, phase);
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     return {model.x(), model.y()};
 }
 
 std::string Level::model_getAction(int index) {
 //     TODO
-    const auto& model = m_models[index];
+    const auto& model = getModel(index);
     if(model.isBusy())
         return "busy";
     else
@@ -165,7 +176,7 @@ std::string Level::model_getAction(int index) {
 
 std::string Level::model_getState(int index) {
 //     TODO
-    const auto& model = m_models[index];
+    const auto& model = getModel(index);
     if(model.isTalking())
         return "talking";
     else
@@ -173,7 +184,7 @@ std::string Level::model_getState(int index) {
 }
 
 bool Level::model_isAlive(int index) {
-    return m_models[index].isAlive();
+    return getModel(index).isAlive();
 }
 
 bool Level::model_isOut(int index) {
@@ -182,7 +193,7 @@ bool Level::model_isOut(int index) {
 }
 
 bool Level::model_isLeft(int index) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     return model.direction() == Model::dir::left;
 }
 
@@ -195,14 +206,11 @@ void Level::model_change_turnSide(int index) {
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    m_models[index].setBusy(busy);
+    getModel(index).setBusy(busy);
 }
 
 bool Level::model_isTalking(int index) {
-    if(index >= 0)
-        return m_models[index].isTalking();
-    else
-        return false;
+    return getModel(index).isTalking();
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
@@ -215,14 +223,14 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
         source.setLoop(0, 0);
     source.setDialog(dialogFlag);
     if(index != -1) { // TODO
-        auto &model = m_models[index];
+        auto &model = getModel(index);
         model.setTalk(source);
     }
     m_instance.audio().addSource(source);
 }
 
 void Level::model_killSound(int index) {
-    auto& model = m_models[index];
+    auto& model = getModel(index);
     const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);

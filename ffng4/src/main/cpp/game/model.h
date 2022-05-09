@@ -11,7 +11,7 @@ public:
         right
     };
 
-    [[maybe_unused]] std::string m_type;
+    std::string m_type;
     unsigned m_x;
     unsigned m_y;
     [[maybe_unused]] std::string m_shape;
@@ -40,6 +40,7 @@ public:
     bool isAlive() const { return m_alive; }
     bool isBusy() const { return m_busy; }
     bool isTalking() const { return m_talk && !m_talk.done(); }
+    bool isVirtual() const { return m_type == "virtual"; }
 
     const AudioSource& talk() const { return m_talk; }
 
