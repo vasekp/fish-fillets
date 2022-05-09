@@ -14,12 +14,13 @@ void Levels::branch_addNode(lua_State* L, const std::string& parent, const std::
     std::shared_ptr<LevelRecord> parentRecord = parent.empty()
             ? decltype(parentRecord){}
             : self.m_levels.at(parent);
-    self.m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending.value_or(""), false, Coords{x, y}, color.value_or(-1))});
+    int depth = parentRecord ? parentRecord->depth + 1 : 1;
+    self.m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending.value_or(""), depth, false, Coords{x, y}, color.value_or(-1))});
 }
 
 void Levels::branch_setEnding(lua_State* L, const std::string& codename, const std::string& filename, const std::string& ending) {
     auto& self = dynamic_cast<Levels&>(Script::from(L).ref());
-    self.m_finale = std::make_shared<LevelRecord>(std::shared_ptr<LevelRecord>(), filename, ending, false, Coords{}, LevelRecord::no_color);
+    self.m_finale = std::make_shared<LevelRecord>(std::shared_ptr<LevelRecord>(), filename, ending, 1, false, Coords{}, LevelRecord::no_color);
 }
 
 void Levels::worldmap_addDesc(lua_State* L, const std::string& codename, const std::string& lang, const std::string& levelname, const std::string& branch) {

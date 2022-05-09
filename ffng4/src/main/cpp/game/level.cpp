@@ -1,10 +1,10 @@
 #include "level.h"
 #include "levelscreen.h"
 
-Level::Level(Instance& instance, LevelScreen& screen, std::string filename) :
+Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :
     m_instance(instance),
     m_screen(screen),
-    m_filename(std::move(filename)),
+    m_record(record),
     m_script(instance, *this),
     m_models()
 {
@@ -17,20 +17,18 @@ Level::Level(Instance& instance, LevelScreen& screen, std::string filename) :
 //    m_script.registerFn("game_getBg", script_game_getBg);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
 //    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
-//
+
     m_script.registerFn("model_addAnim", lua::wrap<model_addAnim>);
     m_script.registerFn("model_runAnim", lua::wrap<model_runAnim>);
     m_script.registerFn("model_setAnim", lua::wrap<model_setAnim>);
-//    m_script.registerFn("model_useSpecialAnim", script_model_useSpecialAnim);
-//    m_script.registerFn("model_countAnims", script_model_countAnims);
+    m_script.registerFn("model_useSpecialAnim", lua::wrap<model_useSpecialAnim>);
 //    m_script.registerFn("model_setEffect", script_model_setEffect);
     m_script.registerFn("model_getLoc", lua::wrap<model_getLoc>);
     m_script.registerFn("model_getAction", lua::wrap<model_getAction>);
-//    m_script.registerFn("model_getState", script_model_getState);
-//    m_script.registerFn("model_getDir", script_model_getDir);
+    m_script.registerFn("model_getState", lua::wrap<model_getState>);
 //    m_script.registerFn("model_getTouchDir", script_model_getTouchDir);
     m_script.registerFn("model_isAlive", lua::wrap<model_isAlive>);
-//    m_script.registerFn("model_isOut", script_model_isOut);
+    m_script.registerFn("model_isOut", lua::wrap<model_isOut>);
     m_script.registerFn("model_isLeft", lua::wrap<model_isLeft>);
 //    m_script.registerFn("model_isAtBorder", script_model_isAtBorder);
 //    m_script.registerFn("model_getW", script_model_getW);
@@ -44,45 +42,43 @@ Level::Level(Instance& instance, LevelScreen& screen, std::string filename) :
 //    m_script.registerFn("model_getExtraParams", script_model_getExtraParams);
 //    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams);
 //    m_script.registerFn("model_equals", script_model_equals);
-//
+    m_script.registerFn("model_isTalking", lua::wrap<model_isTalking>);
+//    m_script.registerFn("model_talk", script_model_talk);
+//    m_script.registerFn("model_killSound", script_model_killSound);
+
     m_script.registerFn("sound_addSound", lua::wrap<sound_addSound>);
 //    m_script.registerFn("sound_playSound", script_sound_playSound);
     m_script.registerFn("sound_playMusic", lua::wrap<sound_playMusic>);
 //    m_script.registerFn("sound_stopMusic", script_sound_stopMusic);
-//
+
+    m_script.registerFn("level_createRoom", lua::wrap<level_createRoom>);
+    m_script.registerFn("level_getRestartCounter", lua::wrap<level_getRestartCounter>);
+    m_script.registerFn("level_getDepth", lua::wrap<level_getDepth>);
+    m_script.registerFn("level_isNewRound", lua::wrap<level_isNewRound>);
+    m_script.registerFn("level_isSolved", lua::wrap<level_isSolved>);
+//    m_script.registerFn("level_newDemo", script_level_newDemo);
+//    m_script.registerFn("level_planShow", script_level_planShow);
+//    m_script.registerFn("level_isShowing", script_level_isShowing);
 //    m_script.registerFn("level_save", script_level_save);
 //    m_script.registerFn("level_load", script_level_load);
-//
 //    m_script.registerFn("level_action_move", script_level_action_move);
 //    m_script.registerFn("level_action_save", script_level_action_save);
 //    m_script.registerFn("level_action_load", script_level_action_load);
 //    m_script.registerFn("level_action_restart", script_level_action_restart);
-//
-    m_script.registerFn("level_createRoom", lua::wrap<level_createRoom>);
-    m_script.registerFn("level_getRestartCounter", lua::wrap<level_getRestartCounter>);
-//    m_script.registerFn("level_getDepth", script_level_getDepth);
-//    m_script.registerFn("level_isNewRound", script_level_isNewRound);
-//    m_script.registerFn("level_isSolved", script_level_isSolved);
-//    m_script.registerFn("level_newDemo", script_level_newDemo);
-//    m_script.registerFn("level_planShow", script_level_planShow);
-//    m_script.registerFn("level_isShowing", script_level_isShowing);
-//
-//    m_script.registerFn("game_planAction", script_game_planAction);
-//    m_script.registerFn("game_isPlanning", script_game_isPlanning);
+
+    m_script.registerFn("game_planAction", lua::wrap<game_planAction>);
+    m_script.registerFn("game_isPlanning", lua::wrap<game_isPlanning>);
 //    m_script.registerFn("game_killPlan", script_game_killPlan);
-//
-//    m_script.registerFn("dialog_isDialog", script_dialog_isDialog);
+
+    m_script.registerFn("dialog_isDialog", lua::wrap<dialog_isDialog>);
     m_script.registerFn("dialog_addFont", lua::wrap<dialog_addFont>);
     m_script.registerFn("dialog_addDialog", lua::wrap<dialog_addDialog>);
-//    m_script.registerFn("model_isTalking", script_model_isTalking);
-//    m_script.registerFn("model_talk", script_model_talk);
-//    m_script.registerFn("model_killSound", script_model_killSound);
 
     m_script.registerFn("options_getParam", lua::wrap<options_getParam>);
 }
 
 void Level::init() {
-    m_script.loadFile(m_filename);
+    m_script.loadFile(m_record.script_filename);
 }
 
 void Level::tick() {
@@ -99,6 +95,21 @@ void Level::level_createRoom(lua_State *L, int width, int height, const std::str
 int Level::level_getRestartCounter(lua_State*) {
     //TODO
     return 0;
+}
+
+int Level::level_getDepth(lua_State* L) {
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    return self.m_record.depth;
+}
+
+bool Level::level_isNewRound(lua_State*) {
+    //TODO
+    return true;
+}
+
+bool Level::level_isSolved(lua_State*) {
+    //TODO
+    return false;
 }
 
 void Level::game_setRoomWaves(lua_State* L, float amplitude, float period, float speed) {
@@ -137,6 +148,12 @@ void Level::model_setAnim(lua_State* L, int index, const std::string& name, int 
     model.anim().set(name, phase, false);
 }
 
+void Level::model_useSpecialAnim(lua_State* L, int index, const std::string& name, int phase) {
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    model.anim().setExtra(name, phase);
+}
+
 std::pair<int, int> Level::model_getLoc(lua_State* L, int index) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
@@ -150,10 +167,24 @@ std::string Level::model_getAction(lua_State* L, int index) {
     return "rest";
 }
 
+std::string Level::model_getState(lua_State* L, int index) {
+//    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+//    auto& model = self.m_models[index];
+//     TODO
+    return "normal";
+}
+
 bool Level::model_isAlive(lua_State *L, int index) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
     return model.isAlive();
+}
+
+bool Level::model_isOut(lua_State *L, int index) {
+    /*auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];*/
+    // TODO
+    return false;
 }
 
 bool Level::model_isLeft(lua_State* L, int index) {
@@ -170,6 +201,13 @@ void Level::model_change_turnSide(lua_State* L, int index) {
     //TODO
 }
 
+bool Level::model_isTalking(lua_State *L, int index) {
+    /*auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];*/
+    // TODO
+    return false;
+}
+
 void Level::sound_addSound(lua_State* L, const std::string& name, const std::string& filename) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     self.m_screen.addSound(name, filename);
@@ -178,6 +216,20 @@ void Level::sound_addSound(lua_State* L, const std::string& name, const std::str
 void Level::sound_playMusic(lua_State* L, const std::string& filename) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     self.m_screen.playMusic(filename);
+}
+
+bool Level::game_isPlanning(lua_State *L) {
+    // TODO
+    return false;
+}
+
+void Level::game_planAction(lua_State *L) {
+    // TODO
+}
+
+bool Level::dialog_isDialog(lua_State *L) {
+    // TODO
+    return false;
 }
 
 void Level::dialog_addFont(lua_State* L, const std::string& name, int r, int g, int b) {

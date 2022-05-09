@@ -4,7 +4,7 @@
 
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
-        m_level(instance, *this, record.script_filename),
+        m_level(instance, *this, record),
         m_sounds(),
         m_music(),
         m_waves()
@@ -46,7 +46,9 @@ void LevelScreen::own_draw() {
     canvas.drawImage(getImage("background"), wavyProgram);
 
     for(const auto& model : m_level.models()) {
-        canvas.drawImage(model.anim().get(), copyProgram, model.x() * size_unit, model.y() * size_unit);
+        const auto& images = model.anim().get();
+        for(const auto& image : images)
+            canvas.drawImage(image, copyProgram, model.x() * size_unit, model.y() * size_unit);
     }
 }
 

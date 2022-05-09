@@ -11,8 +11,8 @@ struct LevelRecord {
     std::shared_ptr<LevelRecord> parent;
     std::string script_filename;
     std::string script_ending;
+    int depth;
     bool solved;
-
     Coords coords;
     int maskColor;
 
@@ -22,7 +22,8 @@ struct LevelRecord {
         int moves;
     } best;
 
-    LevelRecord(std::shared_ptr<LevelRecord>, std::string, std::string, bool, Coords, int);
+    LevelRecord(std::shared_ptr<LevelRecord> parent_, std::string filename_, std::string ending_,
+                int depth_, bool solved_, Coords coords_, int maskColor_);
     LevelState state() const;
 
     constexpr static int no_color = -1;
