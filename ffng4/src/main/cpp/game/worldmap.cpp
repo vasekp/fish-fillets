@@ -12,7 +12,7 @@ WorldMap::WorldMap(Instance& instance) :
     addImage("images/menu/map_lower.png", "masked");
     for(int i = 0; i < 5; i++) {
         auto name = "images/menu/n"s + (char)('0' + i) + ".png";
-        nodeImages.push_back(addImage(name));
+        m_nodeImages.push_back(addImage(name));
     }
 
     m_maskColors.insert({Frames::exit, MaskColors::exit});
@@ -32,7 +32,7 @@ void WorldMap::staticFrame(Frames frame) {
 }
 
 void WorldMap::own_start() {
-    m_music->rewind();
+    m_music.rewind();
 
     m_open.clear();
     for(const auto& [name, record] : m_instance.levels()) {
@@ -61,7 +61,7 @@ void WorldMap::own_draw() {
                 drawMasked(record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)
-                canvas.drawImage(*nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+                canvas.drawImage(m_nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -69,8 +69,8 @@ void WorldMap::own_draw() {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            canvas.drawImage(*nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
-            canvas.drawImage(*nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            canvas.drawImage(m_nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            canvas.drawImage(m_nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         }
     }
 

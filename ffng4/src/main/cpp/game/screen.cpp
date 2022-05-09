@@ -7,13 +7,13 @@ GameScreen::GameScreen(Instance &instance, unsigned int width, unsigned int heig
     m_running(false)
 { }
 
-std::shared_ptr<Image> GameScreen::addImage(const std::string &filename, const std::string& name) {
-    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, std::make_shared<Image>(filename));
+Image& GameScreen::addImage(const std::string &filename, const std::string& name) {
+    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, Image(filename));
     return iterator->second;
 }
 
 Image& GameScreen::getImage(const std::string& name) {
-    return *m_images.at(name);
+    return m_images.at(name);
 }
 
 void GameScreen::setSize(unsigned int width, unsigned int height) {
@@ -23,7 +23,7 @@ void GameScreen::setSize(unsigned int width, unsigned int height) {
 
 void GameScreen::reloadImages() {
     for(auto& [_, image] : m_images)
-        image->reload(m_instance);
+        image.reload(m_instance);
 }
 
 void GameScreen::start() {

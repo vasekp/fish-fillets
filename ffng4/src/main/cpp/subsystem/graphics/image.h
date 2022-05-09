@@ -4,15 +4,21 @@
 class GraphicsSystem;
 
 class Image {
-    std::string m_filename;
-    ogl::Texture m_texture;
+    struct Impl { ;
+        std::string m_filename;
+        ogl::Texture m_texture;
+
+        Impl(const std::string& filename_) : m_filename(filename_), m_texture() { }
+    };
+
+    std::shared_ptr<Impl> m_impl;
 
 public:
-    Image(std::string filename);
+    Image(const std::string& filename);
 
-    auto& texture() const { return m_texture; }
-    auto width() const { return m_texture.width(); }
-    auto height() const { return m_texture.height(); }
+    auto& texture() const { return m_impl->m_texture; }
+    auto width() const { return m_impl->m_texture.width(); }
+    auto height() const { return m_impl->m_texture.height(); }
 
     void reload(Instance& instance);
 };

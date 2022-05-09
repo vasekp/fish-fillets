@@ -24,15 +24,15 @@ void Audio::resume() {
     m_stream->start();
 }
 
-void Audio::addSource(std::shared_ptr<AudioSource>& source) {
-    LOGD("adding audio source %s", source->name().c_str());
-    source->rewind();
+void Audio::addSource(AudioSource& source) {
+    LOGD("adding audio source %s", source.name().c_str());
+    source.rewind();
     m_sources.local()->push_back(source);
 }
 
 void Audio::removeSource(const std::string &name) {
     auto sources = m_sources.local();
-    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& source) { return source->name() == name; });
+    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& source) { return source.name() == name; });
     LOGD("removeSource: name matched %ld sources", std::distance(newEnd, sources->end()));
     sources->erase(newEnd, sources->end());
 }
@@ -47,9 +47,9 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     std::memset(audioData, 0, sizeof(float) * numFrames);
     auto& sources = m_sources.thread();
     for(const auto& source : sources)
-        source->mixin(outData, numFrames);
+        source.mixin(outData, numFrames);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
-                                 [](auto& source) { return source->done(); });
+                                 [](auto& source) { return source.done(); });
     if(newEnd != sources.end()) {
         LOGD("AudioStream: removing %lu sources", std::distance(newEnd, sources.end()));
         sources.erase(newEnd, sources.end());
@@ -57,18 +57,18 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     return oboe::DataCallbackResult::Continue;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance& instance);
+void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance);
 
-std::shared_ptr<AudioSource> Audio::loadSound(const std::string& filename) {
-    std::promise<std::shared_ptr<AudioSource>> promise;
+AudioSource Audio::loadSound(const std::string& filename) {
+    std::promise<AudioSource> promise;
     auto future = promise.get_future();
     loadSoundAsync(filename, promise, m_instance);
     assert(future.valid());
     return future.get();
 }
 
-std::shared_ptr<AudioSource> Audio::loadMusic(const std::string& filename) {
-    std::promise<std::shared_ptr<AudioSource>> promise;
+AudioSource Audio::loadMusic(const std::string& filename) {
+    std::promise<AudioSource> promise;
     auto future = promise.get_future();
     std::thread([this, filename, &promise]() { return loadSoundAsync(filename, promise, m_instance); }).detach();
     future.wait();
@@ -79,13 +79,13 @@ std::shared_ptr<AudioSource> Audio::loadMusic(const std::string& filename) {
         std::istringstream iss{contents};
         std::size_t start, end;
         iss >> start >> end;
-        ret->setLoop(start, end);
+        ret.setLoop(start, end);
     } else
-        ret->setLoop();
+        ret.setLoop();
     return ret;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<AudioSource>>& promise, Instance& instance) {
+void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance) {
     auto asset = instance.files().system(filename).asset();
 
     off64_t start, length;
@@ -127,9 +127,8 @@ void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<Au
     LOGV("numSamples %ld", numSamples);
     std::int64_t curSample = 0;
 
-    auto ret = std::make_shared<AudioSource>(filename, numSamples,
-                                             std::make_unique<float[]>(numSamples));
-    auto data = ret->data();
+    auto ret = AudioSource(filename, numSamples, std::make_unique<float[]>(numSamples));
+    auto data = ret.data();
     promise.set_value(ret);
 
     do {
@@ -185,7 +184,6 @@ void loadSoundAsync(const std::string &filename, std::promise<std::shared_ptr<Au
             }
     } while (!(extractorDone && codecDone));
     LOGD("loadSound %s: decoded %ld frames", filename.c_str(), curSample);
-    numSamples = curSample;
 
     AMediaFormat_delete(format);
     AMediaCodec_delete(codec);

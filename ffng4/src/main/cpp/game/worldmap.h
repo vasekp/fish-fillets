@@ -19,8 +19,8 @@ class WorldMap : public GameScreen {
         Color maskColor;
     };
 
-    std::shared_ptr<AudioSource> m_music;
-    std::vector<std::shared_ptr<Image>> nodeImages;
+    AudioSource m_music;
+    std::vector<Image> m_nodeImages;
     std::map<Frames, Color> m_maskColors;
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;

@@ -4,15 +4,15 @@
 #include "subsystem/graphics.h"
 
 class ModelAnim {
-    std::map<std::string, std::array<std::vector<std::shared_ptr<Image>>, 2>> m_images;
-    std::vector<std::shared_ptr<Image>> m_current;
+    std::map<std::string, std::array<std::vector<Image>, 2>> m_images;
+    std::vector<Image> m_current;
     std::string m_name;
     int m_phase;
     int m_length;
     bool m_running;
 
 public:
-    void add(const std::string& name, int dir, std::shared_ptr<Image> image) {
+    void add(const std::string& name, int dir, const Image& image) {
         m_images[name][dir].push_back(image);
     }
 
@@ -27,7 +27,7 @@ public:
     }
 
     const Image& get() const {
-        return *m_current[m_phase];
+        return m_current[m_phase];
     }
 
     void update() {

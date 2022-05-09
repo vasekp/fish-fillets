@@ -10,14 +10,14 @@
 class GameScreen {
 protected:
     Instance& m_instance;
-    std::map<std::string, std::shared_ptr<AudioSource>> m_sounds;
+    std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
     unsigned m_width, m_height;
     bool m_running;
 
 private:
-    std::map<std::string, std::shared_ptr<Image>> m_images;
+    std::map<std::string, Image> m_images;
 
 public:
     virtual ~GameScreen() { }
@@ -36,7 +36,7 @@ protected:
     GameScreen(Instance& instance, unsigned width = baseWidth, unsigned height = baseHeight);
 
     void setSize(unsigned width, unsigned height);
-    std::shared_ptr<Image> addImage(const std::string& path, const std::string& name = "");
+    Image& addImage(const std::string& path, const std::string& name = "");
     Image& getImage(const std::string& name);
     void reloadImages();
     float timeAlive();

@@ -1,11 +1,10 @@
 #include "subsystem/graphics.h"
 
-Image::Image(std::string filename) :
-    m_filename(std::move(filename)),
-    m_texture()
+Image::Image(const std::string& filename) :
+    m_impl(std::make_shared<Impl>(filename))
 { }
 
 void Image::reload(Instance& instance) {
-    if(!m_texture.live())
-        m_texture = instance.graphics().loadImage(m_filename);
+    if(!m_impl->m_texture.live())
+        m_impl->m_texture = instance.graphics().loadImage(m_impl->m_filename);
 }
