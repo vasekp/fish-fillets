@@ -93,7 +93,6 @@ namespace lua {
             template<std::size_t index>
             auto get(std::size_t orig_index = index) const {
                 if constexpr(index == 0)
-                    //return lua_accessor<T>::get(state(), orig_index + 1);
                     return read<std::decay_t<T>>(state(), orig_index);
                 else
                     return args<R(*)(Ts...)>::template get<index - 1>(orig_index);
@@ -102,7 +101,7 @@ namespace lua {
 
         template<typename T, typename S, std::size_t... Is>
         auto apply_impl(T f, S args, std::index_sequence<Is...>) {
-            return f(args.template get<Is>()...);
+            return std::invoke(f, args.template get<Is>()...);
         }
 
         template<typename T, typename S, std::size_t... Is>
@@ -119,9 +118,8 @@ namespace lua {
             if constexpr(std::is_same<decltype(internal::apply(F, args)), void>::value) {
                 internal::apply(F, args);
                 return 0;
-            } else {
+            } else
                 return internal::write(L, internal::apply(F, args));
-            }
         } catch(std::exception& e) {
             LOGE("Exception on C++/C boundary: %s", e.what());
             return 0;

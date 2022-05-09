@@ -11,18 +11,20 @@ class Levels : public ScriptReferrer {
     Script m_script;
 
 public:
-    Levels(Instance&);
+    Levels(Instance &);
 
     auto begin() const { return m_levels.cbegin(); }
+
     auto end() const { return m_levels.cend(); }
 
 private:
-    static void branch_addNode(lua_State* L,
-                               const std::string& parent, const std::string& codename, const std::string& filename,
-                               int x, int y, std::optional<int> color, const std::optional<std::string>& ending);
-    static void branch_setEnding(lua_State* L, const std::string& codename, const std::string& filename, const std::string& ending);
-    static void worldmap_addDesc(lua_State* L, const std::string& codename, const std::string& lang, const std::string& levelname, const std::string& branch);
-    static void node_bestSolution(lua_State* L, const std::string& codename, int moves, const std::string& name);
+    void branch_addNode(const std::string &parent, const std::string &codename, const std::string &filename,
+            int x, int y, std::optional<int> color, const std::optional<std::string> &ending);
+    void branch_setEnding(const std::string &codename, const std::string &filename,
+                          const std::string &ending);
+    void worldmap_addDesc(const std::string &codename, const std::string &lang,
+                          const std::string &levelname, const std::string &branch);
+    void node_bestSolution(const std::string &codename, int moves, const std::string &name);
 };
 
 #endif //FISH_FILLETS_LEVELS_H
