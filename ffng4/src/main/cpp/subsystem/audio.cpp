@@ -52,9 +52,9 @@ void Audio::addSource(const AudioSource& source) {
     m_sources.local()->push_back(source);
 }
 
-void Audio::removeSource(const std::string &name) {
+void Audio::removeSource(const AudioSource& source) {
     auto sources = m_sources.local();
-    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& source) { return source.name() == name; });
+    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& other) { return other.impl() == source.impl(); });
     LOGD("removeSource: name matched %ld sources", std::distance(newEnd, sources->end()));
     sources->erase(newEnd, sources->end());
 }

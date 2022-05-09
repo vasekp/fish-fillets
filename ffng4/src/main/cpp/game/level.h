@@ -45,11 +45,14 @@ public:
     bool model_isLeft(int index);
     void model_setGoal(int index, const std::string& goal);
     void model_change_turnSide(int index);
+    void model_setBusy(int index, bool busy);
     bool model_isTalking(int index);
     void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
+    void model_killSound(int index);
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);
+    void sound_stopMusic();
     bool game_isPlanning();
     void game_planAction(DelayedFunction function);
     bool dialog_isDialog();

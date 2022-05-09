@@ -38,18 +38,18 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 //    m_script.registerFn("model_change_setLocation", script_model_change_setLocation);
 //    m_script.registerFn("model_setViewShift", script_model_setViewShift);
 //    m_script.registerFn("model_getViewShift", script_model_getViewShift);
-//    m_script.registerFn("model_setBusy", script_model_setBusy);
+    m_script.registerFn("model_setBusy", lua::wrap<&Level::model_setBusy>);
 //    m_script.registerFn("model_getExtraParams", script_model_getExtraParams);
 //    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams);
 //    m_script.registerFn("model_equals", script_model_equals);
     m_script.registerFn("model_isTalking", lua::wrap<&Level::model_isTalking>);
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
-//    m_script.registerFn("model_killSound", script_model_killSound);
+    m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
     m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);
     m_script.registerFn("sound_playMusic", lua::wrap<&Level::sound_playMusic>);
-//    m_script.registerFn("sound_stopMusic", script_sound_stopMusic);
+    m_script.registerFn("sound_stopMusic", lua::wrap<&Level::sound_stopMusic>);
 
     m_script.registerFn("level_createRoom", lua::wrap<&Level::level_createRoom>);
     m_script.registerFn("level_getRestartCounter", lua::wrap<&Level::level_getRestartCounter>);
@@ -156,7 +156,11 @@ std::pair<int, int> Level::model_getLoc(int index) {
 
 std::string Level::model_getAction(int index) {
 //     TODO
-    return "rest";
+    const auto& model = m_models[index];
+    if(model.isBusy())
+        return "busy";
+    else
+        return "rest";
 }
 
 std::string Level::model_getState(int index) {
@@ -190,6 +194,10 @@ void Level::model_change_turnSide(int index) {
     //TODO
 }
 
+void Level::model_setBusy(int index, bool busy) {
+    m_models[index].setBusy(busy);
+}
+
 bool Level::model_isTalking(int index) {
     if(index >= 0)
         return m_models[index].isTalking();
@@ -213,6 +221,14 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
     m_instance.audio().addSource(source);
 }
 
+void Level::model_killSound(int index) {
+    auto& model = m_models[index];
+    const auto& talk = model.talk();
+    if(talk)
+        m_instance.audio().removeSource(talk);
+    model.setTalk({});
+}
+
 void Level::sound_addSound(const std::string& name, const std::string& filename) {
     m_screen.addSound(name, filename);
 }
@@ -230,6 +246,10 @@ void Level::sound_playSound(const std::string& name, std::optional<int> volume) 
 
 void Level::sound_playMusic(const std::string& filename) {
     m_screen.playMusic(filename);
+}
+
+void Level::sound_stopMusic() {
+    m_screen.stopMusic();
 }
 
 bool Level::game_isPlanning() {

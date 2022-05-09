@@ -24,7 +24,7 @@ public:
     void resume();
 
     void addSource(const AudioSource& source);
-    void removeSource(const std::string& name);
+    void removeSource(const AudioSource& source);
     void clear();
 
     AudioSource loadSound(const std::string& filename, bool async = true);

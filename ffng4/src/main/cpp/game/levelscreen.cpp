@@ -65,8 +65,12 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 }
 
 void LevelScreen::playMusic(const std::string &filename) {
-    auto x = m_instance.audio().loadMusic(filename);
-    m_music = x;
+    m_music = m_instance.audio().loadMusic(filename);
+}
+
+void LevelScreen::stopMusic() {
+    m_instance.audio().removeSource(m_music);
+    m_music.reset();
 }
 
 void LevelScreen::own_pause() {

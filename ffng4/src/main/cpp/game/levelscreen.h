@@ -31,6 +31,7 @@ protected:
     void setWaves(float amplitude, float period, float speed);
     AudioSource& addSound(const std::string& name, const std::string& filename, bool single = false);
     void playMusic(const std::string& filename);
+    void stopMusic();
 
     bool own_mouse(unsigned int x, unsigned int y) override;
 

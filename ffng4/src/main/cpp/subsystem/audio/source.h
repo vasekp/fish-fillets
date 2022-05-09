@@ -44,6 +44,7 @@ public:
 
     void reset() { m_impl.reset(); }
     operator bool() const { return (bool)m_impl; }
+    std::shared_ptr<Impl> impl() const { return m_impl; }
 
     const std::string& name() const { return m_impl->name(); }
     float* data() const { return m_impl->data(); }
