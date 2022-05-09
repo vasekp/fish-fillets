@@ -12,6 +12,7 @@ class Audio : public oboe::AudioStreamDataCallback {
     AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
     std::map<std::string, AudioSource> m_sounds_preload;
+    std::atomic<bool> m_dialog;
 
 public:
     Audio(Instance& instance) : m_instance(instance) { }
@@ -28,6 +29,8 @@ public:
 
     AudioSource loadSound(const std::string& filename, bool async = true);
     AudioSource loadMusic(const std::string& filename, bool async = true);
+
+    bool isDialog() const;
 
 private:
     oboe::DataCallbackResult

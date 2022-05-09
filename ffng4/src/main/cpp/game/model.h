@@ -2,6 +2,7 @@
 #define FISH_FILLETS_MODEL_H
 
 #include "modelanim.h"
+#include "subsystem/audio.h"
 
 class Model {
 public:
@@ -17,6 +18,7 @@ public:
     bool m_alive;
     dir m_direction;
     ModelAnim m_anim;
+    AudioSource m_talk;
 
 public:
     Model(std::string type, unsigned x, unsigned y, std::string shape) :
@@ -30,10 +32,13 @@ public:
     unsigned y() const { return m_y; }
     dir direction() const { return m_direction; }
 
-    bool isAlive() const { return m_alive; }
-
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
+
+    bool isAlive() const { return m_alive; }
+    bool isTalking() const { return m_talk && !m_talk.done(); }
+
+    void setTalk(AudioSource source) { m_talk = std::move(source); }
 };
 
 #endif //FISH_FILLETS_MODEL_H

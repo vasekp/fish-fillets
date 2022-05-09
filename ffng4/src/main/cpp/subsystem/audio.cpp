@@ -63,13 +63,24 @@ void Audio::clear() {
     m_sources.local()->clear();
 }
 
+bool Audio::isDialog() const {
+    return m_dialog.load(std::memory_order::relaxed);
+}
+
 oboe::DataCallbackResult
 Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto outData = reinterpret_cast<float*>(audioData);
     std::memset(audioData, 0, sizeof(float) * numFrames);
     auto& sources = m_sources.thread();
-    for(const auto& source : sources)
+    unsigned dialogs = 0;
+    for(const auto& source : sources) {
+        if(source.done())
+            continue;
+        if(source.isDialog())
+            dialogs++;
         source.mixin(outData, numFrames);
+    }
+    m_dialog.store(dialogs > 0, std::memory_order::relaxed);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
                                  [](auto& source) { return source.done(); });
     if(newEnd != sources.end()) {

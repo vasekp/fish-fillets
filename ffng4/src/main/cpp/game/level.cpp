@@ -157,7 +157,11 @@ std::string Level::model_getAction(int index) {
 
 std::string Level::model_getState(int index) {
 //     TODO
-    return "talking";
+    const auto& model = m_models[index];
+    if(model.isTalking())
+        return "talking";
+    else
+        return "normal";
 }
 
 bool Level::model_isAlive(int index) {
@@ -183,13 +187,25 @@ void Level::model_change_turnSide(int index) {
 }
 
 bool Level::model_isTalking(int index) {
-    // TODO
-    return false;
+    if(index >= 0)
+        return m_models[index].isTalking();
+    else
+        return false;
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
-    // TODO
-    const auto& source = m_screen.addSound(name, m_dialogs.at(name), true);
+    auto& source = m_screen.addSound(name, m_dialogs.at(name), true);
+    source.setVolume((float)volume.value_or(75) / 100.f);
+    if(loops.value_or(0) != 0) {
+        assert(loops.value() == -1);
+        source.setLoop();
+    } else
+        source.setLoop(0, 0);
+    source.setDialog(dialogFlag);
+    if(index != -1) { // TODO
+        auto &model = m_models[index];
+        model.setTalk(source);
+    }
     m_instance.audio().addSource(source);
 }
 
@@ -197,11 +213,14 @@ void Level::sound_addSound(const std::string& name, const std::string& filename)
     m_screen.addSound(name, filename);
 }
 
-void Level::sound_playSound(const std::string& name) {
-    const auto& multimap = m_screen.m_sounds;
+void Level::sound_playSound(const std::string& name, std::optional<int> volume) {
+    // TODO volume
+    auto& multimap = m_screen.m_sounds;
     auto size = multimap.count(name);
     auto it = multimap.lower_bound(name);
     std::advance(it, m_instance.rng().randomIndex(size));
+    auto& source = it->second;
+    source.setVolume((float)volume.value_or(100) / 100.f);
     m_instance.audio().addSource(it->second);
 }
 
@@ -219,8 +238,7 @@ void Level::game_planAction() {
 }
 
 bool Level::dialog_isDialog() {
-    // TODO
-    return false;
+    return m_instance.audio().isDialog();
 }
 
 void Level::dialog_addFont(const std::string& name, int r, int g, int b) {

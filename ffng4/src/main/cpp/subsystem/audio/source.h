@@ -10,6 +10,8 @@ class AudioSource {
         bool m_loop;
         std::size_t m_loopStart;
         std::size_t m_loopEnd;
+        float m_volume;
+        bool m_dialog;
 
     public:
         Impl() = delete;
@@ -23,10 +25,14 @@ class AudioSource {
 
         const std::string& name() const { return m_name; }
         float* data() const { return m_data.get(); }
+        bool isDialog() const { return m_dialog; }
+
+        void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
+        void setVolume(float volume) { m_volume = volume; }
+        void setDialog(bool isDialog) { m_dialog = isDialog; }
 
         bool done() const;
         void mixin(float output[], std::size_t numSamples) const;
-        void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
         void rewind() const;
     };
 
@@ -41,10 +47,14 @@ public:
 
     const std::string& name() const { return m_impl->name(); }
     float* data() const { return m_impl->data(); }
+    bool isDialog() const { return m_impl->isDialog(); }
+
+    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1)) { m_impl->setLoop(start, end); }
+    void setVolume(float volume) { m_impl->setVolume(volume); }
+    void setDialog(bool isDialog) { m_impl->setDialog(isDialog); }
 
     bool done() const { return m_impl->done(); }
     void mixin(float output[], std::size_t numSamples) const { m_impl->mixin(output, numSamples); }
-    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1)) { m_impl->setLoop(start, end); }
     void rewind() const { m_impl->rewind(); };
 };
 

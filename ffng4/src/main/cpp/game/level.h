@@ -8,7 +8,7 @@
 class LevelScreen;
 
 class Level : public ScriptReferrer {
-    [[maybe_unused]] Instance& m_instance;
+    Instance& m_instance;
     LevelScreen& m_screen;
     const LevelRecord& m_record;
     Script m_script;
@@ -47,7 +47,7 @@ public:
     bool model_isTalking(int index);
     void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
     void sound_addSound(const std::string& name, const std::string& filename);
-    void sound_playSound(const std::string& name);
+    void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);
     bool game_isPlanning();
     void game_planAction(/*TODO */);
