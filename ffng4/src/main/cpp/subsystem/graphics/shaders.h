@@ -4,6 +4,7 @@
 struct Shaders {
     ogl::Shader vertCommon;
     ogl::Program copy;
+    ogl::Program copyOverlay;
     ogl::Program maskCopy;
     ogl::Program alpha;
     ogl::Program wavyImage;

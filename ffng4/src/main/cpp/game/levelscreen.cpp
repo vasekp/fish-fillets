@@ -37,6 +37,7 @@ void LevelScreen::own_draw() {
 
     const auto& canvas = m_instance.graphics().canvas();
     const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
@@ -47,8 +48,8 @@ void LevelScreen::own_draw() {
 
     for(const auto& model : m_level.models()) {
         const auto& images = model.anim().get();
-        for(const auto& image : images)
-            canvas.drawImage(image, copyProgram, model.x() * size_unit, model.y() * size_unit);
+        for(auto i = 0u; i < images.size(); i++)
+            canvas.drawImage(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
     }
 }
 
