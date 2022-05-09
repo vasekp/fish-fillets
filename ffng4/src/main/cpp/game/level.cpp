@@ -25,11 +25,11 @@ Level::Level(Instance& instance, LevelScreen& screen, std::string filename) :
 //    m_script.registerFn("model_countAnims", script_model_countAnims);
 //    m_script.registerFn("model_setEffect", script_model_setEffect);
     m_script.registerFn("model_getLoc", lua::wrap<model_getLoc>);
-//    m_script.registerFn("model_getAction", script_model_getAction);
+    m_script.registerFn("model_getAction", lua::wrap<model_getAction>);
 //    m_script.registerFn("model_getState", script_model_getState);
 //    m_script.registerFn("model_getDir", script_model_getDir);
 //    m_script.registerFn("model_getTouchDir", script_model_getTouchDir);
-//    m_script.registerFn("model_isAlive", script_model_isAlive);
+    m_script.registerFn("model_isAlive", lua::wrap<model_isAlive>);
 //    m_script.registerFn("model_isOut", script_model_isOut);
     m_script.registerFn("model_isLeft", lua::wrap<model_isLeft>);
 //    m_script.registerFn("model_isAtBorder", script_model_isAtBorder);
@@ -85,6 +85,12 @@ void Level::init() {
     m_script.loadFile(m_filename);
 }
 
+void Level::tick() {
+    for(auto& model : models())
+        model.anim().update();
+    m_script.doString("script_update();");
+}
+
 void Level::level_createRoom(lua_State *L, int width, int height, const std::string& bg) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     self.m_screen.create(width, height, bg);
@@ -107,9 +113,8 @@ int Level::game_addModel(lua_State* L, const std::string& type, int x, int y, co
 }
 
 int Level::game_getCycles(lua_State* L) {
-    //TODO
-    lua_pushnumber(L, 0);
-    return 1;
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    return self.m_screen.m_timer.tickCount();
 }
 
 void Level::model_addAnim(lua_State* L, int index, const std::string& name, const std::string& filename,
@@ -136,6 +141,19 @@ std::pair<int, int> Level::model_getLoc(lua_State* L, int index) {
     auto& self = dynamic_cast<Level&>(Script::from(L).ref());
     auto& model = self.m_models[index];
     return {model.x(), model.y()};
+}
+
+std::string Level::model_getAction(lua_State* L, int index) {
+//    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+//    auto& model = self.m_models[index];
+//     TODO
+    return "rest";
+}
+
+bool Level::model_isAlive(lua_State *L, int index) {
+    auto& self = dynamic_cast<Level&>(Script::from(L).ref());
+    auto& model = self.m_models[index];
+    return model.isAlive();
 }
 
 bool Level::model_isLeft(lua_State* L, int index) {

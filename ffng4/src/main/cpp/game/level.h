@@ -19,6 +19,7 @@ public:
     std::vector<Model>& models() { return m_models; }
 
     void init();
+    void tick();
 
     static void level_createRoom(lua_State* L, int width, int height, const std::string& bg);
     static int level_getRestartCounter(lua_State* L);
@@ -30,6 +31,8 @@ public:
     static void model_runAnim(lua_State* L, int index, const std::string& name, std::optional<int> phase);
     static void model_setAnim(lua_State* L, int index, const std::string& name, int phase);
     static std::pair<int, int> model_getLoc(lua_State* L, int index);
+    static std::string model_getAction(lua_State* L, int index);
+    static bool model_isAlive(lua_State* L, int index);
     static bool model_isLeft(lua_State* L, int index);
     static void model_setGoal(lua_State*, int index, const std::string& goal);
     static void model_change_turnSide(lua_State*, int index);

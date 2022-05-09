@@ -32,6 +32,8 @@ protected:
     void addSound(const std::string& name, const std::string& filename);
     void playMusic(const std::string& filename);
 
+    bool own_mouse(unsigned int x, unsigned int y) override;
+
     friend class Level;
 };
 

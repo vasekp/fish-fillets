@@ -1,5 +1,6 @@
 #include "levelscreen.h"
 #include "level.h"
+#include "statemanager.h"
 
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
@@ -31,11 +32,8 @@ void LevelScreen::own_refresh() {
 }
 
 void LevelScreen::own_draw() {
-    if(m_timer.ticked()) {
-        for(auto& model : m_level.models()) {
-            model.anim().update();
-        }
-    }
+    if(m_timer.ticked())
+        m_level.tick();
 
     const auto& canvas = m_instance.graphics().canvas();
     const auto& copyProgram = m_instance.graphics().shaders().copy;
@@ -71,4 +69,9 @@ void LevelScreen::own_pause() {
 
 void LevelScreen::own_resume() {
     m_timer.start();
+}
+
+bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
+    m_instance.states().setState(GameState::WorldMap);
+    return true;
 }

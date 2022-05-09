@@ -6,6 +6,7 @@
 class ModelAnim {
     std::map<std::string, std::array<std::vector<std::shared_ptr<Image>>, 2>> m_images;
     std::vector<std::shared_ptr<Image>> m_current;
+    std::string m_name;
     int m_phase;
     int m_length;
     bool m_running;
@@ -16,6 +17,9 @@ public:
     }
 
     void set(const std::string& name, int phase, bool running) {
+        if(m_name == name && running && m_running)
+            return;
+        m_name = name;
         m_phase = phase;
         m_current = m_images[name][0];
         m_length = m_current.size();
