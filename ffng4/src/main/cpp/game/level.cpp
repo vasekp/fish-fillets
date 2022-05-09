@@ -156,7 +156,7 @@ std::string Level::model_getAction(int index) {
 
 std::string Level::model_getState(int index) {
 //     TODO
-    return "normal";
+    return "talking";
 }
 
 bool Level::model_isAlive(int index) {

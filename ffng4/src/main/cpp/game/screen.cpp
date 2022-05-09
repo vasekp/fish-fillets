@@ -7,9 +7,14 @@ GameScreen::GameScreen(Instance &instance, unsigned int width, unsigned int heig
     m_running(false)
 { }
 
-Image& GameScreen::addImage(const std::string &filename, const std::string& name) {
-    auto [iterator, _] = m_images.insert_or_assign(name.empty() ? filename : name, Image(filename));
-    return iterator->second;
+Image& GameScreen::addImage(const std::string& filename, const std::string& name) {
+    const std::string key = name.empty() ? filename : name;
+    if(m_images.contains(key))
+        return m_images.at(key);
+    else {
+        auto[iterator, _] = m_images.insert({key, Image(filename)});
+        return iterator->second;
+    }
 }
 
 Image& GameScreen::getImage(const std::string& name) {
