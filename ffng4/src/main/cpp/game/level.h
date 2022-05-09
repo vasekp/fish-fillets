@@ -14,6 +14,7 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::vector<Model> m_models;
     std::map<std::string, std::string> m_dialogs;
+    std::queue<DelayedFunction> m_plan;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
@@ -50,7 +51,7 @@ public:
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);
     bool game_isPlanning();
-    void game_planAction(/*TODO */);
+    void game_planAction(DelayedFunction function);
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r, int g, int b);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,

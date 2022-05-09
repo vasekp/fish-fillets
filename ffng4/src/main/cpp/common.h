@@ -11,6 +11,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <queue>
 #include <array>
 #include <map>
 #include <tuple>

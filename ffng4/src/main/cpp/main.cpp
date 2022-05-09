@@ -46,15 +46,22 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_LOST_FOCUS:
             LOGI("APP_CMD_LOST_FOCUS");
-            instance.curScreen().pause();
-            instance.audio().pause();
-            instance.live = false;
+            if(instance.live) {
+                instance.curScreen().pause();
+                instance.audio().pause();
+                instance.live = false;
+            }
             break;
         case APP_CMD_START:
             LOGI("APP_CMD_START");
             break;
         case APP_CMD_PAUSE:
             LOGI("APP_CMD_PAUSE");
+            if(instance.live) {
+                instance.curScreen().pause();
+                instance.audio().pause();
+                instance.live = false;
+            }
             break;
         case APP_CMD_RESUME:
             LOGI("APP_CMD_RESUME");

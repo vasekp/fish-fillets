@@ -6,8 +6,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_instance(instance),
     m_screen(screen),
     m_record(record),
-    m_script(instance, *this),
-    m_models()
+    m_script(instance, *this)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -83,9 +82,14 @@ void Level::init() {
 }
 
 void Level::tick() {
-    for(auto& model : models())
+    for (auto &model : models())
         model.anim().update();
     m_script.doString("script_update();");
+    if (!m_plan.empty()) {
+        auto &front = m_plan.front();
+        if(front.call())
+            m_plan.pop();
+    }
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -94,7 +98,7 @@ void Level::level_createRoom(int width, int height, const std::string& bg) {
 
 int Level::level_getRestartCounter() {
     //TODO
-    return 0;
+    return 1;
 }
 
 int Level::level_getDepth() const {
@@ -218,7 +222,7 @@ void Level::sound_playSound(const std::string& name, std::optional<int> volume) 
     auto& multimap = m_screen.m_sounds;
     auto size = multimap.count(name);
     auto it = multimap.lower_bound(name);
-    std::advance(it, m_instance.rng().randomIndex(size));
+    std::advance(it, (int)(m_instance.rng().randomIndex(size)));
     auto& source = it->second;
     source.setVolume((float)volume.value_or(100) / 100.f);
     m_instance.audio().addSource(it->second);
@@ -229,12 +233,11 @@ void Level::sound_playMusic(const std::string& filename) {
 }
 
 bool Level::game_isPlanning() {
-    // TODO
-    return false;
+    return !m_plan.empty();
 }
 
-void Level::game_planAction() {
-    // TODO
+void Level::game_planAction(DelayedFunction function) {
+    m_plan.push(std::move(function));
 }
 
 bool Level::dialog_isDialog() {
