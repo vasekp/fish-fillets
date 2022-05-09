@@ -11,6 +11,7 @@ class Audio : public oboe::AudioStreamDataCallback {
     Instance& m_instance;
     AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
+    std::map<std::string, AudioSource> m_sounds_preload;
 
 public:
     Audio(Instance& instance) : m_instance(instance) { }
@@ -25,12 +26,14 @@ public:
     void removeSource(const std::string& name);
     void clear();
 
-    AudioSource loadSound(const std::string& filename);
-    AudioSource loadMusic(const std::string& filename);
+    AudioSource loadSound(const std::string& filename, bool async = true);
+    AudioSource loadMusic(const std::string& filename, bool async = true);
 
 private:
     oboe::DataCallbackResult
     onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
+
+    friend class AudioPreloader;
 };
 
 #endif //FISH_FILLETS_AUDIO_H

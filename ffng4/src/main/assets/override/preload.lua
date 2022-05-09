@@ -1,0 +1,12 @@
+preload_sound("sound/share/sp-impact_light_00.ogg");
+preload_sound("sound/share/sp-impact_light_01.ogg");
+preload_sound("sound/share/sp-impact_heavy_00.ogg");
+preload_sound("sound/share/sp-impact_heavy_01.ogg");
+preload_sound("sound/share/sp-dead_small.ogg");
+preload_sound("sound/share/sp-dead_big.ogg");
+preload_sound("sound/share/sp-bubles_00.ogg");
+preload_sound("sound/share/sp-bubles_01.ogg");
+preload_sound("sound/share/sp-bubles_02.ogg");
+preload_sound("sound/share/sp-bubles_03.ogg");
+preload_sound("sound/share/sp-bubles_04.ogg");
+preload_sound("sound/share/sp-bubles_05.ogg");

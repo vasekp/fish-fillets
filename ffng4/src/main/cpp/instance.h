@@ -13,6 +13,7 @@ class GameScreen;
 class StateManager;
 class Script;
 class Levels;
+class AudioSource;
 
 /*struct saved_state {
 };*/
@@ -27,6 +28,7 @@ class Instance {
     std::unique_ptr<StateManager> m_states;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<Levels> m_levels;
+    std::vector<AudioSource> m_sounds_preload;
 
     //struct saved_state m_state;
 

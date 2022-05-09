@@ -1,14 +1,36 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
+#include "subsystem/script.h"
 #include "sstream"
 
 #include <media/NdkMediaExtractor.h>
 #include <future>
 #include <thread>
 
+class AudioPreloader : public ScriptReferrer {
+    Audio& m_audio;
+    Script m_script;
+
+public:
+    explicit AudioPreloader(Instance& instance) : m_audio(instance.audio()), m_script(instance, *this) {
+        m_script.registerFn("preload_sound", lua::wrap<&AudioPreloader::preload_sound>);
+    }
+
+    void load() {
+        m_script.loadFile("override/preload.lua");
+    }
+
+    void preload_sound(const std::string& filename) {
+        m_audio.m_sounds_preload.insert({filename, m_audio.loadSound(filename, false)});
+    }
+};
+
 void Audio::activate() {
     LOGD("audio: activate");
     m_stream = std::make_unique<AudioStream>(*this);
+
+    if(m_sounds_preload.empty())
+        AudioPreloader(m_instance).load();
 }
 
 void Audio::shutdown() {
@@ -59,30 +81,35 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
 
 void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance);
 
-AudioSource Audio::loadSound(const std::string& filename) {
+AudioSource Audio::loadSound(const std::string& filename, bool async) {
+    if(m_sounds_preload.contains(filename))
+        return m_sounds_preload.at(filename);
     std::promise<AudioSource> promise;
     auto future = promise.get_future();
-    loadSoundAsync(filename, promise, m_instance);
-    assert(future.valid());
+    if(async) {
+        std::thread([this, filename, &promise]() {
+            return loadSoundAsync(filename, promise, m_instance);
+        }).detach();
+        future.wait();
+    } else {
+        loadSoundAsync(filename, promise, m_instance);
+        assert(future.valid());
+    }
     return future.get();
 }
 
-AudioSource Audio::loadMusic(const std::string& filename) {
-    std::promise<AudioSource> promise;
-    auto future = promise.get_future();
-    std::thread([this, filename, &promise]() { return loadSoundAsync(filename, promise, m_instance); }).detach();
-    future.wait();
-    auto ret = future.get();
+AudioSource Audio::loadMusic(const std::string& filename, bool async) {
+    auto source = loadSound(filename, async);
     auto meta = m_instance.files().system(filename + ".meta");
     if(meta.exists()) {
         auto contents = meta.read();
         std::istringstream iss{contents};
         std::size_t start, end;
         iss >> start >> end;
-        ret.setLoop(start, end);
+        source.setLoop(start, end);
     } else
-        ret.setLoop();
-    return ret;
+        source.setLoop();
+    return source;
 }
 
 void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance) {
