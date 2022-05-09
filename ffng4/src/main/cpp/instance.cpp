@@ -7,6 +7,7 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "subsystem/script.h"
+#include "subsystem/rng.h"
 #include "game/statemanager.h"
 #include "game/levels.h"
 

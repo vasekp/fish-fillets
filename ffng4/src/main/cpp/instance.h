@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "platform/jni.h"
+#include "subsystem/rng.h"
 
 struct android_app;
 class Files;
@@ -30,6 +31,8 @@ class Instance {
     std::unique_ptr<Levels> m_levels;
     std::vector<AudioSource> m_sounds_preload;
 
+    RNG m_rng;
+
     //struct saved_state m_state;
 
 public:
@@ -41,6 +44,7 @@ public:
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
+    auto& rng() { return m_rng; }
     auto& states() { return *m_states; }
     auto& script() { return *m_script; }
     auto& levels() { return *m_levels; }

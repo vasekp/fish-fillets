@@ -1,5 +1,6 @@
 #include "level.h"
 #include "levelscreen.h"
+#include "subsystem/rng.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :
     m_instance(instance),
@@ -197,10 +198,11 @@ void Level::sound_addSound(const std::string& name, const std::string& filename)
 }
 
 void Level::sound_playSound(const std::string& name) {
-    // TODO random
     const auto& multimap = m_screen.m_sounds;
-    //multimap.count(name);
-    m_instance.audio().addSource(multimap.lower_bound(name)->second);
+    auto size = multimap.count(name);
+    auto it = multimap.lower_bound(name);
+    std::advance(it, m_instance.rng().randomIndex(size));
+    m_instance.audio().addSource(it->second);
 }
 
 void Level::sound_playMusic(const std::string& filename) {
