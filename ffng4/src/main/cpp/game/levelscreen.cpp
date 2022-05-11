@@ -5,9 +5,8 @@
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
-        m_sounds(),
-        m_music(),
-        m_waves()
+        m_waves(),
+        m_fullLoad(false)
 { }
 
 void LevelScreen::create(int width, int height, const std::string &background) {
@@ -17,7 +16,6 @@ void LevelScreen::create(int width, int height, const std::string &background) {
 
 void LevelScreen::own_start() {
     m_level.init();
-    m_instance.audio().clear();
 }
 
 void LevelScreen::own_refresh() {
@@ -26,6 +24,12 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uAmplitude"), m_waves[0]);
     glUniform1f(program.uniform("uPeriod"), m_waves[1]);
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
+    if(!m_fullLoad) {
+        m_fullLoad = true;
+        m_instance.audio().clear();
+        if(m_music)
+            m_instance.audio().addSource(m_music);
+    }
 }
 
 void LevelScreen::own_draw(const DrawTarget& target) {
@@ -64,6 +68,10 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 
 void LevelScreen::playMusic(const std::string &filename) {
     m_music = m_instance.audio().loadMusic(filename);
+    if(m_fullLoad) {
+        stopMusic();
+        m_instance.audio().addSource(m_music);
+    }
 }
 
 void LevelScreen::stopMusic() {

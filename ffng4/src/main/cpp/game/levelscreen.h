@@ -14,6 +14,7 @@ class LevelScreen : public GameScreen {
     AudioSource m_music;
     std::array<float, 3> m_waves;
     Timer m_timer;
+    bool m_fullLoad;
 
 public:
     LevelScreen(Instance&, const LevelRecord&);
