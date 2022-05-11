@@ -41,6 +41,7 @@ void WorldMap::own_start() {
 void WorldMap::own_refresh() {
     m_instance.graphics().readBuffer().setImage(getImage("mask"));
     m_instance.graphics().setMask(getImage("mask"));
+    m_text = m_instance.graphics().text("První pokus velice dlouhého textu co asi bude potřeba zalomit");
 }
 
 void WorldMap::own_draw(const DrawTarget& target) {
@@ -82,6 +83,8 @@ void WorldMap::own_draw(const DrawTarget& target) {
         default:
             break;
     }
+
+    target.blit(m_text, copyProgram);
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {

@@ -80,3 +80,25 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     jni->DeleteLocalRef(jBitmap);
     return ret;
 }
+
+ogl::Texture Graphics::text(const std::string& text) const {
+    auto& jni = m_instance.jni();
+    jstring jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
+    jstring jText = jni->NewStringUTF(text.c_str());
+    jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("text"), jFilename, jText, 10);
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(jni, jBitmap, &info);
+    std::uint32_t width = info.width;
+    std::uint32_t height = info.height;
+    std::size_t stride = info.stride;
+    void* pixels;
+    AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
+    if(!jBitmap)
+        throw std::runtime_error("bitmap data null");
+    auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
+    AndroidBitmap_unlockPixels(jni, jBitmap);
+    jni->DeleteLocalRef(jFilename);
+    jni->DeleteLocalRef(jText);
+    jni->DeleteLocalRef(jBitmap);
+    return ret;
+}
