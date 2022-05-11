@@ -15,6 +15,8 @@
 class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
+    unsigned m_windowWight;
+    unsigned m_windowHeight;
 
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
@@ -28,6 +30,8 @@ public:
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
 
+    void setWindowSize(unsigned width, unsigned height);
+    Coords getWindowSize() const;
     void setMask(const Image &image);
 
     void drawFrame();

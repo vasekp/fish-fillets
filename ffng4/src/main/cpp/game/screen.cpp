@@ -40,9 +40,7 @@ void GameScreen::start() {
 void GameScreen::refresh() {
     LOGD("screen: refresh");
     reloadImages();
-
-    m_instance.graphics().displayTarget().setSize(m_width, m_height);
-
+    m_instance.graphics().setWindowSize(m_width, m_height);
     own_refresh();
 }
 

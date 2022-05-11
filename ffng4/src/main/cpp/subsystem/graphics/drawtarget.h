@@ -2,15 +2,11 @@
 #define FISH_FILLETS_GRAPHICS_DRAWTARGET_H
 
 class DrawTarget {
-    unsigned m_width;
-    unsigned m_height;
-
+    Coords m_size;
     static constexpr unsigned fullSize = (unsigned)(-1);
 
 public:
     void setSize(unsigned width, unsigned height);
-    Coords getSize() const { return {m_width, m_height}; }
-
     virtual void bind() const = 0;
 
     void blit(const ogl::Texture& texture, const ogl::Program &program, int destX = 0, int destY = 0,

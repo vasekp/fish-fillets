@@ -12,6 +12,12 @@ void Graphics::shutdown() {
     m_system.reset();
 }
 
+void Graphics::setWindowSize(unsigned int width, unsigned int height) {
+    m_windowWight = width;
+    m_windowHeight = height;
+    displayTarget().setSize(width, height);
+}
+
 void Graphics::setMask(const Image& image) {
     glActiveTexture(Shaders::texMask_gl);
     glBindTexture(GL_TEXTURE_2D, image.texture());
