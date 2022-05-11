@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import java.io.IOException;
@@ -17,6 +18,10 @@ import java.io.InputStream;
 public class MainActivity extends NativeActivity {
     private static final String TAG = "FFNG4";
 
+    static {
+        System.loadLibrary("fillets");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,9 +29,12 @@ public class MainActivity extends NativeActivity {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().getInsetsController().hide(
                     WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            getWindow().getInsetsController().setSystemBarsBehavior(
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         } else {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     Bitmap loadBitmap(String filename) {
