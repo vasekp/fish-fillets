@@ -9,13 +9,14 @@
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
 #include "graphics/displaytarget.h"
+#include "graphics/offscreentarget.h"
 #include "graphics/system.h"
 #include "graphics/utils.h"
 
 class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
-    unsigned m_windowWight;
+    unsigned m_windowWidth;
     unsigned m_windowHeight;
 
 public:
@@ -31,7 +32,6 @@ public:
     auto& shaders() const { return m_system->m_shaders; }
 
     void setWindowSize(unsigned width, unsigned height);
-    Coords getWindowSize() const;
     void setMask(const Image &image);
 
     void drawFrame();

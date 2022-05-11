@@ -4,7 +4,7 @@ namespace GraphicsUtils {
 
     template<typename T>
     void rect(T x, T y, T w, T h) {
-        float fx = (float)x,
+        auto fx = (float)x,
                 fy = (float)y,
                 fw = (float)w,
                 fh = (float)h;

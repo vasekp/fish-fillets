@@ -63,7 +63,7 @@ namespace ogl {
             LOGV("OpenGL Info: %s", info);
         }
 
-        glEnable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
 

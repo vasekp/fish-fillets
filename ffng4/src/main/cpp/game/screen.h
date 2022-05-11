@@ -13,7 +13,6 @@ protected:
     std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
-    unsigned m_width, m_height;
     bool m_running;
 
 private:
@@ -33,7 +32,7 @@ public:
     constexpr static unsigned baseHeight = 480;
 
 protected:
-    GameScreen(Instance& instance, unsigned width = baseWidth, unsigned height = baseHeight);
+    GameScreen(Instance& instance);
 
     void setSize(unsigned width, unsigned height);
     Image& addImage(const std::string& path, const std::string& name = "");

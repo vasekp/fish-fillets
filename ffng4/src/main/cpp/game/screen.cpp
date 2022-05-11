@@ -1,9 +1,7 @@
 #include "screen.h"
 
-GameScreen::GameScreen(Instance &instance, unsigned int width, unsigned int height) :
+GameScreen::GameScreen(Instance &instance) :
     m_instance(instance),
-    m_width(width),
-    m_height(height),
     m_running(false)
 { }
 
@@ -22,8 +20,7 @@ Image& GameScreen::getImage(const std::string& name) {
 }
 
 void GameScreen::setSize(unsigned int width, unsigned int height) {
-    m_width = width;
-    m_height = height;
+    m_instance.graphics().setWindowSize(width, height);
 }
 
 void GameScreen::reloadImages() {
@@ -33,6 +30,7 @@ void GameScreen::reloadImages() {
 
 void GameScreen::start() {
     LOGD("screen: start");
+    m_instance.graphics().setWindowSize(baseWidth, baseHeight);
     own_start();
     m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
@@ -40,7 +38,6 @@ void GameScreen::start() {
 void GameScreen::refresh() {
     LOGD("screen: refresh");
     reloadImages();
-    m_instance.graphics().setWindowSize(m_width, m_height);
     own_refresh();
 }
 

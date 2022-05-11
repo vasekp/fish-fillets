@@ -5,6 +5,7 @@
 void Graphics::activate() {
     LOGD("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
+    m_system->setWindowSize(m_windowWidth, m_windowHeight);
 }
 
 void Graphics::shutdown() {
@@ -13,9 +14,10 @@ void Graphics::shutdown() {
 }
 
 void Graphics::setWindowSize(unsigned int width, unsigned int height) {
-    m_windowWight = width;
+    m_windowWidth = width;
     m_windowHeight = height;
-    displayTarget().setSize(width, height);
+    if(m_system)
+        m_system->setWindowSize(m_windowWidth, m_windowHeight);
 }
 
 void Graphics::setMask(const Image& image) {
@@ -30,10 +32,19 @@ void Graphics::drawFrame() {
         return;
     }
 
-    system().display().bind();
-    glClear(GL_COLOR_BUFFER_BIT);
+#ifdef OFFSCREEN
+    m_system->m_offscreenTarget.bind();
+    m_instance.curScreen().draw(m_system->m_offscreenTarget);
+#endif
 
+    displayTarget().bind();
+    glClear(GL_COLOR_BUFFER_BIT);
+#ifdef OFFSCREEN
+    displayTarget().blitFlip(m_system->m_offscreenTarget.texture(), shaders().copy, false, true);
+#else
     m_instance.curScreen().draw(displayTarget());
+#endif
+
     system().display().swap();
 }
 
