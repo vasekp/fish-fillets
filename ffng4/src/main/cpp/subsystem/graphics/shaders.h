@@ -7,6 +7,7 @@ struct Shaders {
     ogl::Program copyOverlay;
     ogl::Program maskCopy;
     ogl::Program alpha;
+    ogl::Program blur;
     ogl::Program wavyImage;
 
     constexpr static GLint texImage_shader = 0;

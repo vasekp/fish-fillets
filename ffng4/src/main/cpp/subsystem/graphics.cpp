@@ -1,5 +1,6 @@
 #include "graphics.h"
 #include "game/screen.h"
+#include "game/screens.h"
 #include <android/bitmap.h>
 
 void Graphics::activate() {
@@ -32,18 +33,29 @@ void Graphics::drawFrame() {
         return;
     }
 
-#ifdef OFFSCREEN
-    m_system->m_offscreenTarget.bind();
-    m_instance.curScreen().draw(m_system->m_offscreenTarget);
-#endif
+    if(m_instance.screens().options()) {
+        const auto& blur1 = m_system->m_offscreenTarget[GraphicsSystem::Targets::Blur1];
+        const auto& blur2 = m_system->m_offscreenTarget[GraphicsSystem::Targets::Blur2];
+        const auto& blurProgram = shaders().blur;
 
-    displayTarget().bind();
-    glClear(GL_COLOR_BUFFER_BIT);
-#ifdef OFFSCREEN
-    displayTarget().blitFlip(m_system->m_offscreenTarget.texture(), shaders().copy, false, true);
-#else
-    m_instance.curScreen().draw(displayTarget());
-#endif
+        blur1.bind();
+        m_instance.curScreen().draw(blur1);
+
+        glUseProgram(blurProgram);
+
+        blur2.bind();
+        glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
+        blur2.blitFlip(blur1.texture(), shaders().blur, false, true);
+
+        displayTarget().bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
+        displayTarget().blitFlip(blur2.texture(), shaders().blur, false, true);
+    } else {
+        displayTarget().bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        m_instance.curScreen().draw(displayTarget());
+    }
 
     system().display().swap();
 }

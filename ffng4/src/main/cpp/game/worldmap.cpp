@@ -67,12 +67,14 @@ void WorldMap::own_draw(const DrawTarget& target) {
         }
     }
 
+    if(m_instance.screens().options())
+        drawMasked(target, m_maskColors.at(Frames::options));
+
     switch(m_staticFrame) {
         case Frames::loading:
             target.blit(getImage("loading"), copyProgram, 227, 160);
             break;
         case Frames::exit:
-        case Frames::options:
         case Frames::intro:
         case Frames::credits:
             drawMasked(target, m_maskColors.at(m_staticFrame));
@@ -88,7 +90,7 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         staticFrame(WorldMap::Frames::exit);
         m_instance.quit();
     } else if(mask_color == WorldMap::MaskColors::options) {
-        staticFrame(WorldMap::Frames::options);
+        m_instance.screens().options() = !m_instance.screens().options();
     } else if(mask_color == WorldMap::MaskColors::intro) {
         staticFrame(WorldMap::Frames::intro);
         m_instance.screens().startMode(Screens::Mode::Intro);

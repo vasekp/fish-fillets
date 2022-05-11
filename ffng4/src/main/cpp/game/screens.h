@@ -8,6 +8,7 @@
 class Screens {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
+    bool m_options;
 
 public:
     enum class Mode {
@@ -16,11 +17,12 @@ public:
         Credits
     };
 
-    Screens(Instance& instance) : m_instance(instance) { };
+    Screens(Instance& instance) : m_instance(instance), m_options(false) { };
 
     void startMode(Mode mode);
     void startLevel(const LevelRecord& record);
     GameScreen& curScreen() { return *m_screen; }
+    bool& options() { return m_options; }
 
 private:
     void playIntro();
