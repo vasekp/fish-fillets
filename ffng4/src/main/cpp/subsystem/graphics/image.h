@@ -21,6 +21,8 @@ public:
     auto width() const { return m_impl->m_texture.width(); }
     auto height() const { return m_impl->m_texture.height(); }
 
+    operator const ogl::Texture&() const { return texture(); }
+
     void reload(Instance& instance);
 };
 

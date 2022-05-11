@@ -31,11 +31,10 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
 }
 
-void LevelScreen::own_draw() {
+void LevelScreen::own_draw(const DrawTarget& target) {
     if(m_timer.ticked())
         m_level.tick();
 
-    const auto& canvas = m_instance.graphics().canvas();
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
@@ -44,14 +43,14 @@ void LevelScreen::own_draw() {
     glUseProgram(wavyProgram);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
-    canvas.drawImage(getImage("background"), wavyProgram);
+    target.blit(getImage("background"), wavyProgram);
 
     for(const auto& model : m_level.models()) {
         if(model.isVirtual())
             continue;
         const auto& images = model.anim().get();
         for(auto i = 0u; i < images.size(); i++)
-            canvas.drawImage(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
+            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
     }
 }
 

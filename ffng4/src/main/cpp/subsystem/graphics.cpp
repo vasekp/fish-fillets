@@ -27,8 +27,7 @@ void Graphics::drawFrame() {
     system().display().bind();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    system().m_canvas.bind();
-    m_instance.curScreen().draw();
+    m_instance.curScreen().draw(displayTarget());
     system().display().swap();
 }
 

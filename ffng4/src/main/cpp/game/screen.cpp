@@ -41,7 +41,7 @@ void GameScreen::refresh() {
     LOGD("screen: refresh");
     reloadImages();
 
-    m_instance.graphics().canvas().setWindowSize(m_width, m_height);
+    m_instance.graphics().displayTarget().setSize(m_width, m_height);
 
     own_refresh();
 }
@@ -66,4 +66,13 @@ void GameScreen::resume() {
 
 float GameScreen::timeAlive() {
     return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count();
+}
+
+void GameScreen::draw(const DrawTarget& target) {
+    target.bind();
+    own_draw(target);
+}
+
+bool GameScreen::mouse(Coords coords) {
+    return own_mouse(coords.x(), coords.y());
 }

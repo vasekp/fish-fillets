@@ -49,19 +49,18 @@ void WorldMap::own_refresh() {
     m_instance.graphics().setMask(getImage("mask"));
 }
 
-void WorldMap::own_draw() {
-    const auto& canvas = m_instance.graphics().canvas();
+void WorldMap::own_draw(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
 
-    canvas.drawImage(getImage("background"), copyProgram);
+    target.blit(getImage("background"), copyProgram);
     if(m_nextFrame != Frames::loading) {
-        drawMasked(MaskColors::mainBranch);
+        drawMasked(target, MaskColors::mainBranch);
         for(const auto& record : m_forks)
 //            if(record->solved)
-                drawMasked(record->maskColor);
+                drawMasked(target, record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)
-                canvas.drawImage(m_nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+                target.blit(m_nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -69,20 +68,20 @@ void WorldMap::own_draw() {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            canvas.drawImage(m_nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
-            canvas.drawImage(m_nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            target.blit(m_nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            target.blit(m_nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
         }
     }
 
     switch(m_nextFrame) {
         case Frames::loading:
-            canvas.drawImage(getImage("loading"), copyProgram, 227, 160);
+            target.blit(getImage("loading"), copyProgram, 227, 160);
             break;
         case Frames::exit:
         case Frames::options:
         case Frames::intro:
         case Frames::credits:
-            drawMasked(m_maskColors.at(m_nextFrame));
+            drawMasked(target, m_maskColors.at(m_nextFrame));
             break;
         default:
             break;
@@ -118,9 +117,9 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
     return true;
 }
 
-void WorldMap::drawMasked(Color c) {
+void WorldMap::drawMasked(const DrawTarget& target, Color c) {
     const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
-    m_instance.graphics().canvas().drawImage(getImage("masked"), maskProgram);
+    target.blit(getImage("masked"), maskProgram);
 }

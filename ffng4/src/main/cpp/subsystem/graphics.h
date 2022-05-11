@@ -5,10 +5,10 @@
 #include "platform/ogl.h"
 #include "subsystem/files.h"
 
-#include "graphics/canvas.h"
 #include "graphics/shaders.h"
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
+#include "graphics/displaytarget.h"
 #include "graphics/system.h"
 #include "graphics/utils.h"
 
@@ -24,7 +24,7 @@ public:
 
     auto& system() const { return *m_system; }
     auto& display() const { return m_system->m_display; }
-    auto& canvas() const { return m_system->m_canvas; }
+    auto& displayTarget() const { return m_system->m_displayTarget; }
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
 

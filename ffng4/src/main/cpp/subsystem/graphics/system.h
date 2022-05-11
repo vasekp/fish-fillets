@@ -3,7 +3,7 @@
 
 class GraphicsSystem {
     std::shared_ptr<ogl::Display> m_display;
-    Canvas m_canvas;
+    DisplayTarget m_displayTarget;
     ReadBuffer m_readBuffer;
     Shaders m_shaders;
 

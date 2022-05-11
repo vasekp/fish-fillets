@@ -25,7 +25,7 @@ protected:
     void own_refresh() override;
     void own_pause() override;
     void own_resume() override;
-    void own_draw() override;
+    void own_draw(const DrawTarget& target) override;
 
     void create(int width, int height, const std::string& background);
     void setWaves(float amplitude, float period, float speed);

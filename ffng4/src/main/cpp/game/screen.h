@@ -26,8 +26,8 @@ public:
     void refresh();
     void pause();
     void resume();
-    void draw() { own_draw(); }
-    bool mouse(Coords coords) { return own_mouse(coords.x(), coords.y()); }
+    void draw(const DrawTarget& target);
+    bool mouse(Coords coords);
 
     constexpr static unsigned baseWidth = 640;
     constexpr static unsigned baseHeight = 480;
@@ -45,7 +45,7 @@ protected:
     virtual void own_refresh() { }
     virtual void own_pause() { }
     virtual void own_resume() { }
-    virtual void own_draw() = 0;
+    virtual void own_draw(const DrawTarget& target) = 0;
     virtual bool own_mouse(unsigned x, unsigned y) { return false; }
 };
 

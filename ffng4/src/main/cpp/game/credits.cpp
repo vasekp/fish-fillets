@@ -19,12 +19,12 @@ void CreditsScreen::own_refresh() {
     m_totalHeight = getImage("credits").height();
 }
 
-void CreditsScreen::own_draw() {
+void CreditsScreen::own_draw(const DrawTarget& target) {
     auto offset = (int)(std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight);
-    const auto& canvas = m_instance.graphics().canvas();
     const auto& program = m_instance.graphics().shaders().copy;
-    canvas.blit(getImage("credits"), program, 0, offset - (int)m_viewHeight, 0, 0, m_viewWidth, m_viewHeight);
-    canvas.drawImage(getImage("header"), program);
+    target.blit(getImage("credits"), program, 0, 0,
+                0, offset - (int)m_viewHeight, m_viewWidth, m_viewHeight);
+    target.blit(getImage("header"), program);
 }
 
 bool CreditsScreen::own_mouse(unsigned int x, unsigned int y) {
