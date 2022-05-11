@@ -1,6 +1,6 @@
 #include "levelscreen.h"
 #include "level.h"
-#include "statemanager.h"
+#include "screens.h"
 
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
@@ -17,10 +17,7 @@ void LevelScreen::create(int width, int height, const std::string &background) {
 
 void LevelScreen::own_start() {
     m_level.init();
-
     m_instance.audio().clear();
-    if(m_music)
-        m_instance.audio().addSource(m_music);
 }
 
 void LevelScreen::own_refresh() {
@@ -83,6 +80,6 @@ void LevelScreen::own_resume() {
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.states().setState(GameState::WorldMap);
+    m_instance.screens().startMode(Screens::Mode::WorldMap);
     return true;
 }

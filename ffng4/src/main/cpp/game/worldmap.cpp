@@ -1,9 +1,9 @@
 #include "worldmap.h"
-#include "statemanager.h"
+#include "screens.h"
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
-    m_nextFrame(Frames::none)
+    m_staticFrame(Frames::none)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
     addImage("override/map.png", "background");
@@ -23,23 +23,17 @@ WorldMap::WorldMap(Instance& instance) :
     for(const auto& [name, record] : m_instance.levels()) {
         if(record->maskColor != LevelRecord::no_color)
             m_forks.push_back(record);
+        if(record->state() == LevelState::open)
+            m_open.push_back(record);
     }
 }
 
 void WorldMap::staticFrame(Frames frame) {
-    m_nextFrame = frame;
+    m_staticFrame = frame;
     m_instance.graphics().drawFrame();
 }
 
 void WorldMap::own_start() {
-    m_music.rewind();
-
-    m_open.clear();
-    for(const auto& [name, record] : m_instance.levels()) {
-        if(record->state() == LevelState::open)
-            m_open.push_back(record);
-    }
-
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
 }
@@ -53,7 +47,7 @@ void WorldMap::own_draw(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
 
     target.blit(getImage("background"), copyProgram);
-    if(m_nextFrame != Frames::loading) {
+    if(m_staticFrame != Frames::loading) {
         drawMasked(target, MaskColors::mainBranch);
         for(const auto& record : m_forks)
 //            if(record->solved)
@@ -73,7 +67,7 @@ void WorldMap::own_draw(const DrawTarget& target) {
         }
     }
 
-    switch(m_nextFrame) {
+    switch(m_staticFrame) {
         case Frames::loading:
             target.blit(getImage("loading"), copyProgram, 227, 160);
             break;
@@ -81,12 +75,11 @@ void WorldMap::own_draw(const DrawTarget& target) {
         case Frames::options:
         case Frames::intro:
         case Frames::credits:
-            drawMasked(target, m_maskColors.at(m_nextFrame));
+            drawMasked(target, m_maskColors.at(m_staticFrame));
             break;
         default:
             break;
     }
-    m_nextFrame = Frames::none;
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
@@ -98,11 +91,10 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         staticFrame(WorldMap::Frames::options);
     } else if(mask_color == WorldMap::MaskColors::intro) {
         staticFrame(WorldMap::Frames::intro);
-        m_instance.live = false;
-        m_instance.states().setState(GameState::Intro);
+        m_instance.screens().startMode(Screens::Mode::Intro);
     } else if(mask_color == WorldMap::MaskColors::credits) {
         staticFrame(WorldMap::Frames::credits);
-        m_instance.states().setState(GameState::Credits);
+        m_instance.screens().startMode(Screens::Mode::Credits);
     } else {
         auto fx = (float)x, fy = (float)y;
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {
@@ -111,7 +103,7 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         });
         if(it != m_instance.levels().end()) {
             staticFrame(WorldMap::Frames::loading);
-            m_instance.states().startLevel(*it->second);
+            m_instance.screens().startLevel(*it->second);
         }
     }
     return true;
@@ -122,4 +114,8 @@ void WorldMap::drawMasked(const DrawTarget& target, Color c) {
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
     target.blit(getImage("masked"), maskProgram);
+}
+
+void WorldMap::own_resume() {
+    m_staticFrame = Frames::none;
 }

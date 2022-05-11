@@ -11,7 +11,7 @@ class Graphics;
 class Image;
 class Audio;
 class GameScreen;
-class StateManager;
+class Screens;
 class Script;
 class Levels;
 class AudioSource;
@@ -26,14 +26,14 @@ class Instance {
     std::unique_ptr<Files> m_files;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
-    std::unique_ptr<StateManager> m_states;
+    std::unique_ptr<Screens> m_screens;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<Levels> m_levels;
     std::vector<AudioSource> m_sounds_preload;
 
     RNG m_rng;
 
-    //struct saved_state m_state;
+    //struct saved_state m_screens;
 
 public:
     Instance(android_app*);
@@ -45,7 +45,7 @@ public:
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
     auto& rng() { return m_rng; }
-    auto& states() { return *m_states; }
+    auto& screens() { return *m_screens; }
     auto& script() { return *m_script; }
     auto& levels() { return *m_levels; }
 

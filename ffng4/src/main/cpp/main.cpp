@@ -1,7 +1,7 @@
 #include "instance.h"
 
 #include "subsystem/graphics.h"
-#include "game/statemanager.h"
+#include "game/screens.h"
 #include "game/worldmap.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
@@ -86,6 +86,7 @@ void android_main(struct android_app* app) {
 
     /*if (app->savedState != nullptr)
         instance.state = *(struct saved_state*)app->savedState;*/
+    instance.screens().startMode(Screens::Mode::WorldMap);
 
     while(true) {
         try {

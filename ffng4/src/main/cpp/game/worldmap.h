@@ -24,7 +24,7 @@ class WorldMap : public GameScreen {
     std::map<Frames, Color> m_maskColors;
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;
-    Frames m_nextFrame;
+    Frames m_staticFrame;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
@@ -43,6 +43,7 @@ public:
 
 protected:
     void own_start() override;
+    void own_resume() override;
     void own_refresh() override;
     void own_draw(const DrawTarget& target) override;
     bool own_mouse(unsigned, unsigned) override;
