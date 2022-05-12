@@ -15,16 +15,20 @@ void DisplayTarget::resize(unsigned int width, unsigned int height) {
     LOGV("Viewport: %d %d %d %d (scale %f)", m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y(), scale);
 }
 
-Coords DisplayTarget::screen2canvas(Coords screen) {
+Coords DisplayTarget::screen2canvas(Coords screen) const {
     return {
             (screen.fx() - m_viewport.origin.fx()) / m_viewport.extent.fx() * m_windowDim.fx(),
             (screen.fy() - m_viewport.origin.fy()) / m_viewport.extent.fy() * m_windowDim.fy()
     };
 }
 
-Coords DisplayTarget::canvas2screen(Coords canvas) {
+Coords DisplayTarget::canvas2screen(Coords canvas) const {
     return {
             canvas.fx() / m_windowDim.fx() * m_viewport.extent.fx() + m_viewport.origin.fx(),
             canvas.fy() / m_windowDim.fy() * m_viewport.extent.fy() + m_viewport.origin.fy()
     };
+}
+
+Coords DisplayTarget::pixelSize() const {
+    return m_viewport.extent;
 }

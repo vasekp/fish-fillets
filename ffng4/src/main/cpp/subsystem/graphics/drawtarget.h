@@ -3,18 +3,22 @@
 
 class DrawTarget {
     Coords m_size;
-    static constexpr unsigned fullSize = std::numeric_limits<decltype(fullSize)>::max();
 
 public:
     void setSize(unsigned width, unsigned height);
     virtual void bind() const = 0;
 
-    void blit(const ogl::Texture& texture, const ogl::Program &program, int destX = 0, int destY = 0,
-              int srcX = 0, int srcY = 0, unsigned width = fullSize, unsigned height = fullSize) const;
+    void blit(const ogl::Texture& texture, const ogl::Program &program,
+              int destX = 0, int destY = 0, int srcX = 0, int srcY = 0,
+              unsigned width = fullSize, unsigned height = fullSize,
+              unsigned dstWidth = fullSize, unsigned dstHeight = fullSize) const;
 
     void blitFlip(const ogl::Texture& texture, const ogl::Program &program, bool flipX, bool flipY,
                   int destX = 0, int destY = 0, int srcX = 0, int srcY = 0,
-                  unsigned width = fullSize, unsigned height = fullSize) const;
+                  unsigned width = fullSize, unsigned height = fullSize,
+                  unsigned dstWidth = fullSize, unsigned dstHeight = fullSize) const;
+
+    static constexpr unsigned fullSize = std::numeric_limits<decltype(fullSize)>::max();
 
 protected:
     virtual void resize(unsigned width, unsigned height) = 0;

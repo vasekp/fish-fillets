@@ -16,8 +16,9 @@ public:
 
     void bind() const override;
 
-    Coords screen2canvas(Coords screen);
-    Coords canvas2screen(Coords canvas);
+    Coords screen2canvas(Coords screen) const;
+    Coords canvas2screen(Coords canvas) const;
+    Coords pixelSize() const;
 
 protected:
     void resize(unsigned int width, unsigned int height) override;

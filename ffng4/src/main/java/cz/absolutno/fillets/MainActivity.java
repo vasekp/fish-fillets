@@ -65,7 +65,7 @@ public class MainActivity extends NativeActivity {
     private TextPaint outlinePaint;
     private Typeface face;
 
-    Bitmap text(String file, String text, int size) {
+    Bitmap text(String file, String text, int screenWidth, int size) {
         Log.d("FFNG", "density " + String.valueOf(getResources().getDisplayMetrics().density));
         Log.d("FFNG", "densityDpi " + String.valueOf(getResources().getDisplayMetrics().densityDpi));
         face = Typeface.createFromAsset(getAssets(), file);
@@ -80,7 +80,7 @@ public class MainActivity extends NativeActivity {
         outlinePaint.setColor(Color.BLACK);
 
         int outlineWidth = 2;
-        int width = 640 - 2 * outlineWidth;
+        int width = screenWidth - 2 * outlineWidth;
         Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
         float spacingMultiplier = 1;
         float spacingAddition = 0;
@@ -92,7 +92,7 @@ public class MainActivity extends NativeActivity {
         StaticLayout myStaticLayout = new StaticLayout(text, outlinePaint, width, alignment, spacingMultiplier, spacingAddition, includePadding);
         int lines = myStaticLayout.getLineCount();
 
-        Bitmap bmp = Bitmap.createBitmap(640, (int)(height * lines), Bitmap.Config.ARGB_8888);
+        Bitmap bmp = Bitmap.createBitmap(screenWidth, (int)(height * lines), Bitmap.Config.ARGB_8888);
         Canvas cvs = new Canvas(bmp);
         Log.d("FFNG", String.valueOf(myStaticLayout.getLineCount()) + " " + String.valueOf(myStaticLayout.getHeight()));
 
@@ -106,7 +106,7 @@ public class MainActivity extends NativeActivity {
             //Log.d("FFNG", String.valueOf(rect.left) + " " + String.valueOf(rect.top));
 
             outlinePaint.setStrokeWidth(2 * outlineWidth);
-            float x = (640.f - (rect.right - rect.left)) / 2.f;
+            float x = ((float)screenWidth - (rect.right - rect.left)) / 2.f;
             float y = -fm.ascent + i * height + outlineWidth;
             cvs.drawText(line, x, y, outlinePaint);
             cvs.drawText(line, x, y, fillPaint);

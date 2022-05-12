@@ -84,7 +84,8 @@ void WorldMap::own_draw(const DrawTarget& target) {
             break;
     }
 
-    target.blit(m_text, copyProgram);
+    Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
+    target.blit(m_text, copyProgram, 0, 0, 0, 0, DrawTarget::fullSize, DrawTarget::fullSize, pixelSize.x(), pixelSize.y());
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
