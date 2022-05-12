@@ -10,7 +10,7 @@ namespace jni {
         m_class = m_env->GetObjectClass(m_obj);
         m_methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
         m_methods["playIntro"] = getMethodID("playIntro", "()V");
-        m_methods["text"] = getMethodID("text", "(Ljava/lang/String;Ljava/lang/String;II)Landroid/graphics/Bitmap;");
+        m_methods["renderText"] = getMethodID("renderText", "(Ljava/lang/String;Ljava/lang/String;FFI)[Landroid/graphics/Bitmap;");
     }
 
     Env::~Env() {

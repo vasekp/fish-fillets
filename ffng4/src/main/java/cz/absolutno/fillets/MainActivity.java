@@ -22,9 +22,13 @@ import android.view.WindowManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends NativeActivity {
     private static final String TAG = "FFNG4";
+
+    private final Map<String, Typeface> fontMap = new HashMap<>();
 
     static {
         System.loadLibrary("fillets");
@@ -61,56 +65,48 @@ public class MainActivity extends NativeActivity {
         startActivity(intent);
     }
 
-    private TextPaint fillPaint;
-    private TextPaint outlinePaint;
-    private Typeface face;
+    Typeface typeface(String fontFile) {
+        if(fontMap.containsKey(fontFile))
+            return fontMap.get(fontFile);
+        else {
+            Typeface face = Typeface.createFromAsset(getAssets(), fontFile);
+            fontMap.put(fontFile, face);
+            return face;
+        }
+    }
 
-    Bitmap text(String file, String text, int screenWidth, int size) {
-        Log.d("FFNG", "density " + String.valueOf(getResources().getDisplayMetrics().density));
-        Log.d("FFNG", "densityDpi " + String.valueOf(getResources().getDisplayMetrics().densityDpi));
-        face = Typeface.createFromAsset(getAssets(), file);
-        fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        //fillPaint.setTextAlign(Paint.Align.LEFT);
-        fillPaint.setTypeface(face);
+    Bitmap[] renderText(String text, String fontFile, float fontSize, float outline, int screenWidth) {
+        Typeface face = typeface(fontFile);
+
+        TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(Color.WHITE);
-        fillPaint.setTextSize(size * getResources().getDisplayMetrics().density);
+        fillPaint.setTypeface(face);
+        fillPaint.setTextSize(fontSize * getResources().getDisplayMetrics().density);
 
-        outlinePaint = new TextPaint(fillPaint);
+        TextPaint outlinePaint = new TextPaint(fillPaint);
         outlinePaint.setStyle(Paint.Style.STROKE);
         outlinePaint.setColor(Color.BLACK);
+        outlinePaint.setStrokeWidth(2.f * outline);
 
-        int outlineWidth = 2;
-        int width = screenWidth - 2 * outlineWidth;
-        Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
-        float spacingMultiplier = 1;
-        float spacingAddition = 0;
-        boolean includePadding = false;
+        Layout.Alignment align = Layout.Alignment.ALIGN_NORMAL;
+        StaticLayout layout = new StaticLayout(text, fillPaint, screenWidth, align, 1, 0, false);
+        int lineCount = layout.getLineCount();
 
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
-        float height = (fm.descent - fm.ascent) * 1.2f;
+        float lineHeight = fm.bottom - fm.top;
 
-        StaticLayout myStaticLayout = new StaticLayout(text, outlinePaint, width, alignment, spacingMultiplier, spacingAddition, includePadding);
-        int lines = myStaticLayout.getLineCount();
-
-        Bitmap bmp = Bitmap.createBitmap(screenWidth, (int)(height * lines), Bitmap.Config.ARGB_8888);
-        Canvas cvs = new Canvas(bmp);
-        Log.d("FFNG", String.valueOf(myStaticLayout.getLineCount()) + " " + String.valueOf(myStaticLayout.getHeight()));
-
-        int i;
-
-        for(i = 0; i < lines; i++) {
-            String line = text.substring(myStaticLayout.getLineStart(i), myStaticLayout.getLineStart(i + 1));
+        Bitmap[] bitmaps = new Bitmap[lineCount];
+        for(int i = 0; i < lineCount; i++) {
+            bitmaps[i] = Bitmap.createBitmap(screenWidth, (int) lineHeight, Bitmap.Config.ARGB_8888);
+            Canvas cvs = new Canvas(bitmaps[i]);
             Rect rect = new Rect();
+            String line = text.substring(layout.getLineStart(i), layout.getLineStart(i + 1));
             fillPaint.getTextBounds(line, 0, line.length(), rect);
-            Log.d("FFNG", line);
-            //Log.d("FFNG", String.valueOf(rect.left) + " " + String.valueOf(rect.top));
-
-            outlinePaint.setStrokeWidth(2 * outlineWidth);
-            float x = ((float)screenWidth - (rect.right - rect.left)) / 2.f;
-            float y = -fm.ascent + i * height + outlineWidth;
+            float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
+            float y = -fm.top;
             cvs.drawText(line, x, y, outlinePaint);
             cvs.drawText(line, x, y, fillPaint);
         }
-        return bmp;
+        return bitmaps;
     }
 }

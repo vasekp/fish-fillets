@@ -41,7 +41,7 @@ void WorldMap::own_start() {
 void WorldMap::own_refresh() {
     m_instance.graphics().readBuffer().setImage(getImage("mask"));
     m_instance.graphics().setMask(getImage("mask"));
-    m_text = m_instance.graphics().text("První pokus velice dlouhého textu co asi bude potřeba zalomit");
+    m_text = m_instance.graphics().renderLine("Já jsem ti říkala, že my splachovací záchod nepotřebujeme.");
 }
 
 void WorldMap::own_draw(const DrawTarget& target) {

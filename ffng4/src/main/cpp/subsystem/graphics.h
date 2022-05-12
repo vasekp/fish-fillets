@@ -37,7 +37,8 @@ public:
     void drawFrame();
 
     ogl::Texture loadImage(const std::string& path) const;
-    ogl::Texture text(const std::string& text) const;
+    std::vector<ogl::Texture> renderText(const std::string& text) const;
+    ogl::Texture renderLine(const std::string& text) const;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H
