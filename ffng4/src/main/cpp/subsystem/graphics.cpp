@@ -81,16 +81,16 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     return ret;
 }
 
-std::vector<ogl::Texture> Graphics::renderText(const std::string& text) const {
+std::vector<ogl::Texture> Graphics::renderMultiline(const std::string& text) const {
     auto& jni = m_instance.jni();
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, 16.f, 2.f, displayTarget().pixelSize().x());
+    auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("renderMultiline"), jText, jFilename, 16.f, 2.f, displayTarget().pixelSize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<ogl::Texture> ret{};
     ret.reserve(length);
     for(auto i = 0u; i < length; i++) {
-        auto jBitmap = jni->GetObjectArrayElement(jArray, 0);
+        auto jBitmap = jni->GetObjectArrayElement(jArray, (int)i);
         AndroidBitmapInfo info;
         AndroidBitmap_getInfo(jni, jBitmap, &info);
         std::uint32_t width = info.width;
@@ -111,5 +111,5 @@ std::vector<ogl::Texture> Graphics::renderText(const std::string& text) const {
 }
 
 ogl::Texture Graphics::renderLine(const std::string& text) const {
-    return std::move(renderText(text).front());
+    return std::move(renderMultiline(text).front());
 }

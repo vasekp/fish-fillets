@@ -75,7 +75,7 @@ public class MainActivity extends NativeActivity {
         }
     }
 
-    Bitmap[] renderText(String text, String fontFile, float fontSize, float outline, int screenWidth) {
+    Bitmap[] renderMultiline(String text, String fontFile, float fontSize, float outline, int screenWidth) {
         Typeface face = typeface(fontFile);
 
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);

@@ -25,7 +25,6 @@ class WorldMap : public GameScreen {
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;
     Frames m_staticFrame;
-    ogl::Texture m_text;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;

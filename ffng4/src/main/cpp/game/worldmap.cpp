@@ -41,7 +41,6 @@ void WorldMap::own_start() {
 void WorldMap::own_refresh() {
     m_instance.graphics().readBuffer().setImage(getImage("mask"));
     m_instance.graphics().setMask(getImage("mask"));
-    m_text = m_instance.graphics().renderLine("Já jsem ti říkala, že my splachovací záchod nepotřebujeme.");
 }
 
 void WorldMap::own_draw(const DrawTarget& target) {
@@ -83,9 +82,6 @@ void WorldMap::own_draw(const DrawTarget& target) {
         default:
             break;
     }
-
-    Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
-    target.blit(m_text, copyProgram, 0, 0, 0, 0, DrawTarget::fullSize, DrawTarget::fullSize, pixelSize.x(), pixelSize.y());
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {

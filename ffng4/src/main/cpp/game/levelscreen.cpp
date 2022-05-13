@@ -6,6 +6,7 @@ LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
         m_waves(),
+        m_subs(instance),
         m_fullLoad(false)
 { }
 
@@ -24,6 +25,7 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uAmplitude"), m_waves[0]);
     glUniform1f(program.uniform("uPeriod"), m_waves[1]);
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
+    m_subs.refresh();
     if(!m_fullLoad) {
         m_fullLoad = true;
         m_instance.audio().clear();
@@ -53,6 +55,8 @@ void LevelScreen::own_draw(const DrawTarget& target) {
         for(auto i = 0u; i < images.size(); i++)
             target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
     }
+
+    m_subs.draw(target, timeAlive());
 }
 
 AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
@@ -88,6 +92,7 @@ void LevelScreen::own_resume() {
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.screens().startMode(Screens::Mode::WorldMap);
+//    m_instance.screens().startMode(Screens::Mode::WorldMap);
+    m_subs.add("Já jsem ti říkala, že zrovna my splachovací záchod nepotřebujeme.", 0, timeAlive());
     return true;
 }
