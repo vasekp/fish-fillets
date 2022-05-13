@@ -9,7 +9,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION && AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
         auto sx = (int)AMotionEvent_getX(event, 0);
         auto sy = (int)AMotionEvent_getY(event, 0);
-        auto canvasCoords = instance.graphics().displayTarget().screen2canvas({sx, sy});
+        auto canvasCoords = instance.graphics().windowTarget().screen2canvas({sx, sy});
         return instance.curScreen().mouse(canvasCoords) ? 1 : 0;
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
         instance.screens().options() = !instance.screens().options();

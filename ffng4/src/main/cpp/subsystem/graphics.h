@@ -26,8 +26,9 @@ public:
     void shutdown();
 
     auto& system() const { return *m_system; }
-    auto& display() const { return m_system->m_display; }
-    auto& displayTarget() const { return m_system->m_displayTarget; }
+    auto& display() const { return *m_system->m_display; }
+    auto& windowTarget() const { return m_system->m_displayTarget; }
+    auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
 
@@ -37,7 +38,7 @@ public:
     void drawFrame();
 
     ogl::Texture loadImage(const SystemFile& path) const;
-    ogl::Texture renderLine(const std::string& text) const;
+    ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline, const DisplayTarget& target) const;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H

@@ -3,7 +3,8 @@
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
-    m_staticFrame(Frames::none)
+    m_staticFrame(Frames::none),
+    m_title(instance)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
     addImage("images/menu/map.png", "background");
@@ -41,6 +42,7 @@ void WorldMap::own_start() {
 void WorldMap::own_refresh() {
     m_instance.graphics().readBuffer().setImage(getImage("mask"));
     m_instance.graphics().setMask(getImage("mask"));
+    m_title.refresh();
 }
 
 void WorldMap::own_draw(const DrawTarget& target, float) {
@@ -82,6 +84,8 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
         default:
             break;
     }
+
+    m_title.draw();
 }
 
 bool WorldMap::own_mouse(unsigned int x, unsigned int y) {

@@ -1,4 +1,12 @@
 #include "subsystem/graphics.h"
+#include "displaytarget.h"
+
+DisplayTarget::DisplayTarget(const ogl::Display &display) :
+    DrawTarget(display.width(), display.height()),
+    m_display(display)
+{
+    m_viewport = {{0.f, 0.f}, {(float)m_display.width(), (float)m_display.height()}};
+}
 
 void DisplayTarget::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

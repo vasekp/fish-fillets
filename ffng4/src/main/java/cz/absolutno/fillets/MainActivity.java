@@ -93,7 +93,7 @@ public class MainActivity extends NativeActivity {
         return ret;
     }
 
-    Bitmap renderLine(String text, String fontFile, float fontSize, float outline, int screenWidth) {
+    Bitmap renderText(String text, String fontFile, float fontSize, float outline, int screenWidth) {
         Typeface face = typeface(fontFile);
 
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -115,7 +115,8 @@ public class MainActivity extends NativeActivity {
         fillPaint.getTextBounds(text, 0, text.length(), rect);
         float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
         float y = -fm.top;
-        canvas.drawText(text, x, y, outlinePaint);
+        if(outline != 0.0)
+            canvas.drawText(text, x, y, outlinePaint);
         canvas.drawText(text, x, y, fillPaint);
         return bitmap;
     }

@@ -47,14 +47,14 @@ void Graphics::drawFrame() {
         glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
         blur2.blitFlip(blur1.texture(), shaders().blur, false, true);
 
-        displayTarget().bind();
+        windowTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
-        displayTarget().blitFlip(blur2.texture(), shaders().blur, false, true);
+        windowTarget().blitFlip(blur2.texture(), shaders().blur, false, true);
     } else {
-        displayTarget().bind();
+        windowTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
-        m_instance.curScreen().draw(displayTarget());
+        m_instance.curScreen().draw(windowTarget());
     }
 
     system().display().swap();
@@ -81,11 +81,11 @@ ogl::Texture Graphics::loadImage(const SystemFile& file) const {
     return ret;
 }
 
-ogl::Texture Graphics::renderLine(const std::string& text) const {
+ogl::Texture Graphics::renderText(const std::string& text, const std::string& font, float fontSize, float outline, const DisplayTarget& target) const {
     auto& jni = m_instance.jni();
-    auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
+    auto jFilename = jni->NewStringUTF(font.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderLine"), jText, jFilename, 16.f, 2.f, displayTarget().pixelSize().x());
+    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, fontSize, outline, target.pixelSize().x());
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);
     std::uint32_t width = info.width;

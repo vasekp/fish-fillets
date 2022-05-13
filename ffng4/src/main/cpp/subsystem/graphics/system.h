@@ -4,6 +4,7 @@
 class GraphicsSystem {
     std::shared_ptr<ogl::Display> m_display;
     DisplayTarget m_displayTarget;
+    DisplayTarget m_fullscreenTarget;
     std::array<OffscreenTarget, 2> m_offscreenTarget;
     ReadBuffer m_readBuffer;
     Shaders m_shaders;

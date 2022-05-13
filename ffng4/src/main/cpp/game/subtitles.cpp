@@ -6,7 +6,7 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
                                                        jText, jFilename, 16.f,
-                                                       m_instance.graphics().displayTarget().pixelSize().x());
+                                                       m_instance.graphics().windowTarget().pixelSize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<std::string> ret{};
     ret.reserve(length);
@@ -40,7 +40,8 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
                 return std::pair{Color::white, Color::white};
             }
         }();
-        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, 0.f, duration,
+        m_lines.push_back({line, m_instance.graphics().renderText(line, "font/font_subtitle.ttf", 16.f, 2.f,
+                                                                  m_instance.graphics().windowTarget()), false, 0.f, 0.f, duration,
                            (unsigned) countLines, color1, color2});
     }
 }
@@ -49,7 +50,7 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
-    Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
+    Coords pixelSize = m_instance.graphics().windowTarget().pixelSize();
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
     float dy = std::min(dTime * speed, -lowest);
@@ -76,14 +77,15 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto height = line.texture.height();
             float destY = pixelSize.fy() - (float)height * (1.f + line.yOffset);
-            target.blit(line.texture, textProgram, 0, (int)destY - (int)height, 0, 0, DrawTarget::fullSize,
-                        3 * height, pixelSize.x(), pixelSize.y());
+            target.blit(line.texture, textProgram, 0, (int)destY - (int)height, 0, 0,
+                        DrawTarget::fullSize, 3 * height, pixelSize.x(), pixelSize.y());
         }
 }
 
 void Subtitles::refresh() {
     for(auto& line : m_lines) {
         if(!line.texture.live())
-            line.texture = m_instance.graphics().renderLine(line.text);
+            line.texture = m_instance.graphics().renderText(line.text, "font/font_subtitle.ttf", 16.f, 2.f,
+                                                            m_instance.graphics().windowTarget());
     }
 }

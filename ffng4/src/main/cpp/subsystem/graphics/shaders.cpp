@@ -10,8 +10,9 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     blur = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/blur.frag").read()});
     wavyImage = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/wavy-image.frag").read()});
     wavyText = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/wavy-text.frag").read()});
+    titleText = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/title.frag").read()});
 
-    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText}) {
+    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uTexture"), Shaders::texImage_shader);
     }

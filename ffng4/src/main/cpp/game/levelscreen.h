@@ -7,7 +7,7 @@
 #include "subsystem/audio.h"
 #include "timer.h"
 #include "subtitles.h"
-
+#include "title.h"
 
 class LevelScreen : public GameScreen {
     Level m_level;
@@ -16,6 +16,7 @@ class LevelScreen : public GameScreen {
     std::array<float, 3> m_waves;
     Timer m_timer;
     Subtitles m_subs;
+    LevelTitle m_title;
     bool m_fullLoad;
 
 public:

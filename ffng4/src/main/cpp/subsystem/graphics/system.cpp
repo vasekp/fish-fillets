@@ -5,6 +5,7 @@
 GraphicsSystem::GraphicsSystem(Instance& instance) :
     m_display(std::make_shared<ogl::Display>(instance.app()->window)),
     m_displayTarget(*m_display),
+    m_fullscreenTarget(*m_display),
     m_offscreenTarget{ref(), ref()},
     m_readBuffer(m_display),
     m_shaders(m_display, instance)

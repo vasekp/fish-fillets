@@ -12,7 +12,7 @@ class DisplayTarget : public DrawTarget {
     } m_viewport;
 
 public:
-    DisplayTarget(const ogl::Display& display) : m_display(display) { }
+    DisplayTarget(const ogl::Display& display);
 
     void bind() const override;
 

@@ -2,7 +2,8 @@
 #define FISH_FILLETS_GAME_WORLDMAP_H
 
 #include "screen.h"
-#include "game/levels.h"
+#include "levels.h"
+#include "title.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {
@@ -25,6 +26,7 @@ class WorldMap : public GameScreen {
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;
     Frames m_staticFrame;
+    LevelTitle m_title;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;

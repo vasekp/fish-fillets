@@ -5,6 +5,8 @@ class DrawTarget {
     Coords m_size;
 
 public:
+    DrawTarget(unsigned width = 0, unsigned height = 0) : m_size(width, height) { }
+
     void setSize(unsigned width, unsigned height);
     virtual void bind() const = 0;
 
