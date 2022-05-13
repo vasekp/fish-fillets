@@ -31,7 +31,7 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(auto& line : lines) {
-        float displayTime = std::max((float)text.length() * timePerChar, minTimePerLine);
+        float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
         auto [color1, color2] = [&]() {
             if(m_colors.contains(colors))
                 return m_colors.at(colors);
@@ -40,7 +40,7 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
                 return std::pair{Color::white, Color::white};
             }
         }();
-        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, displayTime,
+        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, 0.f, duration,
                            (unsigned) countLines, color1, color2});
     }
 }
@@ -59,11 +59,11 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
         auto& line = *liveEnd;
         line.live = true;
         line.yOffset = -1.f;
-        line.hideTime += absTime;
+        line.addTime = absTime;
     }
     while(!m_lines.empty()) {
         const auto &front = m_lines.front();
-        if (front.live && (front.yOffset > 5 || front.hideTime < absTime))
+        if (front.live && (front.yOffset > 5 || absTime - front.addTime > front.duration))
             m_lines.erase(m_lines.begin(), m_lines.begin() + (int) m_lines.front().groupSize);
         else
             break;
@@ -73,9 +73,11 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             glUseProgram(textProgram);
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().get());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().get());
-            float destY = pixelSize.fy() - (float)line.texture.height() * (1.f + line.yOffset);
-            target.blit(line.texture, textProgram, 0, (int)destY, 0, 0, DrawTarget::fullSize,
-                        DrawTarget::fullSize, pixelSize.x(), pixelSize.y());
+            glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
+            auto height = line.texture.height();
+            float destY = pixelSize.fy() - (float)height * (1.f + line.yOffset);
+            target.blit(line.texture, textProgram, 0, (int)destY - (int)height, 0, 0, DrawTarget::fullSize,
+                        3 * height, pixelSize.x(), pixelSize.y());
         }
 }
 

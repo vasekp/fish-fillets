@@ -9,7 +9,8 @@ class Subtitles {
         ogl::Texture texture;
         bool live;
         float yOffset;
-        float hideTime;
+        float addTime;
+        float duration;
         unsigned groupSize;
         Color color1;
         Color color2;
