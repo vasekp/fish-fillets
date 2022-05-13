@@ -18,7 +18,7 @@ class Level : public ScriptReferrer {
 
     struct Dialog {
         std::string text;
-        std::string color;
+        std::string colors;
         std::string soundFile;
     };
     std::map<std::string, Dialog> m_dialogs;
@@ -66,7 +66,7 @@ public:
     void game_planAction(DelayedFunction function);
     void game_killPlan();
     bool dialog_isDialog();
-    void dialog_addFont(const std::string& name, int r, int g, int b);
+    void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                                  const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);

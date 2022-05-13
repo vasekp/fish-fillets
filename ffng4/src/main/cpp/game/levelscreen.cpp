@@ -66,8 +66,8 @@ AudioSource& LevelScreen::addSound(const std::string &name, const std::string &f
     return it->second;
 }
 
-void LevelScreen::addSubtitle(const std::string &text, const std::string& color) {
-    m_subs.add(text, color, timeAlive());
+void LevelScreen::addSubtitle(const std::string &text, const std::string& colors) {
+    m_subs.add(text, colors, timeAlive());
 }
 
 void LevelScreen::setWaves(float amplitude, float period, float speed) {
