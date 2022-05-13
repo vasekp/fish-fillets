@@ -1,8 +1,9 @@
 #include "instance.h"
 
 #include "subsystem/graphics.h"
+#include "subsystem/key.h"
 #include "game/screens/screenmanager.h"
-#include "game/screens/worldmap.h"
+#include "game/structure/gametree.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto& instance = Instance::get(app);
@@ -10,9 +11,13 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         auto sx = (int)AMotionEvent_getX(event, 0);
         auto sy = (int)AMotionEvent_getY(event, 0);
         auto canvasCoords = instance.graphics().windowTarget().screen2canvas({sx, sy});
-        return instance.screens().mouse(canvasCoords) ? 1 : 0;
+        return instance.screens().dispatchMouse(canvasCoords) ? 1 : 0;
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
-        instance.screens().options() = !instance.screens().options();
+        auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
+        if(key == Key::none)
+            return 0;
+        else
+            return instance.screens().dispatchKey(key) ? 1 : 0;
     }
     return 0;
 }

@@ -37,6 +37,7 @@ protected:
     void stopMusic();
 
     bool own_mouse(unsigned int x, unsigned int y) override;
+    bool own_key(Key key) override;
 
     friend class Level;
 };

@@ -15,6 +15,8 @@ class Level : public ScriptReferrer {
     std::vector<Model> m_models;
     std::deque<DelayedFunction> m_plan;
     std::map<int, std::size_t> m_virtModels;
+    unsigned m_ixSmall;
+    unsigned m_ixBig;
 
     struct Dialog {
         std::string text;
@@ -32,6 +34,10 @@ public:
     void tick();
 
     Model& getModel(int index);
+    Model& smallFish();
+    Model& bigFish();
+
+    void moveModel(Model& model, Displacement d);
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
@@ -52,6 +58,8 @@ public:
     bool model_isAlive(int index);
     bool model_isOut(int index);
     bool model_isLeft(int index);
+    unsigned model_getW(int index);
+    unsigned model_getH(int index);
     void model_setGoal(int index, const std::string& goal);
     void model_change_turnSide(int index);
     void model_setBusy(int index, bool busy);

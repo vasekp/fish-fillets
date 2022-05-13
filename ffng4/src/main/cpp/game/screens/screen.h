@@ -6,6 +6,7 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "subsystem/script.h"
+#include "subsystem/key.h"
 
 class GameScreen {
 protected:
@@ -28,6 +29,7 @@ public:
     void resume();
     void draw(const DrawTarget& target);
     bool mouse(Coords coords);
+    bool keypress(Key key);
 
     constexpr static unsigned baseWidth = 640;
     constexpr static unsigned baseHeight = 480;
@@ -47,6 +49,7 @@ protected:
     virtual void own_resume() { }
     virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual bool own_mouse(unsigned x, unsigned y) { return false; }
+    virtual bool own_key(Key key) { return false; }
 };
 
 #endif //FISH_FILLETS_GAME_SCREEN_H

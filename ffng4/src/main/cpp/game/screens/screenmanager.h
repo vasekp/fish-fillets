@@ -26,7 +26,8 @@ public:
     void pause();
     void resume();
     void drawFrame();
-    bool mouse(Coords coords);
+    bool dispatchMouse(Coords coords);
+    bool dispatchKey(Key key);
 
     void startMode(Mode mode);
     void announceLevel(const LevelRecord& record);

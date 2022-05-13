@@ -74,3 +74,7 @@ void GameScreen::draw(const DrawTarget& target) {
 bool GameScreen::mouse(Coords coords) {
     return own_mouse(coords.x(), coords.y());
 }
+
+bool GameScreen::keypress(Key key) {
+    return own_key(key);
+}

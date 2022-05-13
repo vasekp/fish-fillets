@@ -124,6 +124,10 @@ void ScreenManager::resume() {
     curScreen().resume();
 }
 
-bool ScreenManager::mouse(Coords coords) {
+bool ScreenManager::dispatchMouse(Coords coords) {
     return curScreen().mouse(coords);
+}
+
+bool ScreenManager::dispatchKey(Key key) {
+    return curScreen().keypress(key);
 }

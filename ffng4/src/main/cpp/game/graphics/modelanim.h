@@ -1,8 +1,8 @@
 #ifndef FISH_FILLETS_MODELANIM_H
 #define FISH_FILLETS_MODELANIM_H
 
-#include "../../subsystem/graphics.h"
-#include "../../../../../../../../../Android/Sdk/ndk/24.0.8215888/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/c++/v1/variant"
+#include "subsystem/graphics.h"
+#include <variant>
 
 class ModelAnim {
     class Layer {
@@ -35,17 +35,17 @@ public:
         m_images[name][dir].push_back(image);
     }
 
-    void set(const std::string& name, int phase, bool running) {
+    void set(const std::string& name, int dir, int phase, bool running) {
         if(name == m_curName && running && m_running)
             return;
-        m_main = {m_images[name][0], phase};
+        m_main = {m_images[name][dir], phase};
         m_curName = name;
         m_running = running;
     }
 
-    void setExtra(const std::string& name, int phase) {
+    void setExtra(const std::string& name, int dir, int phase) {
         if(!name.empty())
-            m_extra = {m_images[name][0], phase};
+            m_extra = {m_images[name][dir], phase};
         else
             m_extra = {};
     }

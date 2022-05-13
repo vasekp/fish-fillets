@@ -31,8 +31,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_isOut", lua::wrap<&Level::model_isOut>);
     m_script.registerFn("model_isLeft", lua::wrap<&Level::model_isLeft>);
 //    m_script.registerFn("model_isAtBorder", script_model_isAtBorder);
-//    m_script.registerFn("model_getW", script_model_getW);
-//    m_script.registerFn("model_getH", script_model_getH);
+    m_script.registerFn("model_getW", lua::wrap<&Level::model_getW>);
+    m_script.registerFn("model_getH", lua::wrap<&Level::model_getH>);
     m_script.registerFn("model_setGoal", lua::wrap<&Level::model_setGoal>);
     m_script.registerFn("model_change_turnSide", lua::wrap<&Level::model_change_turnSide>);
 //    m_script.registerFn("model_change_setLocation", script_model_change_setLocation);
@@ -79,6 +79,9 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 
 void Level::init() {
     m_script.loadFile(m_record.script_filename);
+
+    m_ixSmall = std::distance(m_models.begin(), std::find_if(m_models.begin(), m_models.end(), [](const Model& model) { return model.type() == Model::Type::small; }));
+    m_ixBig = std::distance(m_models.begin(), std::find_if(m_models.begin(), m_models.end(), [](const Model& model) { return model.type() == Model::Type::big; }));
 }
 
 void Level::tick() {
@@ -99,8 +102,17 @@ Model& Level::getModel(int index) {
         return m_models[m_virtModels.at(index)];
     std::size_t realIndex = m_models.size();
     m_models.emplace_back("virtual", 0, 0, "");
+    LOGD("virtual model %d", index);
     m_virtModels.insert({index, realIndex});
     return m_models.back();
+}
+
+Model& Level::smallFish() {
+    return m_models[m_ixSmall];
+}
+
+Model& Level::bigFish() {
+    return m_models[m_ixBig];
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -147,17 +159,17 @@ void Level::model_addAnim(int index, const std::string& name, const std::string&
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
     auto& model = getModel(index);
-    model.anim().set(name, phase.value_or(0), true);
+    model.anim().set(name, model.direction(), phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
     auto& model = getModel(index);
-    model.anim().set(name, phase, false);
+    model.anim().set(name, model.direction(), phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
     auto& model = getModel(index);
-    model.anim().setExtra(name, phase);
+    model.anim().setExtra(name, model.direction(), phase);
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
@@ -197,12 +209,20 @@ bool Level::model_isLeft(int index) {
     return model.direction() == Model::dir::left;
 }
 
+unsigned Level::model_getW(int index) {
+    return getModel(index).shape().width();
+}
+
+unsigned Level::model_getH(int index) {
+    return getModel(index).shape().height();
+}
+
 void Level::model_setGoal(int index, const std::string& goal) {
     //TODO
 }
 
 void Level::model_change_turnSide(int index) {
-    //TODO
+    getModel(index).turn();
 }
 
 void Level::model_setBusy(int index, bool busy) {
@@ -293,4 +313,14 @@ void Level::dialog_addDialog(const std::string& name, const std::string& lang, c
 std::string Level::options_getParam(const std::string& name) {
     // TODO
     return "cs";
+}
+
+void Level::moveModel(Model &model, Displacement d) {
+    for(const auto& other : m_models) {
+        if(model == other)
+            continue;
+        if(model.shape().intersects(other.shape(), other.xy() - (model.xy() + d)))
+            return;
+    }
+    model.displace(d);
 }

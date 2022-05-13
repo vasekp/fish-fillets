@@ -99,3 +99,22 @@ bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
     m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     return true;
 }
+
+bool LevelScreen::own_key(Key key) {
+    switch(key) {
+        case Key::up:
+            m_level.moveModel(m_level.smallFish(), Displacement::up);
+            return true;
+        case Key::down:
+            m_level.moveModel(m_level.smallFish(), Displacement::down);
+            return true;
+        case Key::left:
+            m_level.moveModel(m_level.smallFish(), Displacement::left);
+            return true;
+        case Key::right:
+            m_level.moveModel(m_level.smallFish(), Displacement::right);
+            return true;
+        default:
+            return false;
+    }
+}
