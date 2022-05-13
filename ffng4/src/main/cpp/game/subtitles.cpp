@@ -26,12 +26,9 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
 void Subtitles::add(const std::string &text, Color color, float addTime) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
-    for(auto& line : lines) {
-        float startY = (m_lines.empty() ? 0.f : m_lines.back().yOffset) - 1.f;
-        m_lines.push_back({line, m_instance.graphics().renderLine(line), startY,
-                           addTime - startY + (float) countLines * timePerLine,
+    for(auto& line : lines)
+        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, 0.f,
                            (unsigned) countLines, color});
-    }
 }
 
 void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
@@ -39,14 +36,26 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
         return;
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
-    float lowest = m_lines.empty() ? 0.f : std::min(m_lines.back().yOffset, 0.f);
+    auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
+    float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
     float dy = std::min(dTime * speed, -lowest);
     for(auto& line : m_lines)
         line.yOffset += dy;
-    while(!m_lines.empty() && (m_lines.front().yOffset > 5 || absTime > m_lines.front().hideTime))
-        m_lines.erase(m_lines.begin(), m_lines.begin() + (int)m_lines.front().groupSize);
+    if(lowest == 0.f && liveEnd != m_lines.end()) {
+        auto& line = *liveEnd;
+        line.live = true;
+        line.yOffset = -1.f;
+        line.hideTime = absTime + (float) line.groupSize * timePerLine;
+    }
+    while(!m_lines.empty()) {
+        const auto &front = m_lines.front();
+        if (front.live && (front.yOffset > 5 || front.hideTime < absTime))
+            m_lines.erase(m_lines.begin(), m_lines.begin() + (int) m_lines.front().groupSize);
+        else
+            break;
+    }
     for(const auto& line : m_lines)
-        if(line.yOffset >= -1.f) {
+        if(line.live) {
             float destY = pixelSize.fy() - (float)line.texture.height() * (1.f + line.yOffset);
             target.blit(line.texture, copyProgram, 0, (int)destY, 0, 0, DrawTarget::fullSize,
                         DrawTarget::fullSize, pixelSize.x(), pixelSize.y());

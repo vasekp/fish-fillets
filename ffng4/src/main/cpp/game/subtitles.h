@@ -7,6 +7,7 @@ class Subtitles {
     struct Title {
         std::string text;
         ogl::Texture texture;
+        bool live;
         float yOffset;
         float hideTime;
         unsigned groupSize;
