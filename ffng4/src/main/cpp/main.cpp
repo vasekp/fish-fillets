@@ -32,7 +32,6 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance.graphics().activate();
                 instance.audio().activate();
                 instance.curScreen().refresh();
-                instance.graphics().drawFrame();
             }
             break;
         case APP_CMD_TERM_WINDOW:

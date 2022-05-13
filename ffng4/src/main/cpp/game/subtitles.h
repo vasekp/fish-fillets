@@ -29,6 +29,9 @@ public:
     constexpr static float outline = 2.f;
     constexpr static float timePerLine = 2.f;
     constexpr static float speed = 1.f;
+
+private:
+    std::vector<std::string> breakLines(const std::string& text);
 };
 
 #endif //FFNG_GAME_SUBTITLES_H

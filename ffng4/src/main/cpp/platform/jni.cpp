@@ -10,7 +10,8 @@ namespace jni {
         m_class = m_env->GetObjectClass(m_obj);
         m_methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
         m_methods["playIntro"] = getMethodID("playIntro", "()V");
-        m_methods["renderMultiline"] = getMethodID("renderMultiline", "(Ljava/lang/String;Ljava/lang/String;FFI)[Landroid/graphics/Bitmap;");
+        m_methods["breakLines"] = getMethodID("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
+        m_methods["renderLine"] = getMethodID("renderLine", "(Ljava/lang/String;Ljava/lang/String;FFI)Landroid/graphics/Bitmap;");
     }
 
     Env::~Env() {

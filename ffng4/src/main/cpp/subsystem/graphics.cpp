@@ -81,35 +81,24 @@ ogl::Texture Graphics::loadImage(const std::string& filename) const {
     return ret;
 }
 
-std::vector<ogl::Texture> Graphics::renderMultiline(const std::string& text) const {
+ogl::Texture Graphics::renderLine(const std::string& text) const {
     auto& jni = m_instance.jni();
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("renderMultiline"), jText, jFilename, 16.f, 2.f, displayTarget().pixelSize().x());
-    auto length = jni->GetArrayLength(jArray);
-    std::vector<ogl::Texture> ret{};
-    ret.reserve(length);
-    for(auto i = 0u; i < length; i++) {
-        auto jBitmap = jni->GetObjectArrayElement(jArray, (int)i);
-        AndroidBitmapInfo info;
-        AndroidBitmap_getInfo(jni, jBitmap, &info);
-        std::uint32_t width = info.width;
-        std::uint32_t height = info.height;
-        std::size_t stride = info.stride;
-        void *pixels;
-        AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-        if (!jBitmap)
-            throw std::runtime_error("bitmap data null");
-        ret.push_back(ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels));
-        AndroidBitmap_unlockPixels(jni, jBitmap);
-        jni->DeleteLocalRef(jBitmap);
-    }
+    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderLine"), jText, jFilename, 16.f, 2.f, displayTarget().pixelSize().x());
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(jni, jBitmap, &info);
+    std::uint32_t width = info.width;
+    std::uint32_t height = info.height;
+    std::size_t stride = info.stride;
+    void *pixels;
+    AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
+    if (!jBitmap)
+        throw std::runtime_error("bitmap data null");
+    auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
+    AndroidBitmap_unlockPixels(jni, jBitmap);
+    jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);
     jni->DeleteLocalRef(jText);
-    jni->DeleteLocalRef(jArray);
     return ret;
-}
-
-ogl::Texture Graphics::renderLine(const std::string& text) const {
-    return std::move(renderMultiline(text).front());
 }

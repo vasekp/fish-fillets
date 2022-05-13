@@ -75,7 +75,25 @@ public class MainActivity extends NativeActivity {
         }
     }
 
-    Bitmap[] renderMultiline(String text, String fontFile, float fontSize, float outline, int screenWidth) {
+    String[] breakLines(String text, String fontFile, float fontSize, int screenWidth) {
+        Typeface face = typeface(fontFile);
+
+        TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        fillPaint.setColor(Color.WHITE);
+        fillPaint.setTypeface(face);
+        fillPaint.setTextSize(fontSize * getResources().getDisplayMetrics().density);
+
+        Layout.Alignment align = Layout.Alignment.ALIGN_NORMAL;
+        StaticLayout layout = new StaticLayout(text, fillPaint, screenWidth, align, 1, 0, false);
+        int lineCount = layout.getLineCount();
+
+        String[] ret = new String[lineCount];
+        for(int i = 0; i < lineCount; i++)
+            ret[i] = text.substring(layout.getLineStart(i), layout.getLineStart(i + 1));
+        return ret;
+    }
+
+    Bitmap renderLine(String text, String fontFile, float fontSize, float outline, int screenWidth) {
         Typeface face = typeface(fontFile);
 
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -88,25 +106,17 @@ public class MainActivity extends NativeActivity {
         outlinePaint.setColor(Color.BLACK);
         outlinePaint.setStrokeWidth(2.f * outline);
 
-        Layout.Alignment align = Layout.Alignment.ALIGN_NORMAL;
-        StaticLayout layout = new StaticLayout(text, fillPaint, screenWidth, align, 1, 0, false);
-        int lineCount = layout.getLineCount();
-
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
         float lineHeight = fm.bottom - fm.top;
 
-        Bitmap[] bitmaps = new Bitmap[lineCount];
-        for(int i = 0; i < lineCount; i++) {
-            bitmaps[i] = Bitmap.createBitmap(screenWidth, (int) lineHeight, Bitmap.Config.ARGB_8888);
-            Canvas cvs = new Canvas(bitmaps[i]);
-            Rect rect = new Rect();
-            String line = text.substring(layout.getLineStart(i), layout.getLineStart(i + 1));
-            fillPaint.getTextBounds(line, 0, line.length(), rect);
-            float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
-            float y = -fm.top;
-            cvs.drawText(line, x, y, outlinePaint);
-            cvs.drawText(line, x, y, fillPaint);
-        }
-        return bitmaps;
+        Bitmap bitmap = Bitmap.createBitmap(screenWidth, (int) lineHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Rect rect = new Rect();
+        fillPaint.getTextBounds(text, 0, text.length(), rect);
+        float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
+        float y = -fm.top;
+        canvas.drawText(text, x, y, outlinePaint);
+        canvas.drawText(text, x, y, fillPaint);
+        return bitmap;
     }
 }

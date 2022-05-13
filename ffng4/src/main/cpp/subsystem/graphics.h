@@ -37,7 +37,6 @@ public:
     void drawFrame();
 
     ogl::Texture loadImage(const std::string& path) const;
-    std::vector<ogl::Texture> renderMultiline(const std::string& text) const;
     ogl::Texture renderLine(const std::string& text) const;
 };
 

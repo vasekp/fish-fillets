@@ -1,11 +1,36 @@
 #include "subtitles.h"
 
+std::vector<std::string> Subtitles::breakLines(const std::string &text) {
+    auto &jni = m_instance.jni();
+    auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
+    auto jText = jni->NewStringUTF(text.c_str());
+    auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
+                                                       jText, jFilename, 16.f,
+                                                       m_instance.graphics().displayTarget().pixelSize().x());
+    auto length = jni->GetArrayLength(jArray);
+    std::vector<std::string> ret{};
+    ret.reserve(length);
+    for (auto i = 0u; i < length; i++) {
+        auto jLine = (jstring)jni->GetObjectArrayElement(jArray, (int) i);
+        auto chars = jni->GetStringUTFChars(jLine, nullptr);
+        ret.emplace_back(chars);
+        jni->ReleaseStringUTFChars(jLine, chars);
+        jni->DeleteLocalRef(jLine);
+    }
+    jni->DeleteLocalRef(jFilename);
+    jni->DeleteLocalRef(jText);
+    jni->DeleteLocalRef(jArray);
+    return ret;
+}
+
 void Subtitles::add(const std::string &text, Color color, float addTime) {
-    auto textures = m_instance.graphics().renderMultiline(text);
-    auto countLines = textures.size();
-    for(auto& texture : textures) {
+    auto lines = breakLines(text);
+    auto countLines = lines.size();
+    for(auto& line : lines) {
         float startY = (m_lines.empty() ? 0.f : m_lines.back().yOffset) - 1.f;
-        m_lines.push_back({text /* TODO */, std::move(texture), startY, addTime - startY + (float)countLines * timePerLine, (unsigned)countLines, color});
+        m_lines.push_back({line, m_instance.graphics().renderLine(line), startY,
+                           addTime - startY + (float) countLines * timePerLine,
+                           (unsigned) countLines, color});
     }
 }
 
