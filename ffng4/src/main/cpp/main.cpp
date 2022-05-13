@@ -29,28 +29,33 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             LOGI("APP_CMD_INIT_WINDOW");
             if (instance.app()->window != nullptr) {
+                instance.live = true;
                 instance.graphics().activate();
                 instance.audio().activate();
                 instance.screens().refresh();
+                instance.screens().drawFrame();
             }
             break;
         case APP_CMD_TERM_WINDOW:
             LOGI("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
             instance.audio().shutdown();
+            instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
             LOGI("APP_CMD_GAINED_FOCUS");
-            instance.screens().resume();
-            instance.audio().resume();
-            instance.live = true;
+            if(!instance.running) {
+                instance.screens().resume();
+                instance.audio().resume();
+                instance.running = true;
+            }
             break;
         case APP_CMD_LOST_FOCUS:
             LOGI("APP_CMD_LOST_FOCUS");
-            if(instance.live) {
+            if(instance.running) {
                 instance.screens().pause();
                 instance.audio().pause();
-                instance.live = false;
+                instance.running = false;
             }
             break;
         case APP_CMD_START:
@@ -58,14 +63,19 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_PAUSE:
             LOGI("APP_CMD_PAUSE");
-            if(instance.live) {
+            if(instance.live && instance.running) {
                 instance.screens().pause();
                 instance.audio().pause();
-                instance.live = false;
+                instance.running = false;
             }
             break;
         case APP_CMD_RESUME:
             LOGI("APP_CMD_RESUME");
+            if(instance.live && !instance.running) {
+                instance.screens().resume();
+                instance.audio().resume();
+                instance.running = true;
+            }
             break;
         case APP_CMD_STOP:
             LOGI("APP_CMD_STOP");
@@ -95,7 +105,7 @@ void android_main(struct android_app* app) {
             int events;
             struct android_poll_source *source;
 
-            while ((ident = ALooper_pollAll(instance.live ? 0 : -1, nullptr, &events,
+            while ((ident = ALooper_pollAll(instance.running ? 0 : -1, nullptr, &events,
                                             (void **) &source)) >= 0) {
                 if (source != nullptr)
                     source->process(app, source);
@@ -108,7 +118,7 @@ void android_main(struct android_app* app) {
                 }
             }
 
-            if (instance.live)
+            if (instance.running)
                 instance.screens().drawFrame();
         } catch(std::exception& e) {
             LOGE("Caught exception: %s", e.what());

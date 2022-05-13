@@ -50,6 +50,7 @@ public:
     auto& levels() { return *m_levels; }
 
     bool live;
+    bool running;
     bool quit_request;
 
     void quit();

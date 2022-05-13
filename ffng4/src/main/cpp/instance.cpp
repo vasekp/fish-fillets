@@ -11,7 +11,7 @@
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
-Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), live(false), quit_request(false) {
+Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), live(false), running(false), quit_request(false) {
     m_files = std::make_unique<Files>(*this);
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this);
@@ -24,7 +24,7 @@ Instance& Instance::get(android_app* app) {
 }
 
 void Instance::quit() {
-    live = false;
+    running = false;
     audio().clear();
     ANativeActivity_finish(m_app->activity);
 }
