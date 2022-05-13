@@ -27,7 +27,8 @@ public:
     constexpr static const char* filename = "font/font_subtitle.ttf";
     constexpr static float fontsize = 16.f;
     constexpr static float outline = 2.f;
-    constexpr static float timePerLine = 2.f;
+    constexpr static float timePerChar = 0.09f;
+    constexpr static float minTimePerLine = 2.f;
     constexpr static float speed = 1.f;
 
 private:

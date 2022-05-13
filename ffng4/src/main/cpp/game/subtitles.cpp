@@ -26,9 +26,11 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
 void Subtitles::add(const std::string &text, Color color, float addTime) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
-    for(auto& line : lines)
-        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, 0.f,
+    for(auto& line : lines) {
+        float displayTime = std::max((float)text.length() * timePerChar, minTimePerLine);
+        m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, displayTime,
                            (unsigned) countLines, color});
+    }
 }
 
 void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
@@ -45,7 +47,7 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
         auto& line = *liveEnd;
         line.live = true;
         line.yOffset = -1.f;
-        line.hideTime = absTime + (float) line.groupSize * timePerLine;
+        line.hideTime += absTime;
     }
     while(!m_lines.empty()) {
         const auto &front = m_lines.front();
