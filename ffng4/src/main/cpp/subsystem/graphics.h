@@ -29,13 +29,13 @@ public:
     auto& display() const { return *m_system->m_display; }
     auto& windowTarget() const { return m_system->m_displayTarget; }
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
+    auto& offscreenTarget(GraphicsSystem::Targets which) const { return m_system->m_offscreenTarget[which]; }
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
+    bool ready() const { return (bool)m_system; }
 
     void setWindowSize(unsigned width, unsigned height);
     void setMask(const Image &image);
-
-    void drawFrame();
 
     ogl::Texture loadImage(const SystemFile& path) const;
     ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline, const DisplayTarget& target) const;

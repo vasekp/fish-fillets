@@ -23,10 +23,6 @@ Instance& Instance::get(android_app* app) {
     return *static_cast<Instance*>(app->userData);
 }
 
-GameScreen& Instance::curScreen() {
-    return screens().curScreen();
-}
-
 void Instance::quit() {
     live = false;
     audio().clear();

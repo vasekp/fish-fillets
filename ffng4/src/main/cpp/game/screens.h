@@ -19,12 +19,20 @@ public:
 
     Screens(Instance& instance) : m_instance(instance), m_options(false) { };
 
+    void refresh();
+    void pause();
+    void resume();
+    void drawFrame();
+    bool mouse(Coords coords);
+
     void startMode(Mode mode);
+    void announceLevel(const LevelRecord& record);
     void startLevel(const LevelRecord& record);
-    GameScreen& curScreen() { return *m_screen; }
+
     bool& options() { return m_options; }
 
 private:
+    GameScreen& curScreen();
     void playIntro();
 };
 

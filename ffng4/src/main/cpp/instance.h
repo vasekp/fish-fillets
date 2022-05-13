@@ -52,8 +52,6 @@ public:
     bool live;
     bool quit_request;
 
-    GameScreen& curScreen();
-
     void quit();
 };
 

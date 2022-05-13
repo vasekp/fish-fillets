@@ -31,7 +31,7 @@ WorldMap::WorldMap(Instance& instance) :
 
 void WorldMap::staticFrame(Frames frame) {
     m_staticFrame = frame;
-    m_instance.graphics().drawFrame();
+    m_instance.screens().drawFrame();
 }
 
 void WorldMap::own_start() {

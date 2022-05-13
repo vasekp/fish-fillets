@@ -9,12 +9,12 @@ class GraphicsSystem {
     ReadBuffer m_readBuffer;
     Shaders m_shaders;
 
+public:
     enum Targets {
         Blur1,
         Blur2
     };
 
-public:
     GraphicsSystem(Instance& instance);
 
     auto& display() { return *m_display; }

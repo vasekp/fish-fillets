@@ -27,39 +27,6 @@ void Graphics::setMask(const Image& image) {
     glActiveTexture(Shaders::texImage_gl);
 }
 
-void Graphics::drawFrame() {
-    if(!m_system) {
-        LOGE("drawFrame called without active graphics subsystem");
-        return;
-    }
-
-    if(m_instance.screens().options()) {
-        const auto& blur1 = m_system->m_offscreenTarget[GraphicsSystem::Targets::Blur1];
-        const auto& blur2 = m_system->m_offscreenTarget[GraphicsSystem::Targets::Blur2];
-        const auto& blurProgram = shaders().blur;
-
-        blur1.bind();
-        m_instance.curScreen().draw(blur1);
-
-        glUseProgram(blurProgram);
-
-        blur2.bind();
-        glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
-        blur2.blitFlip(blur1.texture(), shaders().blur, false, true);
-
-        windowTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
-        windowTarget().blitFlip(blur2.texture(), shaders().blur, false, true);
-    } else {
-        windowTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
-        m_instance.curScreen().draw(windowTarget());
-    }
-
-    system().display().swap();
-}
-
 ogl::Texture Graphics::loadImage(const SystemFile& file) const {
     LOGD("loadImage %s", file.getPath().c_str());
     auto& jni = m_instance.jni();

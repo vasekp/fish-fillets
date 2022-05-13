@@ -10,7 +10,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         auto sx = (int)AMotionEvent_getX(event, 0);
         auto sy = (int)AMotionEvent_getY(event, 0);
         auto canvasCoords = instance.graphics().windowTarget().screen2canvas({sx, sy});
-        return instance.curScreen().mouse(canvasCoords) ? 1 : 0;
+        return instance.screens().mouse(canvasCoords) ? 1 : 0;
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
         instance.screens().options() = !instance.screens().options();
     }
@@ -31,7 +31,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if (instance.app()->window != nullptr) {
                 instance.graphics().activate();
                 instance.audio().activate();
-                instance.curScreen().refresh();
+                instance.screens().refresh();
             }
             break;
         case APP_CMD_TERM_WINDOW:
@@ -41,14 +41,14 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_GAINED_FOCUS:
             LOGI("APP_CMD_GAINED_FOCUS");
-            instance.curScreen().resume();
+            instance.screens().resume();
             instance.audio().resume();
             instance.live = true;
             break;
         case APP_CMD_LOST_FOCUS:
             LOGI("APP_CMD_LOST_FOCUS");
             if(instance.live) {
-                instance.curScreen().pause();
+                instance.screens().pause();
                 instance.audio().pause();
                 instance.live = false;
             }
@@ -59,7 +59,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_PAUSE:
             LOGI("APP_CMD_PAUSE");
             if(instance.live) {
-                instance.curScreen().pause();
+                instance.screens().pause();
                 instance.audio().pause();
                 instance.live = false;
             }
@@ -109,7 +109,7 @@ void android_main(struct android_app* app) {
             }
 
             if (instance.live)
-                instance.graphics().drawFrame();
+                instance.screens().drawFrame();
         } catch(std::exception& e) {
             LOGE("Caught exception: %s", e.what());
             instance.quit();
