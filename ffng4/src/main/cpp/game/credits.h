@@ -15,7 +15,7 @@ public:
 protected:
     void own_start() override;
     void own_refresh() override;
-    void own_draw(const DrawTarget& target) override;
+    void own_draw(const DrawTarget& target, float dt) override;
     bool own_mouse(unsigned, unsigned) override;
 };
 

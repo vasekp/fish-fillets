@@ -13,6 +13,7 @@ protected:
     std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
+    float m_lastDraw;
     bool m_running;
 
 private:
@@ -44,7 +45,7 @@ protected:
     virtual void own_refresh() { }
     virtual void own_pause() { }
     virtual void own_resume() { }
-    virtual void own_draw(const DrawTarget& target) = 0;
+    virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual bool own_mouse(unsigned x, unsigned y) { return false; }
 };
 

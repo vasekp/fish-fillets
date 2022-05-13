@@ -15,13 +15,12 @@ class Subtitles {
 
     Instance& m_instance;
     std::deque<Title> m_lines;
-    float m_lastT;
 
 public:
-    Subtitles(Instance& instance) : m_instance(instance), m_lastT(0) { }
+    Subtitles(Instance& instance) : m_instance(instance) { }
 
     void add(const std::string& text, Color color, float addTime);
-    void draw(const DrawTarget& target, float timeAlive);
+    void draw(const DrawTarget& target, float dTime, float absTime);
     void refresh();
 
     constexpr static const char* filename = "font/font_subtitle.ttf";

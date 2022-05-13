@@ -43,7 +43,7 @@ void WorldMap::own_refresh() {
     m_instance.graphics().setMask(getImage("mask"));
 }
 
-void WorldMap::own_draw(const DrawTarget& target) {
+void WorldMap::own_draw(const DrawTarget& target, float) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
 
     target.blit(getImage("background"), copyProgram);

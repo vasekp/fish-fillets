@@ -34,20 +34,16 @@ void Subtitles::add(const std::string &text, Color color, float addTime) {
     }
 }
 
-void Subtitles::draw(const DrawTarget &target, float timeAlive) {
-    if(m_lines.empty()) {
-        m_lastT = timeAlive;
+void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
+    if(m_lines.empty())
         return;
-    }
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
     float lowest = m_lines.empty() ? 0.f : std::min(m_lines.back().yOffset, 0.f);
-    float dy = std::min((timeAlive - m_lastT) * speed, -lowest);
-    LOGD("%f", dy);
-    m_lastT = timeAlive;
+    float dy = std::min(dTime * speed, -lowest);
     for(auto& line : m_lines)
         line.yOffset += dy;
-    while(!m_lines.empty() && (m_lines.front().yOffset > 5 || m_lines.front().hideTime < timeAlive))
+    while(!m_lines.empty() && (m_lines.front().yOffset > 5 || absTime > m_lines.front().hideTime))
         m_lines.erase(m_lines.begin(), m_lines.begin() + (int)m_lines.front().groupSize);
     for(const auto& line : m_lines)
         if(line.yOffset >= -1.f) {

@@ -34,7 +34,7 @@ void LevelScreen::own_refresh() {
     }
 }
 
-void LevelScreen::own_draw(const DrawTarget& target) {
+void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     if(m_timer.ticked())
         m_level.tick();
 
@@ -56,7 +56,7 @@ void LevelScreen::own_draw(const DrawTarget& target) {
             target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
     }
 
-    m_subs.draw(target, timeAlive());
+    m_subs.draw(target, dt, timeAlive());
 }
 
 AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {

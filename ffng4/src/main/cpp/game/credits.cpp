@@ -19,7 +19,7 @@ void CreditsScreen::own_refresh() {
     m_totalHeight = getImage("credits").height();
 }
 
-void CreditsScreen::own_draw(const DrawTarget& target) {
+void CreditsScreen::own_draw(const DrawTarget& target, float) {
     auto offset = (int)(std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight);
     const auto& program = m_instance.graphics().shaders().copy;
     target.blit(getImage("credits"), program, 0, 0,
