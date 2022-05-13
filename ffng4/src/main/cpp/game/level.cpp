@@ -88,7 +88,7 @@ void Level::tick() {
     if (!m_plan.empty()) {
         auto &front = m_plan.front();
         if(front.call())
-            m_plan.pop();
+            m_plan.pop_front();
     }
 }
 
@@ -98,7 +98,7 @@ Model& Level::getModel(int index) {
     if(m_virtModels.contains(index))
         return m_models[m_virtModels.at(index)];
     std::size_t realIndex = m_models.size();
-    m_models.push_back({"virtual", 0, 0, ""});
+    m_models.emplace_back("virtual", 0, 0, "");
     m_virtModels.insert({index, realIndex});
     return m_models.back();
 }
@@ -265,7 +265,7 @@ bool Level::game_isPlanning() {
 }
 
 void Level::game_planAction(DelayedFunction function) {
-    m_plan.push(std::move(function));
+    m_plan.push_back(std::move(function));
 }
 
 void Level::game_killPlan() {

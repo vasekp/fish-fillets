@@ -14,7 +14,7 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::vector<Model> m_models;
     std::map<std::string, std::string> m_dialogs;
-    std::queue<DelayedFunction> m_plan;
+    std::deque<DelayedFunction> m_plan;
     std::map<int, std::size_t> m_virtModels;
 
 public:
