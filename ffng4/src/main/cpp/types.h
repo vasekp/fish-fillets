@@ -35,7 +35,11 @@ struct Color {
     friend constexpr bool operator==(const Color& x, const Color& y) {
         return x.r == y.r && x.g == y.g && x.b == y.b;
     }
+
+    static const Color white;
 };
+
+inline constexpr Color Color::white{255, 255, 255};
 
 class Coords {
     int m_x;

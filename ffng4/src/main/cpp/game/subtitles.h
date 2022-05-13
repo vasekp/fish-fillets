@@ -11,18 +11,19 @@ class Subtitles {
         float yOffset;
         float hideTime;
         unsigned groupSize;
-        Color color;
+        Color color1;
+        Color color2;
     };
 
     Instance& m_instance;
     std::deque<Title> m_lines;
-    std::map<std::string, Color> m_colors;
+    std::map<std::string, std::pair<Color, Color>> m_colors;
 
 public:
     Subtitles(Instance& instance) : m_instance(instance) { }
 
-    void add(const std::string& text, const std::string& colorName, float addTime);
-    void defineColor(const std::string& name, Color color);
+    void add(const std::string& text, const std::string& colors, float addTime);
+    void defineColors(const std::string& name, Color color1, Color color2);
     void draw(const DrawTarget& target, float dTime, float absTime);
     void refresh();
 

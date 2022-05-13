@@ -23,25 +23,25 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     return ret;
 }
 
-void Subtitles::defineColor(const std::string &name, Color color) {
-    m_colors.insert({name, color});
+void Subtitles::defineColors(const std::string &name, Color color1, Color color2) {
+    m_colors.insert({name, {color1, color2}});
 }
 
-void Subtitles::add(const std::string &text, const std::string& colorName, float addTime) {
+void Subtitles::add(const std::string &text, const std::string& colors, float addTime) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(auto& line : lines) {
         float displayTime = std::max((float)text.length() * timePerChar, minTimePerLine);
-        Color color = [&]() {
-            if(m_colors.contains(colorName))
-                return m_colors.at(colorName);
+        auto [color1, color2] = [&]() {
+            if(m_colors.contains(colors))
+                return m_colors.at(colors);
             else {
-                LOGE("Unknown color: %s", colorName.c_str());
-                return Color{255, 255, 255};
+                LOGE("Unknown color: %s", colors.c_str());
+                return std::pair{Color::white, Color::white};
             }
         }();
         m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, displayTime,
-                           (unsigned) countLines, color});
+                           (unsigned) countLines, color1, color2});
     }
 }
 
@@ -71,7 +71,8 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     for(const auto& line : m_lines)
         if(line.live) {
             glUseProgram(textProgram);
-            glUniform4fv(textProgram.uniform("uColor"), 1, line.color.gl().get());
+            glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().get());
+            glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().get());
             float destY = pixelSize.fy() - (float)line.texture.height() * (1.f + line.yOffset);
             target.blit(line.texture, textProgram, 0, (int)destY, 0, 0, DrawTarget::fullSize,
                         DrawTarget::fullSize, pixelSize.x(), pixelSize.y());

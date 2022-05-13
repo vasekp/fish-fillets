@@ -281,7 +281,7 @@ bool Level::dialog_isDialog() {
 
 void Level::dialog_addFont(const std::string& name, int r, int g, int b) {
     // TODO two colors
-    m_screen.m_subs.defineColor(name, {r, g, b});
+    m_screen.m_subs.defineColors(name, {r, g, b}, {r, g, b});
 }
 
 void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
