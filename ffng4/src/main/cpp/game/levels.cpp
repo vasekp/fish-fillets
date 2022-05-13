@@ -5,7 +5,7 @@ Levels::Levels(Instance& instance) : m_levels(), m_script(instance, *this) {
     m_script.registerFn("branch_setEnding", lua::wrap<&Levels::branch_setEnding>);
     m_script.registerFn("worldmap_addDesc", lua::wrap<&Levels::worldmap_addDesc>);
     m_script.registerFn("node_bestSolution", lua::wrap<&Levels::node_bestSolution>);
-    m_script.loadFile("override/worldmap.lua");
+    m_script.loadFile("script/worldmap.lua");
 }
 
 void Levels::branch_addNode(const std::string& parent, const std::string& codename, const std::string& filename,

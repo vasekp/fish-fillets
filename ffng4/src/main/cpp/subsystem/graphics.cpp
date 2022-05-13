@@ -60,10 +60,10 @@ void Graphics::drawFrame() {
     system().display().swap();
 }
 
-ogl::Texture Graphics::loadImage(const std::string& filename) const {
-    LOGD("loadImage %s", filename.c_str());
+ogl::Texture Graphics::loadImage(const SystemFile& file) const {
+    LOGD("loadImage %s", file.getPath().c_str());
     auto& jni = m_instance.jni();
-    jstring jPath = jni->NewStringUTF(filename.c_str());
+    jstring jPath = jni->NewStringUTF(file.getPath().c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);

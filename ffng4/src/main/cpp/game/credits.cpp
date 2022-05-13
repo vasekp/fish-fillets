@@ -2,8 +2,8 @@
 #include "screens.h"
 
 CreditsScreen::CreditsScreen(Instance& instance) : GameScreen(instance) {
-    addImage("override/credits.png", "credits");
-    addImage("override/credits-header.png", "header");
+    addImage("images/menu/credits.png", "credits");
+    addImage("images/menu/credits-header.png", "header");
     m_music = m_instance.audio().loadMusic("music/kufrik.ogg");
     m_viewWidth = baseWidth;
     m_viewHeight = baseHeight;

@@ -11,7 +11,7 @@ Image& GameScreen::addImage(const std::string& filename, const std::string& name
     if(m_images.contains(key))
         return m_images.at(key);
     else {
-        auto[iterator, _] = m_images.insert({key, Image(filename)});
+        auto[iterator, _] = m_images.insert({key, {m_instance.files().system(filename)}});
         return iterator->second;
     }
 }

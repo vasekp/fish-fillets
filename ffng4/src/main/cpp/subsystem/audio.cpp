@@ -17,7 +17,7 @@ public:
     }
 
     void load() {
-        m_script.loadFile("override/preload.lua");
+        m_script.loadFile("script/preload.lua");
     }
 
     void preload_sound(const std::string& filename) {

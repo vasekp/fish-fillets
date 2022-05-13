@@ -8,7 +8,7 @@ class SystemFile {
     std::filesystem::path m_path;
 
 public:
-    SystemFile(std::string path, AAssetManager* assets);
+    SystemFile(const std::string& path, AAssetManager* assets);
 
     std::string getPath() const { return m_path; }
 
@@ -17,6 +17,7 @@ public:
     ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const;
 
 private:
+    bool exists(const std::filesystem::path& path) const;
     std::filesystem::path localize(const std::filesystem::path& base);
 };
 

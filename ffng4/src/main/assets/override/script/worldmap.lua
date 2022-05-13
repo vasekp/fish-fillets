@@ -104,6 +104,6 @@ branch_setEnding("ending", "script/ending/init.lua",
 
 
 -- -----------------------------------------------------------------
-file_include("override/worlddesc.lua")
-file_include("override/worldfame.lua")
+file_include("script/worlddesc.lua")
+file_include("script/worldfame.lua")
 

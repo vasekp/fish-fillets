@@ -1,12 +1,16 @@
 #include "subsystem/files.h"
 
-SystemFile::SystemFile(std::string path, AAssetManager* assets) :
+SystemFile::SystemFile(const std::string& path, AAssetManager* assets) :
         m_assets(assets),
         m_path(localize(path))
 { }
 
 bool SystemFile::exists() const {
-    return (bool) ndk::Asset{m_assets, m_path.c_str(), AASSET_MODE_UNKNOWN};
+    return exists(m_path);
+}
+
+bool SystemFile::exists(const std::filesystem::path &path) const {
+    return (bool) ndk::Asset{m_assets, path.c_str(), AASSET_MODE_UNKNOWN};
 }
 
 std::string SystemFile::read() const {
@@ -25,5 +29,10 @@ ndk::Asset SystemFile::asset(int mode) const {
 
 std::filesystem::path SystemFile::localize(const std::filesystem::path& base) {
     // TODO
-    return base;
+    auto override = "override" / base;
+    if (exists(override)) {
+        LOGD("override %s -> %s", base.c_str(), override.c_str());
+        return override;
+    } else
+        return base;
 }

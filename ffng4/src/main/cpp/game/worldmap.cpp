@@ -6,10 +6,10 @@ WorldMap::WorldMap(Instance& instance) :
     m_staticFrame(Frames::none)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
-    addImage("override/map.png", "background");
-    addImage("override/loading.png", "loading");
-    addImage("override/map-mask.png", "mask");
+    addImage("images/menu/map.png", "background");
+    addImage("images/menu/map_mask.png", "mask");
     addImage("images/menu/map_lower.png", "masked");
+    addImage("images/menu/loading.png", "loading");
     for(int i = 0; i < 5; i++) {
         auto name = "images/menu/n"s + (char)('0' + i) + ".png";
         m_nodeImages.push_back(addImage(name));
