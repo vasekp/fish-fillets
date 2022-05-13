@@ -6,7 +6,8 @@ struct Color {
     std::uint8_t g;
     std::uint8_t b;
 
-    constexpr Color(std::uint8_t r, std::uint8_t g, std::uint8_t b) :
+    template<typename T>
+    constexpr Color(T r, T g, T b) :
             r(r),
             g(g),
             b(b)

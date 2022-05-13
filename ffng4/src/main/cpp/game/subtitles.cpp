@@ -23,11 +23,23 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     return ret;
 }
 
-void Subtitles::add(const std::string &text, Color color, float addTime) {
+void Subtitles::defineColor(const std::string &name, Color color) {
+    m_colors.insert({name, color});
+}
+
+void Subtitles::add(const std::string &text, const std::string& colorName, float addTime) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(auto& line : lines) {
         float displayTime = std::max((float)text.length() * timePerChar, minTimePerLine);
+        Color color = [&]() {
+            if(m_colors.contains(colorName))
+                return m_colors.at(colorName);
+            else {
+                LOGE("Unknown color: %s", colorName.c_str());
+                return Color{255, 255, 255};
+            }
+        }();
         m_lines.push_back({line, m_instance.graphics().renderLine(line), false, 0.f, displayTime,
                            (unsigned) countLines, color});
     }
@@ -36,7 +48,7 @@ void Subtitles::add(const std::string &text, Color color, float addTime) {
 void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
-    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto& textProgram = m_instance.graphics().shaders().wavyText;
     Coords pixelSize = m_instance.graphics().displayTarget().pixelSize();
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
@@ -58,8 +70,10 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     }
     for(const auto& line : m_lines)
         if(line.live) {
+            glUseProgram(textProgram);
+            glUniform4fv(textProgram.uniform("uColor"), 1, line.color.gl().get());
             float destY = pixelSize.fy() - (float)line.texture.height() * (1.f + line.yOffset);
-            target.blit(line.texture, copyProgram, 0, (int)destY, 0, 0, DrawTarget::fullSize,
+            target.blit(line.texture, textProgram, 0, (int)destY, 0, 0, DrawTarget::fullSize,
                         DrawTarget::fullSize, pixelSize.x(), pixelSize.y());
         }
 }

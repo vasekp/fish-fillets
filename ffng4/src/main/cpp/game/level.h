@@ -18,6 +18,7 @@ class Level : public ScriptReferrer {
 
     struct Dialog {
         std::string text;
+        std::string color;
         std::string soundFile;
     };
     std::map<std::string, Dialog> m_dialogs;

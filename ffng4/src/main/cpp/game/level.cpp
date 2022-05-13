@@ -228,7 +228,8 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
         model.setTalk(source);
     }
     m_instance.audio().addSource(source);
-    m_screen.addSubtitle(dialog.text);
+    if(!dialog.text.empty())
+        m_screen.addSubtitle(dialog.text, dialog.color);
 }
 
 void Level::model_killSound(int index) {
@@ -279,14 +280,15 @@ bool Level::dialog_isDialog() {
 }
 
 void Level::dialog_addFont(const std::string& name, int r, int g, int b) {
-    // TODO
+    // TODO two colors
+    m_screen.m_subs.defineColor(name, {r, g, b});
 }
 
 void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                              const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
     // TODO
     if(!soundfile.empty() && (lang == "cs" || lang == "en"))
-        m_dialogs.insert({name, {subtitle.value_or(""), soundfile}});
+        m_dialogs.insert({name, {subtitle.value_or(""s), fontname.value_or(""), soundfile}});
 }
 
 std::string Level::options_getParam(const std::string& name) {
