@@ -31,18 +31,21 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(auto& line : lines) {
-        float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
-        auto [color1, color2] = [&]() {
-            if(m_colors.contains(colors))
+        float duration = std::max((float) text.length() * timePerChar, minTimePerLine);
+        auto[color1, color2] = [&]() {
+            if (m_colors.contains(colors))
                 return m_colors.at(colors);
             else {
                 LOGE("Unknown color: %s", colors.c_str());
                 return std::pair{Color::white, Color::white};
             }
         }();
-        m_lines.push_back({line, m_instance.graphics().renderText(line, "font/font_subtitle.ttf", 16.f, 2.f,
-                                                                  m_instance.graphics().windowTarget()), false, 0.f, 0.f, duration,
-                           (unsigned) countLines, color1, color2});
+        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", 16.f, 2.f,
+                                                        m_instance.graphics().windowTarget());
+        m_lines.push_back(
+                {line, std::move(texture),
+                 false, 0.f, 0.f, duration,
+                 (unsigned) countLines, color1, color2});
     }
 }
 

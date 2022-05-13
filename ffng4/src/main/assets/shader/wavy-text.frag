@@ -12,5 +12,6 @@ void main(void)
 {
     float p = min(uTime - vPixCoords.x / uSrcSize.x, 1.0);
     float dy = (1.0 - p) * cos(3.5 * 3.1416 * p) * .25;
-    gl_FragColor = texture2D(uSrcTexture, vPixCoords / uSrcSize - vec2(0.0, 1.0 + dy)) * mix(uColor1, uColor2, smoothstep(0.3, 0.8, vPixCoords.y / uSrcSize.y));
+    vec2 texCoords = vPixCoords / uSrcSize - vec2(0.0, 1.0 + dy);
+    gl_FragColor = texture2D(uSrcTexture, texCoords) * mix(uColor1, uColor2, smoothstep(0.3, 0.8, texCoords.y));
 }
