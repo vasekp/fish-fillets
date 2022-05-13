@@ -214,7 +214,8 @@ bool Level::model_isTalking(int index) {
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
-    auto& source = m_screen.addSound(name, m_dialogs.at(name), true);
+    auto& dialog = m_dialogs.at(name);
+    auto& source = m_screen.addSound(name, dialog.soundFile, true);
     source.setVolume((float)volume.value_or(75) / 100.f);
     if(loops.value_or(0) != 0) {
         assert(loops.value() == -1);
@@ -227,6 +228,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
         model.setTalk(source);
     }
     m_instance.audio().addSource(source);
+    m_screen.addSubtitle(dialog.text);
 }
 
 void Level::model_killSound(int index) {
@@ -242,7 +244,6 @@ void Level::sound_addSound(const std::string& name, const std::string& filename)
 }
 
 void Level::sound_playSound(const std::string& name, std::optional<int> volume) {
-    // TODO volume
     auto& multimap = m_screen.m_sounds;
     auto size = multimap.count(name);
     auto it = multimap.lower_bound(name);
@@ -285,7 +286,7 @@ void Level::dialog_addDialog(const std::string& name, const std::string& lang, c
                              const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
     // TODO
     if(!soundfile.empty() && (lang == "cs" || lang == "en"))
-        m_dialogs.insert({name, soundfile});
+        m_dialogs.insert({name, {subtitle.value_or(""), soundfile}});
 }
 
 std::string Level::options_getParam(const std::string& name) {

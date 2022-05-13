@@ -33,6 +33,7 @@ protected:
     void create(int width, int height, const std::string& background);
     void setWaves(float amplitude, float period, float speed);
     AudioSource& addSound(const std::string& name, const std::string& filename, bool single = false);
+    void addSubtitle(const std::string& text);
     void playMusic(const std::string& filename);
     void stopMusic();
 

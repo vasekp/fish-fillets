@@ -13,9 +13,14 @@ class Level : public ScriptReferrer {
     const LevelRecord& m_record;
     Script m_script;
     std::vector<Model> m_models;
-    std::map<std::string, std::string> m_dialogs;
     std::deque<DelayedFunction> m_plan;
     std::map<int, std::size_t> m_virtModels;
+
+    struct Dialog {
+        std::string text;
+        std::string soundFile;
+    };
+    std::map<std::string, Dialog> m_dialogs;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);

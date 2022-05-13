@@ -66,6 +66,10 @@ AudioSource& LevelScreen::addSound(const std::string &name, const std::string &f
     return it->second;
 }
 
+void LevelScreen::addSubtitle(const std::string &text) {
+    m_subs.add(text, 0, timeAlive());
+}
+
 void LevelScreen::setWaves(float amplitude, float period, float speed) {
     m_waves = {amplitude, period, speed};
 }
@@ -92,7 +96,6 @@ void LevelScreen::own_resume() {
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-//    m_instance.screens().startMode(Screens::Mode::WorldMap);
-    m_subs.add("Já jsem ti říkala, že zrovna my splachovací záchod nepotřebujeme.", 0, timeAlive());
+    m_instance.screens().startMode(Screens::Mode::WorldMap);
     return true;
 }
