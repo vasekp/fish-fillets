@@ -7,7 +7,6 @@ LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         m_level(instance, *this, record),
         m_waves(),
         m_subs(instance),
-        m_title(instance),
         m_fullLoad(false)
 { }
 
@@ -27,7 +26,6 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uPeriod"), m_waves[1]);
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
     m_subs.refresh();
-    m_title.refresh();
     if(!m_fullLoad) {
         m_fullLoad = true;
         m_instance.audio().clear();
@@ -59,7 +57,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 
     m_subs.draw(target, dt, timeAlive());
-    m_title.draw();
 }
 
 AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {

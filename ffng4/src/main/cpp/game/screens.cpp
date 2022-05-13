@@ -36,6 +36,13 @@ void Screens::startMode(Mode mode) {
     LOGD("startMode duration = %f s", diff.count());
 }
 
+void Screens::announceLevel(const LevelRecord& record) {
+    m_title.emplace(m_instance, record.description.at("cs"));
+    m_title_hide.reset();
+    if(m_instance.live)
+        m_title->refresh();
+}
+
 void Screens::startLevel(const LevelRecord& record) {
     auto start = std::chrono::steady_clock::now();
     m_screen = std::make_unique<LevelScreen>(m_instance, record);
@@ -45,6 +52,7 @@ void Screens::startLevel(const LevelRecord& record) {
         curScreen().resume();
     }
     auto end = std::chrono::steady_clock::now();
+    m_title_hide = end + std::chrono::seconds(1);
     std::chrono::duration<double> diff = end - start;
     LOGD("startLevel duration = %f s", diff.count());
 }
@@ -85,10 +93,26 @@ void Screens::drawFrame() {
         curScreen().draw(graphics.windowTarget());
     }
 
+    if(m_title) {
+        float opacity = 1.0;
+        if(m_title_hide) {
+            auto timeLeft = std::chrono::duration<float>(m_title_hide.value() - std::chrono::steady_clock::now()).count();
+            opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
+        }
+        if(opacity == 0.f)
+            m_title.reset();
+        else {
+            graphics.fullscreenTarget().bind();
+            m_title->draw(graphics.fullscreenTarget(), opacity);
+        }
+    }
+
     graphics.system().display().swap();
 }
 
 void Screens::refresh() {
+    if(m_title)
+        m_title->refresh();
     curScreen().refresh();
 }
 

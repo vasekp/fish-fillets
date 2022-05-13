@@ -23,12 +23,13 @@ struct Color {
         return (r << 16) + (g << 8) + b;
     }
 
+    constexpr float rf() const { return (float)r / 255.f; }
+    constexpr float rg() const { return (float)g / 255.f; }
+    constexpr float rb() const { return (float)b / 255.f; }
+
     std::unique_ptr<float[]> gl() const {
         auto ret = std::make_unique<float[]>(4);
-        ret[0] = (float)r / 255.f;
-        ret[1] = (float)g / 255.f;
-        ret[2] = (float)b / 255.f;
-        ret[3] = 1.f;
+        std::tie(ret[0], ret[1], ret[2], ret[3]) = std::tuple{rf(), rg(), rb(), 1.f};
         return ret;
     }
 
