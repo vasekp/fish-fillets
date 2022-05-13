@@ -1,13 +1,13 @@
-#include "screens.h"
-#include "game/worldmap.h"
-#include "game/credits.h"
-#include "game/levelscreen.h"
+#include "screenmanager.h"
+#include "game/screens/worldmap.h"
+#include "game/screens/credits.h"
+#include "game/screens/levelscreen.h"
 
-GameScreen& Screens::curScreen() {
+GameScreen& ScreenManager::curScreen() {
     return *m_screen;
 }
 
-void Screens::startMode(Mode mode) {
+void ScreenManager::startMode(Mode mode) {
     auto start = std::chrono::steady_clock::now();
     switch(mode) {
         case Mode::WorldMap:
@@ -36,14 +36,14 @@ void Screens::startMode(Mode mode) {
     LOGD("startMode duration = %f s", diff.count());
 }
 
-void Screens::announceLevel(const LevelRecord& record) {
+void ScreenManager::announceLevel(const LevelRecord& record) {
     m_title.emplace(m_instance, record.description.at("cs"));
     m_title_hide.reset();
     if(m_instance.live)
         m_title->refresh();
 }
 
-void Screens::startLevel(const LevelRecord& record) {
+void ScreenManager::startLevel(const LevelRecord& record) {
     auto start = std::chrono::steady_clock::now();
     m_screen = std::make_unique<LevelScreen>(m_instance, record);
     curScreen().start();
@@ -57,12 +57,12 @@ void Screens::startLevel(const LevelRecord& record) {
     LOGD("startLevel duration = %f s", diff.count());
 }
 
-void Screens::playIntro() {
+void ScreenManager::playIntro() {
     auto& jni = m_instance.jni();
     jni->CallVoidMethod(jni.object(), jni.method("playIntro"));
 }
 
-void Screens::drawFrame() {
+void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
     if(!graphics.ready()) {
         LOGE("drawFrame called without active graphics subsystem");
@@ -110,20 +110,20 @@ void Screens::drawFrame() {
     graphics.system().display().swap();
 }
 
-void Screens::refresh() {
+void ScreenManager::refresh() {
     if(m_title)
         m_title->refresh();
     curScreen().refresh();
 }
 
-void Screens::pause() {
+void ScreenManager::pause() {
     curScreen().pause();
 }
 
-void Screens::resume() {
+void ScreenManager::resume() {
     curScreen().resume();
 }
 
-bool Screens::mouse(Coords coords) {
+bool ScreenManager::mouse(Coords coords) {
     return curScreen().mouse(coords);
 }

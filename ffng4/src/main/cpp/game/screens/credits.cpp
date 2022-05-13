@@ -1,5 +1,5 @@
 #include "credits.h"
-#include "screens.h"
+#include "screenmanager.h"
 
 CreditsScreen::CreditsScreen(Instance& instance) : GameScreen(instance) {
     addImage("images/menu/credits.png", "credits");
@@ -28,6 +28,6 @@ void CreditsScreen::own_draw(const DrawTarget& target, float) {
 }
 
 bool CreditsScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.screens().startMode(Screens::Mode::WorldMap);
+    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     return true;
 }

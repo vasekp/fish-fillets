@@ -2,11 +2,11 @@
 #define FISH_FILLETS_LEVELSCREEN_H
 
 #include "screen.h"
-#include "levelrecord.h"
-#include "level.h"
+#include "game/structure/levelrecord.h"
+#include "game/logic/level.h"
 #include "subsystem/audio.h"
-#include "timer.h"
-#include "subtitles.h"
+#include "game/logic/timer.h"
+#include "game/graphics/subtitles.h"
 
 class LevelScreen : public GameScreen {
     Level m_level;

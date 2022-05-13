@@ -11,9 +11,9 @@ class Graphics;
 class Image;
 class Audio;
 class GameScreen;
-class Screens;
+class ScreenManager;
 class Script;
-class Levels;
+class GameTree;
 class AudioSource;
 
 /*struct saved_state {
@@ -26,9 +26,9 @@ class Instance {
     std::unique_ptr<Files> m_files;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
-    std::unique_ptr<Screens> m_screens;
+    std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<Script> m_script;
-    std::unique_ptr<Levels> m_levels;
+    std::unique_ptr<GameTree> m_levels;
     std::vector<AudioSource> m_sounds_preload;
 
     RNG m_rng;

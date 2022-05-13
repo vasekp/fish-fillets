@@ -2,8 +2,8 @@
 #define FISH_FILLETS_LEVEL_H
 
 #include "subsystem/script.h"
-#include "levelrecord.h"
-#include "model.h"
+#include "game/structure/levelrecord.h"
+#include "game/logic/model.h"
 
 class LevelScreen;
 

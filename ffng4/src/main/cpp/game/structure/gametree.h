@@ -1,17 +1,17 @@
-#ifndef FISH_FILLETS_LEVELS_H
-#define FISH_FILLETS_LEVELS_H
+#ifndef FISH_FILLETS_GAMETREE_H
+#define FISH_FILLETS_GAMETREE_H
 
 #include "instance.h"
 #include "levelrecord.h"
 #include "subsystem/script.h"
 
-class Levels : public ScriptReferrer {
+class GameTree : public ScriptReferrer {
     std::map<std::string, std::shared_ptr<LevelRecord>> m_levels;
     std::shared_ptr<LevelRecord> m_finale;
     Script m_script;
 
 public:
-    Levels(Instance &);
+    GameTree(Instance &);
 
     auto begin() const { return m_levels.cbegin(); }
 
@@ -27,4 +27,4 @@ private:
     void node_bestSolution(const std::string &codename, int moves, const std::string &name);
 };
 
-#endif //FISH_FILLETS_LEVELS_H
+#endif //FISH_FILLETS_GAMETREE_H

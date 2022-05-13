@@ -1,5 +1,5 @@
 #include "worldmap.h"
-#include "screens.h"
+#include "screenmanager.h"
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
@@ -93,10 +93,10 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         m_instance.screens().options() = !m_instance.screens().options();
     } else if(mask_color == WorldMap::MaskColors::intro) {
         staticFrame(WorldMap::Frames::intro);
-        m_instance.screens().startMode(Screens::Mode::Intro);
+        m_instance.screens().startMode(ScreenManager::Mode::Intro);
     } else if(mask_color == WorldMap::MaskColors::credits) {
         staticFrame(WorldMap::Frames::credits);
-        m_instance.screens().startMode(Screens::Mode::Credits);
+        m_instance.screens().startMode(ScreenManager::Mode::Credits);
     } else {
         auto fx = (float)x, fy = (float)y;
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {

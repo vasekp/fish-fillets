@@ -1,8 +1,8 @@
 #ifndef FISH_FILLETS_MODELANIM_H
 #define FISH_FILLETS_MODELANIM_H
 
-#include "subsystem/graphics.h"
-#include <variant>
+#include "../../subsystem/graphics.h"
+#include "../../../../../../../../../Android/Sdk/ndk/24.0.8215888/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/c++/v1/variant"
 
 class ModelAnim {
     class Layer {

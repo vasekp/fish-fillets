@@ -1,8 +1,8 @@
 #ifndef FISH_FILLETS_MODEL_H
 #define FISH_FILLETS_MODEL_H
 
-#include "modelanim.h"
-#include "subsystem/audio.h"
+#include "../graphics/modelanim.h"
+#include "../../subsystem/audio.h"
 
 class Model {
 public:

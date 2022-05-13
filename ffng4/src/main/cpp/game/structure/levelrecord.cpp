@@ -1,4 +1,4 @@
-#include "levels.h"
+#include "gametree.h"
 
 LevelRecord::LevelRecord(std::shared_ptr<LevelRecord> parent_, std::string filename_, std::string ending_,
                          int depth_, bool solved_, Coords coords_, int maskColor_) :

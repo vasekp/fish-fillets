@@ -3,10 +3,10 @@
 
 #include "instance.h"
 #include "screen.h"
-#include "levelrecord.h"
-#include "title.h"
+#include "game/structure/levelrecord.h"
+#include "game/graphics/leveltitle.h"
 
-class Screens {
+class ScreenManager {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
     std::optional<LevelTitle> m_title;
@@ -20,7 +20,7 @@ public:
         Credits
     };
 
-    Screens(Instance& instance) : m_instance(instance), m_options(false) { };
+    ScreenManager(Instance& instance) : m_instance(instance), m_options(false) { };
 
     void refresh();
     void pause();

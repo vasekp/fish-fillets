@@ -20,7 +20,8 @@ file(GLOB fillets_sources
     "platform/*/*.cpp"
     "subsystem/*.cpp"
     "subsystem/*/*.cpp"
-    "game/*.cpp")
+    "game/*.cpp"
+    "game/*/*.cpp")
 
 add_library(fillets SHARED ${fillets_sources})
 

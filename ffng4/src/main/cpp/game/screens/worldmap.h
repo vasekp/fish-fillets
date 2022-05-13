@@ -2,7 +2,7 @@
 #define FISH_FILLETS_GAME_WORLDMAP_H
 
 #include "screen.h"
-#include "levels.h"
+#include "game/structure/gametree.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {

@@ -1,6 +1,6 @@
 #include "graphics.h"
-#include "game/screen.h"
-#include "game/screens.h"
+#include "game/screens/screen.h"
+#include "game/screens/screenmanager.h"
 #include <android/bitmap.h>
 
 void Graphics::activate() {

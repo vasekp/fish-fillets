@@ -1,5 +1,5 @@
 #include "level.h"
-#include "levelscreen.h"
+#include "game/screens/levelscreen.h"
 #include "subsystem/rng.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :

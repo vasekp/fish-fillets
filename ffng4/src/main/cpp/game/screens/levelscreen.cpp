@@ -1,6 +1,6 @@
 #include "levelscreen.h"
-#include "level.h"
-#include "screens.h"
+#include "game/logic/level.h"
+#include "screenmanager.h"
 
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
@@ -96,6 +96,6 @@ void LevelScreen::own_resume() {
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.screens().startMode(Screens::Mode::WorldMap);
+    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     return true;
 }
