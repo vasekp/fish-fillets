@@ -144,6 +144,8 @@ void LevelLayout::reeval() {
         m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
         unit->die();
         clearQueue();
+        m_level.model_killSoundImpl(*unit);
+        m_level.game_killPlan();
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&

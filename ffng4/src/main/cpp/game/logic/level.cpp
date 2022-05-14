@@ -266,7 +266,10 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
 }
 
 void Level::model_killSound(int index) {
-    auto& model = layout().getModel(index);
+    model_killSoundImpl(layout().getModel(index));
+}
+
+void Level::model_killSoundImpl(Model& model) {
     const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);

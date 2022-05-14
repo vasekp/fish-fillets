@@ -64,6 +64,7 @@ void Model::die() {
     m_alive = false;
     m_type = Type::item_light;
     m_supportType = SupportType::none;
+    m_weight = Weight::light;
 }
 
 void Model::deltaStop() {
