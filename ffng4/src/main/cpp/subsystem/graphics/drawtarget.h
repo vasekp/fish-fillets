@@ -2,7 +2,7 @@
 #define FISH_FILLETS_GRAPHICS_DRAWTARGET_H
 
 class DrawTarget {
-    Coords m_size;
+    FCoords m_size;
 
 public:
     DrawTarget(unsigned width = 0, unsigned height = 0) : m_size(width, height) { }

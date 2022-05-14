@@ -71,7 +71,7 @@ void GameScreen::draw(const DrawTarget& target) {
     m_lastDraw = liveTime;
 }
 
-bool GameScreen::mouse(Coords coords) {
+bool GameScreen::mouse(FCoords coords) {
     return own_mouse(coords.x(), coords.y());
 }
 

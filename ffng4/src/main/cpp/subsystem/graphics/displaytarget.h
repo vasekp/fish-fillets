@@ -5,10 +5,10 @@
 
 class DisplayTarget : public DrawTarget {
     const ogl::Display& m_display;
-    Coords m_windowDim;
+    FCoords m_windowDim;
     struct {
-        Coords origin;
-        Coords extent;
+        FCoords origin;
+        FCoords extent;
     } m_viewport;
 
 public:
@@ -16,9 +16,9 @@ public:
 
     void bind() const override;
 
-    Coords screen2canvas(Coords screen) const;
-    Coords canvas2screen(Coords canvas) const;
-    Coords pixelSize() const;
+    FCoords screen2canvas(FCoords screen) const;
+    FCoords canvas2screen(FCoords canvas) const;
+    FCoords pixelSize() const;
 
 protected:
     void resize(unsigned int width, unsigned int height) override;

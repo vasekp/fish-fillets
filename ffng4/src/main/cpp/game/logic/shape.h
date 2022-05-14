@@ -2,7 +2,6 @@
 #define FISH_FILLETS_SHAPE_H
 
 #include "common.h"
-#include "displacement.h"
 #include <bitset>
 
 class Shape {
@@ -16,7 +15,7 @@ public:
     unsigned width() const { return m_width; }
     unsigned height() const { return m_height; }
 
-    bool intersects(const Shape& other, Displacement d) const;
+    bool intersects(const Shape& other, ICoords d) const;
 };
 
 #endif //FISH_FILLETS_SHAPE_H

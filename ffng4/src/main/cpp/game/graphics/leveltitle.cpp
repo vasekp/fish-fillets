@@ -8,9 +8,9 @@ void LevelTitle::draw(const DrawTarget& target, float opacity) {
     auto& display = m_instance.graphics().display();
     const auto& program = m_instance.graphics().shaders().titleText;
 
-    Coords dims{display.width(), display.height()};
-    Coords offset{dims.fx() / 2.f - dims.fy() * maxWidth / 2.f, startY * dims.fy()};
-    Coords rect{dims.fy() * maxWidth, (endY - startY) * dims.fy()};
+    FCoords dims{display.width(), display.height()};
+    FCoords offset{dims.fx() / 2.f - dims.fy() * maxWidth / 2.f, startY * dims.fy()};
+    FCoords rect{dims.fy() * maxWidth, (endY - startY) * dims.fy()};
     glUseProgram(program);
     glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
 

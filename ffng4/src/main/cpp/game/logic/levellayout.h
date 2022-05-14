@@ -25,13 +25,13 @@ public:
     int addModel(const std::string& type, int x, int y, const std::string& shape);
     Model& getModel(int index);
 
-    void moveFish(Displacement d);
+    void moveFish(ICoords d);
     void switchFish();
 
     void animate(float dt);
 
 private:
-    std::set<Model*> obstacles(const Model& unit, Displacement d);
+    std::set<Model*> obstacles(const Model& unit, ICoords d);
     void buildSupportMap();
 };
 

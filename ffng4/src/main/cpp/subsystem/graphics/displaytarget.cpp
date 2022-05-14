@@ -14,7 +14,7 @@ void DisplayTarget::bind() const {
 }
 
 void DisplayTarget::resize(unsigned int width, unsigned int height) {
-    Coords displayDim{m_display.width(), m_display.height()};
+    FCoords displayDim{m_display.width(), m_display.height()};
     m_windowDim = {width, height};
     float scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
     m_viewport = {{(displayDim.fx() - scale * m_windowDim.fx()) / 2.f,
@@ -23,20 +23,20 @@ void DisplayTarget::resize(unsigned int width, unsigned int height) {
     LOGV("Viewport: %d %d %d %d (scale %f)", m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y(), scale);
 }
 
-Coords DisplayTarget::screen2canvas(Coords screen) const {
+FCoords DisplayTarget::screen2canvas(FCoords screen) const {
     return {
             (screen.fx() - m_viewport.origin.fx()) / m_viewport.extent.fx() * m_windowDim.fx(),
             (screen.fy() - m_viewport.origin.fy()) / m_viewport.extent.fy() * m_windowDim.fy()
     };
 }
 
-Coords DisplayTarget::canvas2screen(Coords canvas) const {
+FCoords DisplayTarget::canvas2screen(FCoords canvas) const {
     return {
             canvas.fx() / m_windowDim.fx() * m_viewport.extent.fx() + m_viewport.origin.fx(),
             canvas.fy() / m_windowDim.fy() * m_viewport.extent.fy() + m_viewport.origin.fy()
     };
 }
 
-Coords DisplayTarget::pixelSize() const {
+FCoords DisplayTarget::pixelSize() const {
     return m_viewport.extent;
 }

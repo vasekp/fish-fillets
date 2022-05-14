@@ -7,11 +7,7 @@ struct Color {
     std::uint8_t b;
 
     template<typename T>
-    constexpr Color(T r, T g, T b) :
-            r(r),
-            g(g),
-            b(b)
-    { }
+    constexpr Color(T r, T g, T b) : r(r), g(g), b(b) { }
 
     constexpr Color(std::uint32_t rgb) :
             r(rgb >> 16),
@@ -42,34 +38,42 @@ struct Color {
 
 inline constexpr Color Color::white{255, 255, 255};
 
-class Coords {
+class FCoords {
     int m_x;
     int m_y;
     float m_fx;
     float m_fy;
 
 public:
-    Coords(unsigned x, unsigned y) :
-            m_x(x), m_y(y),
-            m_fx(x), m_fy(y)
-    { }
+    template<typename T>
+    FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
 
-    Coords(int x, int y) :
-            m_x(x), m_y(y),
-            m_fx(x), m_fy(y)
-    { }
-
-    Coords(float fx, float fy) :
-            m_x(fx), m_y(fy),
-            m_fx(fx), m_fy(fy)
-    { }
-
-    Coords() : Coords(0, 0) { }
+    FCoords() : FCoords(0, 0) { }
 
     int x() const { return m_x; }
     int y() const { return m_y; }
     float fx() const { return m_fx; }
     float fy() const { return m_fy; }
 };
+
+struct ICoords {
+    int x;
+    int y;
+
+    static const ICoords up;
+    static const ICoords down;
+    static const ICoords left;
+    static const ICoords right;
+
+    friend ICoords operator+(ICoords a, ICoords b) { return {a.x + b.x, a.y + b.y}; }
+    friend ICoords operator-(ICoords a, ICoords b) { return {a.x - b.x, a.y - b.y}; }
+    friend ICoords& operator+=(ICoords& a, ICoords b) { a.x += b.x; a.y += b.y; return a; }
+    friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
+};
+
+inline constexpr ICoords ICoords::up = {0, -1};
+inline constexpr ICoords ICoords::down = {0, +1};
+inline constexpr ICoords ICoords::left = {-1, 0};
+inline constexpr ICoords ICoords::right = {+1, 0};
 
 #endif //FISH_FILLETS_TYPES_H

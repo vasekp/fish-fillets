@@ -18,7 +18,7 @@ std::tuple<Model::Type, Model::SupportType, Model::Weight> decode(const std::str
 }
 
 Model::Model(const std::string& type, int x, int y, const std::string& shape) :
-        m_x(x), m_y(y),
+        m_position{x, y},
         m_shape(shape),
         m_alive(true),
         m_busy(false),
@@ -31,9 +31,8 @@ void Model::turn() {
     m_direction = (Direction)(1 - m_direction);
 }
 
-void Model::displace(Displacement d) {
-    m_x += d.dx;
-    m_y += d.dy;
+void Model::displace(ICoords d) {
+    m_position += d;
 }
 
 void Model::die() {

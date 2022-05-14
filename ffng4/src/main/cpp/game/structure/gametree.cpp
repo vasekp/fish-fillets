@@ -15,12 +15,12 @@ void GameTree::branch_addNode(const std::string& parent, const std::string& code
             ? decltype(parentRecord){}
             : m_levels.at(parent);
     int depth = parentRecord ? parentRecord->depth + 1 : 1;
-    m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending.value_or(""), depth, false, Coords{x, y}, color.value_or(-1))});
+    m_levels.insert({codename, std::make_shared<LevelRecord>(parentRecord, filename, ending.value_or(""), depth, false, FCoords{x, y}, color.value_or(-1))});
     LOGD("addNode %s -> %s done", parent.c_str(), codename.c_str());
 }
 
 void GameTree::branch_setEnding(const std::string& codename, const std::string& filename, const std::string& ending) {
-    m_finale = std::make_shared<LevelRecord>(std::shared_ptr<LevelRecord>(), filename, ending, 1, false, Coords{}, LevelRecord::no_color);
+    m_finale = std::make_shared<LevelRecord>(std::shared_ptr<LevelRecord>(), filename, ending, 1, false, FCoords{}, LevelRecord::no_color);
 }
 
 void GameTree::worldmap_addDesc(const std::string& codename, const std::string& lang, const std::string& levelname, const std::string& branch) {

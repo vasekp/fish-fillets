@@ -28,7 +28,7 @@ public:
     void pause();
     void resume();
     void draw(const DrawTarget& target);
-    bool mouse(Coords coords);
+    bool mouse(FCoords coords);
     bool keypress(Key key);
 
     constexpr static unsigned baseWidth = 640;

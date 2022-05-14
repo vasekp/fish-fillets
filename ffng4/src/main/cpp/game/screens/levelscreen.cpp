@@ -104,16 +104,16 @@ bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
 bool LevelScreen::own_key(Key key) {
     switch(key) {
         case Key::up:
-            m_level.layout().moveFish(Displacement::up);
+            m_level.layout().moveFish(ICoords::up);
             return true;
         case Key::down:
-            m_level.layout().moveFish(Displacement::down);
+            m_level.layout().moveFish(ICoords::down);
             return true;
         case Key::left:
-            m_level.layout().moveFish(Displacement::left);
+            m_level.layout().moveFish(ICoords::left);
             return true;
         case Key::right:
-            m_level.layout().moveFish(Displacement::right);
+            m_level.layout().moveFish(ICoords::right);
             return true;
         case Key::space:
             m_level.layout().switchFish();

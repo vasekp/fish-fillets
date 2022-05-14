@@ -24,7 +24,7 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
     return (int)m_models.size() - 1;
 }
 
-void LevelLayout::moveFish(Displacement d) {
+void LevelLayout::moveFish(ICoords d) {
     const auto obs = obstacles(*m_curFish, d);
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->isMovable(); }) != obs.end())
         return;
@@ -41,7 +41,7 @@ void LevelLayout::animate(float dt) {
     buildSupportMap();
     for(auto& model : m_models) {
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
-            model->displace(Displacement::down);
+            model->displace(ICoords::down);
     }
     for(auto& model : m_models) {
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
@@ -56,7 +56,7 @@ void LevelLayout::switchFish() {
         m_curFish = m_small;
 }
 
-std::set<Model*> LevelLayout::obstacles(const Model &unit, Displacement d) {
+std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {
     std::set<Model*> ret;
     std::set<const Model*> visited;
     std::queue<const Model*> queue;
@@ -100,7 +100,7 @@ void LevelLayout::buildSupportMap() {
         for (auto &other: m_models) {
             if (other->isVirtual() || *other == *model)
                 continue;
-            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + Displacement::down)))
+            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + ICoords::down)))
                 deps.push_back(other.get());
         }
         dependencies[model.get()] = std::move(deps);

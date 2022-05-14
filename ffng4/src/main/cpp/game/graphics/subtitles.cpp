@@ -53,7 +53,7 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
-    Coords pixelSize = m_instance.graphics().windowTarget().pixelSize();
+    FCoords pixelSize = m_instance.graphics().windowTarget().pixelSize();
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
     float dy = std::min(dTime * speed, -lowest);

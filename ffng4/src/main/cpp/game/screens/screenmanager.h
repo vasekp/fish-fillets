@@ -26,7 +26,7 @@ public:
     void pause();
     void resume();
     void drawFrame();
-    bool dispatchMouse(Coords coords);
+    bool dispatchMouse(FCoords coords);
     bool dispatchKey(Key key);
 
     void startMode(Mode mode);

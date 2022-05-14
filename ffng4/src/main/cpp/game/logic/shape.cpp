@@ -39,25 +39,25 @@ bool lineIntersect(const std::bitset<64>& a, const std::bitset<64>& b, int dx) {
         return (a & (b >> (-dx))).any();
 }
 
-bool Shape::intersects(const Shape& other, Displacement d) const {
-    if(d.dx > (int)width() || d.dy > (int)height() || -d.dx > (int)other.width() || -d.dy > (int)other.height())
+bool Shape::intersects(const Shape& other, ICoords d) const {
+    if(d.x > (int)width() || d.y > (int)height() || -d.x > (int)other.width() || -d.y > (int)other.height())
         return false;
-    if(d.dy >= 0) {
-        for(int i = d.dy; i < height(); i++) {
-            if(i - d.dy >= other.height())
+    if(d.y >= 0) {
+        for(int i = d.y; i < height(); i++) {
+            if(i - d.y >= other.height())
                 break;
             const auto& bits1 = m_bits[i];
-            const auto& bits2 = other.m_bits[i - d.dy];
-            if(lineIntersect(bits1, bits2, d.dx))
+            const auto& bits2 = other.m_bits[i - d.y];
+            if(lineIntersect(bits1, bits2, d.x))
                 return true;
         }
     } else {
-        for(int i2 = -d.dy; i2 < other.height(); i2++) {
-            if(i2 + d.dy >= height())
+        for(int i2 = -d.y; i2 < other.height(); i2++) {
+            if(i2 + d.y >= height())
                 break;
-            const auto& bits1 = m_bits[i2 + d.dy];
+            const auto& bits1 = m_bits[i2 + d.y];
             const auto& bits2 = other.m_bits[i2];
-            if(lineIntersect(bits1, bits2, d.dx))
+            if(lineIntersect(bits1, bits2, d.x))
                 return true;
         }
     }
