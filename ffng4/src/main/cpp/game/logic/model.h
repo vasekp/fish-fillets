@@ -34,6 +34,13 @@ public:
         heavy
     };
 
+    enum class Action {
+        none,
+        busy,
+        turning,
+        activate
+    };
+
 private:
     Type m_type;
     SupportType m_supportType;
@@ -43,7 +50,7 @@ private:
     FCoords m_delta;
     Shape m_shape;
     bool m_alive;
-    bool m_busy;
+    Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
     AudioSource m_talk;
@@ -73,13 +80,13 @@ public:
     const ModelAnim& anim() const { return m_anim; }
 
     bool isAlive() const { return m_alive; }
-    bool isBusy() const { return m_busy; }
     bool isTalking() const { return m_talk && !m_talk.done(); }
     bool isVirtual() const { return m_type == Type::virt; }
     bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
-    void setBusy(bool busy) { m_busy = busy; }
     bool isMoving() const { return (bool)m_move; }
     ICoords movingDir() const { return m_move; }
+    Action action() const { return m_action; }
+    void setAction(Action action) { m_action = action; }
 
     void turn();
     void displace(ICoords d, float initWarp = 1.f);
@@ -90,6 +97,7 @@ public:
     const AudioSource& getTalk() const { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
+    constexpr static float fallSpeed = 2.5f;
     constexpr static float warpIncrement = .2f;
 };
 

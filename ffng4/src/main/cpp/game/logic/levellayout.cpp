@@ -1,9 +1,11 @@
 #include "common.h"
 #include "levellayout.h"
+#include "level.h"
 
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
         m_width(width), m_height(height),
+        m_small(nullptr), m_big(nullptr), m_curFish(nullptr),
         m_moving(false), m_ready(false)
 { }
 
@@ -31,6 +33,15 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 }
 
 void LevelLayout::moveFish(ICoords d) {
+    if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
+            (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
+        m_curFish->setAction(Model::Action::turning);
+        m_level.blockFor(3, [&]() {
+            m_curFish->setAction(Model::Action::none);
+            m_curFish->turn();
+        });
+        return;
+    }
     const auto obs = obstacles(*m_curFish, d);
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->isMovable(); }) != obs.end())
         return;
@@ -70,7 +81,7 @@ bool LevelLayout::animate(float dt) {
 }
 
 void LevelLayout::keyInput(Key key) {
-    if(key == Key::space)
+    if(key == Key::space && m_ready)
         switchFish();
     else
         m_keyQueue.push(key);
@@ -90,6 +101,9 @@ void LevelLayout::processKey(Key key) {
         case Key::right:
             moveFish(Direction::right);
             break;
+        case Key::space:
+            switchFish();
+            break;
         default:
             ;
     }
@@ -102,7 +116,7 @@ void LevelLayout::reeval() {
             continue;
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
-            model->displace(Direction::down, 2.f);
+            model->displace(Direction::down, Model::fallSpeed);
         }
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
@@ -126,6 +140,8 @@ void LevelLayout::switchFish() {
         m_curFish = m_big;
     else
         m_curFish = m_small;
+    m_curFish->setAction(Model::Action::activate);
+    m_level.blockFor(4, [&]() { m_curFish->setAction(Model::Action::none); });
 }
 
 std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {

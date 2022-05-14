@@ -6,7 +6,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this)
+        m_script(instance, *this),
+        m_blockCountdown(0)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -85,12 +86,25 @@ void Level::init() {
 void Level::tick() {
     for (auto& model : layout().models())
         model->anim().update();
+    if(blocked()) {
+        if(--m_blockCountdown == 0)
+            m_blockCallback();
+    }
     m_script.doString("script_update();");
     if (!m_plan.empty()) {
         auto &front = m_plan.front();
         if(front.call())
             m_plan.pop_front();
     }
+}
+
+void Level::blockFor(int frames, const std::function<void()>& callback) {
+    m_blockCountdown = frames;
+    m_blockCallback = callback;
+}
+
+bool Level::blocked() {
+    return m_blockCountdown > 0;
 }
 
 LevelLayout& Level::layout() {
@@ -159,23 +173,28 @@ std::pair<int, int> Level::model_getLoc(int index) {
 }
 
 std::string Level::model_getAction(int index) {
-//     TODO
     const auto& model = layout().getModel(index);
-    if(model.isBusy())
-        return "busy";
-    else {
-        auto dir = model.movingDir();
-        if (dir == Direction::up)
-            return "move_up";
-        else if (dir == Direction::down)
-            return "move_down";
-        else if (dir == Direction::left)
-            return "move_left";
-        else if (dir == Direction::right)
-            return "move_right";
-        else
-            return "rest";
+    switch(model.action()) {
+        case Model::Action::busy:
+            return "busy";
+        case Model::Action::turning:
+            return "turn";
+        case Model::Action::activate:
+            return "activate";
+        case Model::Action::none:
+            break;
     }
+    auto dir = model.movingDir();
+    if (dir == Direction::up)
+        return "move_up";
+    else if (dir == Direction::down)
+        return "move_down";
+    else if (dir == Direction::left)
+        return "move_left";
+    else if (dir == Direction::right)
+        return "move_right";
+    else
+        return "rest";
 }
 
 std::string Level::model_getState(int index) {
@@ -218,7 +237,7 @@ void Level::model_change_turnSide(int index) {
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    layout().getModel(index).setBusy(busy);
+    layout().getModel(index).setAction(Model::Action::busy);
 }
 
 bool Level::model_isTalking(int index) {

@@ -7,7 +7,7 @@
 class Level;
 
 class LevelLayout {
-    [[maybe_unused]] Level& m_level;
+    Level& m_level;
     [[maybe_unused]] int m_width;
     [[maybe_unused]] int m_height;
 

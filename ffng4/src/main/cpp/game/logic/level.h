@@ -5,6 +5,8 @@
 #include "game/structure/levelrecord.h"
 #include "levellayout.h"
 
+#include <functional>
+
 class LevelScreen;
 
 class Level : public ScriptReferrer {
@@ -14,6 +16,8 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::deque<DelayedFunction> m_plan;
     std::unique_ptr<LevelLayout> m_layout;
+    int m_blockCountdown;
+    std::function<void()> m_blockCallback;
 
     struct Dialog {
         std::string text;
@@ -29,6 +33,8 @@ public:
 
     void init();
     void tick();
+    void blockFor(int frames, const std::function<void()>& callback);
+    bool blocked();
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();

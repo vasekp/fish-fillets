@@ -21,7 +21,7 @@ Model::Model(const std::string& type, int x, int y, const std::string& shape) :
         m_position{x, y},
         m_move(),
         m_shape(shape),
-        m_busy(false),
+        m_action(Action::none),
         m_orientation(Orientation::left),
         m_warp(1.f)
 {
