@@ -11,12 +11,12 @@ public:
     virtual void bind() const = 0;
 
     void blit(const ogl::Texture& texture, const ogl::Program &program,
-              int destX = 0, int destY = 0, int srcX = 0, int srcY = 0,
+              float destX = 0, float destY = 0, float srcX = 0, float srcY = 0,
               unsigned width = fullSize, unsigned height = fullSize,
               unsigned dstWidth = fullSize, unsigned dstHeight = fullSize) const;
 
     void blitFlip(const ogl::Texture& texture, const ogl::Program &program, bool flipX, bool flipY,
-                  int destX = 0, int destY = 0, int srcX = 0, int srcY = 0,
+                  float destX = 0, float destY = 0, float srcX = 0, float srcY = 0,
                   unsigned width = fullSize, unsigned height = fullSize,
                   unsigned dstWidth = fullSize, unsigned dstHeight = fullSize) const;
 

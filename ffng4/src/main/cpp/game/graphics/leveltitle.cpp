@@ -14,10 +14,10 @@ void LevelTitle::draw(const DrawTarget& target, float opacity) {
     glUseProgram(program);
     glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
 
-    auto shift = (int)(2.f / 480.f * dims.fy());
+    float shift = 2.f / 480.f * dims.fy();
     glUniform4f(program.uniform("uColor"), colorBg.rf(), colorBg.rg(), colorBg.rb(), opacity);
-    target.blit(m_texture, program, offset.x() + shift, offset.y() + shift, 0, 0, rect.x(), rect.y());
+    target.blit(m_texture, program, offset.fx() + shift, offset.fy() + shift, 0, 0, rect.x(), rect.y());
 
     glUniform4f(program.uniform("uColor"), colorFg.rf(), colorFg.rg(), colorFg.rb(), opacity);
-    target.blit(m_texture, program, offset.x(), offset.y(), 0, 0, rect.x(), rect.y());
+    target.blit(m_texture, program, offset.fx(), offset.fy(), 0, 0, rect.x(), rect.y());
 }

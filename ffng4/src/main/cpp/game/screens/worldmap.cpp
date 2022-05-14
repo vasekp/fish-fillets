@@ -54,7 +54,7 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
                 drawMasked(target, record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record->solved)
-                target.blit(m_nodeImages[0], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+                target.blit(m_nodeImages[0], copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -62,8 +62,8 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            target.blit(m_nodeImages[base + 1], copyProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
-            target.blit(m_nodeImages[base + 2], alphaProgram, record->coords.x() - nodeRadius, record->coords.y() - nodeRadius);
+            target.blit(m_nodeImages[base + 1], copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
+            target.blit(m_nodeImages[base + 2], alphaProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
         }
     }
 

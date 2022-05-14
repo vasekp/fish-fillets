@@ -20,10 +20,10 @@ void CreditsScreen::own_refresh() {
 }
 
 void CreditsScreen::own_draw(const DrawTarget& target, float) {
-    auto offset = (int)(std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight);
+    float offset = std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight;
     const auto& program = m_instance.graphics().shaders().copy;
     target.blit(getImage("credits"), program, 0, 0,
-                0, offset - (int)m_viewHeight, m_viewWidth, m_viewHeight);
+                0, offset - (float)m_viewHeight, m_viewWidth, m_viewHeight);
     target.blit(getImage("header"), program);
 }
 
