@@ -3,11 +3,12 @@
 
 class OffscreenTarget : public DrawTarget {
     const std::shared_ptr<ogl::Display> &m_ref;
+    FCoords m_displayDim;
     ogl::Framebuffer m_framebuffer;
     ogl::Texture m_texture;
 
 public:
-    OffscreenTarget(const std::shared_ptr<ogl::Display> &ref) : m_ref(ref), m_framebuffer(ref), m_texture() { }
+    OffscreenTarget(const std::shared_ptr<ogl::Display> &ref, unsigned fullWidth, unsigned fullHeight);
 
     void bind() const override;
     const auto& texture() const { return m_texture; }

@@ -70,8 +70,7 @@ void ScreenManager::drawFrame() {
     }
 
     if(options()) {
-        const auto& blur1 = graphics.offscreenTarget(GraphicsSystem::Targets::Blur1);
-        const auto& blur2 = graphics.offscreenTarget(GraphicsSystem::Targets::Blur2);
+        const auto& [blur1, blur2] = graphics.blurTargets();
         const auto& blurProgram = graphics.shaders().blur;
 
         blur1.bind();
@@ -88,9 +87,17 @@ void ScreenManager::drawFrame() {
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
         graphics.windowTarget().blitFlip(blur2.texture(), blurProgram, false, true);
     } else {
+        const auto& offscreen = graphics.offscreenTarget();
+        const auto& copyProgram = graphics.shaders().copy;
+
+        offscreen.bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        curScreen().draw(offscreen);
+
         graphics.windowTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
-        curScreen().draw(graphics.windowTarget());
+        graphics.windowTarget().blitFlip(offscreen.texture(), copyProgram, false, true, 0, 0, 0, 0,
+                                         DrawTarget::fullSize, DrawTarget::fullSize, offscreen.texture().width(), offscreen.texture().height());
     }
 
     if(m_title) {

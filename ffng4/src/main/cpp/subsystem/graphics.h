@@ -9,6 +9,7 @@
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
 #include "graphics/displaytarget.h"
+#include "graphics/blurtarget.h"
 #include "graphics/offscreentarget.h"
 #include "graphics/system.h"
 #include "graphics/utils.h"
@@ -29,7 +30,8 @@ public:
     auto& display() const { return *m_system->m_display; }
     auto& windowTarget() const { return m_system->m_displayTarget; }
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
-    auto& offscreenTarget(GraphicsSystem::Targets which) const { return m_system->m_offscreenTarget[which]; }
+    auto& blurTargets() const { return m_system->m_blurTargets; }
+    auto& offscreenTarget() const { return m_system->m_offscreenTarget; }
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
