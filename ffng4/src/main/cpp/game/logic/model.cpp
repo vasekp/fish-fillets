@@ -36,6 +36,17 @@ void Model::displace(ICoords d) {
     m_move = d;
 }
 
+void Model::deltaMove(float dt) {
+    if (m_move) {
+        m_delta += speed * dt * FCoords(m_move);
+        if (m_delta >= m_move) {
+            m_position += m_move;
+            m_delta -= m_move;
+            m_move = {};
+        }
+    }
+}
+
 void Model::die() {
     m_alive = false;
     m_type = Type::item_light;

@@ -53,18 +53,11 @@ void LevelLayout::draw(float dt) {
 
 bool LevelLayout::animate(float dt) {
     bool done = true;
-    for (auto &uModel: m_models) {
-        auto &model = *uModel;
-        if (model.m_move) {
+    for (auto &model: m_models)
+        if(model->isMoving()) {
+            model->deltaMove(dt);
             done = false;
-            model.m_delta += speed * dt * FCoords(model.m_move);
-            if (model.m_delta >= model.m_move) {
-                model.m_position += model.m_move;
-                model.m_delta -= model.m_move;
-                model.m_move = {};
-            }
         }
-    }
     return done;
 }
 
@@ -75,9 +68,9 @@ void LevelLayout::update() {
             model->displace(ICoords::down);
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
             m_small->die();
-        if(!model->m_move)
-            model->m_delta = {};
-        if(model->m_move)
+        if(!model->isMoving())
+            model->deltaStop();
+        else
             m_stable = false;
     }
 }

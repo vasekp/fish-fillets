@@ -34,6 +34,7 @@ public:
         heavy
     };
 
+private:
     Type m_type;
     SupportType m_supportType;
     Weight m_weight;
@@ -76,12 +77,17 @@ public:
     bool isVirtual() const { return m_type == Type::virt; }
     bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     void setBusy(bool busy) { m_busy = busy; }
+    bool isMoving() const { return (bool)m_move; }
 
     void turn();
     void displace(ICoords d);
+    void deltaMove(float dt);
+    void deltaStop() { m_delta = {}; }
     void die();
     void setTalk(AudioSource source) { m_talk = std::move(source); }
     const AudioSource& getTalk() const { return m_talk; }
+
+    constexpr static float speed = 3.f; // TODO: warp
 };
 
 #endif //FISH_FILLETS_MODEL_H

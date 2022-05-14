@@ -36,8 +36,6 @@ private:
     void update();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
     void buildSupportMap();
-
-    constexpr static float speed = 3.f; // TODO: warp
 };
 
 #endif //FISH_FILLETS_LEVELLAYOUT_H
