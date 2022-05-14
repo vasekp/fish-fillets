@@ -35,7 +35,7 @@ public:
     };
 
     enum class Action {
-        none,
+        base,
         busy,
         turning,
         activate
@@ -79,22 +79,21 @@ public:
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
 
-    bool isAlive() const { return m_alive; }
-    bool isTalking() const { return m_talk && !m_talk.done(); }
+    bool alive() const { return m_alive; }
+    bool talking() const { return m_talk && !m_talk.done(); }
     bool isVirtual() const { return m_type == Type::virt; }
-    bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
-    bool isMoving() const { return (bool)m_move; }
+    bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
+    bool moving() const { return (bool)m_move; }
     ICoords movingDir() const { return m_move; }
+    Action& action() { return m_action; }
     Action action() const { return m_action; }
-    void setAction(Action action) { m_action = action; }
 
     void turn();
     void displace(ICoords d, float initWarp = 1.f);
     void deltaMove(float dt);
     void deltaStop();
     void die();
-    void setTalk(AudioSource source) { m_talk = std::move(source); }
-    const AudioSource& getTalk() const { return m_talk; }
+    AudioSource& talk() { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
     constexpr static float fallSpeed = 2.5f;

@@ -181,7 +181,7 @@ std::string Level::model_getAction(int index) {
             return "turn";
         case Model::Action::activate:
             return "activate";
-        case Model::Action::none:
+        case Model::Action::base:
             break;
     }
     auto dir = model.movingDir();
@@ -200,14 +200,14 @@ std::string Level::model_getAction(int index) {
 std::string Level::model_getState(int index) {
 //     TODO
     const auto& model = layout().getModel(index);
-    if(model.isTalking())
+    if(model.talking())
         return "talking";
     else
         return "normal";
 }
 
 bool Level::model_isAlive(int index) {
-    return layout().getModel(index).isAlive();
+    return layout().getModel(index).alive();
 }
 
 bool Level::model_isOut(int index) {
@@ -237,11 +237,11 @@ void Level::model_change_turnSide(int index) {
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    layout().getModel(index).setAction(Model::Action::busy);
+    layout().getModel(index).action() = Model::Action::busy;
 }
 
 bool Level::model_isTalking(int index) {
-    return layout().getModel(index).isTalking();
+    return layout().getModel(index).talking();
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
@@ -256,7 +256,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
     source.setDialog(dialogFlag);
     if(index != -1) { // TODO
         auto &model = layout().getModel(index);
-        model.setTalk(source);
+        model.talk() = source;
     }
     m_instance.audio().addSource(source);
     if(!dialog.text.empty())
@@ -265,10 +265,10 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
 
 void Level::model_killSound(int index) {
     auto& model = layout().getModel(index);
-    const auto& talk = model.getTalk();
+    const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);
-    model.setTalk({});
+    model.talk() = {};
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {

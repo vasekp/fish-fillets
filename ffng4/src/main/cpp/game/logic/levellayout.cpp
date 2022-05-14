@@ -35,15 +35,15 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 void LevelLayout::moveFish(ICoords d) {
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
             (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
-        m_curFish->setAction(Model::Action::turning);
+        m_curFish->action() = Model::Action::turning;
         m_level.blockFor(3, [&]() {
-            m_curFish->setAction(Model::Action::none);
+            m_curFish->action() = Model::Action::base;
             m_curFish->turn();
         });
         return;
     }
     const auto obs = obstacles(*m_curFish, d);
-    if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->isMovable(); }) != obs.end())
+    if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end())
         return;
     if(m_curFish->supportType() == Model::SupportType::small) {
         if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
@@ -72,9 +72,9 @@ void LevelLayout::update(float dt) {
 bool LevelLayout::animate(float dt) {
     bool moving = false;
     for (auto &model: m_models)
-        if(model->isMoving()) {
+        if(model->moving()) {
             model->deltaMove(dt);
-            if(model->isMoving())
+            if(model->moving())
                 moving = true;
         }
     return moving;
@@ -114,19 +114,20 @@ void LevelLayout::reeval() {
     for(auto& model : m_models) {
         if(model->isVirtual())
             continue;
-        if(model->isMovable() && m_support[model.get()] == Model::SupportType::none) {
+        if(model->movable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
             model->displace(Direction::down, Model::fallSpeed);
         }
-        if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
+        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
             m_small->die();
         }
-        if(!model->isMoving())
+        if(!model->moving())
             model->deltaStop();
     }
-    m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving(); });
-    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving() && !model->isAlive(); }) &&
+    m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
+    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return
+            model->moving() && !model->alive(); }) &&
               !(m_curFish->movingDir() == Direction::down && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
 }
 
@@ -140,8 +141,8 @@ void LevelLayout::switchFish() {
         m_curFish = m_big;
     else
         m_curFish = m_small;
-    m_curFish->setAction(Model::Action::activate);
-    m_level.blockFor(4, [&]() { m_curFish->setAction(Model::Action::none); });
+    m_curFish->action() = Model::Action::activate;
+    m_level.blockFor(4, [&]() { m_curFish->action() = Model::Action::base; });
 }
 
 std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {
@@ -164,7 +165,7 @@ std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {
                 continue;
             if (model.shape().intersects(other.shape(), other.xy() - (model.xy() + d))) {
                 ret.insert(&other);
-                if(other.isMovable())
+                if(other.movable())
                     queue.push(&other);
             }
         }
@@ -181,7 +182,7 @@ void LevelLayout::buildSupportMap() {
 
     std::map<Model*, std::vector<Model*>> dependencies;
     for(const auto& model : m_models) {
-        if (!model->isMovable() || model->isVirtual())
+        if (!model->movable() || model->isVirtual())
             continue;
 
         std::vector<Model *> deps;
@@ -197,7 +198,7 @@ void LevelLayout::buildSupportMap() {
 
     std::map<Model*, std::set<Model*>> supportSet;
     for(const auto& model : m_models) {
-        if (!model->isMovable() || model->isVirtual())
+        if (!model->movable() || model->isVirtual())
             continue;
 
         std::set<Model*> suppDeep;
@@ -210,13 +211,13 @@ void LevelLayout::buildSupportMap() {
             if(suppDeep.contains(other) || other->isVirtual())
                 continue;
             suppDeep.insert(other);
-            if(other->isMovable()) {
+            if(other->movable()) {
                 for(auto* dep : dependencies[other])
                     queue.push(dep);
             }
         }
 
-        std::erase_if(suppDeep, [](Model* other) { return other->isMovable(); });
+        std::erase_if(suppDeep, [](Model* other) { return other->movable(); });
         supportSet[model.get()] = std::move(suppDeep);
     }
 
