@@ -122,10 +122,8 @@ void LevelLayout::reeval() {
             clearQueue();
             model->displace(Direction::down);
         }
-        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
-            clearQueue();
+        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
             deaths.insert(m_small);
-        }
         if(!model->moving()) {
             model->deltaStop();
             if(model->alive())
@@ -145,10 +143,11 @@ void LevelLayout::reeval() {
     for(auto unit : deaths) {
         m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
         unit->die();
+        clearQueue();
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&
-              !(m_curFish->movingDir() == Direction::down && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
+              !(m_curFish->movingDir() && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
 }
 
 void LevelLayout::clearQueue() {
@@ -195,6 +194,8 @@ std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {
 }
 
 std::vector<Model*> LevelLayout::directSupport(const Model &item) {
+    if(item.weight() == Model::Weight::none)
+        return {};
     std::vector<Model*> ret;
     for(auto &uOther: m_models) {
         auto& other = *uOther;
