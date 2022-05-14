@@ -116,14 +116,21 @@ void LevelLayout::reeval() {
             continue;
         if(model->movable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
+            model->falling() = true;
             model->displace(Direction::down, Model::fallSpeed);
         }
         if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
+            m_level.sound_playSound("dead_small", {});
             m_small->die();
         }
-        if(!model->moving())
+        if(!model->moving()) {
             model->deltaStop();
+            if(model->falling()) {
+                model->falling() = false;
+                m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
+            }
+        }
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return

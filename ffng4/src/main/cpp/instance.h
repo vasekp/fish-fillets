@@ -29,7 +29,6 @@ class Instance {
     std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
-    std::vector<AudioSource> m_sounds_preload;
 
     RNG m_rng;
 
