@@ -14,10 +14,15 @@ class Level : public ScriptReferrer {
     LevelScreen& m_screen;
     const LevelRecord& m_record;
     Script m_script;
-    std::deque<DelayedFunction> m_plan;
+    std::deque<QueuedFunction> m_plan;
     std::unique_ptr<LevelLayout> m_layout;
-    int m_blockCountdown;
-    std::function<void()> m_blockCallback;
+
+    struct Delayed {
+        int countdown;
+        std::function<void()> callback;
+    };
+
+    std::vector<Delayed> m_blocks;
 
     struct Dialog {
         std::string text;
@@ -69,7 +74,7 @@ public:
     void sound_playMusic(const std::string& filename);
     void sound_stopMusic();
     bool game_isPlanning();
-    void game_planAction(DelayedFunction function);
+    void game_planAction(QueuedFunction function);
     void game_killPlan();
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);

@@ -1,6 +1,6 @@
 #include "subsystem/script.h"
 
-DelayedFunction::DelayedFunction(DelayedFunction &&other) noexcept :
+QueuedFunction::QueuedFunction(QueuedFunction &&other) noexcept :
     m_state(other.m_state),
     m_ref(other.m_ref),
     m_tries(other.m_tries)
@@ -8,25 +8,25 @@ DelayedFunction::DelayedFunction(DelayedFunction &&other) noexcept :
     other.m_state = nullptr;
 }
 
-DelayedFunction& DelayedFunction::operator=(DelayedFunction &&other) noexcept {
+QueuedFunction& QueuedFunction::operator=(QueuedFunction &&other) noexcept {
     std::swap(m_state, other.m_state);
     std::swap(m_ref, other.m_ref);
     std::swap(m_tries, other.m_tries);
     return *this;
 }
 
-DelayedFunction::~DelayedFunction() {
+QueuedFunction::~QueuedFunction() {
     if(m_state)
         luaL_unref(m_state, LUA_REGISTRYINDEX, m_ref);
 }
 
-DelayedFunction DelayedFunction::from(lua_State* L) {
+QueuedFunction QueuedFunction::from(lua_State* L) {
     luaL_checktype(L, 1, LUA_TFUNCTION);
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     return {L, ref};
 }
 
-bool DelayedFunction::call() {
+bool QueuedFunction::call() {
     LOGV("calling [%d] tries=%d", m_ref, m_tries);
     lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_ref);
     lua_pushnumber(m_state, m_tries++);

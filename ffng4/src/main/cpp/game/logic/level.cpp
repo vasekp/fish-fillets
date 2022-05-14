@@ -6,8 +6,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this),
-        m_blockCountdown(0)
+        m_script(instance, *this)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -86,10 +85,11 @@ void Level::init() {
 void Level::tick() {
     for (auto& model : layout().models())
         model->anim().update();
-    if(blocked()) {
-        if(--m_blockCountdown == 0)
-            m_blockCallback();
+    for(auto& block : m_blocks) {
+        if(--block.countdown == 0)
+            block.callback();
     }
+    m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     m_script.doString("script_update();");
     if (!m_plan.empty()) {
         auto &front = m_plan.front();
@@ -99,12 +99,11 @@ void Level::tick() {
 }
 
 void Level::blockFor(int frames, const std::function<void()>& callback) {
-    m_blockCountdown = frames;
-    m_blockCallback = callback;
+    m_blocks.push_back({frames, callback});
 }
 
 bool Level::blocked() {
-    return m_blockCountdown > 0;
+    return !m_blocks.empty();
 }
 
 LevelLayout& Level::layout() {
@@ -302,7 +301,7 @@ bool Level::game_isPlanning() {
     return !m_plan.empty();
 }
 
-void Level::game_planAction(DelayedFunction function) {
+void Level::game_planAction(QueuedFunction function) {
     m_plan.push_back(std::move(function));
 }
 

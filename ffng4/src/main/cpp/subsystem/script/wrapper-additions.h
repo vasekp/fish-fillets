@@ -3,8 +3,8 @@
 
 namespace lua::internal {
     template<>
-    inline DelayedFunction read(lua_State *L, std::size_t index) {
-        return DelayedFunction::from(L);
+    inline QueuedFunction read(lua_State *L, std::size_t index) {
+        return QueuedFunction::from(L);
     }
 
     template<typename M, typename R, typename... Ts>
