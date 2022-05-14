@@ -198,9 +198,11 @@ std::string Level::model_getAction(int index) {
 }
 
 std::string Level::model_getState(int index) {
-//     TODO
+//     TODO goout
     const auto& model = layout().getModel(index);
-    if(model.talking())
+    if(model.pushing())
+        return "pushing";
+    else if(model.talking())
         return "talking";
     else
         return "normal";

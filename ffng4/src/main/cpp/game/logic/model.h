@@ -50,6 +50,7 @@ private:
     FCoords m_delta;
     Shape m_shape;
     bool m_alive;
+    bool m_pushing;
     bool m_falling;
     Action m_action;
     Orientation m_orientation;
@@ -87,6 +88,8 @@ public:
     bool moving() const { return (bool)m_move; }
     bool& falling() { return m_falling; }
     bool falling() const { return m_falling; }
+    bool& pushing() { return m_pushing; }
+    bool pushing() const { return m_pushing; }
     ICoords movingDir() const { return m_move; }
     Action& action() { return m_action; }
     Action action() const { return m_action; }

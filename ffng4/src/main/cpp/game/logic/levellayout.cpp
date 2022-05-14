@@ -51,8 +51,10 @@ void LevelLayout::moveFish(ICoords d) {
     }
     for(auto* model : obs)
         model->displace(d);
-    if(!obs.empty())
+    if(!obs.empty()) {
         m_curFish->deltaStop();
+        m_curFish->pushing() = true;
+    }
     m_curFish->displace(d);
 }
 
@@ -76,6 +78,8 @@ bool LevelLayout::animate(float dt) {
             model->deltaMove(dt);
             if(model->moving())
                 moving = true;
+            if(!model->moving())
+                model->pushing() = false;
         }
     return moving;
 }
