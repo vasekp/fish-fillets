@@ -25,7 +25,10 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 }
 
 void LevelLayout::moveFish(Displacement d) {
-    for(auto* model : obstacles(*m_curFish, d))
+    const auto obs = obstacles(*m_curFish, d);
+    if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->isMovable(); }) != obs.end())
+        return;
+    for(auto* model : obs)
         model->displace(d);
     m_curFish->displace(d);
 }
@@ -50,14 +53,15 @@ std::set<Model*> LevelLayout::obstacles(const Model &unit, Displacement d) {
             continue;
         }
         for(auto &uOther: m_models) {
-            auto& other = *uOther.get();
+            auto& other = *uOther;
             if(other == model || other == unit || ret.contains(&other))
                 continue;
             if(other.isVirtual())
                 continue;
             if (model.shape().intersects(other.shape(), other.xy() - (model.xy() + d))) {
                 ret.insert(&other);
-                queue.push(&other);
+                if(other.isMovable())
+                    queue.push(&other);
             }
         }
         queue.pop();

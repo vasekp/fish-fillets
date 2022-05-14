@@ -78,6 +78,7 @@ public:
     bool isBusy() const { return m_busy; }
     bool isTalking() const { return m_talk && !m_talk.done(); }
     bool isVirtual() const { return m_type == Type::virt; }
+    bool isMovable() const { return !(m_type == Type::small || m_type == Type::big || m_type == Type::wall); }
 
     void turn() { m_direction = (dir)(1 - m_direction); }
     void displace(Displacement d) { m_x += d.dx; m_y += d.dy; }
