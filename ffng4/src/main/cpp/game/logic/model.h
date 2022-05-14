@@ -22,6 +22,13 @@ public:
         virt
     };
 
+    enum class SupportType {
+        none,
+        small,
+        big,
+        wall
+    };
+
     Type m_type;
     int m_x;
     int m_y;
@@ -73,6 +80,18 @@ public:
     const Shape& shape() const { return m_shape; }
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
+    SupportType supportType() const {
+        switch(m_type) {
+            case Type::wall:
+                return SupportType::wall;
+            case Type::big:
+                return SupportType::big;
+            case Type::small:
+                return SupportType::small;
+            default:
+                return SupportType::none;
+        }
+    }
 
     bool isAlive() const { return m_alive; }
     bool isBusy() const { return m_busy; }

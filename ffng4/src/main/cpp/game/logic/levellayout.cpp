@@ -36,7 +36,7 @@ void LevelLayout::moveFish(Displacement d) {
 void LevelLayout::animate(float dt) {
     buildSupportMap();
     for(auto& model : m_models) {
-        if(model->isMovable() && m_support[model.get()].empty())
+        if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
             model->displace(Displacement::down);
     }
 }
@@ -98,6 +98,7 @@ void LevelLayout::buildSupportMap() {
         dependencies[model.get()] = std::move(deps);
     }
 
+    std::map<Model*, std::set<Model*>> supportSet;
     for(const auto& model : m_models) {
         if (!model->isMovable() || model->isVirtual())
             continue;
@@ -119,6 +120,13 @@ void LevelLayout::buildSupportMap() {
         }
 
         std::erase_if(suppDeep, [](Model* other) { return other->isMovable(); });
-        m_support[model.get()] = std::move(suppDeep);
+        supportSet[model.get()] = std::move(suppDeep);
+    }
+
+    for(const auto& model : m_models) {
+        const auto& set = supportSet[model.get()];
+        m_support[model.get()] = std::accumulate(set.begin(),  set.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
+            return std::max(prev, item->supportType());
+        });
     }
 }

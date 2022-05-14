@@ -15,7 +15,7 @@ class LevelLayout {
     Model* m_small;
     Model* m_big;
     Model* m_curFish;
-    std::map<const Model*, std::set<Model*>> m_support;
+    std::map<const Model*, Model::SupportType> m_support;
 
 public:
     LevelLayout(Level& level, int width, int height) : m_level(level), m_width(width), m_height(height) { }
