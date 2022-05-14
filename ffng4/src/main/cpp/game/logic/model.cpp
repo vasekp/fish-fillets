@@ -22,14 +22,14 @@ Model::Model(const std::string& type, int x, int y, const std::string& shape) :
         m_move(),
         m_shape(shape),
         m_busy(false),
-        m_direction(Direction::left),
+        m_orientation(Orientation::left),
         m_warp(1.f)
 {
     std::tie(m_type, m_alive, m_supportType, m_weight) = decode(type);
 }
 
 void Model::turn() {
-    m_direction = (Direction)(1 - m_direction);
+    m_orientation = (Orientation)(1 - m_orientation);
 }
 
 void Model::displace(ICoords d, float initWarp) {

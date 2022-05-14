@@ -56,10 +56,12 @@ struct ICoords {
     operator bool() const { return x != 0 || y != 0; }
 };
 
-inline constexpr ICoords ICoords::up = {0, -1};
-inline constexpr ICoords ICoords::down = {0, +1};
-inline constexpr ICoords ICoords::left = {-1, 0};
-inline constexpr ICoords ICoords::right = {+1, 0};
+using Direction = ICoords;
+
+inline constexpr Direction Direction::up = {0, -1};
+inline constexpr Direction Direction::down = {0, +1};
+inline constexpr Direction Direction::left = {-1, 0};
+inline constexpr Direction Direction::right = {+1, 0};
 
 class FCoords {
     int m_x;

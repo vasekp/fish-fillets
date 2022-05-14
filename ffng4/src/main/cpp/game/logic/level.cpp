@@ -133,24 +133,24 @@ int Level::game_getCycles() {
     return m_screen.m_timer.tickCount();
 }
 
-void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> direction) {
+void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
     auto image = m_screen.addImage(filename);
-    layout().getModel(index).anim().add(name, direction.value_or(Model::Direction::left), image);
+    layout().getModel(index).anim().add(name, orientation.value_or(Model::Orientation::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, model.direction(), phase.value_or(0), true);
+    model.anim().set(name, model.orientation(), phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, model.direction(), phase, false);
+    model.anim().set(name, model.orientation(), phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().setExtra(name, model.direction(), phase);
+    model.anim().setExtra(name, model.orientation(), phase);
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
@@ -187,7 +187,7 @@ bool Level::model_isOut(int index) {
 
 bool Level::model_isLeft(int index) {
     auto& model = layout().getModel(index);
-    return model.direction() == Model::Direction::left;
+    return model.orientation() == Model::Orientation::left;
 }
 
 unsigned Level::model_getW(int index) {

@@ -7,7 +7,7 @@
 
 class Model {
 public:
-    enum Direction { // Needs to remain convertible to int
+    enum Orientation { // Needs to remain convertible to int
         left,
         right
     };
@@ -44,7 +44,7 @@ private:
     Shape m_shape;
     bool m_alive;
     bool m_busy;
-    Direction m_direction;
+    Orientation m_orientation;
     ModelAnim m_anim;
     AudioSource m_talk;
     float m_warp;
@@ -67,7 +67,7 @@ public:
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };
     Weight weight() const { return m_weight; };
-    Direction direction() const { return m_direction; }
+    Orientation orientation() const { return m_orientation; }
     const Shape& shape() const { return m_shape; }
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
@@ -79,7 +79,7 @@ public:
     bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     void setBusy(bool busy) { m_busy = busy; }
     bool isMoving() const { return (bool)m_move; }
-    bool isMovingDown() const { return m_move == ICoords::down; }
+    ICoords movingDir() const { return m_move; }
 
     void turn();
     void displace(ICoords d, float initWarp = 1.f);

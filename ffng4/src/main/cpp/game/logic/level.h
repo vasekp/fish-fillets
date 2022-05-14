@@ -39,7 +39,7 @@ public:
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();
     void model_addAnim(int index, const std::string& name, const std::string& filename,
-                             std::optional<int> direction);
+                             std::optional<int> orientation);
     void model_runAnim(int index, const std::string& name, std::optional<int> phase);
     void model_setAnim(int index, const std::string& name, int phase);
     void model_useSpecialAnim(int index, const std::string& name, int phase);

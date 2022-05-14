@@ -76,16 +76,16 @@ void LevelLayout::keyInput(Key key) {
 void LevelLayout::processKey(Key key) {
     switch(key) {
         case Key::up:
-            moveFish(ICoords::up);
+            moveFish(Direction::up);
             break;
         case Key::down:
-            moveFish(ICoords::down);
+            moveFish(Direction::down);
             break;
         case Key::left:
-            moveFish(ICoords::left);
+            moveFish(Direction::left);
             break;
         case Key::right:
-            moveFish(ICoords::right);
+            moveFish(Direction::right);
             break;
         case Key::space:
             switchFish();
@@ -102,7 +102,7 @@ void LevelLayout::reeval() {
             continue;
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
-            model->displace(ICoords::down, 1.5f);
+            model->displace(Direction::down, 1.5f);
         }
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
@@ -113,7 +113,7 @@ void LevelLayout::reeval() {
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving() && !model->isAlive(); }) &&
-              !(m_curFish->isMovingDown() && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
+              !(m_curFish->movingDir() == Direction::down && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
 }
 
 void LevelLayout::clearQueue() {
