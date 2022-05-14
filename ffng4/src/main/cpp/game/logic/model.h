@@ -5,6 +5,8 @@
 #include "subsystem/audio.h"
 #include "shape.h"
 
+class LevelLayout;
+
 class Model {
 public:
     enum Orientation { // Needs to remain convertible to int
@@ -42,6 +44,7 @@ public:
     };
 
 private:
+    int m_index;
     Type m_type;
     SupportType m_supportType;
     Weight m_weight;
@@ -59,7 +62,7 @@ private:
     float m_warp;
 
 public:
-    Model(const std::string& type, int x, int y, const std::string& shape);
+    Model(int index, const std::string& type, int x, int y, const std::string& shape);
     Model(const Model&) = delete;
     const Model& operator=(const Model&) = delete;
     Model(Model&&) = default;
@@ -80,6 +83,7 @@ public:
     const Shape& shape() const { return m_shape; }
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
+    int index() const { return m_index; }
 
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk.done(); }

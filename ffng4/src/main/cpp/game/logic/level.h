@@ -54,6 +54,7 @@ public:
     void model_runAnim(int index, const std::string& name, std::optional<int> phase);
     void model_setAnim(int index, const std::string& name, int phase);
     void model_useSpecialAnim(int index, const std::string& name, int phase);
+    void model_setEffect(int index, const std::string& name);
     std::pair<int, int> model_getLoc(int index);
     std::string model_getAction(int index);
     std::string model_getState(int index);
@@ -68,7 +69,6 @@ public:
     bool model_isTalking(int index);
     void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
-    void model_killSoundImpl(Model&);
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);

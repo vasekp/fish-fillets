@@ -21,15 +21,16 @@ Model& LevelLayout::getModel(int index) {
     if(m_virtModels.contains(index))
         return *m_models[m_virtModels.at(index)];
     std::size_t realIndex = m_models.size();
-    m_models.push_back(std::make_unique<Model>("virtual", 0, 0, ""));
+    m_models.push_back(std::make_unique<Model>(index, "virtual", 0, 0, ""));
     LOGD("virtual model %d", index);
     m_virtModels.insert({index, realIndex});
     return *m_models.back();
 }
 
 int LevelLayout::addModel(const std::string& type, int x, int y, const std::string& shape) {
-    m_models.push_back(std::make_unique<Model>(type, x, y, shape));
-    return (int)m_models.size() - 1;
+    auto index = (int)m_models.size();
+    m_models.push_back(std::make_unique<Model>(index, type, x, y, shape));
+    return index;
 }
 
 void LevelLayout::moveFish(ICoords d) {
@@ -145,9 +146,10 @@ void LevelLayout::reeval() {
         m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
         unit->die();
         clearQueue();
-        m_level.model_killSoundImpl(*unit);
+        m_level.model_killSound(unit->index());
         m_level.game_killPlan();
-        m_level.blockFor(6, [unit]() { unit->disappear(); });
+        m_level.model_setEffect(unit->index(), "disintegrate");
+        m_level.blockFor(15 /* 1.5 seconds */, [unit]() { unit->disappear(); });
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&

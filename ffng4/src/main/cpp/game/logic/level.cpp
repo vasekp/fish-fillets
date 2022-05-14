@@ -22,7 +22,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_runAnim", lua::wrap<&Level::model_runAnim>);
     m_script.registerFn("model_setAnim", lua::wrap<&Level::model_setAnim>);
     m_script.registerFn("model_useSpecialAnim", lua::wrap<&Level::model_useSpecialAnim>);
-//    m_script.registerFn("model_setEffect", script_model_setEffect);
+    m_script.registerFn("model_setEffect", lua::wrap<&Level::model_setEffect>);
     m_script.registerFn("model_getLoc", lua::wrap<&Level::model_getLoc>);
     m_script.registerFn("model_getAction", lua::wrap<&Level::model_getAction>);
     m_script.registerFn("model_getState", lua::wrap<&Level::model_getState>);
@@ -166,6 +166,10 @@ void Level::model_useSpecialAnim(int index, const std::string& name, int phase) 
     model.anim().setExtra(name, model.orientation(), phase);
 }
 
+void Level::model_setEffect(int index, const std::string &name) {
+    m_screen.setEffect(&layout().getModel(index), name);
+}
+
 std::pair<int, int> Level::model_getLoc(int index) {
     auto& model = layout().getModel(index);
     return {model.x(), model.y()};
@@ -265,10 +269,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
 }
 
 void Level::model_killSound(int index) {
-    model_killSoundImpl(layout().getModel(index));
-}
-
-void Level::model_killSoundImpl(Model& model) {
+    auto& model = layout().getModel(index);
     const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);

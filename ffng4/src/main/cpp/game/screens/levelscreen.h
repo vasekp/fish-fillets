@@ -17,6 +17,12 @@ class LevelScreen : public GameScreen {
     Subtitles m_subs;
     bool m_fullLoad;
 
+    struct Effect {
+        ogl::Program Shaders::*effect;
+        float startTime;
+    };
+    std::map<const Model*, Effect> m_effects;
+
 public:
     LevelScreen(Instance&, const LevelRecord&);
 
@@ -35,6 +41,7 @@ protected:
     void addSubtitle(const std::string& text, const std::string& color);
     void playMusic(const std::string& filename);
     void stopMusic();
+    void setEffect(Model* model, const std::string& name);
 
     bool own_mouse(unsigned int x, unsigned int y) override;
     bool own_key(Key key) override;

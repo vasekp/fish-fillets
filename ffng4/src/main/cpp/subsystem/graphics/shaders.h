@@ -11,6 +11,7 @@ struct Shaders {
     ogl::Program wavyImage;
     ogl::Program wavyText;
     ogl::Program titleText;
+    ogl::Program disintegrate;
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texMask_shader = 1;

@@ -49,12 +49,24 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     target.blit(getImage("background"), wavyProgram);
 
-    for(const auto& model : m_level.layout().models()) {
-        if(model->isVirtual())
+    for(const auto& uModel : m_level.layout().models()) {
+        const auto& model = *uModel;
+        if(model.isVirtual())
             continue;
-        const auto& images = model->anim().get();
-        for(auto i = 0u; i < images.size(); i++)
-            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model->fx() * size_unit, model->fy() * size_unit);
+        const auto& images = model.anim().get();
+        if(m_effects.contains(&model)) {
+            if(images.size() > 1)
+                LOGE("layered image x record");
+            auto& record = m_effects[&model];
+            auto& program = m_instance.graphics().shaders().*record.effect;
+            glUseProgram(program);
+            glUniform1f(program.uniform("uTime"), timeAlive() - record.startTime);
+            target.blit(images[0], program, model.fx() * size_unit, model.fy() * size_unit);
+        } else {
+            for (auto i = 0u; i < images.size(); i++)
+                target.blit(images[i], i == 0 ? copyProgram : overlayProgram,
+                            model.fx() * size_unit, model.fy() * size_unit);
+        }
     }
 
     m_subs.draw(target, dt, timeAlive());
@@ -86,6 +98,17 @@ void LevelScreen::playMusic(const std::string &filename) {
 void LevelScreen::stopMusic() {
     m_instance.audio().removeSource(m_music);
     m_music.reset();
+}
+
+void LevelScreen::setEffect(Model *model, const std::string &name) {
+    ogl::Program Shaders::*effect;
+    if(name == "disintegrate")
+        effect = &Shaders::disintegrate;
+    else {
+        LOGE("Unhandled setEffect %s", name.c_str());
+        return;
+    }
+    m_effects[model] = {effect, timeAlive()};
 }
 
 void LevelScreen::own_pause() {

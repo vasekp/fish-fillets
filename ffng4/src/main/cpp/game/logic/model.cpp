@@ -17,7 +17,8 @@ std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const st
         ::error("Type not implemented", "Type %s not implemented", type.c_str());
 }
 
-Model::Model(const std::string& type, int x, int y, const std::string& shape) :
+Model::Model(int index, const std::string& type, int x, int y, const std::string& shape) :
+        m_index(index),
         m_position{x, y},
         m_move(),
         m_lastMove(),
