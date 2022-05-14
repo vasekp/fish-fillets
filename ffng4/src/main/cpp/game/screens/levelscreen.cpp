@@ -96,7 +96,7 @@ void LevelScreen::own_resume() {
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+//    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     return true;
 }
 
@@ -116,6 +116,10 @@ bool LevelScreen::own_key(Key key) {
             return true;
         case Key::space:
             m_level.switchFish();
+            return true;
+        case Key::exit:
+            m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+            return true;
         default:
             return false;
     }

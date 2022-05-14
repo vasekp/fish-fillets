@@ -14,6 +14,7 @@ Key AndroidKeymap(unsigned int code) {
         case AKEYCODE_SPACE:
             return Key::space;
         case AKEYCODE_ESCAPE:
+        case AKEYCODE_BACK:
             return Key::exit;
         default:
             return Key::none;
