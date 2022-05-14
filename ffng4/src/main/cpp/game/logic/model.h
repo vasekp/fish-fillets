@@ -79,6 +79,7 @@ public:
     bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     void setBusy(bool busy) { m_busy = busy; }
     bool isMoving() const { return (bool)m_move; }
+    bool isMovingDown() const { return m_move == ICoords::down; }
 
     void turn();
     void displace(ICoords d, float initWarp = 1.f);

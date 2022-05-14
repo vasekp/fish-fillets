@@ -2,6 +2,7 @@
 #define FISH_FILLETS_LEVELLAYOUT_H
 
 #include "model.h"
+#include "subsystem/key.h"
 
 class Level;
 
@@ -16,7 +17,9 @@ class LevelLayout {
     Model* m_big;
     Model* m_curFish;
     std::map<const Model*, Model::SupportType> m_support;
-    bool m_stable;
+    std::queue<Key> m_keyQueue;
+    bool m_moving;
+    bool m_ready;
 
 public:
     LevelLayout(Level& level, int width, int height);
@@ -29,11 +32,14 @@ public:
     void moveFish(ICoords d);
     void switchFish();
 
+    void keyInput(Key key);
     void update(float dt);
 
 private:
     bool animate(float dt);
     void reeval();
+    void processKey(Key key);
+    void clearQueue();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
     void buildSupportMap();
 };

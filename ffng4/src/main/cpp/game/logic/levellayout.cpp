@@ -2,9 +2,9 @@
 #include "levellayout.h"
 
 LevelLayout::LevelLayout(Level& level, int width, int height) :
-    m_level(level),
-    m_width(width), m_height(height),
-    m_stable(true)
+        m_level(level),
+        m_width(width), m_height(height),
+        m_moving(false), m_ready(false)
 { }
 
 void LevelLayout::prepare() {
@@ -40,42 +40,85 @@ void LevelLayout::moveFish(ICoords d) {
     }
     for(auto* model : obs)
         model->displace(d);
+    if(!obs.empty())
+        m_curFish->deltaStop();
     m_curFish->displace(d);
 }
 
 void LevelLayout::update(float dt) {
-    if(!m_stable)
-        m_stable = animate(dt);
+    if(m_moving)
+        m_moving = animate(dt);
 
-    if(m_stable)
+    if(!m_moving) {
+        if(m_ready && !m_keyQueue.empty()) {
+            processKey(m_keyQueue.front());
+            m_keyQueue.pop();
+        }
         reeval();
+    }
 }
 
 bool LevelLayout::animate(float dt) {
-    bool done = true;
+    bool moving = false;
     for (auto &model: m_models)
         if(model->isMoving()) {
             model->deltaMove(dt);
             if(model->isMoving())
-                done = false;
+                moving = true;
         }
-    return done;
+    return moving;
+}
+
+void LevelLayout::keyInput(Key key) {
+    m_keyQueue.push(key);
+}
+
+void LevelLayout::processKey(Key key) {
+    switch(key) {
+        case Key::up:
+            moveFish(ICoords::up);
+            break;
+        case Key::down:
+            moveFish(ICoords::down);
+            break;
+        case Key::left:
+            moveFish(ICoords::left);
+            break;
+        case Key::right:
+            moveFish(ICoords::right);
+            break;
+        case Key::space:
+            switchFish();
+            break;
+        default:
+            ;
+    }
 }
 
 void LevelLayout::reeval() {
-    buildSupportMap();
+    buildSupportMap(); // TODO reuse when possible
     for(auto& model : m_models) {
         if(model->isVirtual())
             continue;
-        if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
+        if(model->isMovable() && m_support[model.get()] == Model::SupportType::none) {
+            clearQueue();
             model->displace(ICoords::down, 1.5f);
-        if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
+        }
+        if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
+            clearQueue();
             m_small->die();
+        }
         if(!model->isMoving())
             model->deltaStop();
-        else
-            m_stable = false;
     }
+    m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving(); });
+    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->isMoving() && !model->isAlive(); }) &&
+              !(m_curFish->isMovingDown() && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
+}
+
+void LevelLayout::clearQueue() {
+    decltype(m_keyQueue) empty{};
+    m_keyQueue.swap(empty);
 }
 
 void LevelLayout::switchFish() {
@@ -130,7 +173,8 @@ void LevelLayout::buildSupportMap() {
             if (other->isVirtual() || *other == *model)
                 continue;
             if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + ICoords::down)))
-                deps.push_back(other.get());
+//                if(!other->isMovingDown())
+                    deps.push_back(other.get());
         }
         dependencies[model.get()] = std::move(deps);
     }
