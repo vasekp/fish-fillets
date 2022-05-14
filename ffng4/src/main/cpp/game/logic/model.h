@@ -14,10 +14,10 @@ public:
     };
 
     enum class Type {
-        small,
-        big,
-        light,
-        heavy,
+        fish_small,
+        fish_big,
+        item_light,
+        item_heavy,
         wall,
         virt
     };
@@ -29,8 +29,15 @@ public:
         wall
     };
 
+    enum class Weight {
+        none,
+        light,
+        heavy
+    };
+
     Type m_type;
     SupportType m_supportType;
+    Weight m_weight;
     int m_x;
     int m_y;
     Shape m_shape;
@@ -51,6 +58,7 @@ public:
 
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };
+    Weight weight() const { return m_weight; };
     int x() const { return m_x; }
     int y() const { return m_y; }
     Displacement xy() const { return {(int)m_x, (int)m_y}; }
@@ -63,12 +71,13 @@ public:
     bool isBusy() const { return m_busy; }
     bool isTalking() const { return m_talk && !m_talk.done(); }
     bool isVirtual() const { return m_type == Type::virt; }
-    bool isMovable() const { return !(m_type == Type::small || m_type == Type::big || m_type == Type::wall); }
+    bool isMovable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     void setBusy(bool busy) { m_busy = busy; }
 
     void turn();
     void displace(Displacement d);
-    void setTalk(AudioSource source);
+    void die();
+    void setTalk(AudioSource source) { m_talk = std::move(source); }
     const AudioSource& getTalk() const { return m_talk; }
 };
 

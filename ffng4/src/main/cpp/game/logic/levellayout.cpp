@@ -2,8 +2,8 @@
 #include "levellayout.h"
 
 void LevelLayout::prepare() {
-    m_small = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::small; })->get();
-    m_big = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::big; })->get();
+    m_small = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
+    m_big = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
     m_curFish = m_small;
 }
 
@@ -28,6 +28,10 @@ void LevelLayout::moveFish(Displacement d) {
     const auto obs = obstacles(*m_curFish, d);
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->isMovable(); }) != obs.end())
         return;
+    if(m_curFish->supportType() == Model::SupportType::small) {
+        if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
+            return;
+    }
     for(auto* model : obs)
         model->displace(d);
     m_curFish->displace(d);
@@ -38,6 +42,10 @@ void LevelLayout::animate(float dt) {
     for(auto& model : m_models) {
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
             model->displace(Displacement::down);
+    }
+    for(auto& model : m_models) {
+        if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
+            m_small->die();
     }
 }
 
