@@ -33,20 +33,18 @@ void Model::turn() {
     m_orientation = (Orientation)(1 - m_orientation);
 }
 
-void Model::displace(ICoords d, float initWarp) {
+void Model::displace(ICoords d) {
     LOGV("displace [%d,%d] fract [%f,%f] warp %f", d.x, d.y, m_delta.fx(), m_delta.fy(), m_warp);
     if(FCoords(d) || m_delta)
         m_warp += warpIncrement;
-    else {
-        m_delta = {};
-        m_warp = initWarp;
-    }
+    else
+        deltaStop();
     m_move = d;
 }
 
 void Model::deltaMove(float dt) {
     if (m_move) {
-        m_delta += baseSpeed * m_warp * dt * FCoords(m_move);
+        m_delta += (m_falling ? fallSpeed : baseSpeed) * m_warp * dt * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;

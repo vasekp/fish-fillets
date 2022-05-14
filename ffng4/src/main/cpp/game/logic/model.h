@@ -92,14 +92,14 @@ public:
     Action action() const { return m_action; }
 
     void turn();
-    void displace(ICoords d, float initWarp = 1.f);
+    void displace(ICoords d);
     void deltaMove(float dt);
     void deltaStop();
     void die();
     AudioSource& talk() { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
-    constexpr static float fallSpeed = 2.5f;
+    constexpr static float fallSpeed = 8.f;
     constexpr static float warpIncrement = .2f;
 };
 

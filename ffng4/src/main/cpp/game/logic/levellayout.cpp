@@ -117,7 +117,7 @@ void LevelLayout::reeval() {
         if(model->movable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
             model->falling() = true;
-            model->displace(Direction::down, Model::fallSpeed);
+            model->displace(Direction::down);
         }
         if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
