@@ -25,12 +25,8 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 }
 
 void LevelLayout::moveFish(Displacement d) {
-    for(const auto& other : m_models) {
-        if(m_curFish == other.get() || other->type() == Model::Type::virt)
-            continue;
-        if(m_curFish->shape().intersects(other->shape(), other->xy() - (m_curFish->xy() + d)))
-            return;
-    }
+    for(auto* model : obstacles(*m_curFish, d))
+        model->displace(d);
     m_curFish->displace(d);
 }
 
@@ -39,4 +35,32 @@ void LevelLayout::switchFish() {
         m_curFish = m_big;
     else
         m_curFish = m_small;
+}
+
+std::set<Model*> LevelLayout::obstacles(const Model &unit, Displacement d) {
+    std::set<Model*> ret;
+    std::set<const Model*> visited;
+    std::queue<const Model*> queue;
+    queue.push(&unit);
+
+    while(!queue.empty()) {
+        const auto& model = *queue.front();
+        if(visited.contains(&model)) {
+            queue.pop();
+            continue;
+        }
+        for(auto &uOther: m_models) {
+            auto& other = *uOther.get();
+            if(other == model || other == unit || ret.contains(&other))
+                continue;
+            if(other.isVirtual())
+                continue;
+            if (model.shape().intersects(other.shape(), other.xy() - (model.xy() + d))) {
+                ret.insert(&other);
+                queue.push(&other);
+            }
+        }
+        queue.pop();
+    }
+    return ret;
 }

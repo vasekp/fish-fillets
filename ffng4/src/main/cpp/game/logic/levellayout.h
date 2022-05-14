@@ -26,6 +26,9 @@ public:
     void prepare();
     void moveFish(Displacement d);
     void switchFish();
+
+private:
+    std::set<Model*> obstacles(const Model& unit, Displacement d);
 };
 
 #endif //FISH_FILLETS_LEVELLAYOUT_H
