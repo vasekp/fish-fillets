@@ -33,6 +33,8 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 }
 
 void LevelLayout::moveFish(ICoords d) {
+    if(!m_curFish->alive())
+        return;
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
             (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
         m_curFish->action() = Model::Action::turning;
@@ -112,6 +114,7 @@ void LevelLayout::processKey(Key key) {
 
 void LevelLayout::reeval() {
     buildSupportMap(); // TODO reuse when possible
+    std::set<Model*> deaths;
     for(auto& model : m_models) {
         if(model->isVirtual())
             continue;
@@ -121,8 +124,7 @@ void LevelLayout::reeval() {
         }
         if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
-            m_level.sound_playSound("dead_small", {});
-            m_small->die();
+            deaths.insert(m_small);
         }
         if(!model->moving()) {
             model->deltaStop();
@@ -133,18 +135,19 @@ void LevelLayout::reeval() {
                 continue;
             const auto support = directSupport(*model);
             if(!support.empty() && move != Direction::up) {
-                for (auto &unit: support) {
-                    m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
-                    unit->die();
-                }
+                for (auto unit: support)
+                    deaths.insert(unit);
             } else if(support.empty() && move == Direction::down) {
                 m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
             }
         }
     }
+    for(auto unit : deaths) {
+        m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
+        unit->die();
+    }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
-    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return
-            model->moving() && !model->alive(); }) &&
+    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&
               !(m_curFish->movingDir() == Direction::down && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
 }
 
