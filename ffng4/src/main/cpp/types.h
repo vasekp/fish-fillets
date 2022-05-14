@@ -38,24 +38,6 @@ struct Color {
 
 inline constexpr Color Color::white{255, 255, 255};
 
-class FCoords {
-    int m_x;
-    int m_y;
-    float m_fx;
-    float m_fy;
-
-public:
-    template<typename T>
-    FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
-
-    FCoords() : FCoords(0, 0) { }
-
-    int x() const { return m_x; }
-    int y() const { return m_y; }
-    float fx() const { return m_fx; }
-    float fy() const { return m_fy; }
-};
-
 struct ICoords {
     int x;
     int y;
@@ -69,11 +51,42 @@ struct ICoords {
     friend ICoords operator-(ICoords a, ICoords b) { return {a.x - b.x, a.y - b.y}; }
     friend ICoords& operator+=(ICoords& a, ICoords b) { a.x += b.x; a.y += b.y; return a; }
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
+    
+    operator bool() const { return x != 0 || y != 0; }
 };
 
 inline constexpr ICoords ICoords::up = {0, -1};
 inline constexpr ICoords ICoords::down = {0, +1};
 inline constexpr ICoords ICoords::left = {-1, 0};
 inline constexpr ICoords ICoords::right = {+1, 0};
+
+class FCoords {
+    int m_x;
+    int m_y;
+    float m_fx;
+    float m_fy;
+
+public:
+    template<typename T>
+    FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
+
+    FCoords(ICoords ic) : FCoords(ic.x, ic.y) { }
+    FCoords() : FCoords(0, 0) { }
+
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    float fx() const { return m_fx; }
+    float fy() const { return m_fy; }
+
+    friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
+    friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }
+    friend FCoords& operator+=(FCoords& a, FCoords b) { a.m_fx += b.m_fx; a.m_fy += b.m_fy; return a; }
+    friend FCoords& operator-=(FCoords& a, FCoords b) { a.m_fx -= b.m_fx; a.m_fy -= b.m_fy; return a; }
+    friend FCoords operator*(float f, FCoords c) { return {f * c.fx(), f * c.fy()}; }
+
+    friend bool operator==(FCoords a, FCoords b) { return a.m_fx == b.m_fx && a.m_fy == b.m_fy; }
+    friend bool operator>(FCoords a, FCoords b) { return std::abs(a.m_fx) > std::abs(b.m_fx) || std::abs(a.m_fy) > std::abs(b.m_fy); }
+    friend bool operator>=(FCoords a, FCoords b) { return a > b || a == b; }
+};
 
 #endif //FISH_FILLETS_TYPES_H

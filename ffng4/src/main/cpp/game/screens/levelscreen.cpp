@@ -54,7 +54,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
             continue;
         const auto& images = model->anim().get();
         for(auto i = 0u; i < images.size(); i++)
-            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model->x() * size_unit, model->y() * size_unit);
+            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, (int)(model->fx() * size_unit), (int)(model->fy() * size_unit));
     }
 
     m_subs.draw(target, dt, timeAlive());
