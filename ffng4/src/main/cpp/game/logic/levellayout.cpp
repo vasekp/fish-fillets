@@ -33,6 +33,14 @@ void LevelLayout::moveFish(Displacement d) {
     m_curFish->displace(d);
 }
 
+void LevelLayout::animate(float dt) {
+    buildSupportMap();
+    for(auto& model : m_models) {
+        if(model->isMovable() && m_support[model.get()].empty())
+            model->displace(Displacement::down);
+    }
+}
+
 void LevelLayout::switchFish() {
     if(m_curFish == m_small)
         m_curFish = m_big;
@@ -67,4 +75,50 @@ std::set<Model*> LevelLayout::obstacles(const Model &unit, Displacement d) {
         queue.pop();
     }
     return ret;
+}
+
+void LevelLayout::buildSupportMap() {
+    {
+        decltype(m_support) empty{};
+        m_support.swap(empty);
+    }
+
+    std::map<Model*, std::vector<Model*>> dependencies;
+    for(const auto& model : m_models) {
+        if (!model->isMovable() || model->isVirtual())
+            continue;
+
+        std::vector<Model *> deps;
+        for (auto &other: m_models) {
+            if (other->isVirtual() || *other == *model)
+                continue;
+            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + Displacement::down)))
+                deps.push_back(other.get());
+        }
+        dependencies[model.get()] = std::move(deps);
+    }
+
+    for(const auto& model : m_models) {
+        if (!model->isMovable() || model->isVirtual())
+            continue;
+
+        std::set<Model*> suppDeep;
+        std::queue<Model*> queue;
+        queue.push(model.get());
+
+        while(!queue.empty()) {
+            auto* other = queue.front();
+            queue.pop();
+            if(suppDeep.contains(other) || other->isVirtual())
+                continue;
+            suppDeep.insert(other);
+            if(other->isMovable()) {
+                for(auto* dep : dependencies[other])
+                    queue.push(dep);
+            }
+        }
+
+        std::erase_if(suppDeep, [](Model* other) { return other->isMovable(); });
+        m_support[model.get()] = std::move(suppDeep);
+    }
 }

@@ -15,20 +15,24 @@ class LevelLayout {
     Model* m_small;
     Model* m_big;
     Model* m_curFish;
+    std::map<const Model*, std::set<Model*>> m_support;
 
 public:
     LevelLayout(Level& level, int width, int height) : m_level(level), m_width(width), m_height(height) { }
 
+    void prepare();
     auto& models() { return m_models; }
     int addModel(const std::string& type, int x, int y, const std::string& shape);
     Model& getModel(int index);
 
-    void prepare();
     void moveFish(Displacement d);
     void switchFish();
 
+    void animate(float dt);
+
 private:
     std::set<Model*> obstacles(const Model& unit, Displacement d);
+    void buildSupportMap();
 };
 
 #endif //FISH_FILLETS_LEVELLAYOUT_H
