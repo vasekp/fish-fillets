@@ -70,7 +70,10 @@ bool LevelLayout::animate(float dt) {
 }
 
 void LevelLayout::keyInput(Key key) {
-    m_keyQueue.push(key);
+    if(key == Key::space)
+        switchFish();
+    else
+        m_keyQueue.push(key);
 }
 
 void LevelLayout::processKey(Key key) {
@@ -86,9 +89,6 @@ void LevelLayout::processKey(Key key) {
             break;
         case Key::right:
             moveFish(Direction::right);
-            break;
-        case Key::space:
-            switchFish();
             break;
         default:
             ;
