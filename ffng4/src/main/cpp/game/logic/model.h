@@ -89,7 +89,7 @@ public:
     void setTalk(AudioSource source) { m_talk = std::move(source); }
     const AudioSource& getTalk() const { return m_talk; }
 
-    constexpr static float baseSpeed = 4.f;
+    constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
     constexpr static float warpIncrement = .2f;
 };
 

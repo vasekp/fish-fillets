@@ -163,8 +163,19 @@ std::string Level::model_getAction(int index) {
     const auto& model = layout().getModel(index);
     if(model.isBusy())
         return "busy";
-    else
-        return "rest";
+    else {
+        auto dir = model.movingDir();
+        if (dir == Direction::up)
+            return "move_up";
+        else if (dir == Direction::down)
+            return "move_down";
+        else if (dir == Direction::left)
+            return "move_left";
+        else if (dir == Direction::right)
+            return "move_right";
+        else
+            return "rest";
+    }
 }
 
 std::string Level::model_getState(int index) {

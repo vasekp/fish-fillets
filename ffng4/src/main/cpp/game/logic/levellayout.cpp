@@ -102,7 +102,7 @@ void LevelLayout::reeval() {
             continue;
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
-            model->displace(Direction::down, 1.5f);
+            model->displace(Direction::down, 2.f);
         }
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
             clearQueue();
