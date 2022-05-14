@@ -49,11 +49,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     target.blit(getImage("background"), wavyProgram);
 
     for(const auto& model : m_level.models()) {
-        if(model.isVirtual())
+        if(model->isVirtual())
             continue;
-        const auto& images = model.anim().get();
+        const auto& images = model->anim().get();
         for(auto i = 0u; i < images.size(); i++)
-            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.x() * size_unit, model.y() * size_unit);
+            target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model->x() * size_unit, model->y() * size_unit);
     }
 
     m_subs.draw(target, dt, timeAlive());
@@ -103,17 +103,19 @@ bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
 bool LevelScreen::own_key(Key key) {
     switch(key) {
         case Key::up:
-            m_level.moveModel(m_level.smallFish(), Displacement::up);
+            m_level.moveFish(Displacement::up);
             return true;
         case Key::down:
-            m_level.moveModel(m_level.smallFish(), Displacement::down);
+            m_level.moveFish(Displacement::down);
             return true;
         case Key::left:
-            m_level.moveModel(m_level.smallFish(), Displacement::left);
+            m_level.moveFish(Displacement::left);
             return true;
         case Key::right:
-            m_level.moveModel(m_level.smallFish(), Displacement::right);
+            m_level.moveFish(Displacement::right);
             return true;
+        case Key::space:
+            m_level.switchFish();
         default:
             return false;
     }

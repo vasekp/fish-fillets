@@ -44,7 +44,7 @@ bool Shape::intersects(const Shape& other, Displacement d) const {
         return false;
     if(d.dy >= 0) {
         for(int i = d.dy; i < height(); i++) {
-            if(i - d.dy > other.height())
+            if(i - d.dy >= other.height())
                 break;
             const auto& bits1 = m_bits[i];
             const auto& bits2 = other.m_bits[i - d.dy];
@@ -53,7 +53,7 @@ bool Shape::intersects(const Shape& other, Displacement d) const {
         }
     } else {
         for(int i2 = -d.dy; i2 < other.height(); i2++) {
-            if(i2 + d.dy > height())
+            if(i2 + d.dy >= height())
                 break;
             const auto& bits1 = m_bits[i2 + d.dy];
             const auto& bits2 = other.m_bits[i2];

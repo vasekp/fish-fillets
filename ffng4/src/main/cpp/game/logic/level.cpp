@@ -3,10 +3,11 @@
 #include "subsystem/rng.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :
-    m_instance(instance),
-    m_screen(screen),
-    m_record(record),
-    m_script(instance, *this)
+        m_instance(instance),
+        m_screen(screen),
+        m_record(record),
+        m_script(instance, *this),
+        m_small(nullptr), m_big(nullptr), m_curFish(nullptr)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -80,13 +81,14 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 void Level::init() {
     m_script.loadFile(m_record.script_filename);
 
-    m_ixSmall = std::distance(m_models.begin(), std::find_if(m_models.begin(), m_models.end(), [](const Model& model) { return model.type() == Model::Type::small; }));
-    m_ixBig = std::distance(m_models.begin(), std::find_if(m_models.begin(), m_models.end(), [](const Model& model) { return model.type() == Model::Type::big; }));
+    m_small = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::small; })->get();
+    m_big = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::big; })->get();
+    m_curFish = m_small;
 }
 
 void Level::tick() {
-    for (auto &model : models())
-        model.anim().update();
+    for (auto& model : models())
+        model->anim().update();
     m_script.doString("script_update();");
     if (!m_plan.empty()) {
         auto &front = m_plan.front();
@@ -97,22 +99,14 @@ void Level::tick() {
 
 Model& Level::getModel(int index) {
     if(index >= 0 && index < m_models.size())
-        return m_models[index];
+        return *m_models[index];
     if(m_virtModels.contains(index))
-        return m_models[m_virtModels.at(index)];
+        return *m_models[m_virtModels.at(index)];
     std::size_t realIndex = m_models.size();
-    m_models.emplace_back("virtual", 0, 0, "");
+    m_models.push_back(std::make_unique<Model>("virtual", 0, 0, ""));
     LOGD("virtual model %d", index);
     m_virtModels.insert({index, realIndex});
-    return m_models.back();
-}
-
-Model& Level::smallFish() {
-    return m_models[m_ixSmall];
-}
-
-Model& Level::bigFish() {
-    return m_models[m_ixBig];
+    return *m_models.back();
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -143,7 +137,7 @@ void Level::game_setRoomWaves(float amplitude, float period, float speed) {
 }
 
 int Level::game_addModel(const std::string& type, int x, int y, const std::string& shape) {
-    m_models.emplace_back(type, x, y, shape);
+    m_models.push_back(std::make_unique<Model>(type, x, y, shape));
     return (int)m_models.size() - 1;
 }
 
@@ -315,12 +309,19 @@ std::string Level::options_getParam(const std::string& name) {
     return "cs";
 }
 
-void Level::moveModel(Model &model, Displacement d) {
+void Level::moveFish(Displacement d) {
     for(const auto& other : m_models) {
-        if(model == other)
+        if(m_curFish == other.get() || other->type() == Model::Type::virt)
             continue;
-        if(model.shape().intersects(other.shape(), other.xy() - (model.xy() + d)))
+        if(m_curFish->shape().intersects(other->shape(), other->xy() - (m_curFish->xy() + d)))
             return;
     }
-    model.displace(d);
+    m_curFish->displace(d);
+}
+
+void Level::switchFish() {
+    if(m_curFish == m_small)
+        m_curFish = m_big;
+    else
+        m_curFish = m_small;
 }
