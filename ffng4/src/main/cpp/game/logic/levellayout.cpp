@@ -1,6 +1,12 @@
 #include "common.h"
 #include "levellayout.h"
 
+LevelLayout::LevelLayout(Level& level, int width, int height) :
+    m_level(level),
+    m_width(width), m_height(height),
+    m_stable(true)
+{ }
+
 void LevelLayout::prepare() {
     m_small = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
     m_big = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
@@ -37,31 +43,42 @@ void LevelLayout::moveFish(ICoords d) {
     m_curFish->displace(d);
 }
 
-void LevelLayout::animate(float dt) {
-    bool stable = true;
-    for(auto& uModel : m_models) {
-        auto& model = *uModel;
-        if(model.m_move) {
-            stable = false;
-            model.m_delta += dt * FCoords(model.m_move);
-            if(model.m_delta >= model.m_move) {
+void LevelLayout::draw(float dt) {
+    if(!m_stable)
+        m_stable = animate(dt);
+
+    if(m_stable)
+        update();
+}
+
+bool LevelLayout::animate(float dt) {
+    bool done = true;
+    for (auto &uModel: m_models) {
+        auto &model = *uModel;
+        if (model.m_move) {
+            done = false;
+            model.m_delta += speed * dt * FCoords(model.m_move);
+            if (model.m_delta >= model.m_move) {
                 model.m_position += model.m_move;
+                model.m_delta -= model.m_move;
                 model.m_move = {};
-                model.m_delta = {};
             }
         }
     }
-    if(!stable)
-        return;
+    return done;
+}
 
+void LevelLayout::update() {
     buildSupportMap();
     for(auto& model : m_models) {
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
             model->displace(ICoords::down);
-    }
-    for(auto& model : m_models) {
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
             m_small->die();
+        if(!model->m_move)
+            model->m_delta = {};
+        if(model->m_move)
+            m_stable = false;
     }
 }
 

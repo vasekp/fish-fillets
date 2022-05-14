@@ -16,9 +16,10 @@ class LevelLayout {
     Model* m_big;
     Model* m_curFish;
     std::map<const Model*, Model::SupportType> m_support;
+    bool m_stable;
 
 public:
-    LevelLayout(Level& level, int width, int height) : m_level(level), m_width(width), m_height(height) { }
+    LevelLayout(Level& level, int width, int height);
 
     void prepare();
     auto& models() { return m_models; }
@@ -28,11 +29,15 @@ public:
     void moveFish(ICoords d);
     void switchFish();
 
-    void animate(float dt);
+    void draw(float dt);
 
 private:
+    bool animate(float dt);
+    void update();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
     void buildSupportMap();
+
+    constexpr static float speed = 3.f; // TODO: warp
 };
 
 #endif //FISH_FILLETS_LEVELLAYOUT_H
