@@ -41,6 +41,7 @@ private:
     void processKey(Key key);
     void clearQueue();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
+    std::vector<Model*> directSupport(const Model& item);
     void buildSupportMap();
 };
 

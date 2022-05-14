@@ -47,11 +47,11 @@ private:
     Weight m_weight;
     ICoords m_position;
     ICoords m_move;
+    ICoords m_lastMove;
     FCoords m_delta;
     Shape m_shape;
     bool m_alive;
     bool m_pushing;
-    bool m_falling;
     Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
@@ -86,16 +86,16 @@ public:
     bool isVirtual() const { return m_type == Type::virt; }
     bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     bool moving() const { return (bool)m_move; }
-    bool& falling() { return m_falling; }
-    bool falling() const { return m_falling; }
-    bool& pushing() { return m_pushing; }
-    bool pushing() const { return m_pushing; }
+    bool pushing() const { return m_move && m_pushing; }
+    bool falling() const { return !alive() && m_move == Direction::down; }
     ICoords movingDir() const { return m_move; }
     Action& action() { return m_action; }
     Action action() const { return m_action; }
+    ICoords lastMove_consume();
 
     void turn();
     void displace(ICoords d);
+    void push(ICoords d);
     void deltaMove(float dt);
     void deltaStop();
     void die();

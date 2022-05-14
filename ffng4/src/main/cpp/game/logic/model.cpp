@@ -20,9 +20,8 @@ std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const st
 Model::Model(const std::string& type, int x, int y, const std::string& shape) :
         m_position{x, y},
         m_move(),
+        m_lastMove(),
         m_shape(shape),
-        m_pushing(false),
-        m_falling(false),
         m_action(Action::base),
         m_orientation(Orientation::left),
         m_warp(1.f)
@@ -35,20 +34,27 @@ void Model::turn() {
 }
 
 void Model::displace(ICoords d) {
-    LOGV("displace [%d,%d] fract [%f,%f] warp %f", d.x, d.y, m_delta.fx(), m_delta.fy(), m_warp);
     if(FCoords(d) || m_delta)
         m_warp += warpIncrement;
     else
         deltaStop();
     m_move = d;
+    m_pushing = false;
+}
+
+void Model::push(ICoords d) {
+    deltaStop();
+    displace(d);
+    m_pushing = true;
 }
 
 void Model::deltaMove(float dt) {
     if (m_move) {
-        m_delta += (m_falling ? fallSpeed : baseSpeed) * m_warp * dt * FCoords(m_move);
+        m_delta += (falling() ? fallSpeed : baseSpeed) * m_warp * dt * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;
+            m_lastMove = m_move;
             m_move = {};
         }
     }
@@ -63,4 +69,10 @@ void Model::die() {
 void Model::deltaStop() {
     m_delta = {};
     m_warp = 1.f;
+}
+
+ICoords Model::lastMove_consume() {
+    auto ret = m_lastMove;
+    m_lastMove = {};
+    return ret;
 }

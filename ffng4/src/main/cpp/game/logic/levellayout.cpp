@@ -51,11 +51,10 @@ void LevelLayout::moveFish(ICoords d) {
     }
     for(auto* model : obs)
         model->displace(d);
-    if(!obs.empty()) {
-        m_curFish->deltaStop();
-        m_curFish->pushing() = true;
-    }
-    m_curFish->displace(d);
+    if(!obs.empty())
+        m_curFish->push(d);
+    else
+        m_curFish->displace(d);
 }
 
 void LevelLayout::update(float dt) {
@@ -78,8 +77,6 @@ bool LevelLayout::animate(float dt) {
             model->deltaMove(dt);
             if(model->moving())
                 moving = true;
-            if(!model->moving())
-                model->pushing() = false;
         }
     return moving;
 }
@@ -120,7 +117,6 @@ void LevelLayout::reeval() {
             continue;
         if(model->movable() && m_support[model.get()] == Model::SupportType::none) {
             clearQueue();
-            model->falling() = true;
             model->displace(Direction::down);
         }
         if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy) {
@@ -130,8 +126,18 @@ void LevelLayout::reeval() {
         }
         if(!model->moving()) {
             model->deltaStop();
-            if(model->falling()) {
-                model->falling() = false;
+            if(model->alive())
+                continue;
+            auto move = model->lastMove_consume();
+            if(!move)
+                continue;
+            const auto support = directSupport(*model);
+            if(!support.empty() && move != Direction::up) {
+                for (auto &unit: support) {
+                    m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
+                    unit->die();
+                }
+            } else if(support.empty() && move == Direction::down) {
                 m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
             }
         }
@@ -185,6 +191,21 @@ std::set<Model*> LevelLayout::obstacles(const Model &unit, ICoords d) {
     return ret;
 }
 
+std::vector<Model*> LevelLayout::directSupport(const Model &item) {
+    std::vector<Model*> ret;
+    for(auto &uOther: m_models) {
+        auto& other = *uOther;
+        if(other.supportType() == Model::SupportType::none)
+            continue;
+        if (item.shape().intersects(other.shape(), other.xy() - (item.xy() + Direction::down))) {
+            ret.push_back(&other);
+            if (other.type() == Model::Type::wall)
+                return {};
+        }
+    }
+    return ret;
+}
+
 void LevelLayout::buildSupportMap() {
     {
         decltype(m_support) empty{};
@@ -200,7 +221,7 @@ void LevelLayout::buildSupportMap() {
         for (auto &other: m_models) {
             if (other->isVirtual() || *other == *model)
                 continue;
-            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + ICoords::down)))
+            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + Direction::down)))
 //                if(!other->isMovingDown())
                     deps.push_back(other.get());
         }
