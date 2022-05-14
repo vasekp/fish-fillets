@@ -3,7 +3,7 @@
 
 #include "subsystem/script.h"
 #include "game/structure/levelrecord.h"
-#include "game/logic/model.h"
+#include "levellayout.h"
 
 class LevelScreen;
 
@@ -12,12 +12,8 @@ class Level : public ScriptReferrer {
     LevelScreen& m_screen;
     const LevelRecord& m_record;
     Script m_script;
-    std::vector<std::unique_ptr<Model>> m_models;
     std::deque<DelayedFunction> m_plan;
-    std::map<int, std::size_t> m_virtModels;
-    Model* m_small;
-    Model* m_big;
-    Model* m_curFish;
+    std::unique_ptr<LevelLayout> m_layout;
 
     struct Dialog {
         std::string text;
@@ -29,13 +25,10 @@ class Level : public ScriptReferrer {
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
 
-    auto& models() { return m_models; }
+    LevelLayout& layout();
 
     void init();
     void tick();
-
-    void moveFish(Displacement d);
-    void switchFish();
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
@@ -76,9 +69,6 @@ public:
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                                  const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);
-
-private:
-    Model& getModel(int index);
 };
 
 #endif //FISH_FILLETS_LEVEL_H

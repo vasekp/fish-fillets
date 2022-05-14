@@ -6,8 +6,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this),
-        m_small(nullptr), m_big(nullptr), m_curFish(nullptr)
+        m_script(instance, *this)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -15,9 +14,9 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 //    m_script.registerFn("game_addDecor", script_game_addDecor);
 //    m_script.registerFn("game_setScreenShift", script_game_setScreenShift);
 //    m_script.registerFn("game_changeBg", script_game_changeBg);
-//    m_script.registerFn("game_getBg", script_game_getBg);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
 //    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
+//    m_script.registerFn("game_getBg", script_game_getBg); // UNDO
 
     m_script.registerFn("model_addAnim", lua::wrap<&Level::model_addAnim>);
     m_script.registerFn("model_runAnim", lua::wrap<&Level::model_runAnim>);
@@ -36,16 +35,16 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_getH", lua::wrap<&Level::model_getH>);
     m_script.registerFn("model_setGoal", lua::wrap<&Level::model_setGoal>);
     m_script.registerFn("model_change_turnSide", lua::wrap<&Level::model_change_turnSide>);
-//    m_script.registerFn("model_change_setLocation", script_model_change_setLocation);
 //    m_script.registerFn("model_setViewShift", script_model_setViewShift);
 //    m_script.registerFn("model_getViewShift", script_model_getViewShift);
     m_script.registerFn("model_setBusy", lua::wrap<&Level::model_setBusy>);
-//    m_script.registerFn("model_getExtraParams", script_model_getExtraParams);
-//    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams);
-//    m_script.registerFn("model_equals", script_model_equals);
     m_script.registerFn("model_isTalking", lua::wrap<&Level::model_isTalking>);
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
     m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
+//    m_script.registerFn("model_equals", script_model_equals);
+//    m_script.registerFn("model_change_setLocation", script_model_change_setLocation); // UNDO
+//    m_script.registerFn("model_getExtraParams", script_model_getExtraParams); // UNDO
+//    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams); // UNDO
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
     m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);
@@ -80,14 +79,11 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 
 void Level::init() {
     m_script.loadFile(m_record.script_filename);
-
-    m_small = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::small; })->get();
-    m_big = std::find_if(m_models.begin(), m_models.end(), [](const auto& model) { return model->type() == Model::Type::big; })->get();
-    m_curFish = m_small;
+    layout().prepare();
 }
 
 void Level::tick() {
-    for (auto& model : models())
+    for (auto& model : layout().models())
         model->anim().update();
     m_script.doString("script_update();");
     if (!m_plan.empty()) {
@@ -97,20 +93,13 @@ void Level::tick() {
     }
 }
 
-Model& Level::getModel(int index) {
-    if(index >= 0 && index < m_models.size())
-        return *m_models[index];
-    if(m_virtModels.contains(index))
-        return *m_models[m_virtModels.at(index)];
-    std::size_t realIndex = m_models.size();
-    m_models.push_back(std::make_unique<Model>("virtual", 0, 0, ""));
-    LOGD("virtual model %d", index);
-    m_virtModels.insert({index, realIndex});
-    return *m_models.back();
+LevelLayout& Level::layout() {
+    return *m_layout;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
     m_screen.create(width, height, bg);
+    m_layout = std::make_unique<LevelLayout>(*this, width, height);
 }
 
 int Level::level_getRestartCounter() {
@@ -137,8 +126,7 @@ void Level::game_setRoomWaves(float amplitude, float period, float speed) {
 }
 
 int Level::game_addModel(const std::string& type, int x, int y, const std::string& shape) {
-    m_models.push_back(std::make_unique<Model>(type, x, y, shape));
-    return (int)m_models.size() - 1;
+    return layout().addModel(type, x, y, shape);
 }
 
 int Level::game_getCycles() {
@@ -146,34 +134,33 @@ int Level::game_getCycles() {
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> direction) {
-    auto& model = getModel(index);
     auto image = m_screen.addImage(filename);
-    model.anim().add(name, direction.value_or(Model::dir::left), image);
+    layout().getModel(index).anim().add(name, direction.value_or(Model::dir::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     model.anim().set(name, model.direction(), phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     model.anim().set(name, model.direction(), phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     model.anim().setExtra(name, model.direction(), phase);
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     return {model.x(), model.y()};
 }
 
 std::string Level::model_getAction(int index) {
 //     TODO
-    const auto& model = getModel(index);
+    const auto& model = layout().getModel(index);
     if(model.isBusy())
         return "busy";
     else
@@ -182,7 +169,7 @@ std::string Level::model_getAction(int index) {
 
 std::string Level::model_getState(int index) {
 //     TODO
-    const auto& model = getModel(index);
+    const auto& model = layout().getModel(index);
     if(model.isTalking())
         return "talking";
     else
@@ -190,7 +177,7 @@ std::string Level::model_getState(int index) {
 }
 
 bool Level::model_isAlive(int index) {
-    return getModel(index).isAlive();
+    return layout().getModel(index).isAlive();
 }
 
 bool Level::model_isOut(int index) {
@@ -199,16 +186,16 @@ bool Level::model_isOut(int index) {
 }
 
 bool Level::model_isLeft(int index) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     return model.direction() == Model::dir::left;
 }
 
 unsigned Level::model_getW(int index) {
-    return getModel(index).shape().width();
+    return layout().getModel(index).shape().width();
 }
 
 unsigned Level::model_getH(int index) {
-    return getModel(index).shape().height();
+    return layout().getModel(index).shape().height();
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
@@ -216,15 +203,15 @@ void Level::model_setGoal(int index, const std::string& goal) {
 }
 
 void Level::model_change_turnSide(int index) {
-    getModel(index).turn();
+    layout().getModel(index).turn();
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    getModel(index).setBusy(busy);
+    layout().getModel(index).setBusy(busy);
 }
 
 bool Level::model_isTalking(int index) {
-    return getModel(index).isTalking();
+    return layout().getModel(index).isTalking();
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
@@ -238,7 +225,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
         source.setLoop(0, 0);
     source.setDialog(dialogFlag);
     if(index != -1) { // TODO
-        auto &model = getModel(index);
+        auto &model = layout().getModel(index);
         model.setTalk(source);
     }
     m_instance.audio().addSource(source);
@@ -247,7 +234,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
 }
 
 void Level::model_killSound(int index) {
-    auto& model = getModel(index);
+    auto& model = layout().getModel(index);
     const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);
@@ -307,21 +294,4 @@ void Level::dialog_addDialog(const std::string& name, const std::string& lang, c
 std::string Level::options_getParam(const std::string& name) {
     // TODO
     return "cs";
-}
-
-void Level::moveFish(Displacement d) {
-    for(const auto& other : m_models) {
-        if(m_curFish == other.get() || other->type() == Model::Type::virt)
-            continue;
-        if(m_curFish->shape().intersects(other->shape(), other->xy() - (m_curFish->xy() + d)))
-            return;
-    }
-    m_curFish->displace(d);
-}
-
-void Level::switchFish() {
-    if(m_curFish == m_small)
-        m_curFish = m_big;
-    else
-        m_curFish = m_small;
 }

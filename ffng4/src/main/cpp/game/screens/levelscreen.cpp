@@ -48,7 +48,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     target.blit(getImage("background"), wavyProgram);
 
-    for(const auto& model : m_level.models()) {
+    for(const auto& model : m_level.layout().models()) {
         if(model->isVirtual())
             continue;
         const auto& images = model->anim().get();
@@ -103,19 +103,19 @@ bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
 bool LevelScreen::own_key(Key key) {
     switch(key) {
         case Key::up:
-            m_level.moveFish(Displacement::up);
+            m_level.layout().moveFish(Displacement::up);
             return true;
         case Key::down:
-            m_level.moveFish(Displacement::down);
+            m_level.layout().moveFish(Displacement::down);
             return true;
         case Key::left:
-            m_level.moveFish(Displacement::left);
+            m_level.layout().moveFish(Displacement::left);
             return true;
         case Key::right:
-            m_level.moveFish(Displacement::right);
+            m_level.layout().moveFish(Displacement::right);
             return true;
         case Key::space:
-            m_level.switchFish();
+            m_level.layout().switchFish();
             return true;
         case Key::exit:
             m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
