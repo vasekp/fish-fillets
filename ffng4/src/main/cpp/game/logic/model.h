@@ -47,6 +47,7 @@ private:
     Direction m_direction;
     ModelAnim m_anim;
     AudioSource m_talk;
+    float m_warp;
 
 public:
     Model(const std::string& type, int x, int y, const std::string& shape);
@@ -80,14 +81,15 @@ public:
     bool isMoving() const { return (bool)m_move; }
 
     void turn();
-    void displace(ICoords d);
+    void displace(ICoords d, float initWarp = 1.f);
     void deltaMove(float dt);
-    void deltaStop() { m_delta = {}; }
+    void deltaStop();
     void die();
     void setTalk(AudioSource source) { m_talk = std::move(source); }
     const AudioSource& getTalk() const { return m_talk; }
 
-    constexpr static float speed = 3.f; // TODO: warp
+    constexpr static float baseSpeed = 4.f;
+    constexpr static float warpIncrement = .2f;
 };
 
 #endif //FISH_FILLETS_MODEL_H

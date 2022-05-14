@@ -35,7 +35,7 @@ void LevelScreen::own_refresh() {
 }
 
 void LevelScreen::own_draw(const DrawTarget& target, float dt) {
-    m_level.layout().draw(dt);
+    m_level.layout().update(dt);
     if(m_timer.ticked())
         m_level.tick();
 

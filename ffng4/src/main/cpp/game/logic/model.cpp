@@ -23,7 +23,8 @@ Model::Model(const std::string& type, int x, int y, const std::string& shape) :
         m_shape(shape),
         m_alive(true),
         m_busy(false),
-        m_direction(Direction::left)
+        m_direction(Direction::left),
+        m_warp(1.f)
 {
     std::tie(m_type, m_supportType, m_weight) = decode(type);
 }
@@ -32,13 +33,19 @@ void Model::turn() {
     m_direction = (Direction)(1 - m_direction);
 }
 
-void Model::displace(ICoords d) {
+void Model::displace(ICoords d, float initWarp) {
+    if(FCoords(d) || m_delta)
+        m_warp += warpIncrement;
+    else {
+        m_delta = {};
+        m_warp = initWarp;
+    }
     m_move = d;
 }
 
 void Model::deltaMove(float dt) {
     if (m_move) {
-        m_delta += speed * dt * FCoords(m_move);
+        m_delta += baseSpeed * m_warp * dt * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;
@@ -51,4 +58,9 @@ void Model::die() {
     m_alive = false;
     m_type = Type::item_light;
     m_supportType = SupportType::none;
+}
+
+void Model::deltaStop() {
+    m_delta = {};
+    m_warp = 1.f;
 }

@@ -47,11 +47,12 @@ struct ICoords {
     static const ICoords left;
     static const ICoords right;
 
+    friend bool operator==(ICoords a, ICoords b) { return a.x == b.x && a.y == b.y; }
     friend ICoords operator+(ICoords a, ICoords b) { return {a.x + b.x, a.y + b.y}; }
     friend ICoords operator-(ICoords a, ICoords b) { return {a.x - b.x, a.y - b.y}; }
     friend ICoords& operator+=(ICoords& a, ICoords b) { a.x += b.x; a.y += b.y; return a; }
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
-    
+
     operator bool() const { return x != 0 || y != 0; }
 };
 
@@ -87,6 +88,10 @@ public:
     friend bool operator==(FCoords a, FCoords b) { return a.m_fx == b.m_fx && a.m_fy == b.m_fy; }
     friend bool operator>(FCoords a, FCoords b) { return std::abs(a.m_fx) > std::abs(b.m_fx) || std::abs(a.m_fy) > std::abs(b.m_fy); }
     friend bool operator>=(FCoords a, FCoords b) { return a > b || a == b; }
+    friend bool operator||(FCoords a, FCoords b) {
+        return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) ||
+                (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
+    }
 };
 
 #endif //FISH_FILLETS_TYPES_H

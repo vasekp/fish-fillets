@@ -43,12 +43,12 @@ void LevelLayout::moveFish(ICoords d) {
     m_curFish->displace(d);
 }
 
-void LevelLayout::draw(float dt) {
+void LevelLayout::update(float dt) {
     if(!m_stable)
         m_stable = animate(dt);
 
     if(m_stable)
-        update();
+        reeval();
 }
 
 bool LevelLayout::animate(float dt) {
@@ -56,16 +56,19 @@ bool LevelLayout::animate(float dt) {
     for (auto &model: m_models)
         if(model->isMoving()) {
             model->deltaMove(dt);
-            done = false;
+            if(model->isMoving())
+                done = false;
         }
     return done;
 }
 
-void LevelLayout::update() {
+void LevelLayout::reeval() {
     buildSupportMap();
     for(auto& model : m_models) {
+        if(model->isVirtual())
+            continue;
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::none)
-            model->displace(ICoords::down);
+            model->displace(ICoords::down, 1.5f);
         if(model->isMovable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
             m_small->die();
         if(!model->isMoving())

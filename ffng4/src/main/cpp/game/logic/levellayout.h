@@ -29,11 +29,11 @@ public:
     void moveFish(ICoords d);
     void switchFish();
 
-    void draw(float dt);
+    void update(float dt);
 
 private:
     bool animate(float dt);
-    void update();
+    void reeval();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
     void buildSupportMap();
 };
