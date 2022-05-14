@@ -40,7 +40,7 @@ bool lineIntersect(const std::bitset<64>& a, const std::bitset<64>& b, int dx) {
 }
 
 bool Shape::intersects(const Shape& other, Displacement d) const {
-    if(d.dx > width() || d.dy > height() || -d.dx > other.width() || -d.dy > other.height())
+    if(d.dx > (int)width() || d.dy > (int)height() || -d.dx > (int)other.width() || -d.dy > (int)other.height())
         return false;
     if(d.dy >= 0) {
         for(int i = d.dy; i < height(); i++) {

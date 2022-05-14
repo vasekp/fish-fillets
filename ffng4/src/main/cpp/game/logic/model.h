@@ -23,8 +23,8 @@ public:
     };
 
     Type m_type;
-    unsigned m_x;
-    unsigned m_y;
+    int m_x;
+    int m_y;
     Shape m_shape;
     bool m_alive;
     bool m_busy;
@@ -33,7 +33,7 @@ public:
     AudioSource m_talk;
 
 public:
-    Model(const std::string& type, unsigned x, unsigned y, const std::string& shape) :
+    Model(const std::string& type, int x, int y, const std::string& shape) :
         m_x(x), m_y(y),
         m_shape(shape),
         m_alive(true),
@@ -66,8 +66,8 @@ public:
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
 
     Type type() const { return m_type; }
-    unsigned x() const { return m_x; }
-    unsigned y() const { return m_y; }
+    int x() const { return m_x; }
+    int y() const { return m_y; }
     Displacement xy() const { return {(int)m_x, (int)m_y}; }
     dir direction() const { return m_direction; }
     const Shape& shape() const { return m_shape; }

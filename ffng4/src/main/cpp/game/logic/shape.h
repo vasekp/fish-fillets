@@ -7,14 +7,14 @@
 
 class Shape {
     std::vector<std::bitset<64>> m_bits;
-    int m_width;
-    int m_height;
+    unsigned m_width;
+    unsigned m_height;
 
 public:
     Shape(const std::string& string);
 
-    int width() const { return m_width; }
-    int height() const { return m_height; }
+    unsigned width() const { return m_width; }
+    unsigned height() const { return m_height; }
 
     bool intersects(const Shape& other, Displacement d) const;
 };
