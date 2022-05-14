@@ -8,7 +8,7 @@
 
 class Model {
 public:
-    enum dir {
+    enum Direction { // Needs to remain convertible to int
         left,
         right
     };
@@ -30,41 +30,18 @@ public:
     };
 
     Type m_type;
+    SupportType m_supportType;
     int m_x;
     int m_y;
     Shape m_shape;
     bool m_alive;
     bool m_busy;
-    dir m_direction;
+    Direction m_direction;
     ModelAnim m_anim;
     AudioSource m_talk;
 
 public:
-    Model(const std::string& type, int x, int y, const std::string& shape) :
-        m_x(x), m_y(y),
-        m_shape(shape),
-        m_alive(true),
-        m_busy(false),
-        m_direction(dir::left)
-    {
-        if(type == "item_light")
-            m_type = Type::light;
-        else if(type == "item_heavy")
-            m_type = Type::heavy;
-        else if(type == "item_fixed")
-            m_type = Type::wall;
-        else if(type == "fish_small")
-            m_type = Type::small;
-        else if(type == "fish_big")
-            m_type = Type::big;
-        else if(type == "virtual")
-            m_type = Type::virt;
-        /*else if(type == "output_left")
-            m_type = Type::virt;*/
-        else
-            ::error("Type not implemented", "Type %s not implemented", type.c_str());
-    }
-
+    Model(const std::string& type, int x, int y, const std::string& shape);
     Model(const Model&) = delete;
     const Model& operator=(const Model&) = delete;
     Model(Model&&) = default;
@@ -73,37 +50,26 @@ public:
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
 
     Type type() const { return m_type; }
+    SupportType supportType() const { return m_supportType; };
     int x() const { return m_x; }
     int y() const { return m_y; }
     Displacement xy() const { return {(int)m_x, (int)m_y}; }
-    dir direction() const { return m_direction; }
+    Direction direction() const { return m_direction; }
     const Shape& shape() const { return m_shape; }
     ModelAnim& anim() { return m_anim; }
     const ModelAnim& anim() const { return m_anim; }
-    SupportType supportType() const {
-        switch(m_type) {
-            case Type::wall:
-                return SupportType::wall;
-            case Type::big:
-                return SupportType::big;
-            case Type::small:
-                return SupportType::small;
-            default:
-                return SupportType::none;
-        }
-    }
 
     bool isAlive() const { return m_alive; }
     bool isBusy() const { return m_busy; }
     bool isTalking() const { return m_talk && !m_talk.done(); }
     bool isVirtual() const { return m_type == Type::virt; }
     bool isMovable() const { return !(m_type == Type::small || m_type == Type::big || m_type == Type::wall); }
-
-    void turn() { m_direction = (dir)(1 - m_direction); }
-    void displace(Displacement d) { m_x += d.dx; m_y += d.dy; }
-    void setTalk(AudioSource source) { m_talk = std::move(source); }
     void setBusy(bool busy) { m_busy = busy; }
-    const AudioSource& talk() const { return m_talk; }
+
+    void turn();
+    void displace(Displacement d);
+    void setTalk(AudioSource source);
+    const AudioSource& getTalk() const { return m_talk; }
 };
 
 #endif //FISH_FILLETS_MODEL_H

@@ -135,7 +135,7 @@ int Level::game_getCycles() {
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> direction) {
     auto image = m_screen.addImage(filename);
-    layout().getModel(index).anim().add(name, direction.value_or(Model::dir::left), image);
+    layout().getModel(index).anim().add(name, direction.value_or(Model::Direction::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
@@ -187,7 +187,7 @@ bool Level::model_isOut(int index) {
 
 bool Level::model_isLeft(int index) {
     auto& model = layout().getModel(index);
-    return model.direction() == Model::dir::left;
+    return model.direction() == Model::Direction::left;
 }
 
 unsigned Level::model_getW(int index) {
@@ -235,7 +235,7 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
 
 void Level::model_killSound(int index) {
     auto& model = layout().getModel(index);
-    const auto& talk = model.talk();
+    const auto& talk = model.getTalk();
     if(talk)
         m_instance.audio().removeSource(talk);
     model.setTalk({});
