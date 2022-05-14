@@ -84,9 +84,10 @@ bool LevelLayout::animate(float dt) {
 }
 
 void LevelLayout::keyInput(Key key) {
-    if(key == Key::space && m_ready)
+    if(key == Key::space && m_ready) {
         switchFish();
-    else
+        clearQueue();
+    } else
         m_keyQueue.push(key);
 }
 
@@ -146,6 +147,7 @@ void LevelLayout::reeval() {
         clearQueue();
         m_level.model_killSoundImpl(*unit);
         m_level.game_killPlan();
+        m_level.blockFor(6, [unit]() { unit->disappear(); });
     }
     m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
     m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&

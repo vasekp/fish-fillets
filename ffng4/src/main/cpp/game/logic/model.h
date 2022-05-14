@@ -99,6 +99,7 @@ public:
     void deltaMove(float dt);
     void deltaStop();
     void die();
+    void disappear() { m_type = Type::virt; }
     AudioSource& talk() { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
