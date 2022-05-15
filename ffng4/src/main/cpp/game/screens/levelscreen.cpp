@@ -32,6 +32,24 @@ void LevelScreen::own_refresh() {
         if(m_music)
             m_instance.audio().addSource(m_music);
     }
+
+    const auto& models = m_level.layout().models();
+    auto it = std::find_if(models.begin(),  models.end(), [&](const auto& model) {
+        return m_effects.contains(model.get()) && m_effects.at(model.get()).effect == &Shaders::mirror;
+    });
+    if(it == models.end())
+        m_mirrorTarget = {};
+    else
+        m_mirrorTarget = makeMirrorTarget(**it);
+
+}
+
+std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
+    FCoords modelSizePixel = size_unit * FCoords{model.shape().width(), model.shape().height()};
+    FCoords modelSizeNative = m_instance.graphics().windowTarget().pixelScale() * modelSizePixel;
+    auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
+    ret->resize(modelSizeNative.x(), modelSizeNative.y(), modelSizePixel.fx(), modelSizePixel.fy());
+    return ret;
 }
 
 void LevelScreen::own_draw(const DrawTarget& target, float dt) {
@@ -49,14 +67,19 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     target.blit(getImage("background"), wavyProgram);
 
+    const Model* mirror = nullptr;
     for(const auto& uModel : m_level.layout().models()) {
         const auto& model = *uModel;
         if(model.isVirtual())
             continue;
         const auto& images = model.anim().get();
         if(m_effects.contains(&model)) {
+            if(m_effects.at(&model).effect == &Shaders::mirror) {
+                mirror = &model;
+                continue;
+            }
             if(images.size() > 1)
-                LOGE("layered image x record");
+                LOGE("layered image x effect");
             auto& record = m_effects[&model];
             auto& program = m_instance.graphics().shaders().*record.effect;
             glUseProgram(program);
@@ -64,9 +87,18 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
             target.blit(images[0], program, model.fx() * size_unit, model.fy() * size_unit);
         } else {
             for (auto i = 0u; i < images.size(); i++)
-                target.blit(images[i], i == 0 ? copyProgram : overlayProgram,
-                            model.fx() * size_unit, model.fy() * size_unit);
+                target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.fx() * size_unit, model.fy() * size_unit);
         }
+    }
+
+    if(mirror) {
+        auto image =  mirror->anim().get()[0];
+        m_instance.graphics().setMask(image);
+        m_mirrorTarget->bind();
+        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), m_instance.graphics().shaders().mirror,
+                                 0, 0, size_unit * mirror->fx(), size_unit * mirror->fy());
+        target.bind();
+        target.blitFlip(m_mirrorTarget->texture(), copyProgram, false, true, mirror->fx() * size_unit, mirror->fy() * size_unit);
     }
 }
 

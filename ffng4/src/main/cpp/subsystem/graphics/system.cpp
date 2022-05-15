@@ -15,6 +15,6 @@ void GraphicsSystem::setWindowSize(unsigned int width, unsigned int height) {
     m_windowTarget.setWindow(width, height);
     m_blurTargets[0].resize(width, height);
     m_blurTargets[1].resize(width, height);
-    auto pixelSize = m_windowTarget.pixelSize();
+    auto pixelSize = m_windowTarget.nativeSize();
     m_offscreenTarget.resize(pixelSize.x(), pixelSize.y(), (float)width, (float)height);
 }

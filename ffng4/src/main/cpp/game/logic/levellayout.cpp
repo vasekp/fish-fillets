@@ -215,7 +215,6 @@ std::vector<Model*> LevelLayout::directSupport(const Model &item) {
     }
     return ret;
 }
-
 void LevelLayout::buildSupportMap() {
     {
         decltype(m_support) empty{};

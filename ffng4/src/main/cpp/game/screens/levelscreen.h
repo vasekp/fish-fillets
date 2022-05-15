@@ -22,6 +22,7 @@ class LevelScreen : public GameScreen {
         float startTime;
     };
     std::map<const Model*, Effect> m_effects;
+    std::unique_ptr<TextureTarget> m_mirrorTarget;
 
 public:
     LevelScreen(Instance&, const LevelRecord&);
@@ -48,6 +49,9 @@ protected:
     bool own_key(Key key) override;
 
     friend class Level;
+
+private:
+    std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 };
 
 #endif //FISH_FILLETS_LEVELSCREEN_H

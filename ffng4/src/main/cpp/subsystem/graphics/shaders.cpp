@@ -22,5 +22,5 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     glUseProgram(maskCopy);
     glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
     glUseProgram(mirror);
-    glUniform1i(mirror.uniform("uDstTexture"), Shaders::texOffscreen_shader);
+    glUniform1i(mirror.uniform("uMaskTexture"), Shaders::texMask_shader);
 }

@@ -6,7 +6,7 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
                                                        jText, jFilename, 16.f,
-                                                       m_instance.graphics().windowTarget().pixelSize().x());
+                                                       m_instance.graphics().windowTarget().nativeSize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<std::string> ret{};
     ret.reserve(length);

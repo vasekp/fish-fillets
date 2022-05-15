@@ -5,6 +5,7 @@ class DrawTarget {
 public:
     virtual void bind() const = 0;
     virtual FCoords size() const = 0;
+    virtual ~DrawTarget() { }
 
     void blit(TextureView source, const ogl::Program &program,
               float destX = 0, float destY = 0, float srcX = 0, float srcY = 0,

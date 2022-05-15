@@ -16,10 +16,8 @@ struct Shaders {
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texMask_shader = 1;
-    constexpr static GLint texOffscreen_shader = 2;
     constexpr static GLint texImage_gl = GL_TEXTURE0;
     constexpr static GLint texMask_gl = GL_TEXTURE1;
-    constexpr static GLint texOffscreen_gl = GL_TEXTURE2;
 
     Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance);
 };

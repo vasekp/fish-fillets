@@ -10,6 +10,7 @@ class DisplayTarget : public DrawTarget {
         FCoords origin;
         FCoords extent;
     } m_viewport;
+    float m_scale;
 
 public:
     DisplayTarget(const ogl::Display& display);
@@ -22,7 +23,8 @@ public:
     FCoords window2screen(FCoords window) const;
 
     FCoords windowSize() const { return m_windowDim; }
-    FCoords pixelSize() const { return m_viewport.extent; }
+    FCoords nativeSize() const { return m_viewport.extent; }
+    float pixelScale() const { return m_scale; }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
