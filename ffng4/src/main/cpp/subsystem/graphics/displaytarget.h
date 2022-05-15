@@ -15,13 +15,14 @@ public:
     DisplayTarget(const ogl::Display& display);
 
     void bind() const override;
+    void setWindow(unsigned int width, unsigned int height);
+    FCoords size() const override { return m_windowDim; }
 
-    FCoords screen2canvas(FCoords screen) const;
-    FCoords canvas2screen(FCoords canvas) const;
-    FCoords pixelSize() const;
+    FCoords screen2window(FCoords screen) const;
+    FCoords window2screen(FCoords window) const;
 
-protected:
-    void resize(unsigned int width, unsigned int height) override;
+    FCoords windowSize() const { return m_windowDim; }
+    FCoords pixelSize() const { return m_viewport.extent; }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H

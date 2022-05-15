@@ -96,7 +96,7 @@ void ScreenManager::drawFrame() {
         graphics.windowTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
         graphics.windowTarget().blitFlip(offscreen.texture(), copyProgram, false, true, 0, 0, 0, 0,
-                                         DrawTarget::fullSize, DrawTarget::fullSize, offscreen.texture().width(), offscreen.texture().height());
+                                         DrawTarget::fullSize, DrawTarget::fullSize);
     }
 
     if(m_title) {

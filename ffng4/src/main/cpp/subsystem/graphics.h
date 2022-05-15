@@ -8,9 +8,9 @@
 #include "graphics/shaders.h"
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
+#include "graphics/textureview.h"
 #include "graphics/displaytarget.h"
-#include "graphics/blurtarget.h"
-#include "graphics/offscreentarget.h"
+#include "graphics/texturetarget.h"
 #include "graphics/system.h"
 #include "graphics/utils.h"
 
@@ -28,7 +28,7 @@ public:
 
     auto& system() const { return *m_system; }
     auto& display() const { return *m_system->m_display; }
-    auto& windowTarget() const { return m_system->m_displayTarget; }
+    auto& windowTarget() const { return m_system->m_windowTarget; }
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
     auto& blurTargets() const { return m_system->m_blurTargets; }
     auto& offscreenTarget() const { return m_system->m_offscreenTarget; }

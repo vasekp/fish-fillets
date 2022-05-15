@@ -81,7 +81,7 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             auto height = line.texture.height();
             float destY = pixelSize.fy() - (float)height * (1.f + line.yOffset);
             target.blit(line.texture, textProgram, 0, destY - (float)height, 0, 0,
-                        DrawTarget::fullSize, 3 * height, pixelSize.x(), pixelSize.y());
+                        DrawTarget::fullSize, 3 * height);
         }
 }
 
