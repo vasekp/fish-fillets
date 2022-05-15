@@ -1,5 +1,6 @@
 #include "subsystem/graphics.h"
 #include "offscreentarget.h"
+#include "shaders.h"
 
 OffscreenTarget::OffscreenTarget(const std::shared_ptr<ogl::Display> &ref, unsigned int fullWidth, unsigned int fullHeight) :
     m_ref(ref), m_displayDim(fullWidth, fullHeight), m_framebuffer(ref), m_texture()
@@ -17,4 +18,8 @@ void OffscreenTarget::resize(unsigned int width, unsigned int height) {
     m_texture = ogl::Texture::empty(m_ref, size.x(), size.y());
     m_framebuffer.bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
+
+    glActiveTexture(Shaders::texOffscreen_gl);
+    m_texture.bind();
+    glActiveTexture(Shaders::texImage_gl);
 }

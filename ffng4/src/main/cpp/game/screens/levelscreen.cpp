@@ -104,6 +104,8 @@ void LevelScreen::setEffect(Model *model, const std::string &name) {
     ogl::Program Shaders::*effect;
     if(name == "disintegrate")
         effect = &Shaders::disintegrate;
+    else if(name == "mirror")
+        effect = &Shaders::mirror;
     else {
         LOGE("Unhandled setEffect %s", name.c_str());
         return;

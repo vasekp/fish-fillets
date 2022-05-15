@@ -16,9 +16,11 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
 
     for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror}) {
         glUseProgram(*program);
-        glUniform1i(program->uniform("uTexture"), Shaders::texImage_shader);
+        glUniform1i(program->uniform("uSrcTexture"), Shaders::texImage_shader);
     }
 
     glUseProgram(maskCopy);
     glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
+    glUseProgram(mirror);
+    glUniform1i(mirror.uniform("uDstTexture"), Shaders::texOffscreen_shader);
 }
