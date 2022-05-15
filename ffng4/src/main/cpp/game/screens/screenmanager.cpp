@@ -99,17 +99,21 @@ void ScreenManager::drawFrame() {
                                          DrawTarget::fullSize, DrawTarget::fullSize);
     }
 
-    if(m_title) {
-        float opacity = 1.0;
-        if(m_title_hide) {
-            auto timeLeft = std::chrono::duration<float>(m_title_hide.value() - std::chrono::steady_clock::now()).count();
-            opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
-        }
-        if(opacity == 0.f)
-            m_title.reset();
-        else {
-            graphics.fullscreenTarget().bind();
-            m_title->draw(graphics.fullscreenTarget(), opacity);
+    if(!options()) {
+        graphics.fullscreenTarget().bind();
+        curScreen().drawOverlays(graphics.fullscreenTarget());
+        if (m_title) {
+            float opacity = 1.0;
+            if (m_title_hide) {
+                auto timeLeft = std::chrono::duration<float>(
+                        m_title_hide.value() - std::chrono::steady_clock::now()).count();
+                opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
+            }
+            if (opacity == 0.f)
+                m_title.reset();
+            else {
+                m_title->draw(graphics.fullscreenTarget(), opacity);
+            }
         }
     }
 

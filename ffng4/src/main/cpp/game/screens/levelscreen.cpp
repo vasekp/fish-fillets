@@ -68,8 +68,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                             model.fx() * size_unit, model.fy() * size_unit);
         }
     }
-
-    m_subs.draw(target, dt, timeAlive());
 }
 
 AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
@@ -143,4 +141,8 @@ bool LevelScreen::own_key(Key key) {
         default:
             return false;
     }
+}
+
+void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
+    m_subs.draw(target, dTime, absTime);
 }

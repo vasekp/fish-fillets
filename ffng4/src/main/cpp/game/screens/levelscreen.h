@@ -34,6 +34,7 @@ protected:
     void own_pause() override;
     void own_resume() override;
     void own_draw(const DrawTarget& target, float dt) override;
+    void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
 
     void create(int width, int height, const std::string& background);
     void setWaves(float amplitude, float period, float speed);

@@ -1,7 +1,7 @@
 #include "subsystem/graphics.h"
 #include "displaytarget.h"
 
-DisplayTarget::DisplayTarget(const ogl::Display &display) : m_display(display) {
+DisplayTarget::DisplayTarget(const ogl::Display &display) : m_display(display), m_windowDim(display.width(), display.height()) {
     m_viewport = {{0.f, 0.f}, {(float)m_display.width(), (float)m_display.height()}};
 }
 

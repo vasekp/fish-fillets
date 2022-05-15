@@ -40,7 +40,7 @@ public:
     void setMask(const Image &image);
 
     ogl::Texture loadImage(const SystemFile& path) const;
-    ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline, const DisplayTarget& target) const;
+    ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline) const;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H
