@@ -91,7 +91,6 @@ void ScreenManager::drawFrame() {
         const auto& copyProgram = graphics.shaders().copy;
 
         offscreen.bind();
-        glClear(GL_COLOR_BUFFER_BIT);
         curScreen().draw(offscreen);
 
         graphics.windowTarget().bind();

@@ -109,12 +109,12 @@ public class MainActivity extends NativeActivity {
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
         float lineHeight = fm.bottom - fm.top;
 
-        Bitmap bitmap = Bitmap.createBitmap(screenWidth, (int) lineHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(screenWidth, (int) (lineHeight + outline) + 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Rect rect = new Rect();
         fillPaint.getTextBounds(text, 0, text.length(), rect);
         float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
-        float y = -fm.top;
+        float y = -fm.top + outline / 2.f + 1.f;
         if(outline != 0.0)
             canvas.drawText(text, x, y, outlinePaint);
         canvas.drawText(text, x, y, fillPaint);
