@@ -6,11 +6,11 @@ uniform vec2 uDstSize;
 uniform vec2 uBlitSize;
 uniform vec4 uColor;
 
-varying vec2 vPixCoords;
+varying vec2 vSrcCoords;
 
 void main(void)
 {
-    vec2 frac = vec2(vPixCoords.x - uBlitSize.x / 2.0, uBlitSize.y - vPixCoords.y) / uDstSize.y;
+    vec2 frac = vec2(vSrcCoords.x - uBlitSize.x / 2.0, uBlitSize.y - vSrcCoords.y) / uDstSize.y;
     const float radius = 500.0 / 480.0;
     vec2 rel = vec2(frac.x, radius - frac.y) / radius;
     vec2 polar = vec2(atan(rel.x, rel.y), length(rel));

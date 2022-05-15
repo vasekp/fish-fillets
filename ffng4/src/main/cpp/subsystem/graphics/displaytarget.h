@@ -25,6 +25,9 @@ public:
     FCoords windowSize() const { return m_windowDim; }
     FCoords nativeSize() const { return m_viewport.extent; }
     float pixelScale() const { return m_scale; }
+
+protected:
+    bool flipY() const override { return true; }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H

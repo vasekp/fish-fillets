@@ -98,7 +98,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), m_instance.graphics().shaders().mirror,
                                  0, 0, size_unit * mirror->fx(), size_unit * mirror->fy());
         target.bind();
-        target.blitFlip(m_mirrorTarget->texture(), copyProgram, false, true, mirror->fx() * size_unit, mirror->fy() * size_unit);
+        target.blit(m_mirrorTarget->texture(), copyProgram, mirror->fx() * size_unit, mirror->fy() * size_unit);
     }
 }
 
