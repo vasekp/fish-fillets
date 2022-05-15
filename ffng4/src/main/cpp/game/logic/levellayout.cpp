@@ -5,8 +5,7 @@
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
         m_width(width), m_height(height),
-        m_small(nullptr), m_big(nullptr), m_curFish(nullptr),
-        m_moving(false), m_ready(false)
+        m_small(nullptr), m_big(nullptr), m_curFish(nullptr)
 { }
 
 void LevelLayout::prepare() {
@@ -61,35 +60,79 @@ void LevelLayout::moveFish(ICoords d) {
 }
 
 void LevelLayout::update(float dt) {
-    if(m_moving)
-        m_moving = animate(dt);
-
-    if(!m_moving) {
-        if(m_ready && !m_keyQueue.empty()) {
-            processKey(m_keyQueue.front());
-            m_keyQueue.pop();
-        }
-        reeval();
-    }
-}
-
-bool LevelLayout::animate(float dt) {
-    bool moving = false;
+    std::vector<Model*> stops;
     for (auto &model: m_models)
         if(model->moving()) {
             model->deltaMove(dt);
-            if(model->moving())
-                moving = true;
+            if(!model->moving())
+                stops.push_back(model.get());
         }
-    return moving;
+
+    buildSupportMap(); // TODO reuse when possible
+    evalFalls();
+    evalSteel();
+    for (auto *model: stops)
+        if (!model->moving())
+            evalStop(model);
+
+    bool ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
+
+    if(ready && !m_keyQueue.empty()) {
+        processKey(m_keyQueue.front());
+        m_keyQueue.pop();
+    }
+}
+
+void LevelLayout::evalFalls() {
+    for(auto& model : m_models) {
+        if (model->isVirtual())
+            continue;
+        if (model->movable() && m_support[model.get()] == Model::SupportType::none) {
+            clearQueue();
+            model->displace(Direction::down);
+        }
+    }
+}
+
+void LevelLayout::evalSteel() {
+    for(auto& model : m_models) {
+        if(model->isVirtual())
+            continue;
+        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
+            death(m_small);
+    }
+}
+
+void LevelLayout::evalStop(Model* model) {
+    if(model->alive())
+        return;
+    model->deltaStop();
+    auto move = model->lastMove_consume();
+    if(!move)
+        return;
+    const auto support = directSupport(*model);
+    if(!support.empty() && move != Direction::up) {
+        for (auto unit: support)
+            death(unit);
+    } else if(support.empty() && move == Direction::down) {
+        m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
+    }
+}
+
+void LevelLayout::death(Model* unit) {
+    if(!unit->alive())
+        return;
+    m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
+    unit->die();
+    clearQueue();
+    m_level.model_killSound(unit->index());
+    m_level.game_killPlan();
+    m_level.model_setEffect(unit->index(), "disintegrate");
+    m_level.blockFor(15 /* 1.5 seconds */, [unit]() { unit->disappear(); });
 }
 
 void LevelLayout::keyInput(Key key) {
-    if(key == Key::space && m_ready) {
-        switchFish();
-        clearQueue();
-    } else
-        m_keyQueue.push(key);
+    m_keyQueue.push(key);
 }
 
 void LevelLayout::processKey(Key key) {
@@ -112,48 +155,6 @@ void LevelLayout::processKey(Key key) {
         default:
             ;
     }
-}
-
-void LevelLayout::reeval() {
-    buildSupportMap(); // TODO reuse when possible
-    std::set<Model*> deaths;
-    for(auto& model : m_models) {
-        if(model->isVirtual())
-            continue;
-        if(model->movable() && m_support[model.get()] == Model::SupportType::none) {
-            clearQueue();
-            model->displace(Direction::down);
-        }
-        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
-            deaths.insert(m_small);
-        if(!model->moving()) {
-            model->deltaStop();
-            if(model->alive())
-                continue;
-            auto move = model->lastMove_consume();
-            if(!move)
-                continue;
-            const auto support = directSupport(*model);
-            if(!support.empty() && move != Direction::up) {
-                for (auto unit: support)
-                    deaths.insert(unit);
-            } else if(support.empty() && move == Direction::down) {
-                m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
-            }
-        }
-    }
-    for(auto unit : deaths) {
-        m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
-        unit->die();
-        clearQueue();
-        m_level.model_killSound(unit->index());
-        m_level.game_killPlan();
-        m_level.model_setEffect(unit->index(), "disintegrate");
-        m_level.blockFor(15 /* 1.5 seconds */, [unit]() { unit->disappear(); });
-    }
-    m_moving = std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving(); });
-    m_ready = !std::any_of(m_models.begin(),  m_models.end(), [](auto& model) { return model->moving() && !model->alive(); }) &&
-              !(m_curFish->movingDir() && std::any_of(m_models.begin(),  m_models.end(), [&](auto& model) { return m_support[model.get()] == m_curFish->supportType(); }));
 }
 
 void LevelLayout::clearQueue() {

@@ -78,3 +78,11 @@ ICoords Model::lastMove_consume() {
     m_lastMove = {};
     return ret;
 }
+
+float Model::fx() const {
+    return m_move ? (float)m_position.x + m_delta.fx() : (float)m_position.x;
+}
+
+float Model::fy() const {
+    return m_move ? (float)m_position.y + m_delta.fy() : (float)m_position.y;
+}

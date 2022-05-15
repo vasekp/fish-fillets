@@ -73,8 +73,8 @@ public:
     int x() const { return m_position.x; }
     int y() const { return m_position.y; }
     ICoords xy() const { return m_position; }
-    float fx() const { return m_position.x + m_delta.fx(); }
-    float fy() const { return m_position.y + m_delta.fy(); }
+    float fx() const;
+    float fy() const;
 
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };
@@ -107,7 +107,7 @@ public:
     AudioSource& talk() { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
-    constexpr static float fallSpeed = 8.f;
+    constexpr static float fallSpeed = baseSpeed;
     constexpr static float warpIncrement = .2f;
 };
 

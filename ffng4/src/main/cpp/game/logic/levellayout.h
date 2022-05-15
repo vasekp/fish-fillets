@@ -18,8 +18,6 @@ class LevelLayout {
     Model* m_curFish;
     std::map<const Model*, Model::SupportType> m_support;
     std::queue<Key> m_keyQueue;
-    bool m_moving;
-    bool m_ready;
 
 public:
     LevelLayout(Level& level, int width, int height);
@@ -36,8 +34,10 @@ public:
     void update(float dt);
 
 private:
-    bool animate(float dt);
-    void reeval();
+    void evalFalls();
+    void evalStop(Model*);
+    void evalSteel();
+    void death(Model*);
     void processKey(Key key);
     void clearQueue();
     std::set<Model*> obstacles(const Model& unit, ICoords d);
