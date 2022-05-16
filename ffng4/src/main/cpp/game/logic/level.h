@@ -3,7 +3,8 @@
 
 #include "subsystem/script.h"
 #include "game/structure/levelrecord.h"
-#include "levellayout.h"
+#include "layout.h"
+#include "rules.h"
 
 #include <functional>
 
@@ -16,6 +17,7 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::deque<QueuedFunction> m_plan;
     std::unique_ptr<LevelLayout> m_layout;
+    std::unique_ptr<LevelRules> m_rules;
 
     struct Delayed {
         int countdown;
@@ -34,7 +36,8 @@ class Level : public ScriptReferrer {
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
 
-    LevelLayout& layout();
+    LevelLayout& layout() { return *m_layout; }
+    LevelRules& rules() { return *m_rules; }
 
     void init();
     void tick();

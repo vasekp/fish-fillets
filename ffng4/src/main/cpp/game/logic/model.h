@@ -50,7 +50,6 @@ private:
     Weight m_weight;
     ICoords m_position;
     ICoords m_move;
-    ICoords m_lastMove;
     FCoords m_delta;
     Shape m_shape;
     bool m_alive;
@@ -95,7 +94,8 @@ public:
     ICoords movingDir() const { return m_move; }
     Action& action() { return m_action; }
     Action action() const { return m_action; }
-    ICoords lastMove_consume();
+
+    bool intersects(Model* other, ICoords d);
 
     void turn();
     void displace(ICoords d);

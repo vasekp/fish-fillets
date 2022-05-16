@@ -21,7 +21,6 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_index(index),
         m_position{x, y},
         m_move(),
-        m_lastMove(),
         m_shape(shape),
         m_action(Action::base),
         m_orientation(Orientation::left),
@@ -55,7 +54,6 @@ void Model::deltaMove(float dt) {
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;
-            m_lastMove = m_move;
             m_move = {};
         }
     }
@@ -73,16 +71,14 @@ void Model::deltaStop() {
     m_warp = 1.f;
 }
 
-ICoords Model::lastMove_consume() {
-    auto ret = m_lastMove;
-    m_lastMove = {};
-    return ret;
-}
-
 float Model::fx() const {
     return m_move ? (float)m_position.x + m_delta.fx() : (float)m_position.x;
 }
 
 float Model::fy() const {
     return m_move ? (float)m_position.y + m_delta.fy() : (float)m_position.y;
+}
+
+bool Model::intersects(Model* other, ICoords d) {
+    return shape().intersects(other->shape(), other->xy() - (xy() + d));
 }

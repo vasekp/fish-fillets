@@ -53,7 +53,8 @@ std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model)
 }
 
 void LevelScreen::own_draw(const DrawTarget& target, float dt) {
-    m_level.layout().update(dt);
+    m_level.layout().animate(dt);
+    m_level.rules().update();
     if(m_timer.ticked())
         m_level.tick();
 
@@ -165,7 +166,7 @@ bool LevelScreen::own_key(Key key) {
         case Key::left:
         case Key::right:
         case Key::space:
-            m_level.layout().keyInput(key);
+            m_level.rules().keyInput(key);
             return true;
         case Key::exit:
             m_instance.screens().startMode(ScreenManager::Mode::WorldMap);

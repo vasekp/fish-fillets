@@ -79,7 +79,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 
 void Level::init() {
     m_script.loadFile(m_record.script_filename);
-    layout().prepare();
+    m_rules = std::make_unique<LevelRules>(*this, layout());
 }
 
 void Level::tick() {
@@ -104,10 +104,6 @@ void Level::blockFor(int frames, const std::function<void()>& callback) {
 
 bool Level::blocked() {
     return !m_blocks.empty();
-}
-
-LevelLayout& Level::layout() {
-    return *m_layout;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -307,8 +303,7 @@ void Level::game_planAction(QueuedFunction function) {
 }
 
 void Level::game_killPlan() {
-    decltype(m_plan) empty{};
-    m_plan.swap(empty);
+    m_plan.clear();
 }
 
 bool Level::dialog_isDialog() {
