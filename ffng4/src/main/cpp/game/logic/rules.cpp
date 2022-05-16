@@ -1,7 +1,6 @@
 #include "level.h"
 #include "rules.h"
 
-
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
     m_big = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
@@ -88,9 +87,6 @@ void LevelRules::update() {
         if (!model->moving())
             evalMotion(model, d);
     m_motions.clear();
-    for(auto& model : m_layout.models())
-        if(!model->moving())
-            model->deltaStop();
 
     bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); });
 
@@ -98,6 +94,10 @@ void LevelRules::update() {
         processKey(m_keyQueue.front());
         m_keyQueue.pop();
     }
+
+    for(auto& model : m_layout.models())
+        if(!model->moving())
+            model->deltaStop();
 }
 
 void LevelRules::evalFalls() {
