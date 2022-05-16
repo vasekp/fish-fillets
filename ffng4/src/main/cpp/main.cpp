@@ -1,7 +1,7 @@
 #include "instance.h"
 
 #include "subsystem/graphics.h"
-#include "subsystem/key.h"
+#include "subsystem/input/key.h"
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
@@ -12,12 +12,15 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         auto sy = (int)AMotionEvent_getY(event, 0);
         auto windowCoords = instance.graphics().windowTarget().screen2window({sx, sy});
         return instance.screens().dispatchMouse(windowCoords) ? 1 : 0;
-    } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY && AKeyEvent_getAction(event) == AKEY_EVENT_ACTION_DOWN) {
+    } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
-        if(key == Key::none)
-            return 0;
+        auto action = AKeyEvent_getAction(event);
+        if(action == AKEY_EVENT_ACTION_DOWN)
+            return instance.input().handleKeyDown(key) ? 1 : 0;
+        else if(action == AKEY_EVENT_ACTION_UP)
+            return instance.input().handleKeyUp(key) ? 1 : 0;
         else
-            return instance.screens().dispatchKey(key) ? 1 : 0;
+            return 0;
     }
     return 0;
 }

@@ -11,7 +11,8 @@ enum class Key {
     save,
     load,
     restart,
-    exit
+    exit,
+    SIZE
 };
 
 Key AndroidKeymap(unsigned code);

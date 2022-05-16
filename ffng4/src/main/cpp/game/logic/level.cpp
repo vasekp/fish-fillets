@@ -238,7 +238,7 @@ void Level::model_change_turnSide(int index) {
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    layout().getModel(index).action() = Model::Action::busy;
+    layout().getModel(index).action() = busy ? Model::Action::busy : Model::Action::base;
 }
 
 bool Level::model_isTalking(int index) {

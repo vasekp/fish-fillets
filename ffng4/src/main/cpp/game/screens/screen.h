@@ -6,7 +6,7 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "subsystem/script.h"
-#include "subsystem/key.h"
+#include "subsystem/input.h"
 
 class GameScreen {
 protected:

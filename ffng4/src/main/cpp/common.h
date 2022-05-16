@@ -11,6 +11,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <bitset>
 #include <queue>
 #include <deque>
 #include <array>

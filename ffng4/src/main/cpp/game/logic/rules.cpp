@@ -1,7 +1,7 @@
 #include "level.h"
 #include "rules.h"
 
-LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
+LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout), m_lastKey(Key::none) {
     m_small = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
     m_big = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
     m_curFish = m_small;
@@ -9,7 +9,10 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
 }
 
 void LevelRules::keyInput(Key key) {
-    m_keyQueue.push(key);
+    if(key == m_lastKey);
+    else {
+        m_lastKey = key;
+    }
 }
 
 void LevelRules::processKey(Key key) {
@@ -35,8 +38,7 @@ void LevelRules::processKey(Key key) {
 }
 
 void LevelRules::clearQueue() {
-    decltype(m_keyQueue) empty{};
-    m_keyQueue.swap(empty);
+    m_lastKey = Key::none;
 }
 
 void LevelRules::switchFish() {
@@ -88,11 +90,12 @@ void LevelRules::update() {
             evalMotion(model, d);
     m_motions.clear();
 
-    bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); });
+    bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); })
+            && !m_level.blocked();
 
-    if(ready && !m_keyQueue.empty()) {
-        processKey(m_keyQueue.front());
-        m_keyQueue.pop();
+    if(ready && m_lastKey != Key::none) {
+        processKey(m_lastKey);
+        m_lastKey = Key::none;
     }
 
     for(auto& model : m_layout.models())
