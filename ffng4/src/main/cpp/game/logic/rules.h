@@ -17,6 +17,7 @@ class LevelRules {
 
     std::queue<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
+    std::set<std::pair<Model*, Model*>> m_dependencyGraph;
     std::map<const Model*, Model::SupportType> m_support;
 
 public:
@@ -32,6 +33,8 @@ private:
     void processKey(Key key);
     void clearQueue();
 
+    void buildDepGraph();
+    void updateDepGraph(Model* model);
     void buildSupportMap();
     void evalFalls();
     void evalMotion(Model* model, Direction d);

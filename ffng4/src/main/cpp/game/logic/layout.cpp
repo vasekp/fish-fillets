@@ -26,6 +26,8 @@ Model& LevelLayout::getModel(int index) {
 }
 
 std::set<Model*> LevelLayout::intersections(Model* model, ICoords d) {
+    if(model->isVirtual())
+        return {};
     std::set<Model*> ret;
     for(const auto& other: m_models) {
         if(*other == *model || ret.contains(other.get()) || other->isVirtual())
@@ -44,7 +46,8 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
     while(!queue.empty()) {
         const auto model = queue.front();
         for(auto* other : intersections(model, d)) {
-            LOGD("%d -> %d", model->index(), other->index());
+            if(ret.contains(other))
+                continue;
             ret.insert(other);
             if(other->movable())
                 queue.push(other);

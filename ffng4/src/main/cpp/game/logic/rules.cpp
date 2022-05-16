@@ -6,6 +6,7 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
     m_small = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
     m_big = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
     m_curFish = m_small;
+    buildDepGraph();
 }
 
 void LevelRules::keyInput(Key key) {
@@ -77,10 +78,10 @@ void LevelRules::moveFish(Direction d) {
 
 void LevelRules::registerMotion(Model *model, Direction d) {
     m_motions.emplace_back(model, d);
+    updateDepGraph(model);
 }
 
 void LevelRules::update() {
-    buildSupportMap(); // TODO reuse when possible
     evalFalls();
     evalSteel();
     for (auto [model, d] : m_motions)
@@ -120,35 +121,29 @@ void LevelRules::evalSteel() {
 }
 
 void LevelRules::evalMotion(Model* model, Direction d) {
-    LOGD("stopped %d [%d,%d]", model->index(), d.x, d.y);
+    LOGV("stopped %d [%d,%d]", model->index(), d.x, d.y);
     if(model->alive())
         return;
     if(model->weight() == Model::Weight::none)
         return;
     if(d == Direction::up)
         return;
-    const auto support = (d == Direction::down)
-            ? m_layout.obstacles(model, Direction::down)
-            : m_layout.intersections(model, Direction::down);
-    std::vector<Model*> units;
-    bool hasWall = false;
-    for(auto* other : support) {
-        switch(other->supportType()) {
-            case Model::SupportType::small:
-            case Model::SupportType::big:
-                units.push_back(other);
-                break;
-            case Model::SupportType::wall:
-                hasWall = true;
-            default:
-                ;
-        }
+    switch(m_support[model]) {
+        case Model::SupportType::none:
+            break;
+        case Model::SupportType::wall:
+            if(d == Direction::down)
+                m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
+            break;
+        case Model::SupportType::small:
+        case Model::SupportType::big:
+            const auto support = (d == Direction::down)
+                                 ? m_layout.obstacles(model, Direction::down)
+                                 : m_layout.intersections(model, Direction::down);
+            for(auto* other : support)
+                if(other->alive())
+                    death(other);
     }
-    if(!hasWall)
-        for (auto unit : units)
-            death(unit);
-    if(d == Direction::down && !support.empty())
-        m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
 }
 
 void LevelRules::death(Model* unit) {
@@ -156,60 +151,65 @@ void LevelRules::death(Model* unit) {
         return;
     m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
     unit->die();
+    updateDepGraph(unit);
     clearQueue();
     m_level.model_killSound(unit->index());
     m_level.game_killPlan();
     m_level.model_setEffect(unit->index(), "disintegrate");
-    m_level.blockFor(15 /* 1.5 seconds */, [unit]() { unit->disappear(); });
+    m_level.blockFor(15 /* 1.5 seconds */, [&, unit]() {
+        unit->disappear();
+        updateDepGraph(unit);
+    });
+}
+
+void LevelRules::buildDepGraph() {
+    for(auto& model : m_layout.models()) {
+        if (!model->movable() || model->isVirtual())
+            continue;
+        for (auto *other : m_layout.intersections(model.get(), Direction::down))
+            m_dependencyGraph.emplace(model.get(), other);
+    }
+    buildSupportMap();
+}
+
+void LevelRules::updateDepGraph(Model *model) {
+    std::erase_if(m_dependencyGraph, [model](const auto& pair) {
+        return pair.first == model || pair.second == model;
+    });
+    for(auto* other : m_layout.intersections(model, Direction::down))
+        m_dependencyGraph.emplace(model, other);
+    for(auto* other : m_layout.intersections(model, Direction::up))
+        m_dependencyGraph.emplace(other, model);
+    buildSupportMap();
 }
 
 void LevelRules::buildSupportMap() {
     m_support.clear();
-    std::map<Model*, std::vector<Model*>> dependencies;
+
     for(const auto& model : m_layout.models()) {
         if (!model->movable() || model->isVirtual())
             continue;
 
-        std::vector<Model *> deps;
-        for (auto &other: m_layout.models()) {
-            if (other->isVirtual() || *other == *model)
-                continue;
-            if (model->shape().intersects(other->shape(), other->xy() - (model->xy() + Direction::down)))
-//                if(!other->isMovingDown())
-                deps.push_back(other.get());
-        }
-        dependencies[model.get()] = std::move(deps);
-    }
-
-    std::map<Model*, std::set<Model*>> supportSet;
-    for(const auto& model : m_layout.models()) {
-        if (!model->movable() || model->isVirtual())
-            continue;
-
-        std::set<Model*> suppDeep;
+        std::set<Model*> supportSet;
         std::queue<Model*> queue;
         queue.push(model.get());
 
         while(!queue.empty()) {
             auto* other = queue.front();
             queue.pop();
-            if(suppDeep.contains(other) || other->isVirtual())
+            if(supportSet.contains(other) || other->isVirtual())
                 continue;
-            suppDeep.insert(other);
+            supportSet.insert(other);
             if(other->movable()) {
-                for(auto* dep : dependencies[other])
-                    queue.push(dep);
+                for(auto [above, below] : m_dependencyGraph)
+                    if(above == other)
+                        queue.push(below);
             }
         }
-
-        std::erase_if(suppDeep, [](Model* other) { return other->movable(); });
-        supportSet[model.get()] = std::move(suppDeep);
-    }
-
-    for(const auto& model : m_layout.models()) {
-        const auto& set = supportSet[model.get()];
-        m_support[model.get()] = std::accumulate(set.begin(),  set.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
+        auto suppType = std::accumulate(supportSet.begin(),  supportSet.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
             return std::max(prev, item->supportType());
         });
+        LOGV("%d supported %d", model->index(), suppType);
+        m_support[model.get()] = suppType;
     }
 }
