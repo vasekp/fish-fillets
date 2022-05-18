@@ -153,6 +153,10 @@ void LevelScreen::setEffect(Model *model, const std::string &name) {
     m_effects[model] = {effect, timeAlive()};
 }
 
+void LevelScreen::setShift(FCoords shift) {
+    m_shift = shift;
+}
+
 void LevelScreen::own_pause() {
     m_timer.stop();
 }
@@ -187,4 +191,8 @@ bool LevelScreen::own_key(Key key) {
 
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
+}
+
+FCoords LevelScreen::shift() {
+    return m_shift;
 }

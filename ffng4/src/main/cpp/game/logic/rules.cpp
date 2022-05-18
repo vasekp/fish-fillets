@@ -61,8 +61,12 @@ void LevelRules::moveFish(Direction d) {
         return;
     }
     const auto obs = m_layout.obstacles(m_curFish, d);
-    if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end())
+    if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end()) {
+        for(auto* model : obs)
+            model->touchDir() = d;
+        m_curFish->touchDir() = d;
         return;
+    }
     if(m_curFish->supportType() == Model::SupportType::small) {
         if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
@@ -87,6 +91,8 @@ void LevelRules::update() {
 
     bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); })
             && !m_level.blocked();
+    if(ready)
+        m_level.notifyRound();
 
     if(ready) {
         if(!m_keyQueue.empty()) {

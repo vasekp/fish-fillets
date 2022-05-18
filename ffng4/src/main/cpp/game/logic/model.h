@@ -51,6 +51,7 @@ private:
     ICoords m_position;
     ICoords m_move;
     FCoords m_delta;
+    ICoords m_viewShift;
     Shape m_shape;
     bool m_alive;
     bool m_pushing;
@@ -58,6 +59,7 @@ private:
     Orientation m_orientation;
     ModelAnim m_anim;
     AudioSource m_talk;
+    ICoords m_touchDir;
     float m_warp;
 
 public:
@@ -72,9 +74,9 @@ public:
     int x() const { return m_position.x; }
     int y() const { return m_position.y; }
     ICoords xy() const { return m_position; }
-    FCoords fxy() const { return {fx(), fy()}; }
-    float fx() const;
-    float fy() const;
+    FCoords fxy() const;
+    float fx() const { return fxy().fx(); }
+    float fy() const { return fxy().fy(); }
 
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };
@@ -92,11 +94,15 @@ public:
     bool moving() const { return (bool)m_move; }
     bool pushing() const { return m_move && m_pushing; }
     bool falling() const { return !alive() && m_move == Direction::down; }
-    ICoords movingDir() const { return m_move; }
-    Action& action() { return m_action; }
-    Action action() const { return m_action; }
+    auto movingDir() const { return m_move; }
+    auto& action() { return m_action; }
+    auto action() const { return m_action; }
+    auto& touchDir() { return m_touchDir; }
+    auto touchDir() const { return m_touchDir; }
+    auto& viewShift() { return m_viewShift; }
+    auto viewShift() const { return m_viewShift; }
 
-    bool intersects(Model* other, ICoords d);
+    bool intersects(Model* other, ICoords d) const;
 
     void turn();
     void displace(ICoords d, bool pushing = false);

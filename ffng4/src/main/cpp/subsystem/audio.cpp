@@ -137,9 +137,9 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& prom
     int32_t sampleRate;
     if (!AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_SAMPLE_RATE, &sampleRate))
         ::error("AMediaFormat_getInt32 failed (sample rate)");
-    if (sampleRate != 22050)
+    /*if (sampleRate != 22050) // TODO
         ::error("Bad sample rate.", "Unexpected audio sample rate (%s): %d", filename.c_str(),
-                sampleRate);
+                sampleRate);*/
 
     int32_t channelCount;
     if (!AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_CHANNEL_COUNT, &channelCount))

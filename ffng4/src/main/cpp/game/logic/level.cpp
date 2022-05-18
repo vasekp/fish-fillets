@@ -6,14 +6,15 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this)
+        m_script(instance, *this),
+        m_roundFlag(false)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
     m_script.registerFn("game_getCycles", lua::wrap<&Level::game_getCycles>);
     m_script.registerFn("game_addDecor", lua::wrap<&Level::game_addDecor>);
-//    m_script.registerFn("game_setScreenShift", script_game_setScreenShift);
-//    m_script.registerFn("game_changeBg", script_game_changeBg);
+    m_script.registerFn("game_setScreenShift", lua::wrap<&Level::game_setScreenShift>);
+    m_script.registerFn("game_changeBg", lua::wrap<&Level::game_changeBg>);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
 //    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
 //    m_script.registerFn("game_getBg", script_game_getBg); // UNDO
@@ -26,17 +27,17 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_getLoc", lua::wrap<&Level::model_getLoc>);
     m_script.registerFn("model_getAction", lua::wrap<&Level::model_getAction>);
     m_script.registerFn("model_getState", lua::wrap<&Level::model_getState>);
-//    m_script.registerFn("model_getTouchDir", script_model_getTouchDir);
+    m_script.registerFn("model_getTouchDir", lua::wrap<&Level::model_getTouchDir>);
     m_script.registerFn("model_isAlive", lua::wrap<&Level::model_isAlive>);
     m_script.registerFn("model_isOut", lua::wrap<&Level::model_isOut>);
     m_script.registerFn("model_isLeft", lua::wrap<&Level::model_isLeft>);
-//    m_script.registerFn("model_isAtBorder", script_model_isAtBorder);
+    m_script.registerFn("model_isAtBorder", lua::wrap<&Level::model_isAtBorder>);
     m_script.registerFn("model_getW", lua::wrap<&Level::model_getW>);
     m_script.registerFn("model_getH", lua::wrap<&Level::model_getH>);
     m_script.registerFn("model_setGoal", lua::wrap<&Level::model_setGoal>);
     m_script.registerFn("model_change_turnSide", lua::wrap<&Level::model_change_turnSide>);
-//    m_script.registerFn("model_setViewShift", script_model_setViewShift);
-//    m_script.registerFn("model_getViewShift", script_model_getViewShift);
+    m_script.registerFn("model_setViewShift", lua::wrap<&Level::model_setViewShift>);
+    m_script.registerFn("model_getViewShift", lua::wrap<&Level::model_getViewShift>);
     m_script.registerFn("model_setBusy", lua::wrap<&Level::model_setBusy>);
     m_script.registerFn("model_isTalking", lua::wrap<&Level::model_isTalking>);
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
@@ -91,6 +92,7 @@ void Level::tick() {
     }
     m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     m_script.doString("script_update();");
+    m_roundFlag = false;
     if (!m_plan.empty()) {
         auto &front = m_plan.front();
         if(front.call())
@@ -104,6 +106,10 @@ void Level::blockFor(int frames, const std::function<void()>& callback) {
 
 bool Level::blocked() {
     return !m_blocks.empty();
+}
+
+void Level::notifyRound() {
+    m_roundFlag = true;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -120,9 +126,8 @@ int Level::level_getDepth() const {
     return m_record.depth;
 }
 
-bool Level::level_isNewRound() {
-    //TODO
-    return true;
+bool Level::level_isNewRound() const {
+    return m_roundFlag;
 }
 
 bool Level::level_isSolved() {
@@ -207,6 +212,20 @@ std::string Level::model_getState(int index) {
         return "normal";
 }
 
+int Level::model_getTouchDir(int index) {
+    auto dir = layout().getModel(index).touchDir();
+    if(dir == Direction::up)
+        return 1;
+    else if(dir == Direction::down)
+        return 2;
+    else if(dir == Direction::left)
+        return 3;
+    else if(dir == Direction::right)
+        return 4;
+    else
+        return 0;
+}
+
 bool Level::model_isAlive(int index) {
     return layout().getModel(index).alive();
 }
@@ -219,6 +238,10 @@ bool Level::model_isOut(int index) {
 bool Level::model_isLeft(int index) {
     auto& model = layout().getModel(index);
     return model.orientation() == Model::Orientation::left;
+}
+
+bool Level::model_isAtBorder(int index) {
+    return layout().isAtBorder(&layout().getModel(index));
 }
 
 unsigned Level::model_getW(int index) {
@@ -235,6 +258,14 @@ void Level::model_setGoal(int index, const std::string& goal) {
 
 void Level::model_change_turnSide(int index) {
     layout().getModel(index).turn();
+}
+
+void Level::model_setViewShift(int index, int dx, int dy) {
+    layout().getModel(index).viewShift() = {dx, dy};
+}
+
+std::pair<int, int> Level::model_getViewShift(int index) {
+    return layout().getModel(index).viewShift();
 }
 
 void Level::model_setBusy(int index, bool busy) {
@@ -311,6 +342,15 @@ void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int 
         m_layout->addRope(&m_layout->getModel(m1), &m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});
     else
         LOGE("Unknown decor %s", type.c_str());
+}
+
+void Level::game_setScreenShift(float dx, float dy) {
+    m_screen.setShift({dx, dy});
+}
+
+void Level::game_changeBg(const std::string &filename) {
+    auto image = m_screen.replaceImage("background", filename);
+    image.reload(m_instance);
 }
 
 bool Level::dialog_isDialog() {

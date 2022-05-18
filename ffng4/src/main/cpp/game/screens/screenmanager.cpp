@@ -95,7 +95,8 @@ void ScreenManager::drawFrame() {
 
         graphics.windowTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
-        graphics.windowTarget().blit(offscreen.texture(), copyProgram);
+        auto shift = curScreen().shift();
+        graphics.windowTarget().blit(offscreen.texture(), copyProgram, shift.fx(), shift.fy());
     }
 
     if(!options()) {

@@ -33,6 +33,8 @@ class Level : public ScriptReferrer {
     };
     std::map<std::string, Dialog> m_dialogs;
 
+    bool m_roundFlag; // SET when ready for new round, RESET after script update
+
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
 
@@ -44,11 +46,12 @@ public:
     void tick();
     void blockFor(int frames, const std::function<void()>& callback);
     bool blocked();
+    void notifyRound();
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
     int level_getDepth() const;
-    bool level_isNewRound();
+    bool level_isNewRound() const;
     bool level_isSolved();
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
@@ -62,13 +65,17 @@ public:
     std::pair<int, int> model_getLoc(int index);
     std::string model_getAction(int index);
     std::string model_getState(int index);
+    int model_getTouchDir(int index);
     bool model_isAlive(int index);
     bool model_isOut(int index);
     bool model_isLeft(int index);
+    bool model_isAtBorder(int index);
     unsigned model_getW(int index);
     unsigned model_getH(int index);
     void model_setGoal(int index, const std::string& goal);
     void model_change_turnSide(int index);
+    void model_setViewShift(int index, int dx, int dy);
+    std::pair<int, int> model_getViewShift(int index);
     void model_setBusy(int index, bool busy);
     bool model_isTalking(int index);
     void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
@@ -81,6 +88,8 @@ public:
     void game_planAction(QueuedFunction function);
     void game_killPlan();
     void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
+    void game_setScreenShift(float dx, float dy);
+    void game_changeBg(const std::string& filename);
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,

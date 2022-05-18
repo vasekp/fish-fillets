@@ -16,6 +16,11 @@ Image& GameScreen::addImage(const std::string& filename, const std::string& name
     }
 }
 
+Image& GameScreen::replaceImage(const std::string& name, const std::string& filename) {
+    auto[iterator, _] = m_images.insert_or_assign(name, Image{m_instance.files().system(filename)});
+    return iterator->second;
+}
+
 Image& GameScreen::getImage(const std::string& name) {
     return m_images.at(name);
 }

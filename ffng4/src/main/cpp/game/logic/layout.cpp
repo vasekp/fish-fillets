@@ -70,3 +70,7 @@ void LevelLayout::animate(float dt) {
                 m_level.rules().registerMotion(model.get(), d);
         }
 }
+
+bool LevelLayout::isAtBorder(Model* model) const {
+    return model->x() == 0 || model->y() == 0 || model->x() + model->shape().width() == m_width || model->y() + model->shape().height() == m_height;
+}

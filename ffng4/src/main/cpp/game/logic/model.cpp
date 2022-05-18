@@ -21,9 +21,12 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_index(index),
         m_position{x, y},
         m_move(),
+        m_viewShift(),
         m_shape(shape),
+        m_pushing(false),
         m_action(Action::base),
         m_orientation(Orientation::left),
+        m_touchDir(),
         m_warp(1.f)
 {
     std::tie(m_type, m_alive, m_supportType, m_weight) = decode(type);
@@ -40,6 +43,7 @@ void Model::displace(ICoords d, bool pushing) {
         deltaStop();
     m_move = d;
     m_pushing = pushing;
+    m_touchDir = {};
 }
 
 void Model::deltaMove(float dt) {
@@ -65,14 +69,13 @@ void Model::deltaStop() {
     m_warp = 1.f;
 }
 
-float Model::fx() const {
-    return m_move ? (float)m_position.x + m_delta.fx() : (float)m_position.x;
+FCoords Model::fxy() const {
+    if(m_move)
+        return m_position + m_delta + m_viewShift;
+    else
+        return m_position + m_viewShift;
 }
 
-float Model::fy() const {
-    return m_move ? (float)m_position.y + m_delta.fy() : (float)m_position.y;
-}
-
-bool Model::intersects(Model* other, ICoords d) {
+bool Model::intersects(Model* other, ICoords d) const {
     return shape().intersects(other->shape(), other->xy() - (xy() + d));
 }

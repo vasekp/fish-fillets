@@ -23,6 +23,7 @@ class LevelScreen : public GameScreen {
     };
     std::map<const Model*, Effect> m_effects;
     std::unique_ptr<TextureTarget> m_mirrorTarget;
+    FCoords m_shift;
 
 public:
     LevelScreen(Instance&, const LevelRecord&);
@@ -44,6 +45,8 @@ protected:
     void playMusic(const std::string& filename);
     void stopMusic();
     void setEffect(Model* model, const std::string& name);
+    void setShift(FCoords shift);
+    FCoords shift() override;
 
     bool own_mouse(unsigned int x, unsigned int y) override;
     bool own_key(Key key) override;

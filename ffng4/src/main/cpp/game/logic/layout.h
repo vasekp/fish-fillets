@@ -7,8 +7,8 @@ class Level;
 
 class LevelLayout {
     Level& m_level;
-    [[maybe_unused]] int m_width;
-    [[maybe_unused]] int m_height;
+    int m_width;
+    int m_height;
 
     std::vector<std::unique_ptr<Model>> m_models;
     std::map<int, std::size_t> m_virtModels;
@@ -29,6 +29,7 @@ public:
     void addRope(Model* m1, Model* m2, ICoords d1, ICoords d2);
     Model& getModel(int index);
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
+    bool isAtBorder(Model* model) const;
 
     std::set<Model*> intersections(Model* model, ICoords d);
     std::set<Model*> obstacles(Model* root, ICoords d);

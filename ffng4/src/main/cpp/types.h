@@ -54,6 +54,7 @@ struct ICoords {
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
 
     operator bool() const { return x != 0 || y != 0; }
+    operator std::pair<int, int>() const { return {x, y}; }
 };
 
 using Direction = ICoords;
