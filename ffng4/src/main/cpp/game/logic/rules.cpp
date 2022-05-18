@@ -68,11 +68,8 @@ void LevelRules::moveFish(Direction d) {
             return;
     }
     for(auto* model : obs)
-        model->displace(d);
-    if(!obs.empty())
-        m_curFish->push(d);
-    else
-        m_curFish->displace(d);
+        model->displace(d, true);
+    m_curFish->displace(d, !obs.empty());
 }
 
 void LevelRules::registerMotion(Model *model, Direction d) {

@@ -98,8 +98,7 @@ public:
     bool intersects(Model* other, ICoords d);
 
     void turn();
-    void displace(ICoords d);
-    void push(ICoords d);
+    void displace(ICoords d, bool pushing = false);
     void deltaMove(float dt);
     void deltaStop();
     void die();

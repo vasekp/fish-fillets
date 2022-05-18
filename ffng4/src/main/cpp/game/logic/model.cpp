@@ -33,19 +33,13 @@ void Model::turn() {
     m_orientation = (Orientation)(1 - m_orientation);
 }
 
-void Model::displace(ICoords d) {
-    if(FCoords(d) || m_delta)
+void Model::displace(ICoords d, bool pushing) {
+    if(!pushing && (FCoords(d) || m_delta))
         m_warp += warpIncrement;
     else
         deltaStop();
     m_move = d;
-    m_pushing = false;
-}
-
-void Model::push(ICoords d) {
-    deltaStop();
-    displace(d);
-    m_pushing = true;
+    m_pushing = pushing;
 }
 
 void Model::deltaMove(float dt) {
