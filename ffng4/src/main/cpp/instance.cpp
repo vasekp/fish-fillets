@@ -12,6 +12,8 @@
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
+#include <android/configuration.h>
+
 Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), live(false), running(false), quit_request(false) {
     m_files = std::make_unique<Files>(*this);
     m_graphics = std::make_unique<Graphics>(*this);
@@ -19,6 +21,8 @@ Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), l
     m_input = std::make_unique<Input>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
+
+    m_input->setDensity((float) AConfiguration_getDensity(m_app->config));
 }
 
 Instance& Instance::get(android_app* app) {

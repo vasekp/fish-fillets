@@ -80,12 +80,15 @@ public:
     int y() const { return m_y; }
     float fx() const { return m_fx; }
     float fy() const { return m_fy; }
+    float length() { return std::hypot(m_fx, m_fy); }
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
     friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }
     friend FCoords& operator+=(FCoords& a, FCoords b) { a.m_fx += b.m_fx; a.m_fy += b.m_fy; return a; }
     friend FCoords& operator-=(FCoords& a, FCoords b) { a.m_fx -= b.m_fx; a.m_fy -= b.m_fy; return a; }
     friend FCoords operator*(float f, FCoords c) { return {f * c.fx(), f * c.fy()}; }
+    friend FCoords operator*(FCoords c, float f) { return {f * c.fx(), f * c.fy()}; }
+    friend FCoords operator/(FCoords c, float f) { return {c.fx() / f, c.fy() / f}; }
 
     friend bool operator==(FCoords a, FCoords b) { return a.m_fx == b.m_fx && a.m_fy == b.m_fy; }
     friend bool operator>(FCoords a, FCoords b) { return std::abs(a.m_fx) > std::abs(b.m_fx) || std::abs(a.m_fy) > std::abs(b.m_fy); }

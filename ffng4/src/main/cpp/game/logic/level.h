@@ -38,7 +38,7 @@ public:
 
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
-    Instance& instance() { return m_instance; } // TEMP
+    Input& input() { return m_instance.input(); }
 
     void init();
     void tick();

@@ -14,8 +14,8 @@ class LevelRules {
     Model* m_small;
     Model* m_big;
     Model* m_curFish;
-    Key m_lastKey;
 
+    std::queue<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<Model*, Model*>> m_dependencyGraph;
     std::map<const Model*, Model::SupportType> m_support;

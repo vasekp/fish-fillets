@@ -1,7 +1,7 @@
 #include "level.h"
 #include "rules.h"
 
-LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout), m_lastKey(Key::none) {
+LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
     m_big = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
     m_curFish = m_small;
@@ -9,10 +9,7 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
 }
 
 void LevelRules::keyInput(Key key) {
-    if(key == m_lastKey);
-    else {
-        m_lastKey = key;
-    }
+    m_keyQueue.push(key);
 }
 
 void LevelRules::processKey(Key key) {
@@ -38,7 +35,8 @@ void LevelRules::processKey(Key key) {
 }
 
 void LevelRules::clearQueue() {
-    m_lastKey = Key::none;
+    decltype(m_keyQueue) empty{};
+    m_keyQueue.swap(empty);
 }
 
 void LevelRules::switchFish() {
@@ -93,9 +91,14 @@ void LevelRules::update() {
     bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); })
             && !m_level.blocked();
 
-    if(ready && m_lastKey != Key::none) {
-        processKey(m_lastKey);
-        m_lastKey = Key::none;
+    if(ready) {
+        if(!m_keyQueue.empty()) {
+            processKey(m_keyQueue.front());
+            m_keyQueue.pop();
+        } else if(auto key = m_level.input().pool(); key != Key::none) {
+            // TODO only repeat directions
+            processKey(key);
+        }
     }
 
     for(auto& model : m_layout.models())
