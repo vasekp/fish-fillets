@@ -46,7 +46,7 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
     while(!queue.empty()) {
         const auto model = queue.front();
         for(auto* other : intersections(model, d)) {
-            if(ret.contains(other))
+            if(ret.contains(other) || other == root)
                 continue;
             ret.insert(other);
             if(other->movable())
