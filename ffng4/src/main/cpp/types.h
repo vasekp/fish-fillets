@@ -80,7 +80,11 @@ public:
     int y() const { return m_y; }
     float fx() const { return m_fx; }
     float fy() const { return m_fy; }
-    float length() { return std::hypot(m_fx, m_fy); }
+    float norm2() { return m_fx * m_fx + m_fy * m_fy; }
+    float length() { return std::sqrt(norm2()); }
+    float dot(FCoords other) { return m_fx * other.m_fx + m_fy * other.m_fy; }
+    FCoords project(FCoords other) { return dot(other) / other.norm2() * other; }
+    FCoords projectPositive(FCoords other) { return std::max(dot(other), 0.f) / other.norm2() * other; }
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
     friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }

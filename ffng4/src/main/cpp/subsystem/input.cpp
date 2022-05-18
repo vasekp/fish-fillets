@@ -81,7 +81,7 @@ bool Input::handlePointerMove(FCoords pos) {
             return false;
         case DirpadState::follow:
             if(small || dir == m_dirpad.lastDir) {
-                m_dirpad.refPos = (m_dirpad.refPos + pos) / 2.f; // TODO time
+                m_dirpad.refPos += (pos - m_dirpad.refPos).projectPositive(m_dirpad.lastDir);
                 return false;
             } else if(dir) {
                 m_instance.screens().dispatchKey(toKey(dir));

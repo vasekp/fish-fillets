@@ -42,9 +42,9 @@ private:
     static unsigned index(Key key);
     static Key toKey(ICoords dir);
 
-    constexpr static float minDistance = 0.5f; // inches
+    constexpr static float minDistance = 0.3f; // inches
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
-    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (500);
+    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::time_point off{};
 };
 
