@@ -42,6 +42,8 @@ void LevelScreen::own_refresh() {
     else
         m_mirrorTarget = makeMirrorTarget(**it);
 
+    glUseProgram(m_instance.graphics().shaders().rope);
+    glUniform4fv(m_instance.graphics().shaders().rope.uniform("uColor"), 1, Color(0x30404E).gl().get());
 }
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
@@ -61,6 +63,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
+    const auto& ropeProgram = m_instance.graphics().shaders().rope;
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     glUseProgram(wavyProgram);
@@ -90,6 +93,12 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
             for (auto i = 0u; i < images.size(); i++)
                 target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.fx() * size_unit, model.fy() * size_unit);
         }
+    }
+
+    for(const auto& rope : m_level.layout().getRopes()) {
+        FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
+        FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
+        target.fill(ropeProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 
     if(mirror) {

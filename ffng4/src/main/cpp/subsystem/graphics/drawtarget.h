@@ -12,6 +12,8 @@ public:
               float destX = 0, float destY = 0, float srcX = 0, float srcY = 0,
               unsigned width = fullSize, unsigned height = fullSize) const;
 
+    void fill(const ogl::Program &program, float x1, float y1, float x2, float y2) const;
+
     static constexpr unsigned fullSize = std::numeric_limits<decltype(fullSize)>::max();
 
 protected:

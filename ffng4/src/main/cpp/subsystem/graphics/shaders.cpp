@@ -13,6 +13,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     titleText = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/title.frag").read()});
     disintegrate = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/disintegrate.frag").read()});
     mirror = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/mirror.frag").read()});
+    rope = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/rope.frag").read()});
 
     for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror}) {
         glUseProgram(*program);

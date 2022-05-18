@@ -25,6 +25,10 @@ Model& LevelLayout::getModel(int index) {
     return *m_models.back();
 }
 
+void LevelLayout::addRope(Model *m1, Model *m2, ICoords d1, ICoords d2) {
+    m_ropes.push_back({m1, m2, d1, d2});
+}
+
 std::set<Model*> LevelLayout::intersections(Model* model, ICoords d) {
     if(model->isVirtual())
         return {};
@@ -57,7 +61,6 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
     LOGD("Obstacles: %d", (int)ret.size());
     return ret;
 }
-
 void LevelLayout::animate(float dt) {
     for (auto &model: m_models)
         if (model->moving()) {

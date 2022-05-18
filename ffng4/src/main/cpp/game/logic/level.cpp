@@ -11,7 +11,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
     m_script.registerFn("game_getCycles", lua::wrap<&Level::game_getCycles>);
-//    m_script.registerFn("game_addDecor", script_game_addDecor);
+    m_script.registerFn("game_addDecor", lua::wrap<&Level::game_addDecor>);
 //    m_script.registerFn("game_setScreenShift", script_game_setScreenShift);
 //    m_script.registerFn("game_changeBg", script_game_changeBg);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
@@ -304,6 +304,13 @@ void Level::game_planAction(QueuedFunction function) {
 
 void Level::game_killPlan() {
     m_plan.clear();
+}
+
+void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {
+    if(type == "rope")
+        m_layout->addRope(&m_layout->getModel(m1), &m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});
+    else
+        LOGE("Unknown decor %s", type.c_str());
 }
 
 bool Level::dialog_isDialog() {

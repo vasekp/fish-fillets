@@ -72,6 +72,7 @@ public:
     int x() const { return m_position.x; }
     int y() const { return m_position.y; }
     ICoords xy() const { return m_position; }
+    FCoords fxy() const { return {fx(), fy()}; }
     float fx() const;
     float fy() const;
 

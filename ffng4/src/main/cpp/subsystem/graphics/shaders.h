@@ -13,6 +13,7 @@ struct Shaders {
     ogl::Program titleText;
     ogl::Program disintegrate;
     ogl::Program mirror;
+    ogl::Program rope;
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texMask_shader = 1;

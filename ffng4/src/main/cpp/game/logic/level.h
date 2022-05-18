@@ -80,6 +80,7 @@ public:
     bool game_isPlanning();
     void game_planAction(QueuedFunction function);
     void game_killPlan();
+    void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
