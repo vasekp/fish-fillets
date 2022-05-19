@@ -35,8 +35,6 @@ class Level : public ScriptReferrer {
     };
     std::map<std::string, Dialog> m_dialogs;
 
-    bool m_roundFlag; // SET when ready for new round, RESET after script update
-
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
 
@@ -48,7 +46,6 @@ public:
     void tick();
     void blockFor(int frames, std::function<void()>&& callback);
     bool blocked();
-    void notifyRound();
     void scheduleAction(std::function<void()>&& action);
     auto& actionSchedule() { return m_actionSchedule; }
 

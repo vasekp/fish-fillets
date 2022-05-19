@@ -6,8 +6,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this),
-        m_roundFlag(false)
+        m_script(instance, *this)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -92,7 +91,6 @@ void Level::tick() {
     }
     m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     m_script.doString("script_update();");
-    m_roundFlag = false;
     if (!m_dialogSchedule.empty()) {
         auto &front = m_dialogSchedule.front();
         if(front.call())
@@ -106,10 +104,6 @@ void Level::blockFor(int frames, std::function<void()>&& callback) {
 
 bool Level::blocked() {
     return !m_blocks.empty();
-}
-
-void Level::notifyRound() {
-    m_roundFlag = true;
 }
 
 void Level::scheduleAction(std::function<void()>&& action) {
@@ -131,7 +125,7 @@ int Level::level_getDepth() const {
 }
 
 bool Level::level_isNewRound() const {
-    return m_roundFlag;
+    return m_blocks.empty();
 }
 
 bool Level::level_isSolved() {
@@ -209,12 +203,12 @@ std::string Level::model_getState(int index) {
     const auto& model = layout().getModel(index);
     if(!model.alive())
         return "dead";
+    else if(model.talking())
+        return "talking";
     else if(model.pushing())
         return "pushing";
     else if(layout().borderDepth(&model).first == 1)
         return "goout";
-    else if(model.talking())
-        return "talking";
     else
         return "normal";
 }

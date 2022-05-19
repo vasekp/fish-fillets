@@ -100,7 +100,6 @@ void LevelRules::update() {
             && !m_level.blocked();
 
     if(ready) {
-        m_level.notifyRound();
         if(!m_level.actionSchedule().empty()) {
             LOGD("run scheduled");
             auto callback = m_level.actionSchedule().front();
