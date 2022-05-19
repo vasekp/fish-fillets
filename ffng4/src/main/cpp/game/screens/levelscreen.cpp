@@ -33,6 +33,9 @@ void LevelScreen::own_refresh() {
             m_instance.audio().addSource(m_music);
     }
 
+    if(m_display)
+        m_display->reload(m_instance);
+
     const auto& models = m_level.layout().models();
     auto it = std::find_if(models.begin(),  models.end(), [&](const auto& model) {
         return m_effects.contains(model.get()) && m_effects.at(model.get()).effect == &Shaders::mirror;
@@ -64,6 +67,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& ropeProgram = m_instance.graphics().shaders().rope;
+
+    if(m_display) {
+        target.blit(&m_display.value(), copyProgram);
+        return;
+    }
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     glUseProgram(wavyProgram);
@@ -195,4 +203,11 @@ void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float 
 
 FCoords LevelScreen::shift() {
     return m_shift;
+}
+
+void LevelScreen::display(const std::string& filename) {
+    if(!filename.empty())
+        m_display.emplace(m_instance.files().system(filename), m_instance);
+    else
+        m_display.reset();
 }

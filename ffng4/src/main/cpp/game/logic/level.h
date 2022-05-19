@@ -19,14 +19,15 @@ class Level : public ScriptReferrer {
     std::unique_ptr<LevelRules> m_rules;
     std::deque<QueuedFunction> m_dialogSchedule;
 
-
     struct Delayed {
         int countdown;
         std::function<void()> callback;
     };
     std::vector<Delayed> m_blocks;
 
+    std::deque<QueuedFunction> m_showSchedule;
     std::deque<std::function<void()>> m_actionSchedule;
+    bool m_inDemo;
 
     struct Dialog {
         std::string text;
@@ -54,6 +55,10 @@ public:
     int level_getDepth() const;
     bool level_isNewRound() const;
     bool level_isSolved();
+    void level_planShow(QueuedFunction function);
+    bool level_isShowing();
+    void level_newDemo(const std::string& filename);
+    void demo_display(const std::string& filename);
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();

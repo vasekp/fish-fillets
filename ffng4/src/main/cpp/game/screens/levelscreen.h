@@ -15,6 +15,7 @@ class LevelScreen : public GameScreen {
     std::array<float, 3> m_waves;
     Timer m_timer;
     Subtitles m_subs;
+    std::optional<Image> m_display;
     bool m_fullLoad;
 
     struct Effect {
@@ -47,6 +48,7 @@ protected:
     void setEffect(Model* model, const std::string& name);
     void setShift(FCoords shift);
     FCoords shift() override;
+    void display(const std::string& filename);
 
     bool own_mouse(unsigned int x, unsigned int y) override;
     bool own_key(Key key) override;

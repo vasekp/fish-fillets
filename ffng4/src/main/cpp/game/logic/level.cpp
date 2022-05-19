@@ -6,7 +6,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this)
+        m_script(instance, *this),
+        m_inDemo(false)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
     m_script.registerFn("game_addModel", lua::wrap<&Level::game_addModel>);
@@ -56,15 +57,17 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("level_getDepth", lua::wrap<&Level::level_getDepth>);
     m_script.registerFn("level_isNewRound", lua::wrap<&Level::level_isNewRound>);
     m_script.registerFn("level_isSolved", lua::wrap<&Level::level_isSolved>);
-//    m_script.registerFn("level_newDemo", script_level_newDemo);
-//    m_script.registerFn("level_planShow", script_level_planShow);
-//    m_script.registerFn("level_isShowing", script_level_isShowing);
+    m_script.registerFn("level_planShow", lua::wrap<&Level::level_planShow>);
+    m_script.registerFn("level_isShowing", lua::wrap<&Level::level_isShowing>);
 //    m_script.registerFn("level_save", script_level_save);
 //    m_script.registerFn("level_load", script_level_load);
 //    m_script.registerFn("level_action_move", script_level_action_move);
 //    m_script.registerFn("level_action_save", script_level_action_save);
 //    m_script.registerFn("level_action_load", script_level_action_load);
 //    m_script.registerFn("level_action_restart", script_level_action_restart);
+
+    m_script.registerFn("level_newDemo", lua::wrap<&Level::level_newDemo>);
+    m_script.registerFn("demo_display", lua::wrap<&Level::demo_display>);
 
     m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
     m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
@@ -90,11 +93,21 @@ void Level::tick() {
             block.callback();
     }
     m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
-    m_script.doString("script_update();");
+    if(!m_inDemo)
+        m_script.doString("script_update();");
     if (!m_dialogSchedule.empty()) {
         auto &front = m_dialogSchedule.front();
         if(front.call())
             m_dialogSchedule.pop_front();
+    }
+    if (!m_showSchedule.empty()) {
+        auto &front = m_showSchedule.front();
+        if(front.call())
+            m_showSchedule.pop_front();
+    }
+    if(m_inDemo && m_dialogSchedule.empty()) {
+        m_screen.display("");
+        m_inDemo = false;
     }
 }
 
@@ -131,6 +144,23 @@ bool Level::level_isNewRound() const {
 bool Level::level_isSolved() {
     //TODO
     return false;
+}
+
+void Level::level_planShow(QueuedFunction function) {
+    m_showSchedule.push_back(std::move(function));
+}
+
+bool Level::level_isShowing() {
+    return !m_showSchedule.empty();
+}
+
+void Level::level_newDemo(const std::string& filename) {
+    m_inDemo = true;
+    m_script.file_include(filename);
+}
+
+void Level::demo_display(const std::string& filename) {
+    m_screen.display(filename);
 }
 
 void Level::game_setRoomWaves(float amplitude, float period, float speed) {
