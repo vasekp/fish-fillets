@@ -1,6 +1,6 @@
 #include "subsystem/script.h"
 
-QueuedFunction::QueuedFunction(QueuedFunction &&other) noexcept :
+LuaCallback::LuaCallback(LuaCallback &&other) noexcept :
     m_state(other.m_state),
     m_ref(other.m_ref),
     m_tries(other.m_tries)
@@ -8,25 +8,25 @@ QueuedFunction::QueuedFunction(QueuedFunction &&other) noexcept :
     other.m_state = nullptr;
 }
 
-QueuedFunction& QueuedFunction::operator=(QueuedFunction &&other) noexcept {
+LuaCallback& LuaCallback::operator=(LuaCallback &&other) noexcept {
     std::swap(m_state, other.m_state);
     std::swap(m_ref, other.m_ref);
     std::swap(m_tries, other.m_tries);
     return *this;
 }
 
-QueuedFunction::~QueuedFunction() {
+LuaCallback::~LuaCallback() {
     if(m_state)
         luaL_unref(m_state, LUA_REGISTRYINDEX, m_ref);
 }
 
-QueuedFunction QueuedFunction::from(lua_State* L) {
+LuaCallback LuaCallback::from(lua_State* L) {
     luaL_checktype(L, 1, LUA_TFUNCTION);
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     return {L, ref};
 }
 
-bool QueuedFunction::call() {
+bool LuaCallback::operator()() {
     LOGV("calling [%d] tries=%d", m_ref, m_tries);
     lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_ref);
     lua_pushnumber(m_state, m_tries++);
@@ -35,4 +35,11 @@ bool QueuedFunction::call() {
     bool result = lua_toboolean(m_state, -1);
     lua_pop(m_state, 1);
     return result;
+}
+
+bool Callback::operator()() {
+    if(index() == 0)
+        return std::get<0>(*this)();
+    else
+        return std::get<1>(*this)();
 }

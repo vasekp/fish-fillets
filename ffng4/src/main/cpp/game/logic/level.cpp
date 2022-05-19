@@ -95,12 +95,11 @@ void Level::tick() {
     m_blocks.erase(std::remove_if(m_blocks.begin(), m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     if(!m_inDemo)
         m_script.doString("script_update();");
-    if(!m_dialogSchedule.empty()) {
-        auto& front = m_dialogSchedule.front();
-        if(front.call())
-            m_dialogSchedule.pop_front();
+    if(!m_updateSchedule.empty()) {
+        if(m_updateSchedule.front()())
+            m_updateSchedule.pop_front();
     }
-    if(m_inDemo && m_dialogSchedule.empty()) {
+    if(m_inDemo && m_updateSchedule.empty()) {
         m_screen.display("");
         m_inDemo = false;
     }
@@ -114,24 +113,18 @@ bool Level::blocked() const {
     return !m_blocks.empty();
 }
 
-void Level::scheduleAction(std::function<void()>&& action) {
-    m_actionSchedule.push_back(std::move(action));
+void Level::scheduleAction(std::function<bool()>&& action) {
+    m_moveSchedule.emplace_back(std::move(action));
 }
 
 bool Level::runScheduled() {
-    if(!m_actionSchedule.empty()) {
-        m_actionSchedule.front()();
-        m_actionSchedule.pop_front();
-        return true;
-    } else if(!m_showSchedule.empty()) {
-        // FIXME: does ever return false?
-        if(m_showSchedule.front().call()) {
-            m_showSchedule.pop_front();
-            return true;
-        } else
-            return false;
-    }
-    return false;
+    if(!m_moveSchedule.empty()) {
+        bool ret = m_moveSchedule.front()();
+        if(ret)
+            m_moveSchedule.pop_front();
+        return ret;
+    } else
+        return false;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -157,12 +150,12 @@ bool Level::level_isSolved() {
     return false;
 }
 
-void Level::level_planShow(QueuedFunction function) {
-    m_showSchedule.push_back(std::move(function));
+void Level::level_planShow(LuaCallback function) {
+    m_moveSchedule.emplace_back(std::move(function));
 }
 
 bool Level::level_isShowing() {
-    return !m_showSchedule.empty();
+    return !m_moveSchedule.empty();
 }
 
 bool Level::level_action_move(const std::string& move) {
@@ -174,7 +167,16 @@ bool Level::level_action_move(const std::string& move) {
 
 bool Level::level_action_restart() {
     LOGD("restart");
-    init();
+    m_updateSchedule.clear();
+    m_updateSchedule.emplace_back([&]() {
+        m_dialogs.clear();
+        init();
+        m_updateSchedule.clear();
+        // Move schedule can reach over restarts
+        m_blocks.clear();
+        m_inDemo = false;
+        return true;
+    });
     return true;
 }
 
@@ -413,15 +415,15 @@ void Level::sound_stopMusic() {
 }
 
 bool Level::game_isPlanning() {
-    return !m_dialogSchedule.empty();
+    return !m_updateSchedule.empty();
 }
 
-void Level::game_planAction(QueuedFunction function) {
-    m_dialogSchedule.push_back(std::move(function));
+void Level::game_planAction(LuaCallback function) {
+    m_updateSchedule.push_back(std::move(function));
 }
 
 void Level::game_killPlan() {
-    m_dialogSchedule.clear();
+    m_updateSchedule.clear();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {

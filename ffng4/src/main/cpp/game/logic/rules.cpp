@@ -190,7 +190,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
 
     if(model->goal() == Model::Goal::escape) {
         if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0)
-            m_level.scheduleAction([d, model]() { model->displace(d); });
+            m_level.scheduleAction([d, model]() { model->displace(d); return true; });
     }
 }
 

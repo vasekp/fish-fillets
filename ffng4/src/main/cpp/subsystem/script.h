@@ -3,7 +3,7 @@
 
 #include "instance.h"
 #include "platform/lua.h"
-#include "script/queuedfn.h"
+#include "script/callback.h"
 
 class ScriptReferrer {
 public:

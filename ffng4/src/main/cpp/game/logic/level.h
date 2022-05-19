@@ -7,6 +7,7 @@
 #include "rules.h"
 
 #include <functional>
+#include <variant>
 
 class LevelScreen;
 
@@ -17,7 +18,9 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
-    std::deque<QueuedFunction> m_dialogSchedule;
+
+    std::deque<Callback> m_updateSchedule;
+    std::deque<Callback> m_moveSchedule;
 
     struct Delayed {
         int countdown;
@@ -25,8 +28,6 @@ class Level : public ScriptReferrer {
     };
     std::vector<Delayed> m_blocks;
 
-    std::deque<QueuedFunction> m_showSchedule;
-    std::deque<std::function<void()>> m_actionSchedule;
     bool m_inDemo;
 
     struct Dialog {
@@ -47,7 +48,7 @@ public:
     void tick();
     void blockFor(int frames, std::function<void()>&& callback);
     bool blocked() const;
-    void scheduleAction(std::function<void()>&& action);
+    void scheduleAction(std::function<bool()>&& action);
     bool runScheduled();
 
     void level_createRoom(int width, int height, const std::string& bg);
@@ -55,7 +56,7 @@ public:
     int level_getDepth() const;
     bool level_isNewRound() const;
     bool level_isSolved();
-    void level_planShow(QueuedFunction function);
+    void level_planShow(LuaCallback function);
     bool level_isShowing();
     bool level_action_move(const std::string& move);
     bool level_action_save();
@@ -96,7 +97,7 @@ public:
     void sound_playMusic(const std::string& filename);
     void sound_stopMusic();
     bool game_isPlanning();
-    void game_planAction(QueuedFunction function);
+    void game_planAction(LuaCallback function);
     void game_killPlan();
     void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
     void game_setScreenShift(float dx, float dy);
