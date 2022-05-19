@@ -46,9 +46,9 @@ public:
     void init();
     void tick();
     void blockFor(int frames, std::function<void()>&& callback);
-    bool blocked();
+    bool blocked() const;
     void scheduleAction(std::function<void()>&& action);
-    auto& actionSchedule() { return m_actionSchedule; }
+    bool runScheduled();
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
@@ -57,6 +57,10 @@ public:
     bool level_isSolved();
     void level_planShow(QueuedFunction function);
     bool level_isShowing();
+    bool level_action_move(const std::string& move);
+    bool level_action_save();
+    bool level_action_load();
+    bool level_action_restart();
     void level_newDemo(const std::string& filename);
     void demo_display(const std::string& filename);
     void game_setRoomWaves(float amplitude, float period, float speed);
@@ -86,6 +90,7 @@ public:
     bool model_isTalking(int index);
     void model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
+    bool model_equals(int index, int x, int y);
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);

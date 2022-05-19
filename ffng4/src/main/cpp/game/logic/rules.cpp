@@ -32,6 +32,38 @@ void LevelRules::processKey(Key key) {
         case Key::space:
             switchFish();
             break;
+        case Key::smallUp:
+            m_curFish = m_small;
+            moveFish(Direction::up);
+            break;
+        case Key::smallDown:
+            m_curFish = m_small;
+            moveFish(Direction::down);
+            break;
+        case Key::smallLeft:
+            m_curFish = m_small;
+            moveFish(Direction::left);
+            break;
+        case Key::smallRight:
+            m_curFish = m_small;
+            moveFish(Direction::right);
+            break;
+        case Key::bigUp:
+            m_curFish = m_big;
+            moveFish(Direction::up);
+            break;
+        case Key::bigDown:
+            m_curFish = m_big;
+            moveFish(Direction::down);
+            break;
+        case Key::bigLeft:
+            m_curFish = m_big;
+            moveFish(Direction::left);
+            break;
+        case Key::bigRight:
+            m_curFish = m_big;
+            moveFish(Direction::right);
+            break;
         default:
             ;
     }
@@ -100,12 +132,8 @@ void LevelRules::update() {
             && !m_level.blocked();
 
     if(ready) {
-        if(!m_level.actionSchedule().empty()) {
-            LOGD("run scheduled");
-            auto callback = m_level.actionSchedule().front();
-            m_level.actionSchedule().pop_front();
-            callback();
-        } else if(!m_keyQueue.empty()) {
+        m_level.runScheduled();
+        if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
         } else if(auto key = m_level.input().pool(); key != Key::none) {

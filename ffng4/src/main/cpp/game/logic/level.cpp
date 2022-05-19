@@ -42,7 +42,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_isTalking", lua::wrap<&Level::model_isTalking>);
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
     m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
-//    m_script.registerFn("model_equals", script_model_equals);
+    m_script.registerFn("model_equals", lua::wrap<&Level::model_equals>);
 //    m_script.registerFn("model_change_setLocation", script_model_change_setLocation); // UNDO
 //    m_script.registerFn("model_getExtraParams", script_model_getExtraParams); // UNDO
 //    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams); // UNDO
@@ -61,10 +61,10 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("level_isShowing", lua::wrap<&Level::level_isShowing>);
 //    m_script.registerFn("level_save", script_level_save);
 //    m_script.registerFn("level_load", script_level_load);
-//    m_script.registerFn("level_action_move", script_level_action_move);
-//    m_script.registerFn("level_action_save", script_level_action_save);
-//    m_script.registerFn("level_action_load", script_level_action_load);
-//    m_script.registerFn("level_action_restart", script_level_action_restart);
+    m_script.registerFn("level_action_move", lua::wrap<&Level::level_action_move>);
+    m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
+    m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
+    m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
 
     m_script.registerFn("level_newDemo", lua::wrap<&Level::level_newDemo>);
     m_script.registerFn("demo_display", lua::wrap<&Level::demo_display>);
@@ -86,24 +86,19 @@ void Level::init() {
 }
 
 void Level::tick() {
-    for (auto& model : layout().models())
+    for(auto& model : layout().models())
         model->anim().update();
     for(auto& block : m_blocks) {
         if(--block.countdown == 0)
             block.callback();
     }
-    m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
+    m_blocks.erase(std::remove_if(m_blocks.begin(), m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     if(!m_inDemo)
         m_script.doString("script_update();");
-    if (!m_dialogSchedule.empty()) {
-        auto &front = m_dialogSchedule.front();
+    if(!m_dialogSchedule.empty()) {
+        auto& front = m_dialogSchedule.front();
         if(front.call())
             m_dialogSchedule.pop_front();
-    }
-    if (!m_showSchedule.empty()) {
-        auto &front = m_showSchedule.front();
-        if(front.call())
-            m_showSchedule.pop_front();
     }
     if(m_inDemo && m_dialogSchedule.empty()) {
         m_screen.display("");
@@ -115,12 +110,28 @@ void Level::blockFor(int frames, std::function<void()>&& callback) {
     m_blocks.push_back({frames, std::move(callback)});
 }
 
-bool Level::blocked() {
+bool Level::blocked() const {
     return !m_blocks.empty();
 }
 
 void Level::scheduleAction(std::function<void()>&& action) {
     m_actionSchedule.push_back(std::move(action));
+}
+
+bool Level::runScheduled() {
+    if(!m_actionSchedule.empty()) {
+        m_actionSchedule.front()();
+        m_actionSchedule.pop_front();
+        return true;
+    } else if(!m_showSchedule.empty()) {
+        // FIXME: does ever return false?
+        if(m_showSchedule.front().call()) {
+            m_showSchedule.pop_front();
+            return true;
+        } else
+            return false;
+    }
+    return false;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -138,7 +149,7 @@ int Level::level_getDepth() const {
 }
 
 bool Level::level_isNewRound() const {
-    return m_blocks.empty();
+    return !blocked();
 }
 
 bool Level::level_isSolved() {
@@ -154,12 +165,39 @@ bool Level::level_isShowing() {
     return !m_showSchedule.empty();
 }
 
+bool Level::level_action_move(const std::string& move) {
+    assert(move.length() == 1);
+    LOGD("%c", move[0]);
+    rules().keyInput(CharKeymap(move[0]));
+    return true;
+}
+
+bool Level::level_action_restart() {
+    LOGD("restart");
+    init();
+    return true;
+}
+
+bool Level::level_action_save() {
+    LOGD("save");
+    return true;
+}
+
+bool Level::level_action_load() {
+    LOGD("load");
+    return true;
+}
+
 void Level::level_newDemo(const std::string& filename) {
-    m_inDemo = true;
-    m_script.file_include(filename);
+//    m_inDemo = true;
+//    m_script.file_include(filename);
 }
 
 void Level::demo_display(const std::string& filename) {
+    /* NOTE: Lua also passes int x, int y, expecting us to compose the images.
+     * These were replaced by pre-composed graphics so everything is drawn at (0,0).
+     * The original assets are 10 times smaller, but they would require either storing the intermediate textures
+     * (and rewriting all code relying on images loadable from filename) or drawing all previous frames on each draw(). */
     m_screen.display(filename);
 }
 
@@ -334,6 +372,22 @@ void Level::model_killSound(int index) {
     if(talk)
         m_instance.audio().removeSource(talk);
     model.talk() = {};
+}
+
+bool Level::model_equals(int index, int x, int y) {
+    LOGD("[%d,%d] equals %d?", x, y, index);
+    if(index != -1) {
+        const auto& model = layout().getModel(index);
+        return model.shape().covers({x - model.x(), y - model.y()});
+    } else {
+        for(const auto& model : layout().models())
+            if(model->shape().covers({x - model->x(), y - model->y()})) {
+                LOGD("found model %d", model->index());
+                return false;
+            }
+        // none found
+        return true;
+    }
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {

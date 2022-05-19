@@ -7,6 +7,14 @@ enum class Key {
     down,
     left,
     right,
+    smallUp,
+    smallDown,
+    smallLeft,
+    smallRight,
+    bigUp,
+    bigDown,
+    bigLeft,
+    bigRight,
     space,
     save,
     load,
@@ -15,5 +23,6 @@ enum class Key {
 };
 
 Key AndroidKeymap(unsigned code);
+Key CharKeymap(char code);
 
 #endif //FISH_FILLETS_KEY_H

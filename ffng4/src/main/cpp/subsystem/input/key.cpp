@@ -20,3 +20,28 @@ Key AndroidKeymap(unsigned int code) {
             return Key::none;
     }
 }
+
+Key CharKeymap(char code) {
+    switch(code) {
+        case 'u':
+            return Key::smallUp;
+        case 'd':
+            return Key::smallDown;
+        case 'l':
+            return Key::smallLeft;
+        case 'r':
+            return Key::smallRight;
+        case 'U':
+            return Key::bigUp;
+        case 'D':
+            return Key::bigDown;
+        case 'L':
+            return Key::bigLeft;
+        case 'R':
+            return Key::bigRight;
+        case ' ':
+            return Key::space;
+        default:
+            return Key::none;
+    }
+}

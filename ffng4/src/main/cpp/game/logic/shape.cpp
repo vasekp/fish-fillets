@@ -63,3 +63,10 @@ bool Shape::intersects(const Shape& other, ICoords d) const {
     }
     return false;
 }
+
+bool Shape::covers(ICoords xy) const {
+    if(xy.x < 0 || xy.y < 0 || xy.x >= (int)width() || xy.y >= (int)height())
+        return false;
+    else
+        return m_bits[xy.y][xy.x];
+}

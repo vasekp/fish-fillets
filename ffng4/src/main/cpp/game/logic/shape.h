@@ -16,6 +16,7 @@ public:
     unsigned height() const { return m_height; }
 
     bool intersects(const Shape& other, ICoords d) const;
+    bool covers(ICoords xy) const;
 };
 
 #endif //FISH_FILLETS_SHAPE_H

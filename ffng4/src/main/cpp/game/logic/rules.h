@@ -31,9 +31,9 @@ public:
     void update();
 
 private:
+    void processKey(Key key);
     void moveFish(Direction d);
     void switchFish();
-    void processKey(Key key);
 
     void buildDepGraph();
     void updateDepGraph(Model* model);
