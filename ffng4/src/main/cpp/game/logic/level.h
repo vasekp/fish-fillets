@@ -15,16 +15,18 @@ class Level : public ScriptReferrer {
     LevelScreen& m_screen;
     const LevelRecord& m_record;
     Script m_script;
-    std::deque<QueuedFunction> m_plan;
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
+    std::deque<QueuedFunction> m_dialogSchedule;
+
 
     struct Delayed {
         int countdown;
         std::function<void()> callback;
     };
-
     std::vector<Delayed> m_blocks;
+
+    std::deque<std::function<void()>> m_actionSchedule;
 
     struct Dialog {
         std::string text;
@@ -44,9 +46,11 @@ public:
 
     void init();
     void tick();
-    void blockFor(int frames, const std::function<void()>& callback);
+    void blockFor(int frames, std::function<void()>&& callback);
     bool blocked();
     void notifyRound();
+    void scheduleAction(std::function<void()>&& action);
+    auto& actionSchedule() { return m_actionSchedule; }
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();

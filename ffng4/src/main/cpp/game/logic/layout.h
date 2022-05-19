@@ -22,6 +22,13 @@ class LevelLayout {
     std::vector<RopeDecor> m_ropes;
 
 public:
+    enum class BorderState {
+        within,
+        touch,
+        beyond,
+        out
+    };
+
     LevelLayout(Level& level, int width, int height);
 
     auto& models() { return m_models; }
@@ -29,6 +36,7 @@ public:
     void addRope(Model* m1, Model* m2, ICoords d1, ICoords d2);
     Model& getModel(int index);
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
+    BorderState checkBorder(const Model* model) const;
     bool isAtBorder(const Model* model) const;
 
     std::set<Model*> intersections(Model* model, ICoords d);

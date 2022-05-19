@@ -86,11 +86,15 @@ void LevelRules::update() {
 
     bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); })
             && !m_level.blocked();
-    if(ready)
-        m_level.notifyRound();
 
     if(ready) {
-        if(!m_keyQueue.empty()) {
+        m_level.notifyRound();
+        if(!m_level.actionSchedule().empty()) {
+            LOGD("run scheduled");
+            auto callback = m_level.actionSchedule().front();
+            m_level.actionSchedule().pop_front();
+            callback();
+        } else if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
         } else if(auto key = m_level.input().pool(); key != Key::none) {
@@ -126,28 +130,27 @@ void LevelRules::evalSteel() {
 
 void LevelRules::evalMotion(Model* model, Direction d) {
     LOGV("stopped %d [%d,%d]", model->index(), d.x, d.y);
-    if(model->alive())
-        return;
-    if(model->weight() == Model::Weight::none)
-        return;
-    if(d == Direction::up)
-        return;
-    switch(m_support[model]) {
-        case Model::SupportType::none:
-            break;
-        case Model::SupportType::wall:
-            if(d == Direction::down)
-                m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
-            break;
-        case Model::SupportType::small:
-        case Model::SupportType::big:
-            const auto support = (d == Direction::down)
-                                 ? m_layout.obstacles(model, Direction::down)
-                                 : m_layout.intersections(model, Direction::down);
-            for(auto* other : support)
-                if(other->alive())
-                    death(other);
+    if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
+        switch(m_support[model]) {
+            case Model::SupportType::none:
+                break;
+            case Model::SupportType::wall:
+                if(d == Direction::down)
+                    m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
+                break;
+            case Model::SupportType::small:
+            case Model::SupportType::big:
+                const auto support = (d == Direction::down)
+                                     ? m_layout.obstacles(model, Direction::down)
+                                     : m_layout.intersections(model, Direction::down);
+                for(auto* other : support)
+                    if(other->alive())
+                        death(other);
+        }
     }
+
+    if(auto state = m_layout.checkBorder(model); state == LevelLayout::BorderState::touch || state == LevelLayout::BorderState::beyond) // TODO goal
+        m_level.scheduleAction([d, model]() { model->displace(d); });
 }
 
 void LevelRules::death(Model* unit) {

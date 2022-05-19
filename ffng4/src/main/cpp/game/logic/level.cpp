@@ -93,15 +93,15 @@ void Level::tick() {
     m_blocks.erase(std::remove_if(m_blocks.begin(),  m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     m_script.doString("script_update();");
     m_roundFlag = false;
-    if (!m_plan.empty()) {
-        auto &front = m_plan.front();
+    if (!m_dialogSchedule.empty()) {
+        auto &front = m_dialogSchedule.front();
         if(front.call())
-            m_plan.pop_front();
+            m_dialogSchedule.pop_front();
     }
 }
 
-void Level::blockFor(int frames, const std::function<void()>& callback) {
-    m_blocks.push_back({frames, callback});
+void Level::blockFor(int frames, std::function<void()>&& callback) {
+    m_blocks.push_back({frames, std::move(callback)});
 }
 
 bool Level::blocked() {
@@ -110,6 +110,10 @@ bool Level::blocked() {
 
 void Level::notifyRound() {
     m_roundFlag = true;
+}
+
+void Level::scheduleAction(std::function<void()>&& action) {
+    m_actionSchedule.push_back(std::move(action));
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -234,8 +238,7 @@ bool Level::model_isAlive(int index) {
 }
 
 bool Level::model_isOut(int index) {
-    // TODO
-    return false;
+    return layout().checkBorder(&layout().getModel(index)) == LevelLayout::BorderState::out;
 }
 
 bool Level::model_isLeft(int index) {
@@ -329,15 +332,15 @@ void Level::sound_stopMusic() {
 }
 
 bool Level::game_isPlanning() {
-    return !m_plan.empty();
+    return !m_dialogSchedule.empty();
 }
 
 void Level::game_planAction(QueuedFunction function) {
-    m_plan.push_back(std::move(function));
+    m_dialogSchedule.push_back(std::move(function));
 }
 
 void Level::game_killPlan() {
-    m_plan.clear();
+    m_dialogSchedule.clear();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {

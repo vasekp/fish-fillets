@@ -71,6 +71,20 @@ void LevelLayout::animate(float dt) {
         }
 }
 
+LevelLayout::BorderState LevelLayout::checkBorder(const Model* model) const {
+    auto x = model->x(), y = model->y(),
+        width = (int)model->shape().width(),
+        height = (int)model->shape().height();
+    if(x == 0 || x + width == m_width || y == 0 || y + height == m_height)
+        return BorderState::touch;
+    else if(x + width <= 0 || x >= m_width || y + height <= 0 || y >= m_height)
+        return BorderState::out;
+    else if(x < 0 || x + width > m_width || y < 0 || y + height > m_height)
+        return BorderState::beyond;
+    else
+        return BorderState::within;
+}
+
 bool LevelLayout::isAtBorder(const Model* model) const {
-    return model->x() == 0 || model->y() == 0 || model->x() + model->shape().width() == m_width || model->y() + model->shape().height() == m_height;
+    return checkBorder(model) == BorderState::touch;
 }
