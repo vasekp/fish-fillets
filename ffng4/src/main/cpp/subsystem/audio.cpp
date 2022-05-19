@@ -54,10 +54,13 @@ void Audio::addSource(const AudioSource& source) {
 
 void Audio::removeSource(const AudioSource& source) {
     auto sources = m_sources.local();
-    auto newEnd = std::remove_if(sources->begin(), sources->end(), [&](const auto& other) { return other.impl() == source.impl(); });
-    if(newEnd != sources->end())
-        LOGD("removeSource: name matched %ld sources", std::distance(newEnd, sources->end()));
-    sources->erase(newEnd, sources->end());
+    auto it = std::find(sources->begin(), sources->end(), source);
+    if(it == sources->end())
+        LOGD("removeSource: did not match");
+    else {
+        LOGD("removing audio source %s", source.name().c_str());
+        sources->erase(it);
+    }
 }
 
 void Audio::clear() {
