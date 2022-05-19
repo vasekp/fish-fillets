@@ -29,7 +29,7 @@ public:
     void addRope(Model* m1, Model* m2, ICoords d1, ICoords d2);
     Model& getModel(int index);
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
-    bool isAtBorder(Model* model) const;
+    bool isAtBorder(const Model* model) const;
 
     std::set<Model*> intersections(Model* model, ICoords d);
     std::set<Model*> obstacles(Model* root, ICoords d);

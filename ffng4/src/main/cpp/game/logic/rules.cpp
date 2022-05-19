@@ -9,7 +9,7 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
 }
 
 void LevelRules::keyInput(Key key) {
-    m_keyQueue.push(key);
+    m_keyQueue.push_back(key);
 }
 
 void LevelRules::processKey(Key key) {
@@ -32,11 +32,6 @@ void LevelRules::processKey(Key key) {
         default:
             ;
     }
-}
-
-void LevelRules::clearQueue() {
-    decltype(m_keyQueue) empty{};
-    m_keyQueue.swap(empty);
 }
 
 void LevelRules::switchFish() {
@@ -97,7 +92,7 @@ void LevelRules::update() {
     if(ready) {
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
-            m_keyQueue.pop();
+            m_keyQueue.pop_front();
         } else if(auto key = m_level.input().pool(); key != Key::none) {
             // TODO only repeat directions
             processKey(key);
@@ -114,7 +109,7 @@ void LevelRules::evalFalls() {
         if (model->isVirtual())
             continue;
         if (model->movable() && m_support[model.get()] == Model::SupportType::none) {
-            clearQueue();
+            m_keyQueue.clear();
             model->displace(Direction::down);
         }
     }
@@ -161,7 +156,7 @@ void LevelRules::death(Model* unit) {
     m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
     unit->die();
     updateDepGraph(unit);
-    clearQueue();
+    m_keyQueue.clear();
     m_level.model_killSound(unit->index());
     m_level.game_killPlan();
     m_level.model_setEffect(unit->index(), "disintegrate");
@@ -200,19 +195,19 @@ void LevelRules::buildSupportMap() {
             continue;
 
         std::set<Model*> supportSet;
-        std::queue<Model*> queue;
-        queue.push(model.get());
+        std::deque<Model*> queue;
+        queue.push_back(model.get());
 
         while(!queue.empty()) {
             auto* other = queue.front();
-            queue.pop();
+            queue.pop_front();
             if(supportSet.contains(other) || other->isVirtual())
                 continue;
             supportSet.insert(other);
             if(other->movable()) {
                 for(auto [above, below] : m_dependencyGraph)
                     if(above == other)
-                        queue.push(below);
+                        queue.push_back(below);
             }
         }
         auto suppType = std::accumulate(supportSet.begin(),  supportSet.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {

@@ -202,10 +202,13 @@ std::string Level::model_getAction(int index) {
 }
 
 std::string Level::model_getState(int index) {
-//     TODO goout
     const auto& model = layout().getModel(index);
-    if(model.pushing())
+    if(!model.alive())
+        return "dead";
+    else if(model.pushing())
         return "pushing";
+    else if(layout().isAtBorder(&model))
+        return "goout";
     else if(model.talking())
         return "talking";
     else

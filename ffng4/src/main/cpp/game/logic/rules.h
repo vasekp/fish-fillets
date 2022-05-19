@@ -15,7 +15,7 @@ class LevelRules {
     Model* m_big;
     Model* m_curFish;
 
-    std::queue<Key> m_keyQueue;
+    std::deque<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<Model*, Model*>> m_dependencyGraph;
     std::map<const Model*, Model::SupportType> m_support;
@@ -31,7 +31,6 @@ private:
     void moveFish(Direction d);
     void switchFish();
     void processKey(Key key);
-    void clearQueue();
 
     void buildDepGraph();
     void updateDepGraph(Model* model);

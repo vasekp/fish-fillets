@@ -44,8 +44,8 @@ std::set<Model*> LevelLayout::intersections(Model* model, ICoords d) {
 
 std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
     std::set<Model*> ret;
-    std::queue<Model*> queue;
-    queue.push(root);
+    std::deque<Model*> queue;
+    queue.push_back(root);
 
     while(!queue.empty()) {
         const auto model = queue.front();
@@ -54,9 +54,9 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
                 continue;
             ret.insert(other);
             if(other->movable())
-                queue.push(other);
+                queue.push_back(other);
         }
-        queue.pop();
+        queue.pop_front();
     }
     LOGD("Obstacles: %d", (int)ret.size());
     return ret;
@@ -71,6 +71,6 @@ void LevelLayout::animate(float dt) {
         }
 }
 
-bool LevelLayout::isAtBorder(Model* model) const {
+bool LevelLayout::isAtBorder(const Model* model) const {
     return model->x() == 0 || model->y() == 0 || model->x() + model->shape().width() == m_width || model->y() + model->shape().height() == m_height;
 }
