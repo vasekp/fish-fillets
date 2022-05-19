@@ -9,7 +9,7 @@ class LevelLayout;
 
 class Model {
 public:
-    enum Orientation { // Needs to remain convertible to int
+    enum class Orientation {
         left,
         right
     };
@@ -98,9 +98,7 @@ public:
     auto& action() { return m_action; }
     auto action() const { return m_action; }
     auto& touchDir() { return m_touchDir; }
-    auto touchDir() const { return m_touchDir; }
     auto& viewShift() { return m_viewShift; }
-    auto viewShift() const { return m_viewShift; }
 
     bool intersects(Model* other, ICoords d) const;
 

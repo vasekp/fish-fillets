@@ -149,22 +149,22 @@ int Level::game_getCycles() {
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
     auto image = m_screen.addImage(filename);
-    layout().getModel(index).anim().add(name, orientation.value_or(Model::Orientation::left), image);
+    layout().getModel(index).anim().add(name, orientation.value_or((int)Model::Orientation::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, model.orientation(), phase.value_or(0), true);
+    model.anim().set(name, (int)model.orientation(), phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, model.orientation(), phase, false);
+    model.anim().set(name, (int)model.orientation(), phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().setExtra(name, model.orientation(), phase);
+    model.anim().setExtra(name, (int)model.orientation(), phase);
 }
 
 void Level::model_setEffect(int index, const std::string &name) {

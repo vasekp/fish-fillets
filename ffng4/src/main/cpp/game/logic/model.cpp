@@ -33,7 +33,14 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
 }
 
 void Model::turn() {
-    m_orientation = (Orientation)(1 - m_orientation);
+    switch (m_orientation) {
+        case Orientation::left:
+            m_orientation = Orientation::right;
+            break;
+        case Orientation::right:
+            m_orientation = Orientation::left;
+            break;
+    }
 }
 
 void Model::displace(ICoords d, bool pushing) {
