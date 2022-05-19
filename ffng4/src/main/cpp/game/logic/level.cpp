@@ -29,9 +29,9 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("model_getState", lua::wrap<&Level::model_getState>);
     m_script.registerFn("model_getTouchDir", lua::wrap<&Level::model_getTouchDir>);
     m_script.registerFn("model_isAlive", lua::wrap<&Level::model_isAlive>);
+    m_script.registerFn("model_isAtBorder", lua::wrap<&Level::model_isAtBorder>);
     m_script.registerFn("model_isOut", lua::wrap<&Level::model_isOut>);
     m_script.registerFn("model_isLeft", lua::wrap<&Level::model_isLeft>);
-    m_script.registerFn("model_isAtBorder", lua::wrap<&Level::model_isAtBorder>);
     m_script.registerFn("model_getW", lua::wrap<&Level::model_getW>);
     m_script.registerFn("model_getH", lua::wrap<&Level::model_getH>);
     m_script.registerFn("model_setGoal", lua::wrap<&Level::model_setGoal>);
@@ -211,7 +211,7 @@ std::string Level::model_getState(int index) {
         return "dead";
     else if(model.pushing())
         return "pushing";
-    else if(layout().isAtBorder(&model))
+    else if(layout().borderDepth(&model).first == 1)
         return "goout";
     else if(model.talking())
         return "talking";
@@ -237,17 +237,17 @@ bool Level::model_isAlive(int index) {
     return layout().getModel(index).alive();
 }
 
+bool Level::model_isAtBorder(int index) {
+    return layout().borderDepth(&layout().getModel(index)).first == 0;
+}
+
 bool Level::model_isOut(int index) {
-    return layout().checkBorder(&layout().getModel(index)) == LevelLayout::BorderState::out;
+    return layout().borderDepth(&layout().getModel(index)).second >= 0;
 }
 
 bool Level::model_isLeft(int index) {
     auto& model = layout().getModel(index);
     return model.orientation() == Model::Orientation::left;
-}
-
-bool Level::model_isAtBorder(int index) {
-    return layout().isAtBorder(&layout().getModel(index));
 }
 
 unsigned Level::model_getW(int index) {
@@ -259,7 +259,10 @@ unsigned Level::model_getH(int index) {
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
-    //TODO
+    if(goal == "goal_alive")
+        layout().getModel(index).goal() = Model::Goal::alive;
+    else if(goal == "goal_escape" || goal == "goal_out") // FIXME: is there any need to differentiate?
+        layout().getModel(index).goal() = Model::Goal::escape;
 }
 
 void Level::model_change_turnSide(int index) {

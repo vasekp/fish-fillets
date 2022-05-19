@@ -43,11 +43,18 @@ public:
         activate
     };
 
+    enum class Goal {
+        none,
+        alive,
+        escape
+    };
+
 private:
     int m_index;
     Type m_type;
     SupportType m_supportType;
     Weight m_weight;
+    Goal m_goal;
     ICoords m_position;
     ICoords m_move;
     FCoords m_delta;
@@ -99,6 +106,8 @@ public:
     auto action() const { return m_action; }
     auto& touchDir() { return m_touchDir; }
     auto& viewShift() { return m_viewShift; }
+    auto& goal() { return m_goal; }
+    auto goal() const { return m_goal; }
 
     bool intersects(Model* other, ICoords d) const;
 

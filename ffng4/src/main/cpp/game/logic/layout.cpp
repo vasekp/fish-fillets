@@ -71,20 +71,15 @@ void LevelLayout::animate(float dt) {
         }
 }
 
-LevelLayout::BorderState LevelLayout::checkBorder(const Model* model) const {
-    auto x = model->x(), y = model->y(),
+std::pair<int, int> LevelLayout::borderDepth(const Model* model, ICoords delta) const {
+    auto x = model->x() + delta.x, y = model->y() + delta.y,
         width = (int)model->shape().width(),
         height = (int)model->shape().height();
-    if(x == 0 || x + width == m_width || y == 0 || y + height == m_height)
-        return BorderState::touch;
-    else if(x + width <= 0 || x >= m_width || y + height <= 0 || y >= m_height)
-        return BorderState::out;
-    else if(x < 0 || x + width > m_width || y < 0 || y + height > m_height)
-        return BorderState::beyond;
-    else
-        return BorderState::within;
-}
-
-bool LevelLayout::isAtBorder(const Model* model) const {
-    return checkBorder(model) == BorderState::touch;
+    auto depth1 = std::max(
+            std::max(-x, x + width - m_width),
+            std::max(-y, y + height - m_height));
+    auto depth2 = std::max(
+            std::max(-x - width, x - m_width),
+            std::max(-y - height, y - m_height));
+    return {depth1, depth2};
 }

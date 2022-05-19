@@ -2,9 +2,12 @@
 #include "rules.h"
 
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
-    m_small = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
-    m_big = std::find_if(layout.models().begin(), layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
+    m_small = std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
+    m_big = std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
     m_curFish = m_small;
+    for(const auto& model : m_layout.models())
+        if(model->goal() != Model::Goal::none)
+            m_goals.emplace_back(model.get(), model->goal());
     buildDepGraph();
 }
 
@@ -55,7 +58,16 @@ void LevelRules::moveFish(Direction d) {
         });
         return;
     }
+
     const auto obs = m_layout.obstacles(m_curFish, d);
+
+    if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)
+        return;
+    for(auto* model : obs) {
+        if(m_layout.borderDepth(model, d).first > 0 && model->goal() != Model::Goal::escape)
+            return;
+    }
+
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end()) {
         for(auto* model : obs)
             model->touchDir() = d;
@@ -149,8 +161,10 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         }
     }
 
-    if(auto state = m_layout.checkBorder(model); state == LevelLayout::BorderState::touch || state == LevelLayout::BorderState::beyond) // TODO goal
-        m_level.scheduleAction([d, model]() { model->displace(d); });
+    if(model->goal() == Model::Goal::escape) {
+        if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0)
+            m_level.scheduleAction([d, model]() { model->displace(d); });
+    }
 }
 
 void LevelRules::death(Model* unit) {

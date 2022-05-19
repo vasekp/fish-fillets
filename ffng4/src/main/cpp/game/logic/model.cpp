@@ -19,6 +19,7 @@ std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const st
 
 Model::Model(int index, const std::string& type, int x, int y, const std::string& shape) :
         m_index(index),
+        m_goal(Goal::none),
         m_position{x, y},
         m_move(),
         m_viewShift(),

@@ -15,6 +15,8 @@ class LevelRules {
     Model* m_big;
     Model* m_curFish;
 
+    std::vector<std::pair<Model*, Model::Goal>> m_goals;
+
     std::deque<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<Model*, Model*>> m_dependencyGraph;
@@ -23,8 +25,9 @@ class LevelRules {
 public:
     LevelRules(Level &level, LevelLayout &layout);
 
-    void keyInput(Key key);
     void registerMotion(Model* model, Direction d);
+
+    void keyInput(Key key);
     void update();
 
 private:
