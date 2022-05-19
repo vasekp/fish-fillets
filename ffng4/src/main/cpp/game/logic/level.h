@@ -19,7 +19,7 @@ class Level : public ScriptReferrer {
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
 
-    std::deque<Callback> m_updateSchedule;
+    std::deque<Callback> m_tickSchedule;
     std::deque<Callback> m_moveSchedule;
 
     struct Delayed {

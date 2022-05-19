@@ -95,11 +95,11 @@ void Level::tick() {
     m_blocks.erase(std::remove_if(m_blocks.begin(), m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
     if(!m_inDemo)
         m_script.doString("script_update();");
-    if(!m_updateSchedule.empty()) {
-        if(m_updateSchedule.front()())
-            m_updateSchedule.pop_front();
+    if(!m_tickSchedule.empty()) {
+        if(m_tickSchedule.front()())
+            m_tickSchedule.pop_front();
     }
-    if(m_inDemo && m_updateSchedule.empty()) {
+    if(m_inDemo && m_tickSchedule.empty()) {
         m_screen.display("");
         m_inDemo = false;
     }
@@ -166,12 +166,11 @@ bool Level::level_action_move(const std::string& move) {
 }
 
 bool Level::level_action_restart() {
-    LOGD("restart");
-    m_updateSchedule.clear();
-    m_updateSchedule.emplace_back([&]() {
+    LOGD("action: restart");
+    m_tickSchedule.clear();
+    m_tickSchedule.emplace_back([&]() {
         m_dialogs.clear();
         init();
-        m_updateSchedule.clear();
         // Move schedule can reach over restarts
         m_blocks.clear();
         m_inDemo = false;
@@ -415,15 +414,15 @@ void Level::sound_stopMusic() {
 }
 
 bool Level::game_isPlanning() {
-    return !m_updateSchedule.empty();
+    return !m_tickSchedule.empty();
 }
 
 void Level::game_planAction(LuaCallback function) {
-    m_updateSchedule.push_back(std::move(function));
+    m_tickSchedule.push_back(std::move(function));
 }
 
 void Level::game_killPlan() {
-    m_updateSchedule.clear();
+    m_tickSchedule.clear();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {
