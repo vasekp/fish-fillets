@@ -102,7 +102,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 
     if(mirror) {
-        auto image =  mirror->anim().get()[0];
+        auto* image =  mirror->anim().get()[0];
         m_instance.graphics().setMask(image);
         m_mirrorTarget->bind();
         m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), m_instance.graphics().shaders().mirror,
@@ -112,7 +112,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 }
 
-AudioSource& LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
+AudioSourceRef LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
     if(single && m_sounds.contains(name))
         return m_sounds.find(name)->second;
     auto it = m_sounds.insert({name, m_instance.audio().loadSound(filename)});

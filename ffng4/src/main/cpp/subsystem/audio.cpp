@@ -46,19 +46,19 @@ void Audio::resume() {
     m_stream->start();
 }
 
-void Audio::addSource(const AudioSource& source) {
-    LOGD("adding audio source %s", source.name().c_str());
-    source.rewind();
+void Audio::addSource(AudioSourceRef source) {
+    LOGD("adding audio source %s", source->name().c_str());
+    source->rewind();
     m_sources.local()->push_back(source);
 }
 
-void Audio::removeSource(const AudioSource& source) {
+void Audio::removeSource(AudioSourceRef source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
         LOGD("removeSource: did not match");
     else {
-        LOGD("removing audio source %s", source.name().c_str());
+        LOGD("removing audio source %s", source->name().c_str());
         sources->erase(it);
     }
 }
@@ -78,15 +78,15 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto& sources = m_sources.thread();
     unsigned dialogs = 0;
     for(const auto& source : sources) {
-        if(source.done())
+        if(source->done())
             continue;
-        if(source.isDialog())
+        if(source->isDialog())
             dialogs++;
-        source.mixin(outData, numFrames);
+        source->mixin(outData, numFrames);
     }
     m_dialog.store(dialogs > 0, std::memory_order::relaxed);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
-                                 [](auto& source) { return source.done(); });
+                                 [](auto& source) { return source->done(); });
     if(newEnd != sources.end()) {
         LOGD("AudioStream: removing %lu sources", std::distance(newEnd, sources.end()));
         sources.erase(newEnd, sources.end());
@@ -94,12 +94,12 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     return oboe::DataCallbackResult::Continue;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance);
+void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& promise, Instance& instance);
 
-AudioSource Audio::loadSound(const std::string& filename, bool async) {
+AudioSourceRef Audio::loadSound(const std::string& filename, bool async) {
     if(m_sounds_preload.contains(filename))
         return m_sounds_preload.at(filename);
-    std::promise<AudioSource> promise;
+    std::promise<AudioSourceRef> promise;
     auto future = promise.get_future();
     if(async) {
         std::thread([this, filename, &promise]() {
@@ -113,7 +113,7 @@ AudioSource Audio::loadSound(const std::string& filename, bool async) {
     return future.get();
 }
 
-AudioSource Audio::loadMusic(const std::string& filename, bool async) {
+AudioSourceRef Audio::loadMusic(const std::string& filename, bool async) {
     auto source = loadSound(filename, async);
     auto meta = m_instance.files().system(filename + ".meta");
     if(meta.exists()) {
@@ -121,13 +121,13 @@ AudioSource Audio::loadMusic(const std::string& filename, bool async) {
         std::istringstream iss{contents};
         std::size_t start, end;
         iss >> start >> end;
-        source.setLoop(start, end);
+        source->setLoop(start, end);
     } else
-        source.setLoop();
+        source->setLoop();
     return source;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& promise, Instance& instance) {
+void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& promise, Instance& instance) {
     auto asset = instance.files().system(filename).asset();
 
     off64_t start, length;
@@ -169,8 +169,8 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSource>& prom
     LOGV("numSamples %ld", numSamples);
     std::int64_t curSample = 0;
 
-    auto ret = AudioSource(filename, numSamples, std::make_unique<float[]>(numSamples));
-    auto data = ret.data();
+    auto ret = std::make_shared<AudioSource>(filename, numSamples, std::make_unique<float[]>(numSamples));
+    auto data = ret->data();
     promise.set_value(ret);
 
     do {

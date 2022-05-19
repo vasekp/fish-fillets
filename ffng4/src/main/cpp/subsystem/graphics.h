@@ -37,7 +37,7 @@ public:
     bool ready() const { return (bool)m_system; }
 
     void setWindowSize(unsigned width, unsigned height);
-    void setMask(const Image &image);
+    void setMask(const Image* image);
 
     ogl::Texture loadImage(const SystemFile& path) const;
     ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline) const;

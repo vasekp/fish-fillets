@@ -11,7 +11,7 @@ class TextureView {
 public:
     TextureView(const ogl::Texture& texture, const FCoords &size) : m_texture(texture), m_size(size) { }
     TextureView(const ogl::Texture& texture) : TextureView(texture, {texture.width(), texture.height()}) { }
-    TextureView(const Image& image) : TextureView(image.texture()) { }
+    TextureView(const Image* image) : TextureView(image->texture()) { }
 
     const auto& texture() const { return m_texture; }
     auto size() const { return m_size; }

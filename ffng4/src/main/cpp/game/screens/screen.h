@@ -42,9 +42,9 @@ protected:
     GameScreen(Instance& instance);
 
     void setSize(unsigned width, unsigned height);
-    Image& addImage(const std::string& path, const std::string& name = "");
-    Image& replaceImage(const std::string& name, const std::string& path);
-    Image& getImage(const std::string& name);
+    Image* addImage(const std::string& path, const std::string& name = "");
+    Image* replaceImage(const std::string& name, const std::string& path);
+    Image* getImage(const std::string& name);
     void reloadImages();
     float timeAlive();
 

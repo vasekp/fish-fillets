@@ -10,8 +10,8 @@
 
 class LevelScreen : public GameScreen {
     Level m_level;
-    std::multimap<std::string, AudioSource> m_sounds;
-    AudioSource m_music;
+    std::multimap<std::string, AudioSourceRef> m_sounds;
+    AudioSourceRef m_music;
     std::array<float, 3> m_waves;
     Timer m_timer;
     Subtitles m_subs;
@@ -40,7 +40,7 @@ protected:
 
     void create(int width, int height, const std::string& background);
     void setWaves(float amplitude, float period, float speed);
-    AudioSource& addSound(const std::string& name, const std::string& filename, bool single = false);
+    AudioSourceRef addSound(const std::string& name, const std::string& filename, bool single = false);
     void addSubtitle(const std::string& text, const std::string& color);
     void playMusic(const std::string& filename);
     void stopMusic();

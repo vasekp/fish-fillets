@@ -7,7 +7,7 @@ class ReadBuffer {
 public:
     ReadBuffer(const std::shared_ptr<ogl::Display>& ref);
 
-    void setImage(const Image& image) const;
+    void setImage(const Image* image) const;
     Color getPixel(unsigned x, unsigned y) const;
 };
 

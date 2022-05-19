@@ -2,9 +2,9 @@
 
 ReadBuffer::ReadBuffer(const std::shared_ptr<ogl::Display>& ref) : m_buffer(ref) { }
 
-void ReadBuffer::setImage(const Image& image) const {
+void ReadBuffer::setImage(const Image* image) const {
     m_buffer.bind();
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, image.texture(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, image->texture(), 0);
     m_buffer.unbind();
 }
 

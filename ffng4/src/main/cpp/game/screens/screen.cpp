@@ -6,23 +6,23 @@ GameScreen::GameScreen(Instance &instance) :
     m_running(false)
 { }
 
-Image& GameScreen::addImage(const std::string& filename, const std::string& name) {
+Image* GameScreen::addImage(const std::string& filename, const std::string& name) {
     const std::string key = name.empty() ? filename : name;
     if(m_images.contains(key))
-        return m_images.at(key);
+        return &m_images.at(key);
     else {
-        auto[iterator, _] = m_images.insert({key, {m_instance.files().system(filename)}});
-        return iterator->second;
+        auto[iterator, _] = m_images.insert({key, Image{m_instance.files().system(filename)}});
+        return &iterator->second;
     }
 }
 
-Image& GameScreen::replaceImage(const std::string& name, const std::string& filename) {
-    auto[iterator, _] = m_images.insert_or_assign(name, Image{m_instance.files().system(filename)});
-    return iterator->second;
+Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
+    auto[iterator, _] = m_images.insert_or_assign(name, Image{m_instance.files().system(filename), m_instance});
+    return &iterator->second;
 }
 
-Image& GameScreen::getImage(const std::string& name) {
-    return m_images.at(name);
+Image* GameScreen::getImage(const std::string& name) {
+    return &m_images.at(name);
 }
 
 void GameScreen::setSize(unsigned int width, unsigned int height) {

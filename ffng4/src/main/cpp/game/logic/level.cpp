@@ -146,7 +146,7 @@ int Level::game_getCycles() {
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
-    auto image = m_screen.addImage(filename);
+    auto* image = m_screen.addImage(filename);
     layout().getModel(index).anim().add(name, orientation.value_or((int)Model::Orientation::left), image);
 }
 
@@ -281,14 +281,14 @@ bool Level::model_isTalking(int index) {
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
     auto& dialog = m_dialogs.at(name);
-    auto& source = m_screen.addSound(name, dialog.soundFile, true);
-    source.setVolume((float)volume.value_or(75) / 100.f);
+    auto source = m_screen.addSound(name, dialog.soundFile, true);
+    source->setVolume((float)volume.value_or(75) / 100.f);
     if(loops.value_or(0) != 0) {
         assert(loops.value() == -1);
-        source.setLoop();
+        source->setLoop();
     } else
-        source.setLoop(0, 0);
-    source.setDialog(dialogFlag);
+        source->setLoop(0, 0);
+    source->setDialog(dialogFlag);
     if(index != -1) { // TODO
         auto &model = layout().getModel(index);
         model.talk() = source;
@@ -316,7 +316,7 @@ void Level::sound_playSound(const std::string& name, std::optional<int> volume) 
     auto it = multimap.lower_bound(name);
     std::advance(it, (int)(m_instance.rng().randomIndex(size)));
     auto& source = it->second;
-    source.setVolume((float)volume.value_or(100) / 100.f);
+    source->setVolume((float)volume.value_or(100) / 100.f);
     m_instance.audio().addSource(it->second);
 }
 
@@ -352,8 +352,7 @@ void Level::game_setScreenShift(float dx, float dy) {
 }
 
 void Level::game_changeBg(const std::string &filename) {
-    auto image = m_screen.replaceImage("background", filename);
-    image.reload(m_instance);
+    m_screen.replaceImage("background", filename);
 }
 
 bool Level::dialog_isDialog() {

@@ -21,9 +21,9 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height) {
         m_system->setWindowSize(m_windowWidth, m_windowHeight);
 }
 
-void Graphics::setMask(const Image& image) {
+void Graphics::setMask(const Image* image) {
     glActiveTexture(Shaders::texMask_gl);
-    glBindTexture(GL_TEXTURE_2D, image.texture());
+    glBindTexture(GL_TEXTURE_2D, image->texture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glActiveTexture(Shaders::texImage_gl);

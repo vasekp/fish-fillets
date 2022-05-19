@@ -65,16 +65,12 @@ private:
     Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
-    AudioSource m_talk;
+    AudioSourceRef m_talk;
     ICoords m_touchDir;
     float m_warp;
 
 public:
     Model(int index, const std::string& type, int x, int y, const std::string& shape);
-    Model(const Model&) = delete;
-    const Model& operator=(const Model&) = delete;
-    Model(Model&&) = default;
-    Model& operator=(Model&&) = default;
 
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
 
@@ -95,7 +91,7 @@ public:
     int index() const { return m_index; }
 
     bool alive() const { return m_alive; }
-    bool talking() const { return m_talk && !m_talk.done(); }
+    bool talking() const { return m_talk && !m_talk->done(); }
     bool isVirtual() const { return m_type == Type::virt; }
     bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
     bool moving() const { return (bool)m_move; }
@@ -117,7 +113,7 @@ public:
     void deltaStop();
     void die();
     void disappear() { m_type = Type::virt; }
-    AudioSource& talk() { return m_talk; }
+    AudioSourceRef& talk() { return m_talk; }
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
     constexpr static float fallSpeed = baseSpeed;

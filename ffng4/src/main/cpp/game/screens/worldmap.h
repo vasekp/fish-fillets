@@ -14,13 +14,8 @@ class WorldMap : public GameScreen {
         credits
     };
 
-    struct Branch {
-        std::string start;
-        Color maskColor;
-    };
-
-    AudioSource m_music;
-    std::vector<Image> m_nodeImages;
+    AudioSourceRef m_music;
+    std::vector<const Image*> m_nodeImages;
     std::map<Frames, Color> m_maskColors;
     std::vector<std::shared_ptr<LevelRecord>> m_open;
     std::vector<std::shared_ptr<LevelRecord>> m_forks;

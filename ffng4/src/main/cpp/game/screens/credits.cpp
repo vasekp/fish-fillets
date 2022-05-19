@@ -16,7 +16,7 @@ void CreditsScreen::own_start() {
 }
 
 void CreditsScreen::own_refresh() {
-    m_totalHeight = getImage("credits").height();
+    m_totalHeight = getImage("credits")->height();
 }
 
 void CreditsScreen::own_draw(const DrawTarget& target, float) {
