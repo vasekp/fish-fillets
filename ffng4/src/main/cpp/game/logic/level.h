@@ -56,6 +56,14 @@ public:
     bool quitDemo();
     bool accepting() const;
 
+    void playSound(const std::string& name, float volume = 1.f);
+    void killModelSound(Model* model);
+    void killDialogs();
+    void setModelEffect(Model* model, const std::string& name);
+
+private:
+    void registerCallbacks();
+
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
     int level_getDepth() const;

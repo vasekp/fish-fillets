@@ -178,7 +178,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
                 break;
             case Model::SupportType::wall:
                 if(d == Direction::down)
-                    m_level.sound_playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", 50);
+                    m_level.playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
                 break;
             case Model::SupportType::small:
             case Model::SupportType::big:
@@ -200,13 +200,14 @@ void LevelRules::evalMotion(Model* model, Direction d) {
 void LevelRules::death(Model* unit) {
     if(!unit->alive())
         return;
-    m_level.sound_playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big", {});
+    m_level.playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     unit->die();
     updateDepGraph(unit);
     m_keyQueue.clear();
-    m_level.model_killSound(unit->index());
-    m_level.game_killPlan();
-    m_level.model_setEffect(unit->index(), "disintegrate");
+    m_level.killModelSound(unit);
+    m_level.killDialogs();
+    unit->anim().removeExtra();
+    m_level.setModelEffect(unit, "disintegrate");
     m_level.blockFor(15 /* 1.5 seconds */, [&, unit]() {
         unit->disappear();
         updateDepGraph(unit);

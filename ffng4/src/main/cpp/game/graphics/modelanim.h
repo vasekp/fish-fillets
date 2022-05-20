@@ -46,7 +46,11 @@ public:
         if(!name.empty())
             m_extra.emplace(m_images[name], phase);
         else
-            m_extra.reset();
+            removeExtra();
+    }
+
+    void removeExtra() {
+        m_extra.reset();
     }
 
     std::vector<const Image*>

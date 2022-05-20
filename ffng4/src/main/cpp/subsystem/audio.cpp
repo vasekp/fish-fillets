@@ -125,6 +125,7 @@ AudioSourceRef Audio::loadMusic(const std::string& filename, bool async) {
         source->setLoop(start, end);
     } else
         source->setLoop();
+    source->setVolume(0.3);
     return source;
 }
 
