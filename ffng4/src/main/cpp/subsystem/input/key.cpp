@@ -18,6 +18,15 @@ Key AndroidKeymap(unsigned int code) {
         case AKEYCODE_ESCAPE:
         case AKEYCODE_BACK:
             return Key::exit;
+        case AKEYCODE_F2:
+        case AKEYCODE_S:
+            return Key::save;
+        case AKEYCODE_F3:
+        case AKEYCODE_L:
+            return Key::load;
+        case AKEYCODE_DEL:
+        case AKEYCODE_R:
+            return Key::restart;
         default:
             return Key::none;
     }

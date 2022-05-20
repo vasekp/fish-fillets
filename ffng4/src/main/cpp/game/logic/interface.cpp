@@ -438,6 +438,13 @@ void Level::killDialogs() {
     m_tickSchedule.clear();
 }
 
+void Level::killDialogsHard() {
+    killDialogs();
+    m_instance.audio().clear();
+    if(m_screen.m_music)
+        m_instance.audio().addSource(m_screen.m_music);
+}
+
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {
     if(type == "rope")
         m_layout->addRope(&m_layout->getModel(m1), &m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});

@@ -59,7 +59,12 @@ public:
     void playSound(const std::string& name, float volume = 1.f);
     void killModelSound(Model* model);
     void killDialogs();
+    void killDialogsHard();
     void setModelEffect(Model* model, const std::string& name);
+
+    void save();
+    void load();
+    void restart();
 
 private:
     void registerCallbacks();

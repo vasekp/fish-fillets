@@ -90,7 +90,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         const auto& model = *uModel;
         if(model.isVirtual())
             continue;
-        const auto& images = model.anim().get(model.orientation());
+        const auto images = model.anim().get(model.orientation());
         if(m_effects.contains(&model)) {
             if(m_effects.at(&model).effect == &Shaders::mirror) {
                 mirror = &model;
@@ -201,6 +201,15 @@ bool LevelScreen::own_key(Key key) {
         case Key::exit:
             if(!m_level.quitDemo())
                 m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+            return true;
+        case Key::save:
+            m_level.save();
+            return true;
+        case Key::load:
+            m_level.load();
+            return true;
+        case Key::restart:
+            m_level.restart();
             return true;
         default:
             return false;

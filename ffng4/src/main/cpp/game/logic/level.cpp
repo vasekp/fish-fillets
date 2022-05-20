@@ -75,3 +75,20 @@ bool Level::quitDemo() {
     } else
         return false;
 }
+
+void Level::save() {
+    level_action_save();
+}
+
+void Level::load() {
+    // TODO check file exists
+    killDialogsHard();
+    m_moveSchedule.clear();
+    level_action_load();
+}
+
+void Level::restart() {
+    killDialogsHard();
+    m_moveSchedule.clear();
+    level_action_restart();
+}
