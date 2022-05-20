@@ -6,20 +6,20 @@
 
 class ModelAnim {
     class Layer {
-        const std::vector<const Image*>& m_set;
+        const std::array<std::vector<const Image*>, 2>& m_set;
         int m_phase;
         int m_length;
 
     public:
-        Layer(const std::vector<const Image*>& set, int phase) : m_set(set), m_phase(phase), m_length(set.size()) { }
+        Layer(const std::array<std::vector<const Image*>, 2>& set, int phase) : m_set(set), m_phase(phase), m_length(set[0].size()) { }
 
         void advance() {
             m_phase++;
             if(m_phase >= m_length)
                 m_phase = 0;
         }
-        const Image* get() const {
-            return m_set[m_phase];
+        const Image* get(int dir) const {
+            return m_set[dir][m_phase];
         }
     };
 
@@ -34,28 +34,28 @@ public:
         m_images[name][dir].push_back(image);
     }
 
-    void set(const std::string& name, int dir, int phase, bool running) {
+    void set(const std::string& name, int phase, bool running) {
         if(name == m_curName && running && m_running)
             return;
-        m_main.emplace(m_images[name][dir], phase);
+        m_main.emplace(m_images[name], phase);
         m_curName = name;
         m_running = running;
     }
 
-    void setExtra(const std::string& name, int dir, int phase) {
+    void setExtra(const std::string& name, int phase) {
         if(!name.empty())
-            m_extra.emplace(m_images[name][dir], phase);
+            m_extra.emplace(m_images[name], phase);
         else
             m_extra.reset();
     }
 
     std::vector<const Image*>
-    get() const {
+    get(int dir) const {
         assert(m_main);
         if(m_extra)
-            return {m_main->get(), m_extra->get()};
+            return {m_main->get(dir), m_extra->get(dir)};
         else
-            return {m_main->get()};
+            return {m_main->get(dir)};
     }
 
     void update() {

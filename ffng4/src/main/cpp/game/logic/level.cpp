@@ -95,7 +95,7 @@ void Level::tick() {
             block.callback();
     }
     m_blocks.erase(std::remove_if(m_blocks.begin(), m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
-    if(!m_inDemo)
+    if(!m_inDemo & !m_loading)
         m_script.doString("script_update();");
     if(!m_tickSchedule.empty()) {
         if(m_tickSchedule.front()())
@@ -240,6 +240,7 @@ bool Level::level_save(const std::string& text_models) {
 bool Level::level_load(const std::string& text_moves) {
     LOGD("load(text_moves)");
     m_loading = true; // TODO speed
+    m_layout->speed() = LevelLayout::speed_loading;
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
         loadMoves.emplace_back([&,c]() {
@@ -248,6 +249,7 @@ bool Level::level_load(const std::string& text_moves) {
         });
     loadMoves.emplace_back([&] {
         m_loading = false;
+        m_layout->speed() = LevelLayout::speed_normal;
         return true; });
     m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
     return true;
@@ -282,22 +284,22 @@ int Level::game_getCycles() {
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
     auto* image = m_screen.addImage(filename);
-    layout().getModel(index).anim().add(name, orientation.value_or((int)Model::Orientation::left), image);
+    layout().getModel(index).anim().add(name, orientation.value_or(Model::Orientation::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, (int)model.orientation(), phase.value_or(0), true);
+    model.anim().set(name, phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().set(name, (int)model.orientation(), phase, false);
+    model.anim().set(name, phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
     auto& model = layout().getModel(index);
-    model.anim().setExtra(name, (int)model.orientation(), phase);
+    model.anim().setExtra(name, phase);
 }
 
 void Level::model_setEffect(int index, const std::string &name) {

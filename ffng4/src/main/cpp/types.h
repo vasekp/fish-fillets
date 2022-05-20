@@ -81,11 +81,12 @@ public:
     int y() const { return m_y; }
     float fx() const { return m_fx; }
     float fy() const { return m_fy; }
-    float norm2() { return m_fx * m_fx + m_fy * m_fy; }
-    float length() { return std::sqrt(norm2()); }
-    float dot(FCoords other) { return m_fx * other.m_fx + m_fy * other.m_fy; }
-    FCoords project(FCoords other) { return dot(other) / other.norm2() * other; }
-    FCoords projectPositive(FCoords other) { return std::max(dot(other), 0.f) / other.norm2() * other; }
+    float norm2() const { return m_fx * m_fx + m_fy * m_fy; }
+    float length() const { return std::sqrt(norm2()); }
+    float dot(const FCoords other) const { return m_fx * other.m_fx + m_fy * other.m_fy; }
+    FCoords clamp(float maxAbs) const { return {std::clamp(m_fx, -maxAbs, maxAbs), std::clamp(m_fy, -maxAbs, maxAbs)}; }
+    FCoords project(FCoords other) const { return dot(other) / other.norm2() * other; }
+    FCoords projectPositive(FCoords other) const { return std::max(dot(other), 0.f) / other.norm2() * other; }
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
     friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }

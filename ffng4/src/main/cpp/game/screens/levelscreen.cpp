@@ -90,7 +90,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         const auto& model = *uModel;
         if(model.isVirtual())
             continue;
-        const auto& images = model.anim().get();
+        const auto& images = model.anim().get(model.orientation());
         if(m_effects.contains(&model)) {
             if(m_effects.at(&model).effect == &Shaders::mirror) {
                 mirror = &model;
@@ -116,7 +116,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 
     if(mirror) {
-        auto* image =  mirror->anim().get()[0];
+        auto* image =  mirror->anim().get(mirror->orientation())[0];
         m_instance.graphics().setMask(image);
         m_mirrorTarget->bind();
         m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), m_instance.graphics().shaders().mirror,

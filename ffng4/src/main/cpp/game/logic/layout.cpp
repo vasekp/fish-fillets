@@ -4,7 +4,8 @@
 
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
-        m_width(width), m_height(height)
+        m_width(width), m_height(height),
+        m_speed(1.f)
 { }
 
 int LevelLayout::addModel(const std::string& type, int x, int y, const std::string& shape) {
@@ -65,7 +66,7 @@ void LevelLayout::animate(float dt) {
     for (auto &model: m_models)
         if (model->moving()) {
             auto d = model->movingDir();
-            model->deltaMove(dt);
+            model->deltaMove(dt, m_speed);
             if (!model->moving())
                 m_level.rules().registerMotion(model.get(), d);
         }

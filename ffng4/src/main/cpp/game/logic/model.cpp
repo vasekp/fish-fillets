@@ -34,14 +34,7 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
 }
 
 void Model::turn() {
-    switch (m_orientation) {
-        case Orientation::left:
-            m_orientation = Orientation::right;
-            break;
-        case Orientation::right:
-            m_orientation = Orientation::left;
-            break;
-    }
+    m_orientation = (Orientation)(1 - m_orientation);
 }
 
 void Model::displace(ICoords d, bool pushing) {
@@ -54,9 +47,9 @@ void Model::displace(ICoords d, bool pushing) {
     m_touchDir = {};
 }
 
-void Model::deltaMove(float dt) {
+void Model::deltaMove(float dt, float speed) {
     if (m_move) {
-        m_delta += (falling() ? fallSpeed : baseSpeed) * m_warp * dt * FCoords(m_move);
+        m_delta += (falling() ? fallSpeed : baseSpeed) * dt * speed * m_warp * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;
@@ -79,7 +72,7 @@ void Model::deltaStop() {
 
 FCoords Model::fxy() const {
     if(m_move)
-        return m_position + m_delta + m_viewShift;
+        return m_position + m_delta.clamp(1.f) + m_viewShift;
     else
         return m_position + m_viewShift;
 }

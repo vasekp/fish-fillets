@@ -9,9 +9,9 @@ class LevelLayout;
 
 class Model {
 public:
-    enum class Orientation {
-        left,
-        right
+    enum Orientation { // Need to leave this implicitly convertible to int.
+        left = 0,
+        right = 1
     };
 
     enum class Type {
@@ -109,7 +109,7 @@ public:
 
     void turn();
     void displace(ICoords d, bool pushing = false);
-    void deltaMove(float dt);
+    void deltaMove(float dt, float speed = 1.f);
     void deltaStop();
     void die();
     void disappear() { m_type = Type::virt; }
