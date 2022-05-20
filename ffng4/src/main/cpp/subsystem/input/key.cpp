@@ -13,6 +13,7 @@ Key AndroidKeymap(unsigned int code) {
         case AKEYCODE_DPAD_RIGHT:
             return Key::right;
         case AKEYCODE_SPACE:
+        case AKEYCODE_DPAD_CENTER:
             return Key::space;
         case AKEYCODE_ESCAPE:
         case AKEYCODE_BACK:

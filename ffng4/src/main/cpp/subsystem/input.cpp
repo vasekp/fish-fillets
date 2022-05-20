@@ -22,7 +22,7 @@ bool Input::handleKeyDown(Key key) {
     return m_instance.screens().dispatchKey(key);
 }
 
-bool Input::handleKeyUp(Key key) {
+bool Input::handleKeyUp(Key) {
     m_lastKey = Key::none;
     return false;
 }
@@ -68,7 +68,6 @@ bool Input::handlePointerMove(FCoords pos) {
     switch (m_dirpad.state) {
         case DirpadState::idle:
             ::error("Inconsistent dirpad state");
-        case DirpadState::disabled:
         case DirpadState::ignore:
             break;
         case DirpadState::wait:

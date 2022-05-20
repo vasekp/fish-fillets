@@ -11,7 +11,6 @@ class Input {
     Key m_lastKey;
 
     enum class DirpadState {
-        disabled,
         idle,
         wait,
         follow,

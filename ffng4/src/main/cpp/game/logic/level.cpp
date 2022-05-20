@@ -8,6 +8,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_screen(screen),
         m_record(record),
         m_script(instance, *this),
+        m_loading(false),
         m_inDemo(false)
 {
     m_script.registerFn("game_setRoomWaves", lua::wrap<&Level::game_setRoomWaves>);
@@ -100,10 +101,8 @@ void Level::tick() {
         if(m_tickSchedule.front()())
             m_tickSchedule.pop_front();
     }
-    if(m_inDemo && m_tickSchedule.empty()) {
-        m_screen.display("");
-        m_inDemo = false;
-    }
+    if(m_inDemo && m_tickSchedule.empty())
+        quitDemo();
 }
 
 void Level::blockFor(int frames, std::function<void()>&& callback) {
@@ -130,6 +129,21 @@ bool Level::runScheduled() {
 
 void Level::recordMove(char key) {
     m_replay += key;
+}
+
+bool Level::quitDemo() {
+    if(m_inDemo) {
+        model_killSound(1); /* actor_index used in demo_briefcase.lua */
+        m_tickSchedule.clear();
+        m_screen.display("");
+        m_inDemo = false;
+        return true;
+    } else
+        return false;
+}
+
+bool Level::accepting() const {
+    return !blocked() && m_moveSchedule.empty() && !m_inDemo && !m_loading;
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -165,7 +179,6 @@ bool Level::level_isShowing() {
 
 bool Level::level_action_move(const std::string& move) {
     assert(move.length() == 1);
-    LOGD("%c", move[0]);
     rules().keyInput(CharKeymap(move[0]));
     return true;
 }
@@ -226,19 +239,25 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     LOGD("load(text_moves)");
+    m_loading = true; // TODO speed
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
         loadMoves.emplace_back([&,c]() {
             m_rules->keyInput(CharKeymap(c));
             return true;
         });
+    loadMoves.emplace_back([&] {
+        m_loading = false;
+        return true; });
     m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
     return true;
 }
 
 void Level::level_newDemo(const std::string& filename) {
-    m_inDemo = true;
-    m_script.file_include(filename);
+    if(!m_loading) {
+        m_inDemo = true;
+        m_script.file_include(filename);
+    }
 }
 
 void Level::demo_display(const std::string& filename) {
@@ -465,7 +484,7 @@ bool Level::game_isPlanning() {
 }
 
 void Level::game_planAction(LuaCallback function) {
-    m_tickSchedule.push_back(std::move(function));
+    m_tickSchedule.emplace_back(std::move(function));
 }
 
 void Level::game_killPlan() {

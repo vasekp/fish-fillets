@@ -29,6 +29,7 @@ class Level : public ScriptReferrer {
     };
     std::vector<Delayed> m_blocks;
 
+    bool m_loading;
     bool m_inDemo;
 
     struct Dialog {
@@ -52,6 +53,8 @@ public:
     void scheduleAction(std::function<bool()>&& action);
     bool runScheduled();
     void recordMove(char key);
+    bool quitDemo();
+    bool accepting() const;
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();

@@ -58,7 +58,7 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
         }
         queue.pop_front();
     }
-    LOGD("Obstacles: %d", (int)ret.size());
+    LOGV("Obstacles: %d", (int)ret.size());
     return ret;
 }
 void LevelLayout::animate(float dt) {

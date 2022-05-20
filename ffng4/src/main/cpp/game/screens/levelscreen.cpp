@@ -193,10 +193,14 @@ bool LevelScreen::own_key(Key key) {
         case Key::left:
         case Key::right:
         case Key::space:
-            m_level.rules().keyInput(key);
-            return true;
+            if(m_level.accepting()) {
+                m_level.rules().keyInput(key);
+                return true;
+            } else
+                return false;
         case Key::exit:
-            m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+            if(!m_level.quitDemo())
+                m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
             return true;
         default:
             return false;

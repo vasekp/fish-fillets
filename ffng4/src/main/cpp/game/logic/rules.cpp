@@ -70,16 +70,16 @@ void LevelRules::processKey(Key key) {
 }
 
 void LevelRules::switchFish() {
-    if(m_curFish == m_small)
-        m_curFish = m_big;
-    else
-        m_curFish = m_small;
+    Model* target = m_curFish == m_small ? m_big : m_small;
+    if(target->action() == Model::Action::busy)
+        return;
+    m_curFish = target;
     m_curFish->action() = Model::Action::activate;
     m_level.blockFor(4, [&]() { m_curFish->action() = Model::Action::base; });
 }
 
 void LevelRules::moveFish(Direction d) {
-    if(!m_curFish->alive())
+    if(!m_curFish->alive() || m_curFish->action() == Model::Action::busy)
         return;
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
@@ -113,7 +113,7 @@ void LevelRules::moveFish(Direction d) {
     }
     for(auto* model : obs)
         model->displace(d, true);
-    LOGD("[%d,%d] -> [%d,%d]", m_curFish->x(), m_curFish->y(), m_curFish->x() + d.x, m_curFish->y() + d.y);
+    LOGV("[%d,%d] -> [%d,%d]", m_curFish->x(), m_curFish->y(), m_curFish->x() + d.x, m_curFish->y() + d.y);
     m_curFish->displace(d, !obs.empty());
     m_level.recordMove(dirToChar(d));
 }
@@ -139,7 +139,7 @@ void LevelRules::update() {
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
-        } else if(auto key = m_level.input().pool(); key != Key::none) {
+        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting()) {
             // TODO only repeat directions
             processKey(key);
         }
