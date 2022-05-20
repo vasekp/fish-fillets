@@ -3,6 +3,7 @@
 
 #include "instance.h"
 #include "platform/lua.h"
+#include "subsystem/files.h"
 #include "script/callback.h"
 
 class ScriptReferrer {
@@ -25,7 +26,7 @@ public:
 
     void registerFn(const std::string& name, lua_CFunction function);
     void doString(const std::string& string);
-    void loadFile(const std::string& filename);
+    void loadFile(const IFile& file);
 
     void file_include(const std::string& filename);
     bool file_exists(const std::string& filename);

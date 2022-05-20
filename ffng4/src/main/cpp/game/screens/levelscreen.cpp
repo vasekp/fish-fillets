@@ -15,6 +15,12 @@ void LevelScreen::create(int width, int height, const std::string &background) {
     addImage(background, "background");
 }
 
+void LevelScreen::restore() {
+    m_display.reset();
+    m_effects.clear();
+    m_shift = {};
+}
+
 void LevelScreen::own_start() {
     m_level.init();
 }

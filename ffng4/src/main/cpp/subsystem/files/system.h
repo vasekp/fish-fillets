@@ -3,7 +3,7 @@
 
 #include "platform/ndk.h"
 
-class SystemFile {
+class SystemFile : public IFile {
     AAssetManager *m_assets;
     std::filesystem::path m_path;
 
@@ -12,8 +12,9 @@ public:
 
     std::string getPath() const { return m_path; }
 
-    bool exists() const;
-    std::string read() const;
+    bool exists() const override;
+    std::string read() const override;
+    bool write(const std::string &data) const override;
     ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const;
 
 private:

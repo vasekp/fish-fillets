@@ -42,6 +42,7 @@ private:
     void evalMotion(Model* model, Direction d);
     void evalSteel();
     void death(Model*);
+    char dirToChar(Direction d);
 };
 
 #endif //FISH_FILLETS_RULES_H

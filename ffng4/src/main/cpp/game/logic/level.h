@@ -18,6 +18,7 @@ class Level : public ScriptReferrer {
     Script m_script;
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
+    std::string m_replay;
 
     std::deque<Callback> m_tickSchedule;
     std::deque<Callback> m_moveSchedule;
@@ -50,6 +51,7 @@ public:
     bool blocked() const;
     void scheduleAction(std::function<bool()>&& action);
     bool runScheduled();
+    void recordMove(char key);
 
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
@@ -62,6 +64,8 @@ public:
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
+    bool level_save(const std::string& text_models);
+    bool level_load(const std::string& text_moves);
     void level_newDemo(const std::string& filename);
     void demo_display(const std::string& filename);
     void game_setRoomWaves(float amplitude, float period, float speed);

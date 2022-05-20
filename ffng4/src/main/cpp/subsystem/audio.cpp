@@ -8,16 +8,17 @@
 #include <thread>
 
 class AudioPreloader : public ScriptReferrer {
+    Instance& m_instance;
     Audio& m_audio;
     Script m_script;
 
 public:
-    explicit AudioPreloader(Instance& instance) : m_audio(instance.audio()), m_script(instance, *this) {
+    explicit AudioPreloader(Instance& instance) : m_instance(instance), m_audio(instance.audio()), m_script(instance, *this) {
         m_script.registerFn("preload_sound", lua::wrap<&AudioPreloader::preload_sound>);
     }
 
     void load() {
-        m_script.loadFile("script/preload.lua");
+        m_script.loadFile(m_instance.files().system("script/preload.lua"));
     }
 
     void preload_sound(const std::string& filename) {
@@ -172,7 +173,6 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& p
     auto ret = std::make_shared<AudioSource>(filename, numSamples, std::make_unique<float[]>(numSamples));
     auto data = ret->data();
     promise.set_value(ret);
-    return;
 
     do {
         auto inIndex = AMediaCodec_dequeueInputBuffer(codec, 2000);

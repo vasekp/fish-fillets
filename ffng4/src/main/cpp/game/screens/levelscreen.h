@@ -40,6 +40,7 @@ protected:
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
 
     void create(int width, int height, const std::string& background);
+    void restore();
     void setWaves(float amplitude, float period, float speed);
     AudioSourceRef addSound(const std::string& name, const std::string& filename, bool single = false);
     void addSubtitle(const std::string& text, const std::string& color);

@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <android_native_app_glue.h>
 
+#include "files/ifile.h"
 #include "files/system.h"
 #include "files/user.h"
 

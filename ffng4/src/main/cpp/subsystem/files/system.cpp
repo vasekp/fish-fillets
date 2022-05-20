@@ -1,4 +1,6 @@
 #include "subsystem/files.h"
+#include "system.h"
+
 
 SystemFile::SystemFile(const std::string& path, AAssetManager* assets) :
         m_assets(assets),
@@ -21,6 +23,10 @@ std::string SystemFile::read() const {
     auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
     std::string ret(buffer, buffer + size);
     return ret;
+}
+
+bool SystemFile::write(const std::string& data) const {
+    ::error("Attempt to write to system file.");
 }
 
 ndk::Asset SystemFile::asset(int mode) const {

@@ -9,6 +9,7 @@ enum class LevelState {
 
 struct LevelRecord {
     std::shared_ptr<LevelRecord> parent;
+    std::string codename;
     std::string script_filename;
     std::string script_ending;
     int depth;
@@ -22,8 +23,8 @@ struct LevelRecord {
         int moves;
     } best;
 
-    LevelRecord(std::shared_ptr<LevelRecord> parent_, std::string filename_, std::string ending_,
-                int depth_, bool solved_, FCoords coords_, int maskColor_);
+    LevelRecord(std::shared_ptr<LevelRecord> parent_, std::string codename_, std::string filename_,
+            std::string ending_, int depth_, bool solved_, FCoords coords_, int maskColor_);
     LevelState state() const;
 
     constexpr static int no_color = -1;

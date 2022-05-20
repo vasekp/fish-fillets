@@ -31,12 +31,12 @@ void Script::doString(const std::string& string) {
         LOGE("Lua error: %s", lua_tostring(m_env, -1));
 }
 
-void Script::loadFile(const std::string& filename) {
-    doString(m_instance.files().system(filename).read());
+void Script::loadFile(const IFile& file) {
+    doString(file.read());
 }
 
 void Script::file_include(const std::string& filename) {
-    loadFile(filename);
+    loadFile(m_instance.files().system(filename));
 }
 
 bool Script::file_exists(const std::string& filename) {

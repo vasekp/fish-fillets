@@ -1,5 +1,6 @@
 #include "key.h"
 #include <android/keycodes.h>
+#include <stdexcept>
 
 Key AndroidKeymap(unsigned int code) {
     switch(code) {

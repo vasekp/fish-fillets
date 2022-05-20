@@ -1,6 +1,7 @@
 #include "level.h"
 #include "game/screens/levelscreen.h"
 #include "subsystem/rng.h"
+#include <sstream>
 
 Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :
         m_instance(instance),
@@ -59,12 +60,12 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     m_script.registerFn("level_isSolved", lua::wrap<&Level::level_isSolved>);
     m_script.registerFn("level_planShow", lua::wrap<&Level::level_planShow>);
     m_script.registerFn("level_isShowing", lua::wrap<&Level::level_isShowing>);
-//    m_script.registerFn("level_save", script_level_save);
-//    m_script.registerFn("level_load", script_level_load);
     m_script.registerFn("level_action_move", lua::wrap<&Level::level_action_move>);
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
     m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
+    m_script.registerFn("level_save", lua::wrap<&Level::level_save>);
+    m_script.registerFn("level_load", lua::wrap<&Level::level_load>);
 
     m_script.registerFn("level_newDemo", lua::wrap<&Level::level_newDemo>);
     m_script.registerFn("demo_display", lua::wrap<&Level::demo_display>);
@@ -81,7 +82,7 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
 }
 
 void Level::init() {
-    m_script.loadFile(m_record.script_filename);
+    m_script.loadFile(m_instance.files().system(m_record.script_filename));
     m_rules = std::make_unique<LevelRules>(*this, layout());
 }
 
@@ -127,6 +128,10 @@ bool Level::runScheduled() {
         return false;
 }
 
+void Level::recordMove(char key) {
+    m_replay += key;
+}
+
 void Level::level_createRoom(int width, int height, const std::string& bg) {
     m_screen.create(width, height, bg);
     m_layout = std::make_unique<LevelLayout>(*this, width, height);
@@ -170,9 +175,11 @@ bool Level::level_action_restart() {
     m_tickSchedule.clear();
     m_tickSchedule.emplace_back([&]() {
         m_dialogs.clear();
+        m_screen.restore();
         init();
         // Move schedule can reach over restarts
         m_blocks.clear();
+        m_replay.clear();
         m_inDemo = false;
         return true;
     });
@@ -180,18 +187,58 @@ bool Level::level_action_restart() {
 }
 
 bool Level::level_action_save() {
-    LOGD("save");
+    LOGD("action: save");
+    // TODO check solvability
+    m_script.doString("script_save()");
     return true;
 }
 
 bool Level::level_action_load() {
-    LOGD("load");
+    LOGD("action: load");
+    auto file = m_instance.files().user("saves/"s + m_record.codename + ".lua");
+    if (file.exists()) {
+        m_tickSchedule.clear();
+        m_tickSchedule.emplace_back([&, file]() {
+            // TODO DRY
+            m_dialogs.clear();
+            m_screen.restore();
+            init();
+            // Move schedule can reach over restarts
+            m_blocks.clear();
+            m_replay.clear();
+            m_inDemo = false;
+            m_script.loadFile(file);
+            m_script.doString("script_load()");
+            return true;
+        });
+    }
+    return true;
+}
+
+bool Level::level_save(const std::string& text_models) {
+    LOGD("save(text_models)");
+    auto file = m_instance.files().user("saves/"s + m_record.codename + ".lua");
+    std::ostringstream oss;
+    oss << "saved_moves = '" << m_replay << "'\n\nsaved_models = " << text_models;
+    file.write(oss.str());
+    return true;
+}
+
+bool Level::level_load(const std::string& text_moves) {
+    LOGD("load(text_moves)");
+    std::vector<Callback> loadMoves;
+    for(const auto c : text_moves)
+        loadMoves.emplace_back([&,c]() {
+            m_rules->keyInput(CharKeymap(c));
+            return true;
+        });
+    m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
     return true;
 }
 
 void Level::level_newDemo(const std::string& filename) {
-//    m_inDemo = true;
-//    m_script.file_include(filename);
+    m_inDemo = true;
+    m_script.file_include(filename);
 }
 
 void Level::demo_display(const std::string& filename) {

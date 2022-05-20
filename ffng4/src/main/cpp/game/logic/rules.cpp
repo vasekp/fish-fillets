@@ -88,6 +88,7 @@ void LevelRules::moveFish(Direction d) {
             m_curFish->action() = Model::Action::base;
             m_curFish->turn();
         });
+        m_level.recordMove(dirToChar(d));
         return;
     }
 
@@ -112,7 +113,9 @@ void LevelRules::moveFish(Direction d) {
     }
     for(auto* model : obs)
         model->displace(d, true);
+    LOGD("[%d,%d] -> [%d,%d]", m_curFish->x(), m_curFish->y(), m_curFish->x() + d.x, m_curFish->y() + d.y);
     m_curFish->displace(d, !obs.empty());
+    m_level.recordMove(dirToChar(d));
 }
 
 void LevelRules::registerMotion(Model *model, Direction d) {
@@ -260,4 +263,18 @@ void LevelRules::buildSupportMap() {
         LOGV("%d supported %d", model->index(), suppType);
         m_support[model.get()] = suppType;
     }
+}
+
+char LevelRules::dirToChar(Direction d) {
+    bool small = m_curFish == m_small;
+    if(d == Direction::up)
+        return small ? 'u' : 'U';
+    else if(d == Direction::down)
+        return small ? 'd' : 'D';
+    else if(d == Direction::left)
+        return small ? 'l' : 'L';
+    else if(d == Direction::right)
+        return small ? 'r' : 'R';
+    else
+        ::error("Invalid direction passed to dirToChar");
 }
