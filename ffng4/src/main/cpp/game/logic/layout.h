@@ -28,7 +28,7 @@ public:
     auto& models() { return m_models; }
     int addModel(const std::string& type, int x, int y, const std::string& shape);
     void addRope(Model* m1, Model* m2, ICoords d1, ICoords d2);
-    Model& getModel(int index);
+    Model* getModel(int index);
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
     std::pair<int, int> borderDepth(const Model* model, ICoords delta = {}) const;
     auto& speed() { return m_speed; }

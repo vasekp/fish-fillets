@@ -214,26 +214,23 @@ int Level::game_getCycles() {
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
     auto* image = m_screen.addImage(filename);
-    layout().getModel(index).anim().add(name, orientation.value_or(Model::Orientation::left), image);
+    layout().getModel(index)->anim().add(name, orientation.value_or(Model::Orientation::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
-    auto& model = layout().getModel(index);
-    model.anim().set(name, phase.value_or(0), true);
+    layout().getModel(index)->anim().set(name, phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
-    auto& model = layout().getModel(index);
-    model.anim().set(name, phase, false);
+    layout().getModel(index)->anim().set(name, phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
-    auto& model = layout().getModel(index);
-    model.anim().setExtra(name, phase);
+    layout().getModel(index)->anim().setExtra(name, phase);
 }
 
 void Level::model_setEffect(int index, const std::string &name) {
-    setModelEffect(&layout().getModel(index), name);
+    setModelEffect(layout().getModel(index), name);
 }
 
 void Level::setModelEffect(Model* model, const std::string& name) {
@@ -241,13 +238,12 @@ void Level::setModelEffect(Model* model, const std::string& name) {
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto& model = layout().getModel(index);
-    return {model.x(), model.y()};
+    return layout().getModel(index)->xy();
 }
 
 std::string Level::model_getAction(int index) {
-    const auto& model = layout().getModel(index);
-    switch(model.action()) {
+    const auto* model = layout().getModel(index);
+    switch(model->action()) {
         case Model::Action::busy:
             return "busy";
         case Model::Action::turning:
@@ -257,7 +253,7 @@ std::string Level::model_getAction(int index) {
         case Model::Action::base:
             break;
     }
-    auto dir = model.movingDir();
+    auto dir = model->movingDir();
     if (dir == Direction::up)
         return "move_up";
     else if (dir == Direction::down)
@@ -271,21 +267,21 @@ std::string Level::model_getAction(int index) {
 }
 
 std::string Level::model_getState(int index) {
-    const auto& model = layout().getModel(index);
-    if(!model.alive())
+    const auto* model = layout().getModel(index);
+    if(!model->alive())
         return "dead";
-    else if(model.talking())
+    else if(model->talking())
         return "talking";
-    else if(model.pushing())
+    else if(model->pushing())
         return "pushing";
-    else if(layout().borderDepth(&model).first == 1)
+    else if(layout().borderDepth(model).first == 1)
         return "goout";
     else
         return "normal";
 }
 
 int Level::model_getTouchDir(int index) {
-    auto dir = layout().getModel(index).touchDir();
+    auto dir = layout().getModel(index)->touchDir();
     if(dir == Direction::up)
         return 1;
     else if(dir == Direction::down)
@@ -299,55 +295,54 @@ int Level::model_getTouchDir(int index) {
 }
 
 bool Level::model_isAlive(int index) {
-    return layout().getModel(index).alive();
+    return layout().getModel(index)->alive();
 }
 
 bool Level::model_isAtBorder(int index) {
-    return layout().borderDepth(&layout().getModel(index)).first == 0;
+    return layout().borderDepth(layout().getModel(index)).first == 0;
 }
 
 bool Level::model_isOut(int index) {
-    return layout().borderDepth(&layout().getModel(index)).second >= 0;
+    return layout().borderDepth(layout().getModel(index)).second >= 0;
 }
 
 bool Level::model_isLeft(int index) {
-    auto& model = layout().getModel(index);
-    return model.orientation() == Model::Orientation::left;
+    return layout().getModel(index)->orientation() == Model::Orientation::left;
 }
 
 unsigned Level::model_getW(int index) {
-    return layout().getModel(index).shape().width();
+    return layout().getModel(index)->shape().width();
 }
 
 unsigned Level::model_getH(int index) {
-    return layout().getModel(index).shape().height();
+    return layout().getModel(index)->shape().height();
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
     if(goal == "goal_alive")
-        layout().getModel(index).goal() = Model::Goal::alive;
+        layout().getModel(index)->goal() = Model::Goal::alive;
     else if(goal == "goal_escape" || goal == "goal_out") // FIXME: is there any need to differentiate?
-        layout().getModel(index).goal() = Model::Goal::escape;
+        layout().getModel(index)->goal() = Model::Goal::escape;
 }
 
 void Level::model_change_turnSide(int index) {
-    layout().getModel(index).turn();
+    layout().getModel(index)->turn();
 }
 
 void Level::model_setViewShift(int index, int dx, int dy) {
-    layout().getModel(index).viewShift() = {dx, dy};
+    layout().getModel(index)->viewShift() = {dx, dy};
 }
 
 std::pair<int, int> Level::model_getViewShift(int index) {
-    return layout().getModel(index).viewShift();
+    return layout().getModel(index)->viewShift();
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    layout().getModel(index).action() = busy ? Model::Action::busy : Model::Action::base;
+    layout().getModel(index)->action() = busy ? Model::Action::busy : Model::Action::base;
 }
 
 bool Level::model_isTalking(int index) {
-    return layout().getModel(index).talking();
+    return layout().getModel(index)->talking();
 }
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
@@ -360,17 +355,15 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
     } else
         source->setLoop(0, 0);
     source->setDialog(dialogFlag);
-    if(index != -1) { // TODO
-        auto &model = layout().getModel(index);
-        model.talk() = source;
-    }
+    if(index != -1) // TODO
+        layout().getModel(index)->talk() = source;
     m_instance.audio().addSource(source);
     if(!dialog.text.empty())
         m_screen.addSubtitle(dialog.text, dialog.colors);
 }
 
 void Level::model_killSound(int index) {
-    killModelSound(&layout().getModel(index));
+    killModelSound(layout().getModel(index));
 }
 
 void Level::killModelSound(Model* model) {
@@ -383,8 +376,8 @@ void Level::killModelSound(Model* model) {
 bool Level::model_equals(int index, int x, int y) {
     LOGD("[%d,%d] equals %d?", x, y, index);
     if(index != -1) {
-        const auto& model = layout().getModel(index);
-        return model.shape().covers({x - model.x(), y - model.y()});
+        const auto* model = layout().getModel(index);
+        return model->shape().covers(ICoords{x, y} - model->xy());
     } else {
         for(const auto& model : layout().models())
             if(model->shape().covers({x - model->x(), y - model->y()})) {
@@ -447,7 +440,7 @@ void Level::killDialogsHard() {
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {
     if(type == "rope")
-        m_layout->addRope(&m_layout->getModel(m1), &m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});
+        m_layout->addRope(m_layout->getModel(m1), m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});
     else
         LOGE("Unknown decor %s", type.c_str());
 }
