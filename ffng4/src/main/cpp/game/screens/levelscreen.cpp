@@ -44,7 +44,7 @@ void LevelScreen::own_refresh() {
 
     const auto& models = m_level.layout().models();
     auto it = std::find_if(models.begin(),  models.end(), [&](const auto& model) {
-        return m_effects.contains(model.get()) && m_effects.at(model.get()).effect == &Shaders::mirror;
+        return m_effects.contains(model) && m_effects.at(model).effect == &Shaders::mirror;
     });
     if(it == models.end())
         m_mirrorTarget = {};

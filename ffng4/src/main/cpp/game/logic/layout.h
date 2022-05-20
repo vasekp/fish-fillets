@@ -11,12 +11,32 @@ class LevelLayout {
     int m_height;
     float m_speed;
 
-    std::vector<std::unique_ptr<Model>> m_models;
+    std::vector<std::unique_ptr<Model>> m_models_internal;
     std::map<int, std::size_t> m_virtModels;
 
+    using models_type = decltype(m_models_internal);;
+    struct ModelsIterator : models_type::iterator {
+        using value_type = Model*;
+        using pointer = Model*;
+        using reference = Model*;
+
+        reference operator*() { return models_type::iterator::operator*().get(); }
+    };
+
+    struct ModelsAdaptor {
+        models_type& m_models;
+        ModelsAdaptor(models_type& models) : m_models(models) { }
+
+        ModelsIterator begin() { return {m_models.begin()}; }
+        ModelsIterator end() { return {m_models.end()}; }
+        ModelsIterator begin() const { return {m_models.begin()}; }
+        ModelsIterator end() const { return {m_models.end()}; }
+        auto size() { return m_models.size(); }
+    } m_models_adapted;
+
     struct RopeDecor {
-        Model* m1;
-        Model* m2;
+        const Model* m1;
+        const Model* m2;
         ICoords d1;
         ICoords d2;
     };
@@ -25,16 +45,16 @@ class LevelLayout {
 public:
     LevelLayout(Level& level, int width, int height);
 
-    auto& models() { return m_models; }
+    auto& models() { return m_models_adapted; }
     int addModel(const std::string& type, int x, int y, const std::string& shape);
-    void addRope(Model* m1, Model* m2, ICoords d1, ICoords d2);
+    void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);
     Model* getModel(int index);
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
     std::pair<int, int> borderDepth(const Model* model, ICoords delta = {}) const;
     auto& speed() { return m_speed; }
 
-    std::set<Model*> intersections(Model* model, ICoords d);
-    std::set<Model*> obstacles(Model* root, ICoords d);
+    std::set<Model*> intersections(const Model* model, ICoords d);
+    std::set<Model*> obstacles(const Model* root, ICoords d);
 
     void animate(float dt);
 

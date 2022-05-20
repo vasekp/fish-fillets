@@ -2,12 +2,12 @@
 #include "rules.h"
 
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
-    m_small = std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; })->get();
-    m_big = std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; })->get();
+    m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
+    m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
     m_curFish = m_small;
-    for(const auto& model : m_layout.models())
+    for(const auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
-            m_goals.emplace_back(model.get(), model->goal());
+            m_goals.emplace_back(model, model->goal());
     buildDepGraph();
 }
 
@@ -96,7 +96,7 @@ void LevelRules::moveFish(Direction d) {
 
     if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)
         return;
-    for(auto* model : obs) {
+    for(const auto* model : obs) {
         if(m_layout.borderDepth(model, d).first > 0 && model->goal() != Model::Goal::escape)
             return;
     }
@@ -145,7 +145,7 @@ void LevelRules::update() {
             evalMotion(model, d);
     m_motions.clear();
 
-    bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](auto& model) { return model->moving(); })
+    bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); })
             && !m_level.blocked();
 
     if(ready) {
@@ -159,16 +159,16 @@ void LevelRules::update() {
         }
     }
 
-    for(auto& model : m_layout.models())
+    for(auto* model : m_layout.models())
         if(!model->moving())
             model->deltaStop();
 }
 
 void LevelRules::evalFalls() {
-    for(auto& model : m_layout.models()) {
+    for(auto* model : m_layout.models()) {
         if (model->isVirtual())
             continue;
-        if (auto support = m_support[model.get()]; model->movable() && support == Model::SupportType::none) {
+        if (auto support = m_support[model]; model->movable() && support == Model::SupportType::none) {
             m_keyQueue.clear();
             model->displace(Direction::down);
         }
@@ -176,10 +176,10 @@ void LevelRules::evalFalls() {
 }
 
 void LevelRules::evalSteel() {
-    for(auto& model : m_layout.models()) {
+    for(const auto* model : m_layout.models()) {
         if(model->isVirtual())
             continue;
-        if(model->movable() && m_support[model.get()] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
+        if(model->movable() && m_support[model] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
             death(m_small);
     }
 }
@@ -230,22 +230,22 @@ void LevelRules::death(Model* unit) {
 }
 
 void LevelRules::buildDepGraph() {
-    for(auto& model : m_layout.models()) {
+    for(const auto* model : m_layout.models()) {
         if (!model->movable() || model->isVirtual())
             continue;
-        for (auto *other : m_layout.intersections(model.get(), Direction::down))
-            m_dependencyGraph.emplace(model.get(), other);
+        for (auto *other : m_layout.intersections(model, Direction::down))
+            m_dependencyGraph.emplace(model, other);
     }
     buildSupportMap();
 }
 
-void LevelRules::updateDepGraph(Model *model) {
+void LevelRules::updateDepGraph(const Model* model) {
     std::erase_if(m_dependencyGraph, [model](const auto& pair) {
         return pair.first == model || pair.second == model;
     });
-    for(auto* other : m_layout.intersections(model, Direction::down))
+    for(const auto* other : m_layout.intersections(model, Direction::down))
         m_dependencyGraph.emplace(model, other);
-    for(auto* other : m_layout.intersections(model, Direction::up))
+    for(const auto* other : m_layout.intersections(model, Direction::up))
         m_dependencyGraph.emplace(other, model);
     buildSupportMap();
 }
@@ -253,25 +253,25 @@ void LevelRules::updateDepGraph(Model *model) {
 void LevelRules::buildSupportMap() {
     m_support.clear();
 
-    for(const auto& model : m_layout.models()) {
+    for(const auto* model : m_layout.models()) {
         if (!model->movable() || model->isVirtual())
             continue;
-        calcSupport(model.get());
+        calcSupport(model);
     }
 }
 
-Model::SupportType LevelRules::calcSupport(Model* model) {
+Model::SupportType LevelRules::calcSupport(const Model* model) {
     if(m_support.contains(model))
         return m_support[model];
 
-    std::set<Model*> supportSet;
-    std::deque<Model*> queue;
+    std::set<const Model*> supportSet;
+    std::deque<const Model*> queue;
 
     for(auto[above, below] : m_dependencyGraph)
         if(above == model)
             queue.push_back(below);
     while(!queue.empty()) {
-        auto* other = queue.front();
+        const auto* other = queue.front();
         queue.pop_front();
         if(supportSet.contains(other) || other->isVirtual() || other == model)
             continue;

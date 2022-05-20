@@ -30,7 +30,7 @@ void Subtitles::defineColors(const std::string &name, Color color1, Color color2
 void Subtitles::add(const std::string &text, const std::string& colors, float addTime) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
-    for(auto& line : lines) {
+    for(const auto& line : lines) {
         float duration = std::max((float) text.length() * timePerChar, minTimePerLine);
         auto[color1, color2] = [&]() {
             if (m_colors.contains(colors))

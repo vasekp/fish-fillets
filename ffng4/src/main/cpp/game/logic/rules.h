@@ -15,11 +15,11 @@ class LevelRules {
     Model* m_big;
     Model* m_curFish;
 
-    std::vector<std::pair<Model*, Model::Goal>> m_goals;
+    std::vector<std::pair<const Model*, Model::Goal>> m_goals;
 
     std::deque<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
-    std::set<std::pair<Model*, Model*>> m_dependencyGraph;
+    std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
     std::map<const Model*, Model::SupportType> m_support;
 
 public:
@@ -36,9 +36,9 @@ private:
     void switchFish();
 
     void buildDepGraph();
-    void updateDepGraph(Model* model);
+    void updateDepGraph(const Model* model);
     void buildSupportMap();
-    Model::SupportType calcSupport(Model* model);
+    Model::SupportType calcSupport(const Model* model);
     void evalFalls();
     void evalMotion(Model* model, Direction d);
     void evalSteel();

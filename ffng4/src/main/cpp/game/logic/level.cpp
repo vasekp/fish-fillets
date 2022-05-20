@@ -18,7 +18,7 @@ void Level::init() {
 }
 
 void Level::tick() {
-    for(auto& model : layout().models())
+    for(auto* model : layout().models())
         model->anim().update();
     for(auto& block : m_blocks) {
         if(--block.countdown == 0)

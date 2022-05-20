@@ -5,47 +5,48 @@
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
         m_width(width), m_height(height),
-        m_speed(1.f)
+        m_speed(1.f),
+        m_models_adapted(m_models_internal)
 { }
 
 int LevelLayout::addModel(const std::string& type, int x, int y, const std::string& shape) {
-    auto index = (int)m_models.size();
-    m_models.push_back(std::make_unique<Model>(index, type, x, y, shape));
+    auto index = (int)m_models_internal.size();
+    m_models_internal.push_back(std::make_unique<Model>(index, type, x, y, shape));
     return index;
 }
 
 Model* LevelLayout::getModel(int index) {
-    if(index >= 0 && index < m_models.size())
-        return m_models[index].get();
+    if(index >= 0 && index < m_models_internal.size())
+        return m_models_internal[index].get();
     if(m_virtModels.contains(index))
-        return m_models[m_virtModels.at(index)].get();
-    std::size_t realIndex = m_models.size();
-    m_models.push_back(std::make_unique<Model>(index, "virtual", 0, 0, ""));
+        return m_models_internal[m_virtModels.at(index)].get();
+    std::size_t realIndex = m_models_internal.size();
+    m_models_internal.push_back(std::make_unique<Model>(index, "virtual", 0, 0, ""));
     LOGD("virtual model %d", index);
     m_virtModels.insert({index, realIndex});
-    return m_models.back().get();
+    return m_models_internal.back().get();
 }
 
-void LevelLayout::addRope(Model *m1, Model *m2, ICoords d1, ICoords d2) {
+void LevelLayout::addRope(const Model *m1, const Model *m2, ICoords d1, ICoords d2) {
     m_ropes.push_back({m1, m2, d1, d2});
 }
 
-std::set<Model*> LevelLayout::intersections(Model* model, ICoords d) {
+std::set<Model*> LevelLayout::intersections(const Model* model, ICoords d) {
     if(model->isVirtual())
         return {};
     std::set<Model*> ret;
-    for(const auto& other: m_models) {
-        if(*other == *model || ret.contains(other.get()) || other->isVirtual())
+    for(auto* other : m_models_adapted) {
+        if(*other == *model || ret.contains(other) || other->isVirtual())
             continue;
-        if(model->intersects(other.get(), d))
-            ret.insert(other.get());
+        if(model->intersects(other, d))
+            ret.insert(other);
     }
     return ret;
 }
 
-std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
+std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
     std::set<Model*> ret;
-    std::deque<Model*> queue;
+    std::deque<const Model*> queue;
     queue.push_back(root);
 
     while(!queue.empty()) {
@@ -63,12 +64,12 @@ std::set<Model*> LevelLayout::obstacles(Model* root, ICoords d) {
     return ret;
 }
 void LevelLayout::animate(float dt) {
-    for (auto &model: m_models)
+    for (auto* model: m_models_adapted)
         if (model->moving()) {
             auto d = model->movingDir();
             model->deltaMove(dt, m_speed);
             if (!model->moving())
-                m_level.rules().registerMotion(model.get(), d);
+                m_level.rules().registerMotion(model, d);
         }
 }
 
