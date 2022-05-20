@@ -5,7 +5,7 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
-                                                       jText, jFilename, 16.f,
+                                                       jText, jFilename, fontsize,
                                                        m_instance.graphics().windowTarget().nativeSize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<std::string> ret{};
@@ -40,7 +40,7 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
                 return std::pair{Color::white, Color::white};
             }
         }();
-        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", 16.f, 2.f);
+        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", fontsize, outline);
         m_lines.push_back(
                 {line, std::move(texture),
                  false, 0.f, 0.f, duration,
@@ -57,10 +57,10 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     float dy = std::min(dTime * speed, -lowest);
     for(auto& line : m_lines)
         line.yOffset += dy;
-    if(lowest == 0.f && liveEnd != m_lines.end()) {
+    if(lowest >= -0.5f && liveEnd != m_lines.end()) {
         auto& line = *liveEnd;
         line.live = true;
-        line.yOffset = -1.f;
+        line.yOffset = -1.5f;
         line.addTime = absTime;
     }
     while(!m_lines.empty()) {
@@ -77,7 +77,7 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().get());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto height = line.texture.height();
-            float destY = (float)m_instance.graphics().display().height() - (float)height * (1.f + line.yOffset);
+            float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
             target.blit(line.texture, textProgram, 0, destY - (float)height, 0, 0,
                         DrawTarget::fullSize, 3 * height);
         }
