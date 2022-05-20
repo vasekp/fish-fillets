@@ -38,6 +38,7 @@ private:
     void buildDepGraph();
     void updateDepGraph(Model* model);
     void buildSupportMap();
+    Model::SupportType calcSupport(Model* model);
     void evalFalls();
     void evalMotion(Model* model, Direction d);
     void evalSteel();

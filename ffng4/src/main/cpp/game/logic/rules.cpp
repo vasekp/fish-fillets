@@ -118,6 +118,20 @@ void LevelRules::moveFish(Direction d) {
     m_level.recordMove(dirToChar(d));
 }
 
+char LevelRules::dirToChar(Direction d) {
+    bool small = m_curFish == m_small;
+    if(d == Direction::up)
+        return small ? 'u' : 'U';
+    else if(d == Direction::down)
+        return small ? 'd' : 'D';
+    else if(d == Direction::left)
+        return small ? 'l' : 'L';
+    else if(d == Direction::right)
+        return small ? 'r' : 'R';
+    else
+        ::error("Invalid direction passed to dirToChar");
+}
+
 void LevelRules::registerMotion(Model *model, Direction d) {
     m_motions.emplace_back(model, d);
     updateDepGraph(model);
@@ -154,7 +168,7 @@ void LevelRules::evalFalls() {
     for(auto& model : m_layout.models()) {
         if (model->isVirtual())
             continue;
-        if (model->movable() && m_support[model.get()] == Model::SupportType::none) {
+        if (auto support = m_support[model.get()]; model->movable() && support == Model::SupportType::none) {
             m_keyQueue.clear();
             model->displace(Direction::down);
         }
@@ -180,6 +194,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
                 if(d == Direction::down)
                     m_level.playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
                 break;
+            case Model::SupportType::weak:
             case Model::SupportType::small:
             case Model::SupportType::big:
                 const auto support = (d == Direction::down)
@@ -241,41 +256,38 @@ void LevelRules::buildSupportMap() {
     for(const auto& model : m_layout.models()) {
         if (!model->movable() || model->isVirtual())
             continue;
-
-        std::set<Model*> supportSet;
-        std::deque<Model*> queue;
-        queue.push_back(model.get());
-
-        while(!queue.empty()) {
-            auto* other = queue.front();
-            queue.pop_front();
-            if(supportSet.contains(other) || other->isVirtual())
-                continue;
-            supportSet.insert(other);
-            if(other->movable()) {
-                for(auto [above, below] : m_dependencyGraph)
-                    if(above == other)
-                        queue.push_back(below);
-            }
-        }
-        auto suppType = std::accumulate(supportSet.begin(),  supportSet.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
-            return std::max(prev, item->supportType());
-        });
-        LOGV("%d supported %d", model->index(), suppType);
-        m_support[model.get()] = suppType;
+        calcSupport(model.get());
     }
 }
 
-char LevelRules::dirToChar(Direction d) {
-    bool small = m_curFish == m_small;
-    if(d == Direction::up)
-        return small ? 'u' : 'U';
-    else if(d == Direction::down)
-        return small ? 'd' : 'D';
-    else if(d == Direction::left)
-        return small ? 'l' : 'L';
-    else if(d == Direction::right)
-        return small ? 'r' : 'R';
-    else
-        ::error("Invalid direction passed to dirToChar");
+Model::SupportType LevelRules::calcSupport(Model* model) {
+    if(m_support.contains(model))
+        return m_support[model];
+
+    std::set<Model*> supportSet;
+    std::deque<Model*> queue;
+
+    for(auto[above, below] : m_dependencyGraph)
+        if(above == model)
+            queue.push_back(below);
+    while(!queue.empty()) {
+        auto* other = queue.front();
+        queue.pop_front();
+        if(supportSet.contains(other) || other->isVirtual() || other == model)
+            continue;
+        if(other->supportType() != Model::SupportType::weak) {
+            supportSet.insert(other);
+            if(other->movable()) {
+                for(auto[above, below] : m_dependencyGraph)
+                    if(above == other)
+                        queue.push_back(below);
+            }
+        } else {
+            if(other != model && calcSupport(other) != Model::SupportType::none)
+                supportSet.insert(other);
+        }
+    }
+    return m_support[model] = std::accumulate(supportSet.begin(),  supportSet.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
+        return std::max(prev, item->supportType());
+    });
 }

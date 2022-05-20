@@ -25,6 +25,7 @@ public:
 
     enum class SupportType {
         none,
+        weak,
         small,
         big,
         wall

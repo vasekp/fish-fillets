@@ -61,7 +61,7 @@ void Model::deltaMove(float dt, float speed) {
 void Model::die() {
     m_alive = false;
     m_type = Type::item_light;
-    m_supportType = SupportType::none;
+    m_supportType = SupportType::weak;
     m_weight = Weight::light;
 }
 
