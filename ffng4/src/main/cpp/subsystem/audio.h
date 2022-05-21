@@ -12,7 +12,6 @@ class Audio : public oboe::AudioStreamDataCallback {
     AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
     std::map<std::string, AudioSourceRef> m_sounds_preload;
-    std::atomic<bool> m_dialog;
 
 public:
     Audio(Instance& instance) : m_instance(instance) { }

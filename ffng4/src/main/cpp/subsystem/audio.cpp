@@ -50,7 +50,10 @@ void Audio::resume() {
 void Audio::addSource(AudioSourceRef source) {
     LOGD("adding audio source %s", source->name().c_str());
     source->rewind();
-    m_sources.local()->push_back(source);
+    auto sources = m_sources.local();
+    sources->push_back(source);
+    if(source->isDialog())
+        sources.setDialogsLocal(true);
 }
 
 void Audio::removeSource(AudioSourceRef source) {
@@ -69,7 +72,7 @@ void Audio::clear() {
 }
 
 bool Audio::isDialog() const {
-    return m_dialog.load(std::memory_order::relaxed);
+    return m_sources.hasDialogs();
 }
 
 oboe::DataCallbackResult
@@ -85,7 +88,7 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
             dialogs++;
         source->mixin(outData, numFrames);
     }
-    m_dialog.store(dialogs > 0, std::memory_order::relaxed);
+    m_sources.setDialogsThread(dialogs > 0);
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
                                  [](auto& source) { return source->done(); });
     if(newEnd != sources.end()) {

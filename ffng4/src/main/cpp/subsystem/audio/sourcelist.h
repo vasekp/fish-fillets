@@ -7,6 +7,9 @@ class AudioSourceList {
     std::unique_ptr<Sources> m_sources_local;
     std::atomic<bool> m_sources_lock;
 
+    std::atomic<bool> m_dialogsLocal;
+    std::atomic<bool> m_dialogsThread;
+
     class SourcesGuard {
         AudioSourceList& m_parent;
     public:
@@ -14,6 +17,8 @@ class AudioSourceList {
         ~SourcesGuard();
 
         Sources* operator->();
+
+        void setDialogsLocal(bool dialogs);
     };
 
 public:
@@ -21,6 +26,9 @@ public:
 
     SourcesGuard local();
     Sources& thread();
+
+    void setDialogsThread(bool dialogs);
+    bool hasDialogs() const;
 };
 
 #endif //FISH_FILLETS_AUDIO_SOURCELIST_H
