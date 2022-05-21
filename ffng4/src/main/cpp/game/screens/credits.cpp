@@ -1,7 +1,10 @@
 #include "credits.h"
 #include "screenmanager.h"
 
-CreditsScreen::CreditsScreen(Instance& instance) : GameScreen(instance) {
+CreditsScreen::CreditsScreen(Instance& instance) :
+        GameScreen(instance),
+        m_input(instance)
+{
     addImage("images/menu/credits.png", "credits");
     addImage("images/menu/credits-header.png", "header");
     m_music = m_instance.audio().loadMusic("music/kufrik.ogg");

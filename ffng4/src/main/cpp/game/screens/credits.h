@@ -4,6 +4,7 @@
 #include "screen.h"
 
 class CreditsScreen : public GameScreen {
+    BaseInput m_input;
     std::shared_ptr<AudioSource> m_music;
     unsigned m_viewWidth;
     unsigned m_viewHeight;
@@ -11,6 +12,7 @@ class CreditsScreen : public GameScreen {
 
 public:
     CreditsScreen(Instance &);
+    IInput &input() override { return m_input; }
 
 protected:
     void own_start() override;

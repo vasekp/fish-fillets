@@ -15,7 +15,6 @@ class ScreenManager;
 class Script;
 class GameTree;
 class AudioSource;
-class Input;
 
 /*struct saved_state {
 };*/
@@ -27,7 +26,6 @@ class Instance {
     std::unique_ptr<Files> m_files;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
-    std::unique_ptr<Input> m_input;
     std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
@@ -45,7 +43,6 @@ public:
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
-    auto& input() { return *m_input; }
     auto& rng() { return m_rng; }
     auto& screens() { return *m_screens; }
     auto& script() { return *m_script; }

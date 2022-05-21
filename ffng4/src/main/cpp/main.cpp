@@ -7,26 +7,27 @@
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto& instance = Instance::get(app);
+    auto& input = instance.screens().curScreen().input();
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto action = AMotionEvent_getAction(event);
         if(action == AMOTION_EVENT_ACTION_DOWN) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
-            return instance.input().handlePointerDown({sx, sy}) ? 1 : 0;
+            return input.handlePointerDown({sx, sy}) ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_MOVE) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
-            return instance.input().handlePointerMove({sx, sy}) ? 1 : 0;
+            return input.handlePointerMove({sx, sy}) ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_UP) {
-            return instance.input().handlePointerUp() ? 1 : 0;
+            return input.handlePointerUp() ? 1 : 0;
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
+        auto key = Input::AndroidKeymap(AKeyEvent_getKeyCode(event));
         auto action = AKeyEvent_getAction(event);
         if(action == AKEY_EVENT_ACTION_DOWN)
-            return instance.input().handleKeyDown(key) ? 1 : 0;
+            return input.handleKeyDown(key) ? 1 : 0;
         else if(action == AKEY_EVENT_ACTION_UP)
-            return instance.input().handleKeyUp(key) ? 1 : 0;
+            return input.handleKeyUp(key) ? 1 : 0;
         else
             return 0;
     }

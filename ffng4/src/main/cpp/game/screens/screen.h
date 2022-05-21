@@ -24,6 +24,8 @@ private:
 public:
     virtual ~GameScreen() { }
 
+    virtual IInput& input() = 0;
+
     void start();
     void refresh();
     void pause();

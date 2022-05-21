@@ -2,54 +2,8 @@
 #define FISH_FILLETS_INPUT_H
 
 #include "common.h"
-#include "subsystem/input/key.h"
-
-class Instance;
-class DrawTarget;
-
-class Input {
-    Instance& m_instance;
-    Key m_lastKey;
-
-    enum class DirpadState {
-        idle,
-        wait,
-        follow,
-        ignore
-    };
-
-    struct {
-        DirpadState state;
-        std::chrono::steady_clock::time_point touchTime;
-        FCoords refPos;
-        ICoords lastDir;
-    } m_dirpad;
-    float m_density;
-
-public:
-    Input(Instance& instance);
-
-    void setDensity(float density);
-
-    bool handleKeyDown(Key key);
-    bool handleKeyUp(Key key);
-    bool handlePointerDown(FCoords pos);
-    bool handlePointerUp();
-    bool handlePointerMove(FCoords pos);
-    Key pool();
-
-    void refresh();
-    void draw(DrawTarget& target);
-
-private:
-    static unsigned index(Key key);
-    static Key toKey(ICoords dir);
-
-    constexpr static float minDistance = 0.3f; // inches
-    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
-    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
-    constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);
-    constexpr static std::chrono::steady_clock::time_point off{};
-};
+#include "input/key.h"
+#include "input/iinput.h"
+#include "input/baseinput.h"
 
 #endif //FISH_FILLETS_INPUT_H

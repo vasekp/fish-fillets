@@ -18,11 +18,8 @@ Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), l
     m_files = std::make_unique<Files>(*this);
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this);
-    m_input = std::make_unique<Input>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
-
-    m_input->setDensity((float) AConfiguration_getDensity(m_app->config));
 }
 
 Instance& Instance::get(android_app* app) {

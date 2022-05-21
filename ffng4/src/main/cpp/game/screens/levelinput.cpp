@@ -1,34 +1,34 @@
-#include "input.h"
+#include "levelinput.h"
 #include "instance.h"
 #include "game/screens/screenmanager.h"
 #include "subsystem/graphics.h"
 
-Input::Input(Instance& instance) :
-    m_instance(instance),
-    m_lastKey(Key::none),
-    m_dirpad({DirpadState::idle}),
-    m_density(72.f)
+LevelInput::LevelInput(Instance& instance) :
+        m_instance(instance),
+        m_lastKey(Key::none),
+        m_dirpad({DirpadState::idle}),
+        m_density(72.f)
 { }
 
-void Input::setDensity(float density) {
+void LevelInput::setDensity(float density) {
     m_density = density;
 }
 
-unsigned Input::index(Key key) {
+unsigned LevelInput::index(Key key) {
     return (unsigned)key;
 }
 
-bool Input::handleKeyDown(Key key) {
+bool LevelInput::handleKeyDown(Key key) {
     m_lastKey = key;
     return m_instance.screens().dispatchKey(key);
 }
 
-bool Input::handleKeyUp(Key) {
+bool LevelInput::handleKeyUp(Key) {
     m_lastKey = Key::none;
     return false;
 }
 
-Key Input::pool() {
+Key LevelInput::pool() {
     if(m_lastKey != Key::none)
         return m_lastKey;
     else if(m_dirpad.state == DirpadState::follow)
@@ -37,7 +37,7 @@ Key Input::pool() {
         return Key::none;
 }
 
-bool Input::handlePointerDown(FCoords pos) {
+bool LevelInput::handlePointerDown(FCoords pos) {
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
     if(m_instance.screens().dispatchMouse(windowCoords)) {
         m_dirpad.state = DirpadState::ignore;
@@ -53,7 +53,7 @@ bool Input::handlePointerDown(FCoords pos) {
     return true;
 }
 
-bool Input::handlePointerMove(FCoords pos) {
+bool LevelInput::handlePointerMove(FCoords pos) {
     auto diff = pos - m_dirpad.refPos;
     bool small = diff.length() < m_density * minDistance;
     ICoords dir{};
@@ -95,12 +95,12 @@ bool Input::handlePointerMove(FCoords pos) {
     return false;
 }
 
-bool Input::handlePointerUp() {
+bool LevelInput::handlePointerUp() {
     m_dirpad.state = DirpadState::idle;
     return false;
 }
 
-Key Input::toKey(ICoords dir) {
+Key LevelInput::toKey(ICoords dir) {
     if(dir == Direction::up)
         return Key::up;
     else if(dir == Direction::down)
@@ -113,14 +113,14 @@ Key Input::toKey(ICoords dir) {
         return Key::none;
 }
 
-void Input::refresh() {
+void LevelInput::refresh() {
     auto& program = m_instance.graphics().shaders().arrow;
     glUseProgram(program);
     glUniform1f(program.uniform("uSize"), m_density * minDistance);
     glUniform2f(program.uniform("uDstSize"), (float)m_instance.graphics().display().width(), (float)m_instance.graphics().display().height());
 }
 
-void Input::draw(DrawTarget& target) {
+void LevelInput::draw(const DrawTarget& target) {
     if(m_dirpad.state == DirpadState::idle || m_dirpad.state == DirpadState::ignore)
         return;
 

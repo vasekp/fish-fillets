@@ -2,6 +2,7 @@
 #define FISH_FILLETS_LEVELSCREEN_H
 
 #include "screen.h"
+#include "levelinput.h"
 #include "game/structure/levelrecord.h"
 #include "game/logic/level.h"
 #include "subsystem/audio.h"
@@ -10,6 +11,7 @@
 
 class LevelScreen : public GameScreen {
     Level m_level;
+    LevelInput m_input;
     std::multimap<std::string, AudioSourceRef> m_sounds;
     AudioSourceRef m_music;
     std::array<float, 3> m_waves;
@@ -28,6 +30,8 @@ class LevelScreen : public GameScreen {
 
 public:
     LevelScreen(Instance&, const LevelRecord&);
+
+    IInput& input() override { return m_input; }
 
     constexpr static int size_unit = 15;
 

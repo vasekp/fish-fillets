@@ -14,6 +14,7 @@ class WorldMap : public GameScreen {
         credits
     };
 
+    BaseInput m_input;
     AudioSourceRef m_music;
     std::vector<const Image*> m_nodeImages;
     std::map<Frames, Color> m_maskColors;
@@ -35,6 +36,8 @@ public:
 
     WorldMap(Instance&);
     void staticFrame(Frames frame);
+
+    IInput& input() override { return m_input; }
 
 protected:
     void own_start() override;

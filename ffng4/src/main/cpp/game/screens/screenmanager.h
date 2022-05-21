@@ -33,10 +33,10 @@ public:
     void announceLevel(const LevelRecord& record);
     void startLevel(const LevelRecord& record);
 
+    GameScreen& curScreen();
     bool& options() { return m_options; }
 
 private:
-    GameScreen& curScreen();
     void playIntro();
 };
 

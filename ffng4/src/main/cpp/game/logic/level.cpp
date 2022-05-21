@@ -12,6 +12,10 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     registerCallbacks();
 }
 
+LevelInput &Level::input() {
+    return m_screen.m_input;
+}
+
 void Level::init() {
     m_script.loadFile(m_instance.files().system(m_record.script_filename));
     m_rules = std::make_unique<LevelRules>(*this, layout());

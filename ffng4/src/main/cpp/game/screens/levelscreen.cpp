@@ -5,6 +5,7 @@
 LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
+        m_input(instance),
         m_waves(),
         m_subs(instance),
         m_fullLoad(false)
@@ -26,6 +27,10 @@ void LevelScreen::own_start() {
 }
 
 void LevelScreen::own_refresh() {
+    // Can be done much earlier but here in preparation for system / platform decoupling.
+    m_input.setDensity((float) AConfiguration_getDensity(m_instance.app()->config));
+    m_input.refresh();
+
     auto& program = m_instance.graphics().shaders().wavyImage;
     glUseProgram(program);
     glUniform1f(program.uniform("uAmplitude"), m_waves[0]);
@@ -218,6 +223,7 @@ bool LevelScreen::own_key(Key key) {
 
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
+    m_input.draw(target);
 }
 
 FCoords LevelScreen::shift() {
@@ -230,3 +236,4 @@ void LevelScreen::display(const std::string& filename) {
     else
         m_display.reset();
 }
+

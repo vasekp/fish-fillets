@@ -109,7 +109,7 @@ bool Level::level_isShowing() {
 
 bool Level::level_action_move(const std::string& move) {
     assert(move.length() == 1);
-    rules().keyInput(CharKeymap(move[0]));
+    rules().keyInput(Input::CharKeymap(move[0]));
     return true;
 }
 
@@ -174,7 +174,7 @@ bool Level::level_load(const std::string& text_moves) {
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
         loadMoves.emplace_back([&,c]() {
-            m_rules->keyInput(CharKeymap(c));
+            m_rules->keyInput(Input::CharKeymap(c));
             return true;
         });
     loadMoves.emplace_back([&] {

@@ -22,7 +22,9 @@ enum class Key {
     exit
 };
 
-Key AndroidKeymap(unsigned code);
-Key CharKeymap(char code);
+namespace Input {
+    Key AndroidKeymap(unsigned code);
+    Key CharKeymap(char code);
+}
 
 #endif //FISH_FILLETS_KEY_H

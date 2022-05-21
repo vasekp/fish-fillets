@@ -10,6 +10,7 @@
 #include <variant>
 
 class LevelScreen;
+class LevelInput;
 
 class Level : public ScriptReferrer {
     Instance& m_instance;
@@ -44,7 +45,7 @@ public:
 
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
-    Input& input() { return m_instance.input(); }
+    LevelInput& input();
 
     void init();
     void tick();

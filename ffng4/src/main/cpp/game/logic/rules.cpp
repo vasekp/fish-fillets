@@ -1,5 +1,6 @@
 #include "level.h"
 #include "rules.h"
+#include "game/screens/levelinput.h"
 
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
