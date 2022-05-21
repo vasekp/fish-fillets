@@ -2,7 +2,6 @@
 #define FISH_FILLETS_GRAPHICS_SHADERS_H
 
 struct Shaders {
-    ogl::Shader vertCommon;
     ogl::Program copy;
     ogl::Program copyOverlay;
     ogl::Program maskCopy;
@@ -14,6 +13,8 @@ struct Shaders {
     ogl::Program disintegrate;
     ogl::Program mirror;
     ogl::Program rope;
+
+    ogl::Program arrow;
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texMask_shader = 1;

@@ -23,9 +23,9 @@ struct Color {
     constexpr float rg() const { return (float)g / 255.f; }
     constexpr float rb() const { return (float)b / 255.f; }
 
-    std::unique_ptr<float[]> gl() const {
+    std::unique_ptr<float[]> gl(float alpha = 1.f) const {
         auto ret = std::make_unique<float[]>(4);
-        std::tie(ret[0], ret[1], ret[2], ret[3]) = std::tuple{rf(), rg(), rb(), 1.f};
+        std::tie(ret[0], ret[1], ret[2], ret[3]) = std::tuple{rf(), rg(), rb(), alpha};
         return ret;
     }
 

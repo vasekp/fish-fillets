@@ -1,7 +1,7 @@
 #include "subsystem/graphics.h"
 
 Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
-    vertCommon = ogl::Shader(ref, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert").read());
+    auto vertCommon = ogl::Shader(ref, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert").read());
 
     copy = ogl::Program(ref, vertCommon,{ref, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag").read()});
     copyOverlay = ogl::Program(ref, vertCommon,{ref, GL_FRAGMENT_SHADER, instance.files().system("shader/overlay.frag").read()});
@@ -24,4 +24,8 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
     glUseProgram(mirror);
     glUniform1i(mirror.uniform("uMaskTexture"), Shaders::texMask_shader);
+
+    arrow = ogl::Program(ref,
+            {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert").read()},
+            {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/arrow.frag").read()});
 }

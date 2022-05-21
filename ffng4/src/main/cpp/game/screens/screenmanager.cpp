@@ -117,12 +117,15 @@ void ScreenManager::drawFrame() {
         }
     }
 
+    m_instance.input().draw(graphics.fullscreenTarget());
+
     graphics.system().display().swap();
 }
 
 void ScreenManager::refresh() {
     if(m_title)
         m_title->refresh();
+    m_instance.input().refresh();
     curScreen().refresh();
 }
 

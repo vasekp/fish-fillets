@@ -5,6 +5,7 @@
 #include "subsystem/input/key.h"
 
 class Instance;
+class DrawTarget;
 
 class Input {
     Instance& m_instance;
@@ -37,6 +38,9 @@ public:
     bool handlePointerMove(FCoords pos);
     Key pool();
 
+    void refresh();
+    void draw(DrawTarget& target);
+
 private:
     static unsigned index(Key key);
     static Key toKey(ICoords dir);
@@ -44,6 +48,7 @@ private:
     constexpr static float minDistance = 0.3f; // inches
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
     constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
+    constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::time_point off{};
 };
 

@@ -1,6 +1,7 @@
 #include "input.h"
 #include "instance.h"
 #include "game/screens/screenmanager.h"
+#include "subsystem/graphics.h"
 
 Input::Input(Instance& instance) :
     m_instance(instance),
@@ -110,4 +111,52 @@ Key Input::toKey(ICoords dir) {
         return Key::right;
     else
         return Key::none;
+}
+
+void Input::refresh() {
+    auto& program = m_instance.graphics().shaders().arrow;
+    glUseProgram(program);
+    glUniform1f(program.uniform("uSize"), m_density * minDistance);
+    glUniform2f(program.uniform("uDstSize"), (float)m_instance.graphics().display().width(), (float)m_instance.graphics().display().height());
+}
+
+void Input::draw(DrawTarget& target) {
+    if(m_dirpad.state == DirpadState::idle || m_dirpad.state == DirpadState::ignore)
+        return;
+
+    float baseAlpha;
+    if(m_dirpad.touchTime != off) {
+        std::chrono::duration<float> dt = std::chrono::steady_clock::now() - m_dirpad.touchTime;
+        float q = std::max(dt / dirpadAppearTime, 1.f);
+        baseAlpha = 3*q*q - 2*q*q*q;
+    } else
+        baseAlpha = 1;
+
+    auto& program = m_instance.graphics().shaders().arrow;
+    glUseProgram(program);
+
+    using Matrix = std::array<float, 4>;
+    constexpr std::array<std::pair<ICoords, Matrix>, 4> matrices{
+            std::pair{Direction::up, Matrix{1, 0, 0,  -1}},
+            std::pair{Direction::down, Matrix{1, 0, 0,  1}},
+            std::pair{Direction::left, Matrix{0, 1, -1, 0}},
+            std::pair{Direction::right, Matrix{0, 1, 1,  0}}
+    };
+
+    float coords[3][3] = {
+            {1, 0, 0},
+            {0, 1, 0},
+            {0, 0, 1}
+    };
+    glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &coords[0][0]);
+
+    glUniform2f(program.uniform("uPosition"), m_dirpad.refPos.fx(), m_dirpad.refPos.fy());
+
+    Color color{255, 197, 102}; // TODO
+    for(const auto& [dir, matrix] : matrices) {
+        glUniformMatrix2fv(program.uniform("uMatrix"), 1, false, &matrix[0]);
+        float alpha = (dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
+        glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
 }
