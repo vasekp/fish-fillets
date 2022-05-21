@@ -355,8 +355,13 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
     } else
         source->setLoop(0, 0);
     source->setDialog(dialogFlag);
-    if(index != -1) // TODO
+    if(index != index_talk_both)
         layout().getModel(index)->talk() = source;
+    else {
+        auto [small, big] = rules().bothFish();
+        small->talk() = source;
+        big->talk() = source;
+    }
     m_instance.audio().addSource(source);
     if(!dialog.text.empty())
         m_screen.addSubtitle(dialog.text, dialog.colors);
@@ -377,7 +382,7 @@ bool Level::model_equals(int index, int x, int y) {
     LOGV("[%d,%d] equals %d?", x, y, index);
     if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
         return false;
-    if(index != -1) {
+    if(index != index_free_space) {
         const auto* model = layout().getModel(index);
         return model->shape().covers(ICoords{x, y} - model->xy());
     } else {

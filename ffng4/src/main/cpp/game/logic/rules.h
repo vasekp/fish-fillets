@@ -30,6 +30,8 @@ public:
     void keyInput(Key key);
     void update();
 
+    std::pair<Model*, Model*> bothFish();
+
 private:
     void processKey(Key key);
     void moveFish(Direction d);

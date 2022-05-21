@@ -291,3 +291,7 @@ Model::SupportType LevelRules::calcSupport(const Model* model) {
         return std::max(prev, item->supportType());
     });
 }
+
+std::pair<Model*, Model*> LevelRules::bothFish() {
+    return {m_small, m_big};
+}

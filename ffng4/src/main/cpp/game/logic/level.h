@@ -127,6 +127,9 @@ private:
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                                  const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);
+
+    constexpr static int index_talk_both = -1;
+    constexpr static int index_free_space = -1;
 };
 
 #endif //FISH_FILLETS_LEVEL_H
