@@ -73,6 +73,7 @@ bool Level::quitDemo() {
         model_killSound(1); /* actor_index used in demo_briefcase.lua */
         m_tickSchedule.clear();
         m_screen.display("");
+        m_screen.m_subs.clear();
         m_inDemo = false;
         return true;
     } else

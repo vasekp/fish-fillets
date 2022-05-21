@@ -27,6 +27,7 @@ public:
     void defineColors(const std::string& name, Color color1, Color color2);
     void draw(const DrawTarget& target, float dTime, float absTime);
     void refresh();
+    void clear();
 
     constexpr static const char* filename = "font/font_subtitle.ttf";
     constexpr static float fontsize = 16.f;

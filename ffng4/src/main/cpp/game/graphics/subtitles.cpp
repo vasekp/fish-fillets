@@ -48,6 +48,10 @@ void Subtitles::add(const std::string &text, const std::string& colors, float ad
     }
 }
 
+void Subtitles::clear() {
+    m_lines.clear();
+}
+
 void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
