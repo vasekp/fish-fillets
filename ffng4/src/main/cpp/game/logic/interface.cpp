@@ -375,6 +375,8 @@ void Level::killModelSound(Model* model) {
 
 bool Level::model_equals(int index, int x, int y) {
     LOGD("[%d,%d] equals %d?", x, y, index);
+    if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
+        return false;
     if(index != -1) {
         const auto* model = layout().getModel(index);
         return model->shape().covers(ICoords{x, y} - model->xy());

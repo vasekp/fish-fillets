@@ -46,6 +46,9 @@ public:
     LevelLayout(Level& level, int width, int height);
 
     auto& models() { return m_models_adapted; }
+    auto width() const { return m_width; }
+    auto height() const { return m_height; }
+
     int addModel(const std::string& type, int x, int y, const std::string& shape);
     void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);
     Model* getModel(int index);
