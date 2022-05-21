@@ -55,7 +55,7 @@ void Level::scheduleAction(std::function<bool()>&& action) {
 }
 
 bool Level::runScheduled() {
-    if(!m_moveSchedule.empty() && m_tickSchedule.empty() && !dialog_isDialog()) {
+    if(!m_moveSchedule.empty()) {
         bool ret = m_moveSchedule.front()();
         if(ret)
             m_moveSchedule.pop_front();

@@ -169,7 +169,7 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     LOGD("load(text_moves)");
-    m_loading = true; // TODO speed
+    m_loading = true;
     m_layout->speed() = LevelLayout::speed_loading;
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
@@ -374,7 +374,7 @@ void Level::killModelSound(Model* model) {
 }
 
 bool Level::model_equals(int index, int x, int y) {
-    LOGD("[%d,%d] equals %d?", x, y, index);
+    LOGV("[%d,%d] equals %d?", x, y, index);
     if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
         return false;
     if(index != -1) {
@@ -383,7 +383,7 @@ bool Level::model_equals(int index, int x, int y) {
     } else {
         for(const auto& model : layout().models())
             if(model->shape().covers({x - model->x(), y - model->y()})) {
-                LOGD("found model %d", model->index());
+                LOGV("found model %d", model->index());
                 return false;
             }
         // none found
