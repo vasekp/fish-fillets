@@ -31,6 +31,15 @@ void CreditsScreen::own_draw(const DrawTarget& target, float) {
 }
 
 bool CreditsScreen::own_mouse(unsigned int x, unsigned int y) {
-    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+    quit();
     return true;
+}
+
+bool CreditsScreen::own_key(Key key) {
+    quit();
+    return true;
+}
+
+void CreditsScreen::quit() {
+    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
