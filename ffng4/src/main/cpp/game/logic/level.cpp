@@ -36,7 +36,10 @@ void Level::tick() {
 }
 
 void Level::blockFor(int frames, std::function<void()>&& callback) {
-    m_blocks.push_back({frames, std::move(callback)});
+    if(!m_loading)
+        m_blocks.push_back({frames, std::move(callback)});
+    else
+        callback();
 }
 
 bool Level::blocked() const {
