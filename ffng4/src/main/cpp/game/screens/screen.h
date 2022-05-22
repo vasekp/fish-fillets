@@ -43,7 +43,6 @@ public:
 protected:
     GameScreen(Instance& instance);
 
-    void setSize(unsigned width, unsigned height);
     Image* addImage(const std::string& path, const std::string& name = "");
     Image* replaceImage(const std::string& name, const std::string& path);
     Image* getImage(const std::string& name);
@@ -54,6 +53,7 @@ protected:
     virtual void own_refresh() { }
     virtual void own_pause() { }
     virtual void own_resume() { }
+    virtual void own_setsize() { m_instance.graphics().setWindowSize(baseWidth, baseHeight); }
     virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual void own_drawOverlays(const DrawTarget& target, float dTime, float absTime) { }
     virtual bool own_mouse(unsigned x, unsigned y) { return false; }

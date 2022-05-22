@@ -40,6 +40,15 @@ class LevelInput : public IInput {
     int m_activeButton;
 
 public:
+    enum class ButtonGravity {
+        left,
+        top
+    };
+
+private:
+    ButtonGravity m_gravity;
+
+public:
     LevelInput(Instance& instance);
 
     void setDensity(float density);
@@ -54,6 +63,8 @@ public:
     void refresh();
     void draw(const DrawTarget& target);
     Key pool();
+    void setButtonGravity(ButtonGravity gravity);
+    FCoords getReserve();
 
 private:
     static unsigned index(Key key);
@@ -65,6 +76,7 @@ private:
 
     constexpr static float minDistance = 0.25f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches
+    constexpr static float maxButtonGap = 0.35f; // inches
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
     constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);

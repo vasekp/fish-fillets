@@ -16,7 +16,7 @@ public:
     DisplayTarget(const ogl::Display& display);
 
     void bind() const override;
-    void setWindow(unsigned int width, unsigned int height);
+    void setWindow(unsigned int width, unsigned int height, FCoords reserve = {});
     FCoords size() const override { return m_windowDim; }
 
     FCoords screen2window(FCoords screen) const;

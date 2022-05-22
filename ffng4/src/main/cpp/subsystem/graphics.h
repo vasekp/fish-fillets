@@ -17,8 +17,6 @@
 class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
-    unsigned m_windowWidth;
-    unsigned m_windowHeight;
 
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
@@ -36,7 +34,7 @@ public:
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
 
-    void setWindowSize(unsigned width, unsigned height);
+    void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 

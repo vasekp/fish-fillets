@@ -77,8 +77,8 @@ void Level::registerCallbacks() {
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
-    m_screen.create(width, height, bg);
     m_layout = std::make_unique<LevelLayout>(*this, width, height);
+    m_screen.addImage(bg, "background");
 }
 
 int Level::level_getRestartCounter() {

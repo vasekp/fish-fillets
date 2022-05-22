@@ -8,7 +8,8 @@ LevelInput::LevelInput(Instance& instance) :
         m_lastKey(Key::none),
         m_dirpad({DirpadState::ignore}),
         m_density(72.f),
-        m_activeButton(noButton)
+        m_activeButton(noButton),
+        m_gravity(ButtonGravity::left)
 { }
 
 void LevelInput::setDensity(float density) {
@@ -153,7 +154,9 @@ void LevelInput::refresh() {
 
         constexpr auto buttonCount = std::tuple_size_v<decltype(m_buttons)>;
         float buttonSize = std::min(m_density * maxButtonSize, displayHeight / (float)buttonCount);
-        float buttonStride = (displayHeight - (float)buttonCount * buttonSize) / (float)(buttonCount - 1) + buttonSize;
+        float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
+        float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), m_density * maxButtonGap) + buttonSize;
+        float buttonOffset = (fullSize - (buttonCount - 1) * buttonStride - buttonSize) / 2.f;
         glUniform1f(program.uniform("uSize"), buttonSize);
 
         std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
@@ -161,7 +164,7 @@ void LevelInput::refresh() {
         static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
         static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
         for(int i = 0; i < buttonCount; i++) {
-            FCoords from = {0.f, (float)i * buttonStride};
+            FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
                     m_instance.graphics().renderText(chars[i], "font/font_title.ttf", buttonSize, 0),
                     from,
@@ -239,4 +242,17 @@ int LevelInput::findButton(FCoords pos) {
             return i;
     }
     return noButton;
+}
+
+void LevelInput::setButtonGravity(ButtonGravity gravity) {
+    m_gravity = gravity;
+}
+
+FCoords LevelInput::getReserve() {
+    switch(m_gravity) {
+        case ButtonGravity::left:
+            return {m_buttons[0].coordsTo.fx(), 0.f};
+        case ButtonGravity::top:
+            return {0.f, m_buttons[0].coordsTo.fy()};
+    }
 }

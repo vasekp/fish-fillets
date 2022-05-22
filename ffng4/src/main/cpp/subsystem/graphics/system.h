@@ -17,7 +17,7 @@ public:
     auto& display() { return *m_display; }
     auto& ref() { return m_display; }
 
-    void setWindowSize(unsigned width, unsigned height);
+    void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
 
     friend class Graphics;
 };

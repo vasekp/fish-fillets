@@ -25,10 +25,6 @@ Image* GameScreen::getImage(const std::string& name) {
     return &m_images.at(name);
 }
 
-void GameScreen::setSize(unsigned int width, unsigned int height) {
-    m_instance.graphics().setWindowSize(width, height);
-}
-
 void GameScreen::reloadImages() {
     for(auto& [_, image] : m_images)
         image.reload(m_instance);
@@ -36,7 +32,6 @@ void GameScreen::reloadImages() {
 
 void GameScreen::start() {
     LOGD("screen: start");
-    m_instance.graphics().setWindowSize(baseWidth, baseHeight);
     own_start();
     m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
@@ -44,6 +39,7 @@ void GameScreen::start() {
 void GameScreen::refresh() {
     LOGD("screen: refresh");
     reloadImages();
+    own_setsize();
     own_refresh();
 }
 

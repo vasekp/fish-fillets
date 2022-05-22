@@ -11,11 +11,6 @@ LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         m_fullLoad(false)
 { }
 
-void LevelScreen::create(int width, int height, const std::string &background) {
-    setSize(width * size_unit, height * size_unit);
-    addImage(background, "background");
-}
-
 void LevelScreen::restore() {
     m_display.reset();
     m_effects.clear();
@@ -26,11 +21,19 @@ void LevelScreen::own_start() {
     m_level.init();
 }
 
-void LevelScreen::own_refresh() {
+void LevelScreen::own_setsize() {
     // Can be done much earlier but here in preparation for system / platform decoupling.
     m_input.setDensity((float) AConfiguration_getDensity(m_instance.app()->config));
+    FCoords displaySize{m_instance.graphics().display().width(), m_instance.graphics().display().height()};
+    FCoords levelSize{m_level.layout().width(), m_level.layout().height()};
+    m_input.setButtonGravity(levelSize.fx() / levelSize.fy() > displaySize.fx() / displaySize.fy()
+        ? LevelInput::ButtonGravity::top
+        : LevelInput::ButtonGravity::left);
     m_input.refresh();
+    m_instance.graphics().setWindowSize(m_level.layout().width() * size_unit, m_level.layout().height() * size_unit, m_input.getReserve());
+}
 
+void LevelScreen::own_refresh() {
     auto& program = m_instance.graphics().shaders().wavyImage;
     glUseProgram(program);
     glUniform1f(program.uniform("uAmplitude"), m_waves[0]);

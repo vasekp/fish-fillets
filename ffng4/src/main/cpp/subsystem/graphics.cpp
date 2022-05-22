@@ -6,7 +6,6 @@
 void Graphics::activate() {
     LOGD("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
-    m_system->setWindowSize(m_windowWidth, m_windowHeight);
 }
 
 void Graphics::shutdown() {
@@ -14,11 +13,10 @@ void Graphics::shutdown() {
     m_system.reset();
 }
 
-void Graphics::setWindowSize(unsigned int width, unsigned int height) {
-    m_windowWidth = width;
-    m_windowHeight = height;
-    if(m_system)
-        m_system->setWindowSize(m_windowWidth, m_windowHeight);
+void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords reserve) {
+    if(!m_system)
+        ::error("setWindowSize() called before activate()");
+    m_system->setWindowSize(width, height, reserve);
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {

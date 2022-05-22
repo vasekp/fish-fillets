@@ -43,7 +43,6 @@ protected:
     void own_draw(const DrawTarget& target, float dt) override;
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
 
-    void create(int width, int height, const std::string& background);
     void restore();
     void setWaves(float amplitude, float period, float speed);
     AudioSourceRef addSound(const std::string& name, const std::string& filename, bool single = false);
@@ -57,6 +56,8 @@ protected:
 
     bool own_mouse(unsigned int x, unsigned int y) override;
     bool own_key(Key key) override;
+
+    void own_setsize() override;
 
     friend class Level;
 
