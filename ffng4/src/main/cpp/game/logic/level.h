@@ -62,6 +62,7 @@ public:
     void killDialogs();
     void killDialogsHard();
     void setModelEffect(Model* model, const std::string& name);
+    void notifyFish(Model::Fish fish);
 
     void save();
     void load();

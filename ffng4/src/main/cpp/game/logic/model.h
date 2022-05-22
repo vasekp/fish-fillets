@@ -31,6 +31,12 @@ public:
         wall
     };
 
+    enum class Fish {
+        none,
+        small,
+        big
+    };
+
     enum class Weight {
         none,
         light,

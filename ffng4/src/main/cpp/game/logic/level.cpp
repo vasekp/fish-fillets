@@ -72,6 +72,10 @@ void Level::recordMove(char key) {
     m_replay += key;
 }
 
+void Level::notifyFish(Model::Fish fish) {
+    input().setFish(fish);
+}
+
 bool Level::quitDemo() {
     if(m_inDemo) {
         model_killSound(1); /* actor_index used in demo_briefcase.lua */

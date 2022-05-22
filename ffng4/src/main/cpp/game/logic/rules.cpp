@@ -5,11 +5,30 @@
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
-    m_curFish = m_small;
+    setFish(Model::Fish::small);
     for(const auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
             m_goals.emplace_back(model, model->goal());
     buildDepGraph();
+}
+
+void LevelRules::setFish(Model::Fish fish) {
+    switch(fish) {
+        case Model::Fish::small:
+            m_curFish = m_small;
+            break;
+        case Model::Fish::big:
+            m_curFish = m_big;
+            break;
+        case Model::Fish::none:
+            m_curFish = nullptr;
+            break;
+    }
+    m_level.notifyFish(fish);
+}
+
+void LevelRules::setFish(Model* which) {
+    setFish(which == m_small ? Model::Fish::small : Model::Fish::big);
 }
 
 void LevelRules::keyInput(Key key) {
@@ -34,35 +53,35 @@ void LevelRules::processKey(Key key) {
             switchFish();
             break;
         case Key::smallUp:
-            m_curFish = m_small;
+            setFish(Model::Fish::small);
             moveFish(Direction::up);
             break;
         case Key::smallDown:
-            m_curFish = m_small;
+            setFish(Model::Fish::small);
             moveFish(Direction::down);
             break;
         case Key::smallLeft:
-            m_curFish = m_small;
+            setFish(Model::Fish::small);
             moveFish(Direction::left);
             break;
         case Key::smallRight:
-            m_curFish = m_small;
+            setFish(Model::Fish::small);
             moveFish(Direction::right);
             break;
         case Key::bigUp:
-            m_curFish = m_big;
+            setFish(Model::Fish::big);
             moveFish(Direction::up);
             break;
         case Key::bigDown:
-            m_curFish = m_big;
+            setFish(Model::Fish::big);
             moveFish(Direction::down);
             break;
         case Key::bigLeft:
-            m_curFish = m_big;
+            setFish(Model::Fish::big);
             moveFish(Direction::left);
             break;
         case Key::bigRight:
-            m_curFish = m_big;
+            setFish(Model::Fish::big);
             moveFish(Direction::right);
             break;
         default:
@@ -74,7 +93,7 @@ void LevelRules::switchFish() {
     Model* target = m_curFish == m_small ? m_big : m_small;
     if(target->action() == Model::Action::busy)
         return;
-    m_curFish = target;
+    setFish(target);
     m_curFish->action() = Model::Action::activate;
     m_level.blockFor(4, [&]() { m_curFish->action() = Model::Action::base; });
 }
@@ -293,6 +312,6 @@ Model::SupportType LevelRules::calcSupport(const Model* model) {
     });
 }
 
-std::pair<Model*, Model*> LevelRules::bothFish() {
+std::pair<Model*, Model*> LevelRules::bothFish() const {
     return {m_small, m_big};
 }

@@ -2,8 +2,8 @@
 #define FISH_FILLETS_RULES_H
 
 #include "subsystem/input.h"
+#include "game/logic/model.h"
 
-class Model;
 class Level;
 class LevelLayout;
 
@@ -30,7 +30,7 @@ public:
     void keyInput(Key key);
     void update();
 
-    std::pair<Model*, Model*> bothFish();
+    std::pair<Model*, Model*> bothFish() const;
 
 private:
     void processKey(Key key);
@@ -44,7 +44,9 @@ private:
     void evalFalls();
     void evalMotion(Model* model, Direction d);
     void evalSteel();
-    void death(Model*);
+    void death(Model* unit);
+    void setFish(Model::Fish fish);
+    void setFish(Model* which);
     char dirToChar(Direction d);
 };
 

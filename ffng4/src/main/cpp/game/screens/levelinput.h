@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "subsystem/input.h"
+#include "game/logic/model.h"
 
 class Instance;
 class DrawTarget;
@@ -23,6 +24,7 @@ class LevelInput : public IInput {
         std::chrono::steady_clock::time_point touchTime;
         FCoords refPos;
         ICoords lastDir;
+        Model::Fish fish;
     } m_dirpad;
     float m_density;
 
@@ -30,6 +32,7 @@ public:
     LevelInput(Instance& instance);
 
     void setDensity(float density);
+    void setFish(Model::Fish fish);
 
     bool handleKeyDown(Key key) override;
     bool handleKeyUp(Key key) override;
@@ -49,7 +52,10 @@ private:
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
     constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);
-    constexpr static std::chrono::steady_clock::time_point off{};
+    constexpr static std::chrono::steady_clock::time_point absolutePast{};
+
+    constexpr static Color colorSmall{255, 197, 102};
+    constexpr static Color colorBig{162, 244, 255};
 };
 
 #endif //FISH_FILLETS_LEVELINPUT_H

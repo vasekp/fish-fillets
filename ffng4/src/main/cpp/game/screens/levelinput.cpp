@@ -6,12 +6,23 @@
 LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
-        m_dirpad({DirpadState::idle}),
+        m_dirpad({DirpadState::ignore}),
         m_density(72.f)
 { }
 
 void LevelInput::setDensity(float density) {
     m_density = density;
+}
+
+void LevelInput::setFish(Model::Fish fish) {
+    switch(fish) {
+        case Model::Fish::small:
+        case Model::Fish::big:
+            m_dirpad.fish = fish;
+            break;
+        case Model::Fish::none:
+            m_dirpad.state = DirpadState::ignore;
+    }
 }
 
 unsigned LevelInput::index(Key key) {
@@ -38,6 +49,8 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
+    if(m_dirpad.fish == Model::Fish::none)
+        return false;
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
     if(m_instance.screens().dispatchMouse(windowCoords)) {
         m_dirpad.state = DirpadState::ignore;
@@ -45,7 +58,7 @@ bool LevelInput::handlePointerDown(FCoords pos) {
     }
     if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
         m_instance.screens().dispatchKey(Key::space);
-        m_dirpad.touchTime = off;
+        m_dirpad.touchTime = absolutePast;
     } else
         m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.refPos = pos;
@@ -75,7 +88,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
             if(!small && dir) {
                 m_instance.screens().dispatchKey(toKey(dir));
                 m_dirpad.lastDir = dir;
-                m_dirpad.touchTime = off;
+                m_dirpad.touchTime = absolutePast;
                 m_dirpad.state = DirpadState::follow;
             }
             return false;
@@ -125,7 +138,7 @@ void LevelInput::draw(const DrawTarget& target) {
         return;
 
     float baseAlpha;
-    if(m_dirpad.touchTime != off) {
+    if(m_dirpad.touchTime != absolutePast) {
         std::chrono::duration<float> dt = std::chrono::steady_clock::now() - m_dirpad.touchTime;
         float q = std::min(dt / dirpadAppearTime, 1.f);
         baseAlpha = 3*q*q - 2*q*q*q;
@@ -151,8 +164,8 @@ void LevelInput::draw(const DrawTarget& target) {
     glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &coords[0][0]);
 
     glUniform2f(program.uniform("uPosition"), m_dirpad.refPos.fx(), m_dirpad.refPos.fy());
+    auto color = m_dirpad.fish == Model::Fish::small ? colorSmall : colorBig;
 
-    Color color{255, 197, 102}; // TODO
     for(const auto& [dir, matrix] : matrices) {
         glUniformMatrix2fv(program.uniform("uMatrix"), 1, false, &matrix[0]);
         float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
