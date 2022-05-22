@@ -113,8 +113,8 @@ void LevelRules::moveFish(Direction d) {
         m_level.transition(3, [&, d]() {
             m_curFish->action() = Model::Action::base;
             m_curFish->turn();
+            moveFish(d);
         });
-        m_level.recordMove(dirToChar(d));
         return;
     }
 
