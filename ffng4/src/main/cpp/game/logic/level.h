@@ -30,15 +30,21 @@ class Level : public ScriptReferrer {
     };
     std::vector<Delayed> m_blocks;
 
-    bool m_loading;
-    bool m_inDemo;
-
     struct Dialog {
         std::string text;
         std::string colors;
         std::string soundFile;
     };
     std::map<std::string, Dialog> m_dialogs;
+
+    enum class BusyReason {
+        blocked,
+        loading,
+        schedule,
+        demo,
+        SIZE
+    };
+    std::bitset<(std::size_t)BusyReason::SIZE> m_busy;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
@@ -51,7 +57,7 @@ public:
     void tick();
     void blockFor(int frames, std::function<void()>&& callback);
     bool blocked() const;
-    void scheduleAction(std::function<bool()>&& action);
+    void schedule(Callback&& action);
     bool runScheduled();
     void recordMove(char key);
     bool quitDemo();
@@ -129,6 +135,11 @@ private:
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                                  const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);
+
+    void setBusy(BusyReason reason, bool busy = true);
+    bool isBusy(BusyReason reason) const;
+    void clearSchedule();
+    void clearBlocks();
 
     constexpr static int index_talk_both = -1;
     constexpr static int index_free_space = -1;

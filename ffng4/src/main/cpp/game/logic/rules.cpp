@@ -31,6 +31,15 @@ void LevelRules::setFish(Model* which) {
     setFish(which == m_small ? Model::Fish::small : Model::Fish::big);
 }
 
+Model::Fish LevelRules::activeFish() const {
+    if(m_curFish == m_small)
+        return Model::Fish::small;
+    else if(m_curFish == m_big)
+        return Model::Fish::big;
+    else
+        return Model::Fish::none;
+}
+
 void LevelRules::keyInput(Key key) {
     m_keyQueue.push_back(key);
 }
@@ -173,10 +182,8 @@ void LevelRules::update() {
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
-        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting()) {
-            // TODO only repeat directions
+        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting())
             processKey(key);
-        }
     }
 
     for(auto* model : m_layout.models())
@@ -228,7 +235,10 @@ void LevelRules::evalMotion(Model* model, Direction d) {
 
     if(model->goal() == Model::Goal::escape) {
         if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0)
-            m_level.scheduleAction([d, model]() { model->displace(d); return true; });
+            m_level.schedule([d, model]() {
+                model->displace(d);
+                return true;
+            });
     }
 }
 

@@ -15,14 +15,9 @@ void LevelInput::setDensity(float density) {
 }
 
 void LevelInput::setFish(Model::Fish fish) {
-    switch(fish) {
-        case Model::Fish::small:
-        case Model::Fish::big:
-            m_dirpad.fish = fish;
-            break;
-        case Model::Fish::none:
-            m_dirpad.state = DirpadState::ignore;
-    }
+    m_dirpad.fish = fish;
+    if(fish == Model::Fish::none)
+        m_dirpad.state = DirpadState::ignore;;
 }
 
 unsigned LevelInput::index(Key key) {

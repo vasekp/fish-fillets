@@ -100,11 +100,11 @@ bool Level::level_isSolved() {
 }
 
 void Level::level_planShow(LuaCallback function) {
-    m_moveSchedule.emplace_back(std::move(function));
+    schedule(std::move(function));
 }
 
 bool Level::level_isShowing() {
-    return !m_moveSchedule.empty();
+    return isBusy(BusyReason::schedule);
 }
 
 bool Level::level_action_move(const std::string& move) {
@@ -120,10 +120,11 @@ bool Level::level_action_restart() {
         m_dialogs.clear();
         m_screen.restore();
         init();
-        // Move schedule can reach over restarts
-        m_blocks.clear();
+        clearBlocks();
         m_replay.clear();
-        m_inDemo = false;
+        setBusy(BusyReason::demo, false);
+        setBusy(BusyReason::loading, false);
+        // Move schedule can reach over restarts
         return true;
     });
     return true;
@@ -146,10 +147,11 @@ bool Level::level_action_load() {
             m_dialogs.clear();
             m_screen.restore();
             init();
-            // Move schedule can reach over restarts
-            m_blocks.clear();
+            clearBlocks();
             m_replay.clear();
-            m_inDemo = false;
+            setBusy(BusyReason::demo, false);
+            setBusy(BusyReason::loading, false);
+            // Move schedule can reach over restarts
             m_script.loadFile(file);
             m_script.doString("script_load()");
             return true;
@@ -169,7 +171,7 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     LOGD("load(text_moves)");
-    m_loading = true;
+    setBusy(BusyReason::loading);
     m_layout->speed() = LevelLayout::speed_loading;
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
@@ -178,16 +180,17 @@ bool Level::level_load(const std::string& text_moves) {
             return true;
         });
     loadMoves.emplace_back([&] {
-        m_loading = false;
+        setBusy(BusyReason::loading, false);
         m_layout->speed() = LevelLayout::speed_normal;
         return true; });
     m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
+    setBusy(BusyReason::schedule);
     return true;
 }
 
 void Level::level_newDemo(const std::string& filename) {
-    if(!m_loading) {
-        m_inDemo = true;
+    if(!isBusy(BusyReason::loading)) {
+        setBusy(BusyReason::demo);
         m_script.file_include(filename);
     }
 }

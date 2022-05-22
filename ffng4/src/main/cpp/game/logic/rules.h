@@ -30,6 +30,7 @@ public:
     void keyInput(Key key);
     void update();
 
+    Model::Fish activeFish() const;
     std::pair<Model*, Model*> bothFish() const;
 
 private:
