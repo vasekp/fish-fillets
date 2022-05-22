@@ -93,7 +93,7 @@ public class MainActivity extends NativeActivity {
         return ret;
     }
 
-    Bitmap renderText(String text, String fontFile, float fontSize, float outline, int screenWidth) {
+    Bitmap renderText(String text, String fontFile, float fontSize, float outline) {
         Typeface face = typeface(fontFile);
 
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -108,12 +108,12 @@ public class MainActivity extends NativeActivity {
 
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
         float lineHeight = fm.bottom - fm.top;
+        Rect bounds = new Rect();
+        fillPaint.getTextBounds(text, 0, text.length(), bounds);
 
-        Bitmap bitmap = Bitmap.createBitmap(screenWidth, (int) (lineHeight + outline) + 2, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap((int)(bounds.width() + outline) + 2, (int) (lineHeight + outline) + 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        Rect rect = new Rect();
-        fillPaint.getTextBounds(text, 0, text.length(), rect);
-        float x = ((float) screenWidth - (rect.right - rect.left)) / 2.f;
+        float x = -bounds.left + outline / 2.f + 1.f;
         float y = -fm.top + outline / 2.f + 1.f;
         if(outline != 0.0)
             canvas.drawText(text, x, y, outlinePaint);

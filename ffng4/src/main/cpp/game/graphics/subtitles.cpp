@@ -80,9 +80,11 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().get());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().get());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
+            auto width = line.texture.width();
             auto height = line.texture.height();
+            float destX = ((float)m_instance.graphics().display().width() - (float)width) / 2.f;
             float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.texture, textProgram, 0, destY - (float)height, 0, 0,
+            target.blit(line.texture, textProgram, destX, destY - (float)height, 0, 0,
                         DrawTarget::fullSize, 3 * height);
         }
 }

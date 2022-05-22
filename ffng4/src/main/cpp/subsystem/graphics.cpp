@@ -54,7 +54,7 @@ ogl::Texture Graphics::renderText(const std::string& text, const std::string& fo
     auto& jni = m_instance.jni();
     auto jFilename = jni->NewStringUTF(font.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, fontSize, outline, m_instance.graphics().display().width());
+    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, fontSize, outline);
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);
     std::uint32_t width = info.width;
