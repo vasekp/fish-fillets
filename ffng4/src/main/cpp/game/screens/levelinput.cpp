@@ -17,7 +17,7 @@ void LevelInput::setDensity(float density) {
 void LevelInput::setFish(Model::Fish fish) {
     m_dirpad.fish = fish;
     if(fish == Model::Fish::none)
-        m_dirpad.state = DirpadState::ignore;;
+        m_dirpad.state = DirpadState::ignore;
 }
 
 unsigned LevelInput::index(Key key) {
@@ -44,8 +44,10 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
-    if(m_dirpad.fish == Model::Fish::none)
+    if(m_dirpad.fish == Model::Fish::none) {
+        m_dirpad.state = DirpadState::ignore;
         return false;
+    }
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
     if(m_instance.screens().dispatchMouse(windowCoords)) {
         m_dirpad.state = DirpadState::ignore;
