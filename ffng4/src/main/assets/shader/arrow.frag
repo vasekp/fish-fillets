@@ -1,7 +1,6 @@
 precision highp float;
 
 uniform vec4 uColor;
-uniform bool uFilled;
 varying vec3 vCoords;
 
 void main(void)

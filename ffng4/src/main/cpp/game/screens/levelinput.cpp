@@ -145,12 +145,12 @@ void LevelInput::draw(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().arrow;
     glUseProgram(program);
 
-    using Matrix = std::array<float, 4>;
-    constexpr std::array<std::pair<ICoords, Matrix>, 4> matrices{
-            std::pair{Direction::up, Matrix{1, 0, 0,  -1}},
-            std::pair{Direction::down, Matrix{1, 0, 0,  1}},
-            std::pair{Direction::left, Matrix{0, 1, -1, 0}},
-            std::pair{Direction::right, Matrix{0, 1, 1,  0}}
+    using Vector = std::array<float, 2>;
+    constexpr std::array<std::pair<ICoords, Vector>, 4> arrows{
+            std::pair{Direction::up, Vector{0,  -1}},
+            std::pair{Direction::down, Vector{0,  1}},
+            std::pair{Direction::left, Vector{-1, 0}},
+            std::pair{Direction::right, Vector{1,  0}}
     };
 
     float coords[3][3] = {
@@ -163,8 +163,8 @@ void LevelInput::draw(const DrawTarget& target) {
     glUniform2f(program.uniform("uPosition"), m_dirpad.refPos.fx(), m_dirpad.refPos.fy());
     auto color = m_dirpad.fish == Model::Fish::small ? colorSmall : colorBig;
 
-    for(const auto& [dir, matrix] : matrices) {
-        glUniformMatrix2fv(program.uniform("uMatrix"), 1, false, &matrix[0]);
+    for(const auto& [dir, vector] : arrows) {
+        glUniform2f(program.uniform("uDirection"), vector[0], vector[1]);
         float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
         glDrawArrays(GL_TRIANGLES, 0, 3);
