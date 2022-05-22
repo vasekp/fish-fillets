@@ -127,7 +127,7 @@ void LevelInput::draw(const DrawTarget& target) {
     float baseAlpha;
     if(m_dirpad.touchTime != off) {
         std::chrono::duration<float> dt = std::chrono::steady_clock::now() - m_dirpad.touchTime;
-        float q = std::max(dt / dirpadAppearTime, 1.f);
+        float q = std::min(dt / dirpadAppearTime, 1.f);
         baseAlpha = 3*q*q - 2*q*q*q;
     } else
         baseAlpha = 1;
@@ -155,7 +155,7 @@ void LevelInput::draw(const DrawTarget& target) {
     Color color{255, 197, 102}; // TODO
     for(const auto& [dir, matrix] : matrices) {
         glUniformMatrix2fv(program.uniform("uMatrix"), 1, false, &matrix[0]);
-        float alpha = (dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
+        float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
