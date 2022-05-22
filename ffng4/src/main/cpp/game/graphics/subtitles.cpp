@@ -27,7 +27,7 @@ void Subtitles::defineColors(const std::string &name, Color color1, Color color2
     m_colors.insert({name, {color1, color2}});
 }
 
-void Subtitles::add(const std::string &text, const std::string& colors, float addTime) {
+void Subtitles::add(const std::string &text, const std::string& colors) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(const auto& line : lines) {
