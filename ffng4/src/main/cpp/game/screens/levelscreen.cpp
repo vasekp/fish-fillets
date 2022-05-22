@@ -190,8 +190,6 @@ bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
 }
 
 bool LevelScreen::own_key(Key key) {
-    if(m_level.blocked())
-        return false;
     switch(key) {
         case Key::up:
         case Key::down:

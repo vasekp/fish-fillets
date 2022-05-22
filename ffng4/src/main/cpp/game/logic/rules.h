@@ -35,6 +35,7 @@ public:
 
 private:
     void processKey(Key key);
+    void moveFish(Model::Fish which, Direction d);
     void moveFish(Direction d);
     void switchFish();
 

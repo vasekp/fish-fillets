@@ -22,13 +22,11 @@ void Level::init() {
 void Level::tick() {
     for(auto* model : layout().models())
         model->anim().update();
-    for(auto& block : m_blocks) {
-        if(--block.countdown == 0)
-            block.callback();
+    for(auto& transition : m_transitions) {
+        if(--transition.countdown == 0)
+            transition.callback();
     }
-    m_blocks.erase(std::remove_if(m_blocks.begin(), m_blocks.end(), [](const auto& block) { return block.countdown == 0; }), m_blocks.end());
-    if(m_blocks.empty())
-        setBusy(BusyReason::blocked, false);
+    m_transitions.erase(std::remove_if(m_transitions.begin(), m_transitions.end(), [](const auto& transition) { return transition.countdown == 0; }), m_transitions.end());
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::demo))
         m_script.doString("script_update();");
     if(!m_tickSchedule.empty()) {
@@ -51,21 +49,15 @@ bool Level::isBusy(BusyReason reason) const {
     return m_busy[(std::size_t)reason];
 }
 
-void Level::blockFor(int frames, std::function<void()>&& callback) {
-    if(!isBusy(BusyReason::loading)) {
-        m_blocks.push_back({frames, std::move(callback)});
-        setBusy(BusyReason::blocked);
-    } else
+void Level::transition(int frames, std::function<void()>&& callback) {
+    if(!isBusy(BusyReason::loading))
+        m_transitions.push_back({frames, std::move(callback)});
+    else
         callback();
 }
 
-bool Level::blocked() const {
-    return isBusy(BusyReason::blocked);
-}
-
-void Level::clearBlocks() {
-    m_blocks.clear();
-    setBusy(BusyReason::blocked, false);
+bool Level::transitioning() const {
+    return !m_transitions.empty();
 }
 
 bool Level::accepting() const {

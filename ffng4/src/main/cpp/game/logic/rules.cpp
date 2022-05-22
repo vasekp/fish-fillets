@@ -62,36 +62,28 @@ void LevelRules::processKey(Key key) {
             switchFish();
             break;
         case Key::smallUp:
-            setFish(Model::Fish::small);
-            moveFish(Direction::up);
+            moveFish(Model::Fish::small, Direction::up);
             break;
         case Key::smallDown:
-            setFish(Model::Fish::small);
-            moveFish(Direction::down);
+            moveFish(Model::Fish::small, Direction::down);
             break;
         case Key::smallLeft:
-            setFish(Model::Fish::small);
-            moveFish(Direction::left);
+            moveFish(Model::Fish::small, Direction::left);
             break;
         case Key::smallRight:
-            setFish(Model::Fish::small);
-            moveFish(Direction::right);
+            moveFish(Model::Fish::small, Direction::right);
             break;
         case Key::bigUp:
-            setFish(Model::Fish::big);
-            moveFish(Direction::up);
+            moveFish(Model::Fish::big, Direction::up);
             break;
         case Key::bigDown:
-            setFish(Model::Fish::big);
-            moveFish(Direction::down);
+            moveFish(Model::Fish::big, Direction::down);
             break;
         case Key::bigLeft:
-            setFish(Model::Fish::big);
-            moveFish(Direction::left);
+            moveFish(Model::Fish::big, Direction::left);
             break;
         case Key::bigRight:
-            setFish(Model::Fish::big);
-            moveFish(Direction::right);
+            moveFish(Model::Fish::big, Direction::right);
             break;
         default:
             ;
@@ -104,7 +96,12 @@ void LevelRules::switchFish() {
         return;
     setFish(target);
     m_curFish->action() = Model::Action::activate;
-    m_level.blockFor(4, [&]() { m_curFish->action() = Model::Action::base; });
+    m_level.transition(4, [&]() { m_curFish->action() = Model::Action::base; });
+}
+
+void LevelRules::moveFish(Model::Fish which, Direction d) {
+    setFish(which);
+    moveFish(d);
 }
 
 void LevelRules::moveFish(Direction d) {
@@ -113,7 +110,7 @@ void LevelRules::moveFish(Direction d) {
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
         m_curFish->action() = Model::Action::turning;
-        m_level.blockFor(3, [&]() {
+        m_level.transition(3, [&, d]() {
             m_curFish->action() = Model::Action::base;
             m_curFish->turn();
         });
@@ -175,7 +172,7 @@ void LevelRules::update() {
     m_motions.clear();
 
     bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); })
-            && !m_level.blocked();
+            && !m_level.transitioning();
 
     if(ready) {
         m_level.runScheduled();
@@ -253,7 +250,7 @@ void LevelRules::death(Model* unit) {
     m_level.killDialogs();
     unit->anim().removeExtra();
     m_level.setModelEffect(unit, "disintegrate");
-    m_level.blockFor(15 /* 1.5 seconds */, [&, unit]() {
+    m_level.transition(15 /* 1.5 seconds */, [&, unit]() {
         unit->disappear();
         updateDepGraph(unit);
     });

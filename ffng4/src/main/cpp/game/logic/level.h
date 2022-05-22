@@ -28,7 +28,7 @@ class Level : public ScriptReferrer {
         int countdown;
         std::function<void()> callback;
     };
-    std::vector<Delayed> m_blocks;
+    std::vector<Delayed> m_transitions;
 
     struct Dialog {
         std::string text;
@@ -38,7 +38,6 @@ class Level : public ScriptReferrer {
     std::map<std::string, Dialog> m_dialogs;
 
     enum class BusyReason {
-        blocked,
         loading,
         schedule,
         demo,
@@ -55,8 +54,8 @@ public:
 
     void init();
     void tick();
-    void blockFor(int frames, std::function<void()>&& callback);
-    bool blocked() const;
+    void transition(int frames, std::function<void()>&& callback);
+    bool transitioning() const;
     void schedule(Callback&& action);
     bool runScheduled();
     void recordMove(char key);
@@ -139,7 +138,6 @@ private:
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
     void clearSchedule();
-    void clearBlocks();
 
     constexpr static int index_talk_both = -1;
     constexpr static int index_free_space = -1;

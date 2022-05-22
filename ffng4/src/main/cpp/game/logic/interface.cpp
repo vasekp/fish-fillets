@@ -91,7 +91,7 @@ int Level::level_getDepth() const {
 }
 
 bool Level::level_isNewRound() const {
-    return !blocked();
+    return !transitioning();
 }
 
 bool Level::level_isSolved() {
@@ -120,7 +120,7 @@ bool Level::level_action_restart() {
         m_dialogs.clear();
         m_screen.restore();
         init();
-        clearBlocks();
+        m_transitions.clear();
         m_replay.clear();
         setBusy(BusyReason::demo, false);
         setBusy(BusyReason::loading, false);
@@ -147,7 +147,7 @@ bool Level::level_action_load() {
             m_dialogs.clear();
             m_screen.restore();
             init();
-            clearBlocks();
+            m_transitions.clear();
             m_replay.clear();
             setBusy(BusyReason::demo, false);
             setBusy(BusyReason::loading, false);
