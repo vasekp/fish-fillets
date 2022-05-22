@@ -16,7 +16,8 @@ class LevelInput : public IInput {
         idle,
         wait,
         follow,
-        ignore
+        ignore,
+        button
     };
 
     struct {
@@ -27,6 +28,16 @@ class LevelInput : public IInput {
         Model::Fish fish;
     } m_dirpad;
     float m_density;
+
+    struct Button {
+        ogl::Texture texture;
+        FCoords coordsFrom;
+        FCoords coordsTo;
+        Key key;
+    };
+    std::array<Button, 5> m_buttons;
+
+    int m_activeButton;
 
 public:
     LevelInput(Instance& instance);
@@ -47,15 +58,22 @@ public:
 private:
     static unsigned index(Key key);
     static Key toKey(ICoords dir);
+    int findButton(FCoords pos);
 
-    constexpr static float minDistance = 0.3f; // inches
+    void drawButtons(const DrawTarget& target);
+    void drawDirpad(const DrawTarget& target);
+
+    constexpr static float minDistance = 0.25f; // inches
+    constexpr static float maxButtonSize = 0.35f; // inches
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
     constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
+    constexpr static int noButton = -1;
 
     constexpr static Color colorSmall{255, 197, 102};
     constexpr static Color colorBig{162, 244, 255};
+    constexpr static Color colorButtons{128, 128, 128};
 };
 
 #endif //FISH_FILLETS_LEVELINPUT_H

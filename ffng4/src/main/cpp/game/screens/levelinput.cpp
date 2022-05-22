@@ -7,7 +7,8 @@ LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_dirpad({DirpadState::ignore}),
-        m_density(72.f)
+        m_density(72.f),
+        m_activeButton(noButton)
 { }
 
 void LevelInput::setDensity(float density) {
@@ -44,6 +45,11 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
+    if(auto button = findButton(pos); button != noButton) {
+        m_dirpad.state = DirpadState::button;
+        m_activeButton = button;
+        return true;
+    }
     if(m_dirpad.fish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
         return false;
@@ -64,6 +70,10 @@ bool LevelInput::handlePointerDown(FCoords pos) {
 }
 
 bool LevelInput::handlePointerMove(FCoords pos) {
+    if(m_dirpad.state == DirpadState::button) {
+        m_activeButton = findButton(pos);
+        return true;
+    }
     auto diff = pos - m_dirpad.refPos;
     bool small = diff.length() < m_density * minDistance;
     ICoords dir{};
@@ -101,11 +111,15 @@ bool LevelInput::handlePointerMove(FCoords pos) {
                 m_dirpad.state = DirpadState::wait;
                 return false;
             }
+        case DirpadState::button:
+            ;// handled earlier
     }
     return false;
 }
 
 bool LevelInput::handlePointerUp() {
+    if(m_dirpad.state == DirpadState::button && m_activeButton != noButton)
+        m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
     m_dirpad.state = DirpadState::idle;
     return false;
 }
@@ -124,14 +138,61 @@ Key LevelInput::toKey(ICoords dir) {
 }
 
 void LevelInput::refresh() {
-    auto& program = m_instance.graphics().shaders().arrow;
-    glUseProgram(program);
-    glUniform1f(program.uniform("uSize"), m_density * minDistance);
-    glUniform2f(program.uniform("uDstSize"), (float)m_instance.graphics().display().width(), (float)m_instance.graphics().display().height());
+    auto displayWidth = (float) m_instance.graphics().display().width();
+    auto displayHeight = (float) m_instance.graphics().display().height();
+    {
+        auto& program = m_instance.graphics().shaders().arrow;
+        glUseProgram(program);
+        glUniform1f(program.uniform("uSize"), m_density * minDistance);
+        glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
+    }
+    {
+        auto& program = m_instance.graphics().shaders().button;
+        glUseProgram(program);
+        glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
+
+        constexpr auto buttonCount = std::tuple_size_v<decltype(m_buttons)>;
+        float buttonSize = std::min(m_density * maxButtonSize, displayHeight / (float)buttonCount);
+        float buttonStride = (displayHeight - (float)buttonCount * buttonSize) / (float)(buttonCount - 1) + buttonSize;
+        glUniform1f(program.uniform("uSize"), buttonSize);
+
+        std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
+        std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
+        static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
+        static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
+        for(int i = 0; i < buttonCount; i++) {
+            FCoords from = {0.f, (float)i * buttonStride};
+            m_buttons[i] = {
+                    m_instance.graphics().renderText(chars[i], "font/font_title.ttf", buttonSize, 0),
+                    from,
+                    from + FCoords{buttonSize, buttonSize},
+                    keys[i]
+            };
+        }
+    }
 }
 
 void LevelInput::draw(const DrawTarget& target) {
-    if(m_dirpad.state == DirpadState::idle || m_dirpad.state == DirpadState::ignore)
+    drawButtons(target);
+    drawDirpad(target);
+}
+
+void LevelInput::drawButtons(const DrawTarget& target) {
+    auto& program = m_instance.graphics().shaders().button;
+    glUseProgram(program);
+    for(int i = 0; i < m_buttons.size(); i++) {
+        glUniform2f(program.uniform("uPosition"), m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy());
+        auto& texture = m_buttons[i].texture;
+        texture.bind();
+        glUniform2f(program.uniform("uSrcSize"), (float) texture.width(), (float) texture.height());
+        float alpha = m_dirpad.state == DirpadState::button && i == m_activeButton ? 1.0f : 0.5f;
+        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).get());
+        GraphicsUtils::rect(0, 0, 1, 1);
+    }
+}
+
+void LevelInput::drawDirpad(const DrawTarget& target) {
+    if(m_dirpad.state != DirpadState::wait && m_dirpad.state != DirpadState::follow)
         return;
 
     float baseAlpha;
@@ -153,7 +214,7 @@ void LevelInput::draw(const DrawTarget& target) {
             std::pair{Direction::right, Vector{1,  0}}
     };
 
-    float coords[3][3] = {
+    constexpr float coords[3][3] = {
             {1, 0, 0},
             {0, 1, 0},
             {0, 0, 1}
@@ -169,4 +230,13 @@ void LevelInput::draw(const DrawTarget& target) {
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
+}
+
+int LevelInput::findButton(FCoords pos) {
+    for(int i = 0; i < m_buttons.size(); i++) {
+        auto& button = m_buttons[i];
+        if(pos.within(button.coordsFrom, button.coordsTo))
+            return i;
+    }
+    return noButton;
 }

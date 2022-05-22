@@ -15,6 +15,7 @@ struct Shaders {
     ogl::Program rope;
 
     ogl::Program arrow;
+    ogl::Program button;
 
     constexpr static GLint texImage_shader = 0;
     constexpr static GLint texMask_shader = 1;

@@ -19,6 +19,7 @@ enum class Key {
     save,
     load,
     restart,
+    options, // TODO
     exit
 };
 

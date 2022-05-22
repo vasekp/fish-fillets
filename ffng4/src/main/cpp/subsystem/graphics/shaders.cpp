@@ -15,17 +15,20 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     mirror = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/mirror.frag").read()});
     rope = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/rope.frag").read()});
 
-    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror}) {
+    arrow = ogl::Program(ref,
+            {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert").read()},
+            {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/arrow.frag").read()});
+    button = ogl::Program(ref,
+            {ref, GL_VERTEX_SHADER, instance.files().system("shader/button.vert").read()},
+            {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/button.frag").read()});
+
+    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror, &button}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uSrcTexture"), Shaders::texImage_shader);
     }
 
-    glUseProgram(maskCopy);
-    glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
-    glUseProgram(mirror);
-    glUniform1i(mirror.uniform("uMaskTexture"), Shaders::texMask_shader);
-
-    arrow = ogl::Program(ref,
-            {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert").read()},
-            {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/arrow.frag").read()});
+    for(const auto* program : {&maskCopy, &mirror}) {
+        glUseProgram(*program);
+        glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
+    }
 }

@@ -87,6 +87,7 @@ public:
     FCoords clamp(float maxAbs) const { return {std::clamp(m_fx, -maxAbs, maxAbs), std::clamp(m_fy, -maxAbs, maxAbs)}; }
     FCoords project(FCoords other) const { return dot(other) / other.norm2() * other; }
     FCoords projectPositive(FCoords other) const { return std::max(dot(other), 0.f) / other.norm2() * other; }
+    bool within(FCoords from, FCoords to) const { return m_fx >= from.m_fx && m_fx <= to.m_fx && m_fy >= from.m_fy && m_fy <= to.m_fy; }
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
     friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }
