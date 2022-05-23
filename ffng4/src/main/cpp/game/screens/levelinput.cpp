@@ -7,14 +7,9 @@ LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_dirpad({DirpadState::ignore}),
-        m_density(72.f),
         m_activeButton(noButton),
         m_gravity(ButtonGravity::left)
 { }
-
-void LevelInput::setDensity(float density) {
-    m_density = density;
-}
 
 void LevelInput::setFish(Model::Fish fish) {
     m_dirpad.fish = fish;
@@ -76,7 +71,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         return true;
     }
     auto diff = pos - m_dirpad.refPos;
-    bool small = diff.length() < m_density * minDistance;
+    bool small = diff.length() < minDistance * m_instance.graphics().dpi();
     ICoords dir{};
     if(diff.fx() > 2.f * std::abs(diff.fy()))
         dir = Direction::right;
@@ -144,7 +139,7 @@ void LevelInput::refresh() {
     {
         auto& program = m_instance.graphics().shaders().arrow;
         glUseProgram(program);
-        glUniform1f(program.uniform("uSize"), m_density * minDistance);
+        glUniform1f(program.uniform("uSize"), minDistance * m_instance.graphics().dpi());
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
     }
     {
@@ -153,9 +148,9 @@ void LevelInput::refresh() {
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
 
         constexpr auto buttonCount = std::tuple_size_v<decltype(m_buttons)>;
-        float buttonSize = std::min(m_density * maxButtonSize, displayHeight / (float)buttonCount);
+        float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
         float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
-        float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), m_density * maxButtonGap) + buttonSize;
+        float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
         float buttonOffset = (fullSize - (buttonCount - 1) * buttonStride - buttonSize) / 2.f;
         glUniform1f(program.uniform("uSize"), buttonSize);
 

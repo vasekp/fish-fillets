@@ -81,7 +81,7 @@ public class MainActivity extends NativeActivity {
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(Color.WHITE);
         fillPaint.setTypeface(face);
-        fillPaint.setTextSize(fontSize * getResources().getDisplayMetrics().density);
+        fillPaint.setTextSize(fontSize);
 
         Layout.Alignment align = Layout.Alignment.ALIGN_NORMAL;
         StaticLayout layout = new StaticLayout(text, fillPaint, screenWidth, align, 1, 0, false);
@@ -99,7 +99,7 @@ public class MainActivity extends NativeActivity {
         TextPaint fillPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(Color.WHITE);
         fillPaint.setTypeface(face);
-        fillPaint.setTextSize(fontSize * getResources().getDisplayMetrics().density);
+        fillPaint.setTextSize(fontSize);
 
         TextPaint outlinePaint = new TextPaint(fillPaint);
         outlinePaint.setStyle(Paint.Style.STROKE);

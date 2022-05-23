@@ -1,7 +1,7 @@
 #include "leveltitle.h"
 
 void LevelTitle::refresh() {
-    m_texture = m_instance.graphics().renderText(m_text, "font/font_title.ttf", 16.0, 0.0);
+    m_texture = m_instance.graphics().renderText(m_text, "font/font_title.ttf", fontSize * m_instance.graphics().dpi(), 0.0);
 }
 
 void LevelTitle::draw(const DrawTarget& target, float opacity) {

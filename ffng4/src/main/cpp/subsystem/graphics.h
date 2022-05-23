@@ -33,6 +33,7 @@ public:
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
+    float dpi() const;
 
     void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
     void setMask(const Image* image);

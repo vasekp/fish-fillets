@@ -30,8 +30,8 @@ public:
     void clear();
 
     constexpr static const char* filename = "font/font_subtitle.ttf";
-    constexpr static float fontsize = 16.f;
-    constexpr static float outline = 3.f;
+    constexpr static float fontsize = 0.1f;
+    constexpr static float outline = 0.01f; // both relative to DPI
     constexpr static float timePerChar = 0.09f;
     constexpr static float minTimePerLine = 2.5f;
     constexpr static float speed = 1.f;

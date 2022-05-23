@@ -27,7 +27,6 @@ class LevelInput : public IInput {
         ICoords lastDir;
         Model::Fish fish;
     } m_dirpad;
-    float m_density;
 
     struct Button {
         ogl::Texture texture;
@@ -51,7 +50,6 @@ private:
 public:
     LevelInput(Instance& instance);
 
-    void setDensity(float density);
     void setFish(Model::Fish fish);
 
     bool handleKeyDown(Key key) override;

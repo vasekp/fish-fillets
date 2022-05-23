@@ -5,7 +5,7 @@ std::vector<std::string> Subtitles::breakLines(const std::string &text) {
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
-                                                       jText, jFilename, fontsize,
+                                                       jText, jFilename, fontsize * m_instance.graphics().dpi(),
                                                        m_instance.graphics().windowTarget().nativeSize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<std::string> ret{};
@@ -40,7 +40,7 @@ void Subtitles::add(const std::string &text, const std::string& colors) {
                 return std::pair{Color::white, Color::white};
             }
         }();
-        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", fontsize, outline);
+        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", fontsize * m_instance.graphics().dpi(), outline * m_instance.graphics().dpi());
         m_lines.push_back(
                 {line, std::move(texture),
                  false, 0.f, 0.f, duration,
@@ -92,6 +92,6 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
 void Subtitles::refresh() {
     for(auto& line : m_lines) {
         if(!line.texture.live())
-            line.texture = m_instance.graphics().renderText(line.text, "font/font_subtitle.ttf", 16.f, 2.f);
+            line.texture = m_instance.graphics().renderText(line.text, "font/font_subtitle.ttf", fontsize * m_instance.graphics().dpi(), outline * m_instance.graphics().dpi());
     }
 }

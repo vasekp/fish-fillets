@@ -22,8 +22,6 @@ void LevelScreen::own_start() {
 }
 
 void LevelScreen::own_setsize() {
-    // Can be done much earlier but here in preparation for system / platform decoupling.
-    m_input.setDensity((float) AConfiguration_getDensity(m_instance.app()->config));
     FCoords displaySize{m_instance.graphics().display().width(), m_instance.graphics().display().height()};
     FCoords levelSize{m_level.layout().width(), m_level.layout().height()};
     m_input.setButtonGravity(levelSize.fx() / levelSize.fy() > displaySize.fx() / displaySize.fy()

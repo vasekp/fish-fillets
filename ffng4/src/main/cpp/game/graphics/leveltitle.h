@@ -15,6 +15,7 @@ public:
     void draw(const DrawTarget& target, float opacity);
 
 private:
+    constexpr static float fontSize = 0.1; // relative to DPI
     constexpr static float startY = 400.f / 480.f;
     constexpr static float endY = 470.f / 480.f;
     constexpr static float maxWidth = 480.f / 480.f;
