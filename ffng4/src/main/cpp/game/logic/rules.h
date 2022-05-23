@@ -20,7 +20,7 @@ class LevelRules {
     std::deque<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
-    std::map<const Model*, Model::SupportType> m_support;
+    std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
 
 public:
     LevelRules(Level &level, LevelLayout &layout);
@@ -42,7 +42,8 @@ private:
     void buildDepGraph();
     void updateDepGraph(const Model* model);
     void buildSupportMap();
-    Model::SupportType calcSupport(const Model* model);
+    const EnumBitset<Model::SupportType>& calcSupport(const Model* model);
+    EnumBitset<Model::SupportType> directSupport(const Model* model);
     void evalFalls();
     void evalMotion(Model* model, Direction d);
     void evalSteel();

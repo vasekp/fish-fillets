@@ -5,6 +5,7 @@
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
+    m_curFish = nullptr;
     setFish(Model::Fish::small);
     for(const auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
@@ -192,7 +193,7 @@ void LevelRules::evalFalls() {
     for(auto* model : m_layout.models()) {
         if (model->isVirtual())
             continue;
-        if (auto support = m_support[model]; model->movable() && support == Model::SupportType::none) {
+        if (model->movable() && m_support[model].none()) {
             m_keyQueue.clear();
             model->displace(Direction::down);
         }
@@ -203,7 +204,10 @@ void LevelRules::evalSteel() {
     for(const auto* model : m_layout.models()) {
         if(model->isVirtual())
             continue;
-        if(model->movable() && m_support[model] == Model::SupportType::small && model->weight() == Model::Weight::heavy)
+        if(auto support = m_support[model]; model->movable() && model->weight() == Model::Weight::heavy
+                && support.test(Model::SupportType::small)
+                && !support.test(Model::SupportType::big)
+                && !support.test(Model::SupportType::wall))
             death(m_small);
     }
 }
@@ -211,22 +215,22 @@ void LevelRules::evalSteel() {
 void LevelRules::evalMotion(Model* model, Direction d) {
     LOGV("stopped %d [%d,%d]", model->index(), d.x, d.y);
     if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
-        switch(m_support[model]) {
-            case Model::SupportType::none:
-                break;
-            case Model::SupportType::wall:
-                if(d == Direction::down)
-                    m_level.playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
-                break;
-            case Model::SupportType::weak:
-            case Model::SupportType::small:
-            case Model::SupportType::big:
-                const auto support = (d == Direction::down)
-                                     ? m_layout.obstacles(model, Direction::down)
-                                     : m_layout.intersections(model, Direction::down);
-                for(auto* other : support)
-                    if(other->alive())
-                        death(other);
+        const auto& fullSupport = m_support[model];
+        if(fullSupport.test(Model::SupportType::wall)) {
+            if(d == Direction::down)
+                m_level.playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
+        } else if(fullSupport.any()) {
+            if(d == Direction::down) {
+                for(auto* supp : m_layout.obstacles(model, Direction::down))
+                    if(supp->alive())
+                        death(supp);
+            } else {
+                auto dirSupport = directSupport(model);
+                if(fullSupport == dirSupport)
+                    for(auto* supp : m_layout.intersections(model, Direction::down))
+                        if(supp->alive())
+                            death(supp);
+            }
         }
     }
 
@@ -290,11 +294,12 @@ void LevelRules::buildSupportMap() {
     }
 }
 
-Model::SupportType LevelRules::calcSupport(const Model* model) {
+const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model) {
     if(m_support.contains(model))
         return m_support[model];
 
-    std::set<const Model*> supportSet;
+    std::set<const Model*> supportModels;
+    EnumBitset<Model::SupportType> ret;
     std::deque<const Model*> queue;
 
     for(auto[above, below] : m_dependencyGraph)
@@ -303,23 +308,33 @@ Model::SupportType LevelRules::calcSupport(const Model* model) {
     while(!queue.empty()) {
         const auto* other = queue.front();
         queue.pop_front();
-        if(supportSet.contains(other) || other->isVirtual() || other == model)
+        if(supportModels.contains(other) || other->isVirtual() || other == model)
             continue;
         if(other->supportType() != Model::SupportType::weak) {
-            supportSet.insert(other);
+            supportModels.insert(other);
+            ret.set(other->supportType());
             if(other->movable()) {
                 for(auto[above, below] : m_dependencyGraph)
                     if(above == other)
                         queue.push_back(below);
             }
         } else {
-            if(other != model && calcSupport(other) != Model::SupportType::none)
-                supportSet.insert(other);
+            if(other != model && calcSupport(other).any()) {
+                supportModels.insert(other);
+                ret.set(other->supportType());
+            }
         }
     }
-    return m_support[model] = std::accumulate(supportSet.begin(),  supportSet.end(), Model::SupportType::none, [](Model::SupportType prev, const Model* item) {
-        return std::max(prev, item->supportType());
-    });
+    ret.reset(Model::SupportType::none);
+    return m_support[model] = ret;
+}
+
+EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
+    EnumBitset<Model::SupportType> ret;
+    for(auto[above, below] : m_dependencyGraph)
+        if(above == model && below->supportType() != Model::SupportType::none)
+            ret.set(below->supportType());
+    return ret;
 }
 
 std::pair<Model*, Model*> LevelRules::bothFish() const {

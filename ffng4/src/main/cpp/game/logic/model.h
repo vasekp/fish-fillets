@@ -28,7 +28,8 @@ public:
         weak,
         small,
         big,
-        wall
+        wall,
+        SIZE
     };
 
     enum class Fish {
