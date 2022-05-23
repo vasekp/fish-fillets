@@ -161,7 +161,7 @@ void LevelInput::refresh() {
         for(int i = 0; i < buttonCount; i++) {
             FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
-                    m_instance.graphics().renderText(chars[i], "font/font_title.ttf", buttonSize, 0),
+                    m_instance.graphics().renderText(chars[i], "font/FFArrows.ttf", buttonSize, 0),
                     from,
                     from + FCoords{buttonSize, buttonSize},
                     keys[i]

@@ -1,0 +1,257 @@
+SplineFontDB: 3.2
+FontName: FFArrows
+FullName: FFArrows
+FamilyName: FFArrows
+Weight: Regular
+Copyright: Copyright (c) 2022, Vaclav Potocek
+UComments: "2022-5-23: Created with FontForge (http://fontforge.org)"
+Version: 001.000
+ItalicAngle: 0
+UnderlinePosition: -100
+UnderlineWidth: 50
+Ascent: 1000
+Descent: 0
+InvalidEm: 0
+LayerCount: 2
+Layer: 0 0 "Back" 1
+Layer: 1 0 "Fore" 0
+XUID: [1021 581 1839483784 1053506]
+FSType: 0
+OS2Version: 0
+OS2_WeightWidthSlopeOnly: 0
+OS2_UseTypoMetrics: 1
+CreationTime: 1653305376
+ModificationTime: 1653313407
+PfmFamily: 17
+TTFWeight: 400
+TTFWidth: 5
+LineGap: 0
+VLineGap: 0
+OS2TypoAscent: 0
+OS2TypoAOffset: 1
+OS2TypoDescent: 0
+OS2TypoDOffset: 1
+OS2TypoLinegap: 0
+OS2WinAscent: 0
+OS2WinAOffset: 1
+OS2WinDescent: 0
+OS2WinDOffset: 1
+HheadAscent: 0
+HheadAOffset: 1
+HheadDescent: 0
+HheadDOffset: 1
+OS2Vendor: 'PfEd'
+MarkAttachClasses: 1
+DEI: 91125
+LangName: 1033
+Encoding: ISO8859-1
+UnicodeInterp: none
+NameList: AGL For New Fonts
+DisplaySize: -36
+AntiAlias: 1
+FitToEm: 0
+WinInfo: 0 28 14
+BeginPrivate: 0
+EndPrivate
+BeginChars: 256 5
+
+StartChar: S
+Encoding: 83 83 0
+Width: 1000
+Flags: H
+LayerCount: 2
+Fore
+SplineSet
+306 398 m 1
+ 381 344 l 1
+ 310 327 269 297 269 264 c 0
+ 269 256 271 248 276 240 c 0
+ 302 199 392 171 494 171 c 0
+ 596 171 685 199 711 240 c 0
+ 716 248 719 256 719 264 c 0
+ 719 297 677 327 606 344 c 1
+ 681 398 l 1
+ 799 370 869 317 869 263 c 0
+ 869 250 865 236 856 223 c 0
+ 812 155 663 109 494 109 c 0
+ 325 109 175 155 131 223 c 0
+ 122 236 119 250 119 263 c 0
+ 119 317 188 370 306 398 c 1
+616 603 m 0
+ 620 602 624 598 624 594 c 0
+ 624 593 623 592 623 591 c 2
+ 502 263 l 0
+ 501 259 498 257 494 257 c 0
+ 490 257 486 259 485 263 c 2
+ 364 591 l 0
+ 364 592 364 593 364 594 c 0
+ 364 599 368 603 373 603 c 0
+ 375 603 377 602 379 601 c 0
+ 399 586 420 577 443 571 c 1
+ 443 873 l 1
+ 543 873 l 1
+ 543 571 l 1
+ 566 577 589 587 609 602 c 0
+ 611 603 612 603 614 603 c 0
+ 615 603 615 603 616 603 c 0
+EndSplineSet
+Validated: 1
+EndChar
+
+StartChar: L
+Encoding: 76 76 1
+Width: 1000
+Flags: HO
+LayerCount: 2
+Fore
+SplineSet
+306 398 m 1
+ 381 344 l 1
+ 310 327 268 297 268 264 c 0
+ 268 256 271 248 276 240 c 0
+ 302 199 392 171 494 171 c 0
+ 596 171 685 199 711 240 c 0
+ 716 248 719 256 719 264 c 0
+ 719 297 677 327 606 344 c 1
+ 681 398 l 1
+ 799 370 869 318 869 263 c 4
+ 869 250 865 236 856 223 c 0
+ 812 155 663 109 494 109 c 0
+ 325 109 175 155 131 223 c 0
+ 122 236 118 250 118 263 c 0
+ 118 318 188 370 306 398 c 1
+493 873 m 0
+ 497 873 500 871 501 867 c 2
+ 622 539 l 0
+ 622 538 623 537 623 536 c 0
+ 623 531 618 527 613 527 c 0
+ 611 527 610 528 608 529 c 0
+ 588 544 566 553 543 559 c 1
+ 543 257 l 1
+ 443 257 l 1
+ 443 559 l 1
+ 420 553 398 543 378 528 c 0
+ 376 527 374 527 372 527 c 0
+ 367 527 363 531 363 536 c 0
+ 363 537 363 538 363 539 c 2
+ 484 867 l 0
+ 485 871 489 873 493 873 c 0
+EndSplineSet
+Validated: 1
+EndChar
+
+StartChar: R
+Encoding: 82 82 2
+Width: 1000
+Flags: H
+LayerCount: 2
+Fore
+SplineSet
+144 444 m 2
+ 474 329 l 0
+ 478 328 480 324 480 320 c 0
+ 480 316 477 312 473 311 c 0
+ 450 305 429 296 411 283 c 1
+ 447 265 490 251 539 251 c 0
+ 547 251 555 251 563 252 c 0
+ 656 260 744 362 756 469 c 0
+ 757 478 758 488 758 497 c 0
+ 758 594 700 684 610 725 c 0
+ 577 740 542 747 507 747 c 0
+ 438 747 371 719 322 665 c 1
+ 248 732 l 1
+ 316 807 411 847 508 847 c 0
+ 520 847 533 846 545 845 c 0
+ 581 841 617 832 652 816 c 0
+ 778 759 858 633 858 497 c 0
+ 858 484 856 470 855 457 c 0
+ 838 306 724 166 571 153 c 0
+ 560 152 549 151 539 151 c 0
+ 462 151 396 176 345 205 c 1
+ 335 183 329 158 327 133 c 0
+ 327 128 323 125 318 125 c 0
+ 315 125 312 126 310 129 c 2
+ 133 431 l 2
+ 132 432 132 433 132 435 c 0
+ 132 440 136 445 141 445 c 0
+ 142 445 143 444 144 444 c 2
+EndSplineSet
+Validated: 1
+EndChar
+
+StartChar: Q
+Encoding: 81 81 3
+Width: 1000
+Flags: H
+LayerCount: 2
+Fore
+SplineSet
+473 772 m 2
+ 474 772 475 773 476 773 c 0
+ 481 773 485 768 485 763 c 0
+ 485 761 485 760 484 758 c 0
+ 469 738 459 716 453 693 c 1
+ 507 692 553 691 594 688 c 0
+ 672 682 732 670 778 637 c 0
+ 824 604 847 552 857 491 c 0
+ 866 434 866 366 866 278 c 0
+ 866 272 866 266 866 260 c 1
+ 766 260 l 1
+ 766 357 765 428 758 475 c 0
+ 751 522 741 541 720 556 c 0
+ 699 571 658 583 587 588 c 0
+ 550 591 506 592 453 593 c 1
+ 459 570 470 548 484 528 c 0
+ 485 526 485 524 485 522 c 0
+ 485 517 481 513 476 513 c 0
+ 475 513 474 514 473 514 c 2
+ 145 634 l 0
+ 141 635 139 639 139 643 c 0
+ 139 647 141 651 145 652 c 2
+ 473 772 l 2
+EndSplineSet
+Validated: 1
+EndChar
+
+StartChar: O
+Encoding: 79 79 4
+Width: 1000
+Flags: H
+LayerCount: 2
+Fore
+SplineSet
+153 744 m 0
+ 153 785 187 819 228 819 c 0
+ 269 819 303 785 303 744 c 0
+ 303 703 269 669 228 669 c 0
+ 187 669 153 703 153 744 c 0
+395 794 m 1
+ 847 794 l 1
+ 847 694 l 1
+ 395 694 l 1
+ 395 794 l 1
+153 500 m 0
+ 153 541 187 575 228 575 c 0
+ 269 575 303 541 303 500 c 0
+ 303 459 269 425 228 425 c 0
+ 187 425 153 459 153 500 c 0
+395 550 m 1
+ 847 550 l 1
+ 847 450 l 1
+ 395 450 l 1
+ 395 550 l 1
+153 256 m 0
+ 153 297 187 331 228 331 c 0
+ 269 331 303 297 303 256 c 0
+ 303 215 269 181 228 181 c 0
+ 187 181 153 215 153 256 c 0
+395 306 m 1
+ 847 306 l 1
+ 847 206 l 1
+ 395 206 l 1
+ 395 306 l 1
+EndSplineSet
+Validated: 1
+EndChar
+EndChars
+EndSplineFont

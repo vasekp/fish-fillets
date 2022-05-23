@@ -107,14 +107,16 @@ public class MainActivity extends NativeActivity {
         outlinePaint.setStrokeWidth(2.f * outline);
 
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
-        float lineHeight = fm.bottom - fm.top;
+        float top = Math.max(-fm.top, -fm.ascent);
+        float bottom = Math.max(fm.bottom, fm.descent);
+        float lineHeight = top + bottom;
         Rect bounds = new Rect();
         fillPaint.getTextBounds(text, 0, text.length(), bounds);
 
         Bitmap bitmap = Bitmap.createBitmap((int)(bounds.width() + outline) + 2, (int) (lineHeight + outline) + 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         float x = -bounds.left + outline / 2.f + 1.f;
-        float y = -fm.top + outline / 2.f + 1.f;
+        float y = top + outline / 2.f + 1.f;
         if(outline != 0.0)
             canvas.drawText(text, x, y, outlinePaint);
         canvas.drawText(text, x, y, fillPaint);
