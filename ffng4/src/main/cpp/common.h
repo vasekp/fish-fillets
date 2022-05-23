@@ -26,6 +26,7 @@
 #include <android/log.h>
 
 #include "types.h"
+#include "utils.h"
 
 #define APP_TAG "FFNG4"
 

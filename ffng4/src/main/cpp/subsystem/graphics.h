@@ -12,7 +12,7 @@
 #include "graphics/displaytarget.h"
 #include "graphics/texturetarget.h"
 #include "graphics/system.h"
-#include "graphics/utils.h"
+#include "graphics/graphicsutils.h"
 
 class Graphics {
     Instance& m_instance;

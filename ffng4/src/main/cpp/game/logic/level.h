@@ -43,7 +43,7 @@ class Level : public ScriptReferrer {
         demo,
         SIZE
     };
-    std::bitset<(std::size_t)BusyReason::SIZE> m_busy;
+    EnumBitset<BusyReason> m_busy;
 
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);

@@ -38,7 +38,7 @@ void Level::tick() {
 }
 
 void Level::setBusy(BusyReason reason, bool busy) {
-    m_busy[(std::size_t)reason] = busy;
+    m_busy[reason] = busy;
     if(isBusy(BusyReason::loading) || isBusy(BusyReason::demo) || isBusy(BusyReason::schedule))
         input().setFish(Model::Fish::none);
     else
@@ -46,7 +46,7 @@ void Level::setBusy(BusyReason reason, bool busy) {
 }
 
 bool Level::isBusy(BusyReason reason) const {
-    return m_busy[(std::size_t)reason];
+    return m_busy[reason];
 }
 
 void Level::transition(int frames, std::function<void()>&& callback) {
@@ -61,7 +61,7 @@ bool Level::transitioning() const {
 }
 
 bool Level::accepting() const {
-    return !m_busy.any();
+    return m_busy.none();
 }
 
 void Level::schedule(Callback&& action) {
