@@ -13,12 +13,15 @@ void DisplayTarget::bind() const {
     glViewport(m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y());
 }
 
-void DisplayTarget::setWindow(unsigned int width, unsigned int height, FCoords reserve) {
-    FCoords displayDim{m_display.width(), m_display.height()};
-    displayDim -= reserve;
+void DisplayTarget::setReserve(FCoords reserve) {
+    m_reserve = reserve;
+}
+
+void DisplayTarget::setWindow(unsigned int width, unsigned int height) {
+    auto displayDim = reducedDisplaySize();
     m_windowDim = {width, height};
     m_scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
-    m_viewport.origin = (displayDim - m_scale * m_windowDim) / 2.f + FCoords{reserve.fx(), 0.f};
+    m_viewport.origin = (displayDim - m_scale * m_windowDim) / 2.f + FCoords{m_reserve.fx(), 0.f};
     m_viewport.extent = m_scale * m_windowDim;
     LOGI("Viewport: %d %d %d %d (scale %f)", m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y(), m_scale);
 }

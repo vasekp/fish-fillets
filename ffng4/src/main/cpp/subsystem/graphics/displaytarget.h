@@ -11,12 +11,14 @@ class DisplayTarget : public DrawTarget {
         FCoords extent;
     } m_viewport;
     float m_scale;
+    FCoords m_reserve;
 
 public:
     DisplayTarget(const ogl::Display& display);
 
     void bind() const override;
-    void setWindow(unsigned int width, unsigned int height, FCoords reserve = {});
+    void setReserve(FCoords reserve); /* Does NOT call setWindow. */
+    void setWindow(unsigned int width, unsigned int height);
     FCoords size() const override { return m_windowDim; }
 
     FCoords screen2window(FCoords screen) const;
@@ -24,6 +26,8 @@ public:
 
     FCoords windowSize() const { return m_windowDim; }
     FCoords nativeSize() const { return m_viewport.extent; }
+    FCoords displayOffset() const { return m_reserve; }
+    FCoords reducedDisplaySize() const { return FCoords{m_display.width(), m_display.height()} - m_reserve; }
     float pixelScale() const { return m_scale; }
 
 protected:

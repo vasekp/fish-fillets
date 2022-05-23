@@ -1,17 +1,17 @@
 #include "subtitles.h"
 
-std::vector<std::string> Subtitles::breakLines(const std::string &text) {
-    auto &jni = m_instance.jni();
+std::vector<std::string> Subtitles::breakLines(const std::string& text) {
+    auto& jni = m_instance.jni();
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
-                                                       jText, jFilename, fontsize * m_instance.graphics().dpi(),
-                                                       m_instance.graphics().windowTarget().nativeSize().x());
+            jText, jFilename, fontsize * m_instance.graphics().dpi(),
+            m_instance.graphics().fullscreenTarget().reducedDisplaySize().x());
     auto length = jni->GetArrayLength(jArray);
     std::vector<std::string> ret{};
     ret.reserve(length);
-    for (auto i = 0u; i < length; i++) {
-        auto jLine = (jstring)jni->GetObjectArrayElement(jArray, (int) i);
+    for(auto i = 0u ; i < length ; i++) {
+        auto jLine = (jstring) jni->GetObjectArrayElement(jArray, (int) i);
         auto chars = jni->GetStringUTFChars(jLine, nullptr);
         ret.emplace_back(chars);
         jni->ReleaseStringUTFChars(jLine, chars);
@@ -52,7 +52,7 @@ void Subtitles::clear() {
     m_lines.clear();
 }
 
-void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
+void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
@@ -82,10 +82,10 @@ void Subtitles::draw(const DrawTarget &target, float dTime, float absTime) {
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto width = line.texture.width();
             auto height = line.texture.height();
-            float destX = ((float)m_instance.graphics().display().width() - (float)width) / 2.f;
+            const auto& fullscreen = dynamic_cast<const DisplayTarget&>(target);
+            float destX = fullscreen.displayOffset().fx() + (fullscreen.reducedDisplaySize().fx() - (float)width) / 2.f;
             float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.texture, textProgram, destX, destY - (float)height, 0, 0,
-                        DrawTarget::fullSize, 3 * height);
+            target.blit(line.texture, textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
         }
 }
 
