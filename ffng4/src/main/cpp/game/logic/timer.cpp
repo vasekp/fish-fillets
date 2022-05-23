@@ -4,7 +4,6 @@
 void timer_thread(Timer& timer) {
     LOGD("timer thread started");
     while(!timer.m_stop.load(std::memory_order::relaxed)) {
-        LOGV("tick");
         timer.m_tick.store(true, std::memory_order::relaxed);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }

@@ -63,6 +63,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
     LOGV("Obstacles: %d", (int)ret.size());
     return ret;
 }
+
 void LevelLayout::animate(float dt) {
     for (auto* model: m_models_adapted)
         if (model->moving()) {

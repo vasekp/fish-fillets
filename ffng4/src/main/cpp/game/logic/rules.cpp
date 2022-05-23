@@ -231,11 +231,14 @@ void LevelRules::evalMotion(Model* model, Direction d) {
     }
 
     if(model->goal() == Model::Goal::escape) {
-        if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0)
+        if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0) {
+            m_keyQueue.clear();
+            m_level.killDialogs();
             m_level.schedule([d, model]() {
                 model->displace(d);
                 return true;
             });
+        }
     }
 }
 
