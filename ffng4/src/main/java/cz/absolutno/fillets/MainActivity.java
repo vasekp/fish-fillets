@@ -39,8 +39,7 @@ public class MainActivity extends NativeActivity {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= 30) {
-            getWindow().getInsetsController().hide(
-                    WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            getWindow().getInsetsController().hide(WindowInsets.Type.statusBars());
             getWindow().getInsetsController().setSystemBarsBehavior(
                     WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         } else {
