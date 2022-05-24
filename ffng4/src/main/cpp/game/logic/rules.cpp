@@ -340,3 +340,7 @@ EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
 std::pair<Model*, Model*> LevelRules::bothFish() const {
     return {m_small, m_big};
 }
+
+bool LevelRules::solvable() const {
+    return true; // TODO
+}

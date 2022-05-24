@@ -28,15 +28,23 @@ class LevelInput : public IInput {
         Model::Fish fish;
     } m_dirpad;
 
+    enum Buttons {
+        bSave,
+        bLoad,
+        bRestart,
+        bExit,
+        bOptions,
+        bSIZE
+    };
+
     struct Button {
         ogl::Texture texture;
         FCoords coordsFrom;
         FCoords coordsTo;
         Key key;
     };
-    std::array<Button, 5> m_buttons;
-
-    int m_activeButton;
+    std::array<Button, Buttons::bSIZE> m_buttons;
+    std::array<bool, Buttons::bSIZE> m_buttonsEnabled;
 
 public:
     enum class ButtonGravity {
@@ -46,11 +54,14 @@ public:
 
 private:
     ButtonGravity m_gravity;
+    int m_activeButton;
 
 public:
     LevelInput(Instance& instance);
 
     void setFish(Model::Fish fish);
+    void setSavePossible(bool possible);
+    void setLoadPossible(bool possible);
 
     bool handleKeyDown(Key key) override;
     bool handleKeyUp(Key key) override;

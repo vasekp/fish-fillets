@@ -39,10 +39,15 @@ void Level::tick() {
 
 void Level::setBusy(BusyReason reason, bool busy) {
     m_busy[reason] = busy;
-    if(isBusy(BusyReason::loading) || isBusy(BusyReason::demo) || isBusy(BusyReason::schedule))
+    if(m_busy.any()) {
         input().setFish(Model::Fish::none);
-    else
+        input().setSavePossible(false);
+        input().setLoadPossible(false);
+    } else {
         input().setFish(rules().activeFish());
+        input().setSavePossible(savePossible());
+        input().setLoadPossible(loadPossible());
+    }
 }
 
 bool Level::isBusy(BusyReason reason) const {
@@ -123,4 +128,16 @@ void Level::restart() {
     killDialogsHard();
     clearSchedule();
     level_action_restart();
+}
+
+bool Level::savePossible() const {
+    return accepting() && rules().solvable();
+}
+
+bool Level::loadPossible() const {
+    return saveFile().exists();
+}
+
+UserFile Level::saveFile() const {
+    return m_instance.files().user("saves/"s + m_record.codename + ".lua");
 }

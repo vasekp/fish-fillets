@@ -9,7 +9,10 @@ LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
         m_waves(),
         m_subs(instance),
         m_fullLoad(false)
-{ }
+{
+    m_input.setSavePossible(m_level.savePossible());
+    m_input.setLoadPossible(m_level.loadPossible());
+}
 
 void LevelScreen::restore() {
     m_display.reset();

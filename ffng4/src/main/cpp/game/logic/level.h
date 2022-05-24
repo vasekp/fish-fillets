@@ -48,8 +48,8 @@ class Level : public ScriptReferrer {
 public:
     Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
 
-    LevelLayout& layout() { return *m_layout; }
-    LevelRules& rules() { return *m_rules; }
+    LevelLayout& layout() const { return *m_layout; }
+    LevelRules& rules() const { return *m_rules; }
     LevelInput& input();
 
     void init();
@@ -72,6 +72,9 @@ public:
     void save();
     void load();
     void restart();
+    bool savePossible() const;
+    bool loadPossible() const;
+    UserFile saveFile() const;
 
 private:
     void registerCallbacks();

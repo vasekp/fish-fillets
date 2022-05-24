@@ -32,6 +32,7 @@ public:
 
     Model::Fish activeFish() const;
     std::pair<Model*, Model*> bothFish() const;
+    bool solvable() const;
 
 private:
     void processKey(Key key);

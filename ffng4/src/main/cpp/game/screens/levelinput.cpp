@@ -7,9 +7,11 @@ LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_dirpad({DirpadState::ignore}),
-        m_activeButton(noButton),
-        m_gravity(ButtonGravity::left)
-{ }
+        m_gravity(ButtonGravity::left),
+        m_activeButton(noButton)
+{
+    std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
+}
 
 void LevelInput::setFish(Model::Fish fish) {
     m_dirpad.fish = fish;
@@ -41,7 +43,7 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
-    if(auto button = findButton(pos); button != noButton) {
+    if(auto button = findButton(pos); button != noButton && m_buttonsEnabled[button]) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
@@ -114,8 +116,10 @@ bool LevelInput::handlePointerMove(FCoords pos) {
 }
 
 bool LevelInput::handlePointerUp() {
-    if(m_dirpad.state == DirpadState::button && m_activeButton != noButton)
-        m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
+    if(m_dirpad.state == DirpadState::button && m_activeButton != noButton) {
+        if(m_buttonsEnabled[m_activeButton])
+            m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
+    }
     m_dirpad.state = DirpadState::idle;
     return false;
 }
@@ -170,6 +174,14 @@ void LevelInput::refresh() {
     }
 }
 
+void LevelInput::setSavePossible(bool possible) {
+    m_buttonsEnabled[Buttons::bSave] = possible;
+}
+
+void LevelInput::setLoadPossible(bool possible) {
+    m_buttonsEnabled[Buttons::bLoad] = possible;
+}
+
 void LevelInput::draw(const DrawTarget& target) {
     drawButtons(target);
     drawDirpad(target);
@@ -183,7 +195,10 @@ void LevelInput::drawButtons(const DrawTarget& target) {
         auto& texture = m_buttons[i].texture;
         texture.bind();
         glUniform2f(program.uniform("uSrcSize"), (float) texture.width(), (float) texture.height());
-        float alpha = m_dirpad.state == DirpadState::button && i == m_activeButton ? 1.0f : 0.5f;
+        float alpha = !m_buttonsEnabled[i] ? .25f
+                : m_dirpad.state == DirpadState::button && i == m_activeButton
+                    ? 1.0f
+                    : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).get());
         GraphicsUtils::rect(0, 0, 1, 1);
     }

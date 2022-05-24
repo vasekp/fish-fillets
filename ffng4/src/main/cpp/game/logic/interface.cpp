@@ -132,15 +132,15 @@ bool Level::level_action_restart() {
 
 bool Level::level_action_save() {
     LOGD("action: save");
-    // TODO check solvability
-    m_script.doString("script_save()");
+    if(m_rules->solvable())
+        m_script.doString("script_save()");
+    input().setLoadPossible(true);
     return true;
 }
 
 bool Level::level_action_load() {
     LOGD("action: load");
-    auto file = m_instance.files().user("saves/"s + m_record.codename + ".lua");
-    if (file.exists()) {
+    if (auto file = saveFile(); file.exists()) {
         m_tickSchedule.clear();
         m_tickSchedule.emplace_back([&, file]() {
             // TODO DRY
@@ -444,6 +444,7 @@ void Level::killDialogs() {
 void Level::killDialogsHard() {
     killDialogs();
     m_instance.audio().clear();
+    m_screen.m_subs.clear();
     if(m_screen.m_music)
         m_instance.audio().addSource(m_screen.m_music);
 }
