@@ -82,8 +82,7 @@ void Level::level_createRoom(int width, int height, const std::string& bg) {
 }
 
 int Level::level_getRestartCounter() {
-    //TODO
-    return 1;
+    return m_attempt;
 }
 
 int Level::level_getDepth() const {
@@ -146,6 +145,7 @@ bool Level::level_load(const std::string& text_moves) {
             return true;
         });
     loadMoves.emplace_back([&] {
+        m_script.doString("script_loadState()");
         setBusy(BusyReason::loading, false);
         m_layout->speed() = LevelLayout::speed_normal;
         return true; });

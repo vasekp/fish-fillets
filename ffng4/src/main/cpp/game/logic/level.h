@@ -20,6 +20,7 @@ class Level : public ScriptReferrer {
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
     std::string m_replay;
+    int m_attempt;
 
     std::deque<Callback> m_tickSchedule;
     std::deque<Callback> m_moveSchedule;

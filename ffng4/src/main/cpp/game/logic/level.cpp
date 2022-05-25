@@ -5,7 +5,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
         m_instance(instance),
         m_screen(screen),
         m_record(record),
-        m_script(instance, *this)
+        m_script(instance, *this),
+        m_attempt(0)
 {
     registerCallbacks();
 }
@@ -15,6 +16,8 @@ LevelInput& Level::input() {
 }
 
 void Level::init() {
+    m_attempt++;
+    LOGI("Level %s, attempt %d", m_record.codename.c_str(), m_attempt);
     m_script.loadFile(m_instance.files().system(m_record.script_filename));
     m_rules = std::make_unique<LevelRules>(*this, layout());
 }
