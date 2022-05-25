@@ -83,7 +83,7 @@ private:
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
 
-    constexpr static float minDistance = 0.25f; // inches
+    constexpr static float minDistance = 0.35f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches
     constexpr static float maxButtonGap = 0.35f; // inches
     constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
