@@ -8,7 +8,7 @@ dialogStr("Vypadá to velkolepě.")
 
 
 dialogId("sl-v-vkapse", "font_big", "Now we only have to find out why it sank and we are done.")
-dialogStr("Teď už musíme jen zjistit, proč se vlastně potopilo a máme to v kapse.")
+dialogStr("Teď už musíme jen zjistit, proč se vlastně potopilo, a máme to v kapse.")
 
 
 dialogId("sl-m-trvat", "font_small", "But it may take us a little while.")

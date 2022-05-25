@@ -1,6 +1,6 @@
 
 dialogId("tru-v-nasly", "font_big", "So we have finally found it.")
-dialogStr("Tak jsme to konečně našly.")
+dialogStr("Tak jsme to konečně našli.")
 
 
 dialogId("tru-m-co", "font_small", "What?")
