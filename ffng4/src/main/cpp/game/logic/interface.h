@@ -1,87 +1,18 @@
-#ifndef FISH_FILLETS_LEVEL_H
-#define FISH_FILLETS_LEVEL_H
+#ifndef FISH_FILLETS_LEVEL_INTERFACE_H
+#define FISH_FILLETS_LEVEL_INTERFACE_H
 
-#include "subsystem/script.h"
-#include "game/structure/levelrecord.h"
-#include "layout.h"
-#include "rules.h"
-
-#include <functional>
-#include <variant>
-
-class LevelScreen;
-class LevelInput;
-
-class Level : public ScriptReferrer {
+class LevelInterface : public ScriptReferrer {
     Instance& m_instance;
-    LevelScreen& m_screen;
-    const LevelRecord& m_record;
+    Level& m_level;
+
     Script m_script;
-    std::unique_ptr<LevelLayout> m_layout;
-    std::unique_ptr<LevelRules> m_rules;
-    std::string m_replay;
-
-    std::deque<Callback> m_tickSchedule;
-    std::deque<Callback> m_moveSchedule;
-
-    struct Delayed {
-        int countdown;
-        std::function<void()> callback;
-    };
-    std::vector<Delayed> m_transitions;
-
-    struct Dialog {
-        std::string text;
-        std::string colors;
-        std::string soundFile;
-    };
-    std::map<std::string, Dialog> m_dialogs;
-
-    enum class BusyReason {
-        loading,
-        schedule,
-        demo,
-        SIZE
-    };
-    EnumBitset<BusyReason> m_busy;
 
 public:
-    Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
+    LevelInterface(Instance& instance, Level& level);
 
-    LevelLayout& layout() { return *m_layout; }
-    LevelRules& rules() { return *m_rules; }
-    const LevelRules& rules() const { return *m_rules; }
-    LevelScreen& screen() { return m_screen; }
-    LevelInput& input();
-
-    void init();
-    void reinit(bool keepSchedule = false);
-    void tick();
-    void save();
-    void load(bool keepSchedule = false);
-    void restart(bool keepSchedule = false);
-    bool savePossible() const;
-    bool loadPossible() const;
-    UserFile saveFile() const;
-
-    void transition(int frames, std::function<void()>&& callback);
-    bool transitioning() const;
-    void schedule(Callback&& action);
-    bool runScheduled();
-    void recordMove(char key);
-    bool quitDemo();
-    bool accepting() const;
-
-    void playSound(const std::string& name, float volume = 1.f);
-    void killModelSound(Model* model);
-    void killDialogs();
-    void killDialogsHard();
-    void setModelEffect(Model* model, const std::string& name);
-    void notifyFish(Model::Fish fish);
+    Script& script() { return m_script; }
 
 private:
-    void registerCallbacks();
-
     void level_createRoom(int width, int height, const std::string& bg);
     int level_getRestartCounter();
     int level_getDepth() const;
@@ -101,7 +32,7 @@ private:
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();
     void model_addAnim(int index, const std::string& name, const std::string& filename,
-                             std::optional<int> orientation);
+                       std::optional<int> orientation);
     void model_runAnim(int index, const std::string& name, std::optional<int> phase);
     void model_setAnim(int index, const std::string& name, int phase);
     void model_useSpecialAnim(int index, const std::string& name, int phase);
@@ -138,15 +69,14 @@ private:
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
-                                 const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
+                          const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);
 
-    void setBusy(BusyReason reason, bool busy = true);
-    bool isBusy(BusyReason reason) const;
-    void clearSchedule();
+private:
+    Model* getModel(int index);
 
     constexpr static int index_talk_both = -1;
     constexpr static int index_free_space = -1;
 };
 
-#endif //FISH_FILLETS_LEVEL_H
+#endif //FISH_FILLETS_LEVEL_INTERFACE_H

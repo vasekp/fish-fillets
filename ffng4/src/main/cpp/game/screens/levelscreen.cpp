@@ -163,6 +163,12 @@ void LevelScreen::stopMusic() {
     m_music.reset();
 }
 
+void LevelScreen::killAllSounds() {
+    m_instance.audio().clear();
+    if(m_music)
+        m_instance.audio().addSource(m_music);
+}
+
 void LevelScreen::setEffect(Model *model, const std::string &name) {
     ogl::Program Shaders::*effect;
     if(name == "disintegrate")
@@ -238,4 +244,3 @@ void LevelScreen::display(const std::string& filename) {
     else
         m_display.reset();
 }
-

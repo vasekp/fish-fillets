@@ -10,8 +10,8 @@ Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record)
     registerCallbacks();
 }
 
-LevelInput &Level::input() {
-    return m_screen.m_input;
+LevelInput& Level::input() {
+    return dynamic_cast<LevelInput&>(screen().input());
 }
 
 void Level::init() {
@@ -106,7 +106,7 @@ bool Level::quitDemo() {
         model_killSound(1); /* actor_index used in demo_briefcase.lua */
         m_tickSchedule.clear();
         m_screen.display("");
-        m_screen.m_subs.clear();
+        m_screen.subs().clear();
         setBusy(BusyReason::demo, false);
         return true;
     } else

@@ -15,16 +15,14 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
     return index;
 }
 
-Model* LevelLayout::getModel(int index) {
+Model* LevelLayout::getModel(int index) const {
     if(index >= 0 && index < m_models_internal.size())
         return m_models_internal[index].get();
     if(m_virtModels.contains(index))
-        return m_models_internal[m_virtModels.at(index)].get();
-    std::size_t realIndex = m_models_internal.size();
-    m_models_internal.push_back(std::make_unique<Model>(index, "virtual", 0, 0, ""));
+        return m_virtModels.at(index).get();
+    m_virtModels.emplace(index, std::make_unique<Model>(index, "virtual", 0, 0, ""));
     LOGD("virtual model %d", index);
-    m_virtModels.insert({index, realIndex});
-    return m_models_internal.back().get();
+    return m_virtModels.at(index).get();
 }
 
 void LevelLayout::addRope(const Model *m1, const Model *m2, ICoords d1, ICoords d2) {

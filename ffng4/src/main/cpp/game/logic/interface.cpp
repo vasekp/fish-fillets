@@ -129,7 +129,6 @@ bool Level::level_action_load() {
 }
 
 bool Level::level_save(const std::string& text_models) {
-    LOGD("save(text_models)");
     auto file = m_instance.files().user("saves/"s + m_record.codename + ".lua");
     std::ostringstream oss;
     oss << "saved_moves = '" << m_replay << "'\n\nsaved_models = " << text_models;
@@ -138,7 +137,6 @@ bool Level::level_save(const std::string& text_models) {
 }
 
 bool Level::level_load(const std::string& text_moves) {
-    LOGD("load(text_moves)");
     setBusy(BusyReason::loading);
     m_layout->speed() = LevelLayout::speed_loading;
     std::vector<Callback> loadMoves;
@@ -180,7 +178,7 @@ int Level::game_addModel(const std::string& type, int x, int y, const std::strin
 }
 
 int Level::game_getCycles() {
-    return m_screen.m_timer.tickCount();
+    return m_screen.timer().tickCount();
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
@@ -376,7 +374,7 @@ void Level::sound_playSound(const std::string& name, std::optional<int> volume) 
 }
 
 void Level::playSound(const std::string& name, float volume) {
-    auto& multimap = m_screen.m_sounds;
+    auto& multimap = m_screen.sounds();
     auto size = multimap.count(name);
     auto it = multimap.lower_bound(name);
     std::advance(it, (int)(m_instance.rng().randomIndex(size)));
@@ -411,10 +409,8 @@ void Level::killDialogs() {
 
 void Level::killDialogsHard() {
     killDialogs();
-    m_instance.audio().clear();
-    m_screen.m_subs.clear();
-    if(m_screen.m_music)
-        m_instance.audio().addSource(m_screen.m_music);
+    m_screen.subs().clear();
+    m_screen.killAllSounds();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {
@@ -437,7 +433,7 @@ bool Level::dialog_isDialog() {
 }
 
 void Level::dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2) {
-    m_screen.m_subs.defineColors(name, {r1, g1, b1}, {r2.value_or(r1), g2.value_or(g1), b2.value_or(b1)});
+    m_screen.subs().defineColors(name, {r1, g1, b1}, {r2.value_or(r1), g2.value_or(g1), b2.value_or(b1)});
 }
 
 void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
