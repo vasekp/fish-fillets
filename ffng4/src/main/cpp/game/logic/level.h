@@ -53,7 +53,15 @@ public:
     LevelInput& input();
 
     void init();
+    void reinit(bool keepSchedule = false);
     void tick();
+    void save();
+    void load(bool keepSchedule = false);
+    void restart(bool keepSchedule = false);
+    bool savePossible() const;
+    bool loadPossible() const;
+    UserFile saveFile() const;
+
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     void schedule(Callback&& action);
@@ -68,13 +76,6 @@ public:
     void killDialogsHard();
     void setModelEffect(Model* model, const std::string& name);
     void notifyFish(Model::Fish fish);
-
-    void save();
-    void load();
-    void restart();
-    bool savePossible() const;
-    bool loadPossible() const;
-    UserFile saveFile() const;
 
 private:
     void registerCallbacks();

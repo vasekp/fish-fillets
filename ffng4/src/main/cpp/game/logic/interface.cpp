@@ -114,49 +114,17 @@ bool Level::level_action_move(const std::string& move) {
 }
 
 bool Level::level_action_restart() {
-    LOGD("action: restart");
-    m_tickSchedule.clear();
-    m_tickSchedule.emplace_back([&]() {
-        m_dialogs.clear();
-        m_screen.restore();
-        init();
-        m_transitions.clear();
-        m_replay.clear();
-        setBusy(BusyReason::demo, false);
-        setBusy(BusyReason::loading, false);
-        // Move schedule can reach over restarts
-        return true;
-    });
+    restart(true);
     return true;
 }
 
 bool Level::level_action_save() {
-    LOGD("action: save");
-    if(m_rules->solvable())
-        m_script.doString("script_save()");
-    input().setLoadPossible(true);
+    save();
     return true;
 }
 
 bool Level::level_action_load() {
-    LOGD("action: load");
-    if (auto file = saveFile(); file.exists()) {
-        m_tickSchedule.clear();
-        m_tickSchedule.emplace_back([&, file]() {
-            // TODO DRY
-            m_dialogs.clear();
-            m_screen.restore();
-            init();
-            m_transitions.clear();
-            m_replay.clear();
-            setBusy(BusyReason::demo, false);
-            setBusy(BusyReason::loading, false);
-            // Move schedule can reach over restarts
-            m_script.loadFile(file);
-            m_script.doString("script_load()");
-            return true;
-        });
-    }
+    load(true);
     return true;
 }
 

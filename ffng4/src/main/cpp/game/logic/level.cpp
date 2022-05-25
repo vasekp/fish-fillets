@@ -114,20 +114,45 @@ bool Level::quitDemo() {
 }
 
 void Level::save() {
-    level_action_save();
+    if(m_rules->solvable()) {
+        m_script.doString("script_save()");
+        if(m_busy.none())
+            input().setLoadPossible(true);
+    }
 }
 
-void Level::load() {
-    // TODO check file exists
-    killDialogsHard();
-    clearSchedule();
-    level_action_load();
+void Level::load(bool keepSchedule) {
+    if (auto file = saveFile(); file.exists()) {
+        killDialogsHard();
+        m_tickSchedule.clear();
+        m_tickSchedule.emplace_back([&, file, keepSchedule]() {
+            reinit(keepSchedule);
+            m_script.loadFile(file);
+            m_script.doString("script_load()");
+            return true;
+        });
+    }
 }
 
-void Level::restart() {
+void Level::restart(bool keepSchedule) {
     killDialogsHard();
-    clearSchedule();
-    level_action_restart();
+    m_tickSchedule.clear();
+    m_tickSchedule.emplace_back([&, keepSchedule]() {
+        reinit(keepSchedule);
+        return true;
+    });
+}
+
+void Level::reinit(bool keepSchedule) {
+    m_dialogs.clear();
+    m_screen.restore();
+    init();
+    m_transitions.clear();
+    m_replay.clear();
+    setBusy(BusyReason::demo, false);
+    setBusy(BusyReason::loading, false);
+    if(!keepSchedule)
+        clearSchedule();
 }
 
 bool Level::savePossible() const {
