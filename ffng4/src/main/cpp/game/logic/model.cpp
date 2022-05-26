@@ -48,7 +48,7 @@ void Model::displace(ICoords d, bool pushing) {
 }
 
 void Model::deltaMove(float dt, float speed) {
-    if (m_move) {
+    if (m_move && m_action != Action::busy) {
         m_delta += (falling() ? fallSpeed : baseSpeed) * dt * speed * m_warp * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
