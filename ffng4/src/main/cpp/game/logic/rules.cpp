@@ -94,10 +94,8 @@ void LevelRules::processKey(Key key) {
 
 bool LevelRules::switchFish() {
     Model* target = m_curFish == m_small ? m_big : m_small;
-    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0) {
-        setFish(Model::Fish::none);
+    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0)
         return false;
-    }
     setFish(target);
     m_curFish->action() = Model::Action::activate;
     m_level.transition(framesActivate, [unit = m_curFish]() {
@@ -241,13 +239,22 @@ void LevelRules::evalMotion(Model* model, Direction d) {
     }
 
     if(model->goal() == Model::Goal::escape) {
-        if(auto depth = m_layout.borderDepth(model); depth.first >= 0 && depth.second < 0) {
+        auto depth = m_layout.borderDepth(model);
+        if(depth.first >= 0 && depth.second < 0) {
             m_keyQueue.clear();
             m_level.killDialogs();
             m_level.schedule([d, model]() {
                 model->displace(d);
                 return true;
             });
+        }
+        if(depth.second >= 0) {
+            model->goal() = Model::Goal::none;
+            switchFish();
+            if(solved()) {
+                setFish(Model::Fish::none);
+                m_level.transition(framesSolve, [&]() { LOGI("Solved"); });
+            }
         }
     }
 }
@@ -269,8 +276,10 @@ void LevelRules::death(Model* unit) {
     });
     m_doomed = true;
     m_level.notifyDeath();
-    if(unit == m_curFish && !switchFish())
+    if(unit == m_curFish && !switchFish()) {
+        setFish(Model::Fish::none);
         m_level.transition(framesRestart, [&]() { m_level.restart(); });
+    }
 }
 
 void LevelRules::buildDepGraph() {
@@ -312,7 +321,7 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
     EnumBitset<Model::SupportType> ret;
     std::deque<const Model*> queue;
 
-    for(auto[above, below] : m_dependencyGraph)
+    for(auto [above, below] : m_dependencyGraph)
         if(above == model)
             queue.push_back(below);
     while(!queue.empty()) {
@@ -353,4 +362,9 @@ std::pair<Model*, Model*> LevelRules::bothFish() const {
 
 bool LevelRules::solvable() const {
     return !m_doomed;
+}
+
+bool LevelRules::solved() const {
+    return std::all_of(m_level.layout().models().begin(),  m_level.layout().models().end(),
+                       [](const Model* model) { return model->goal() == Model::Goal::none; });
 }

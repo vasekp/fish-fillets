@@ -34,6 +34,7 @@ public:
     Model::Fish activeFish() const;
     std::pair<Model*, Model*> bothFish() const;
     bool solvable() const;
+    bool solved() const;
 
 private:
     void processKey(Key key);
@@ -58,6 +59,7 @@ private:
     constexpr static int framesActivate = 4;
     constexpr static int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
     constexpr static int framesRestart = 50;
+    constexpr static int framesSolve = 30;
 };
 
 #endif //FISH_FILLETS_RULES_H
