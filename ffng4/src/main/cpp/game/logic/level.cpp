@@ -1,7 +1,7 @@
 #include "level.h"
 #include "game/screens/levelscreen.h"
 
-Level::Level(Instance& instance, LevelScreen& screen, const LevelRecord& record) :
+Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_instance(instance),
         m_screen(screen),
         m_record(record),
@@ -109,6 +109,11 @@ void Level::notifyFish(Model::Fish fish) {
 
 void Level::notifyDeath() {
     input().setSavePossible(false);
+}
+
+void Level::notifySolved() {
+    m_record.solved = true;
+    m_screen.exit();
 }
 
 bool Level::quitDemo() {

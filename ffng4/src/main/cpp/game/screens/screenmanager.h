@@ -31,7 +31,7 @@ public:
 
     void startMode(Mode mode);
     void announceLevel(const LevelRecord& record);
-    void startLevel(const LevelRecord& record);
+    void startLevel(LevelRecord& record);
 
     GameScreen& curScreen();
     bool& options() { return m_options; }

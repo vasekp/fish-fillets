@@ -15,7 +15,7 @@ class LevelInput;
 class Level : public ScriptReferrer {
     Instance& m_instance;
     LevelScreen& m_screen;
-    const LevelRecord& m_record;
+    LevelRecord& m_record;
     Script m_script;
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
@@ -47,7 +47,7 @@ class Level : public ScriptReferrer {
     EnumBitset<BusyReason> m_busy;
 
 public:
-    Level(Instance& instance, LevelScreen& screen, const LevelRecord& record);
+    Level(Instance& instance, LevelScreen& screen, LevelRecord& record);
 
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
@@ -78,8 +78,10 @@ public:
     void killDialogs();
     void killDialogsHard();
     void setModelEffect(Model* model, const std::string& name);
+
     void notifyFish(Model::Fish fish);
     void notifyDeath();
+    void notifySolved();
 
 private:
     void registerCallbacks();

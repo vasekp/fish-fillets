@@ -19,6 +19,7 @@ class LevelScreen : public GameScreen {
     Subtitles m_subs;
     std::optional<Image> m_display;
     bool m_fullLoad;
+    bool m_quit;
 
     struct Effect {
         ogl::Program Shaders::*effect;
@@ -29,7 +30,7 @@ class LevelScreen : public GameScreen {
     FCoords m_shift;
 
 public:
-    LevelScreen(Instance&, const LevelRecord&);
+    LevelScreen(Instance&, LevelRecord&);
 
     IInput& input() override { return m_input; }
     Subtitles& subs() { return m_subs; }
@@ -49,6 +50,7 @@ public:
     void setShift(FCoords shift);
     FCoords shift() override;
     const auto& sounds() const { return m_sounds; }
+    void exit();
 
     constexpr static int size_unit = 15;
 
@@ -62,6 +64,8 @@ private:
     bool own_mouse(unsigned int x, unsigned int y) override;
     bool own_key(Key key) override;
     void own_setsize() override;
+
+    void leave();
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 };

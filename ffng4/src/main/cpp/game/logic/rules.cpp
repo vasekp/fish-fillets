@@ -257,7 +257,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
     }
     if(solved()) {
         setFish(Model::Fish::none);
-        m_level.transition(framesSolve, [&]() { LOGI("Solved"); });
+        m_level.transition(framesSolve, [&]() { m_level.notifySolved(); });
     }
 }
 

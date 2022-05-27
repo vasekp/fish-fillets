@@ -2,19 +2,28 @@
 #include "game/logic/level.h"
 #include "screenmanager.h"
 
-LevelScreen::LevelScreen(Instance& instance, const LevelRecord& record) :
+LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
         m_input(instance),
         m_waves(),
         m_subs(instance),
-        m_fullLoad(false)
+        m_fullLoad(false),
+        m_quit(false)
 { }
 
 void LevelScreen::restore() {
     m_display.reset();
     m_effects.clear();
     m_shift = {};
+}
+
+void LevelScreen::exit() {
+    m_quit = true;
+}
+
+void LevelScreen::leave() {
+    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
 
 void LevelScreen::own_start() {
@@ -74,6 +83,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     m_level.rules().update();
     if(m_timer.ticked())
         m_level.tick();
+
+    if(m_quit) {
+        leave();
+        return;
+    }
 
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
@@ -210,7 +224,7 @@ bool LevelScreen::own_key(Key key) {
                 return false;
         case Key::exit:
             if(!m_level.quitDemo())
-                m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+                leave();
             return true;
         case Key::save:
             m_level.save();

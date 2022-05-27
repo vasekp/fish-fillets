@@ -43,7 +43,7 @@ void ScreenManager::announceLevel(const LevelRecord& record) {
         m_title->refresh();
 }
 
-void ScreenManager::startLevel(const LevelRecord& record) {
+void ScreenManager::startLevel(LevelRecord& record) {
     auto start = std::chrono::steady_clock::now();
     m_screen = std::make_unique<LevelScreen>(m_instance, record);
     curScreen().start();
