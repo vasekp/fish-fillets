@@ -20,6 +20,8 @@ void Level::init() {
     LOGI("Level %s, attempt %d", m_record.codename.c_str(), m_attempt);
     m_script.loadFile(m_instance.files().system(m_record.script_filename));
     m_rules = std::make_unique<LevelRules>(*this, layout());
+    input().setSavePossible(savePossible());
+    input().setLoadPossible(loadPossible());
 }
 
 void Level::tick() {
@@ -100,8 +102,13 @@ void Level::recordMove(char key) {
 }
 
 void Level::notifyFish(Model::Fish fish) {
+    LOGI("Active fish: %s", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
     if(accepting())
         input().setFish(fish);
+}
+
+void Level::notifyDeath() {
+    input().setSavePossible(false);
 }
 
 bool Level::quitDemo() {

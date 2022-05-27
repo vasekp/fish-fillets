@@ -14,6 +14,7 @@ class LevelRules {
     Model* m_small;
     Model* m_big;
     Model* m_curFish;
+    bool m_doomed;
 
     std::vector<std::pair<const Model*, Model::Goal>> m_goals;
 
@@ -38,7 +39,7 @@ private:
     void processKey(Key key);
     void moveFish(Model::Fish which, Direction d);
     void moveFish(Direction d);
-    void switchFish();
+    bool switchFish();
 
     void buildDepGraph();
     void updateDepGraph(const Model* model);
@@ -52,6 +53,11 @@ private:
     void setFish(Model::Fish fish);
     void setFish(Model* which);
     char dirToChar(Direction d);
+
+    constexpr static int framesTurn = 3; // bound to the animation
+    constexpr static int framesActivate = 4;
+    constexpr static int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
+    constexpr static int framesRestart = 50;
 };
 
 #endif //FISH_FILLETS_RULES_H

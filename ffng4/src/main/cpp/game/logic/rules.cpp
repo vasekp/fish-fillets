@@ -6,6 +6,7 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
     m_curFish = nullptr;
+    m_doomed = false;
     setFish(Model::Fish::small);
     for(const auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
@@ -91,13 +92,18 @@ void LevelRules::processKey(Key key) {
     }
 }
 
-void LevelRules::switchFish() {
+bool LevelRules::switchFish() {
     Model* target = m_curFish == m_small ? m_big : m_small;
-    if(target->action() == Model::Action::busy)
-        return;
+    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0) {
+        setFish(Model::Fish::none);
+        return false;
+    }
     setFish(target);
     m_curFish->action() = Model::Action::activate;
-    m_level.transition(4, [&]() { m_curFish->action() = Model::Action::base; });
+    m_level.transition(framesActivate, [unit = m_curFish]() {
+        unit->action() = Model::Action::base;
+    });
+    return true;
 }
 
 void LevelRules::moveFish(Model::Fish which, Direction d) {
@@ -111,7 +117,7 @@ void LevelRules::moveFish(Direction d) {
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
         m_curFish->action() = Model::Action::turning;
-        m_level.transition(3, [&, d]() {
+        m_level.transition(framesTurn, [&, d]() {
             m_curFish->action() = Model::Action::base;
             m_curFish->turn();
             moveFish(d);
@@ -257,10 +263,14 @@ void LevelRules::death(Model* unit) {
     m_level.killDialogs();
     unit->anim().removeExtra();
     m_level.setModelEffect(unit, "disintegrate");
-    m_level.transition(15 /* 1.5 seconds */, [&, unit]() {
+    m_level.transition(framesDeath, [&, unit]() {
         unit->disappear();
         updateDepGraph(unit);
     });
+    m_doomed = true;
+    m_level.notifyDeath();
+    if(unit == m_curFish && !switchFish())
+        m_level.transition(framesRestart, [&]() { m_level.restart(); });
 }
 
 void LevelRules::buildDepGraph() {
@@ -342,5 +352,5 @@ std::pair<Model*, Model*> LevelRules::bothFish() const {
 }
 
 bool LevelRules::solvable() const {
-    return true; // TODO
+    return !m_doomed;
 }
