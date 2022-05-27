@@ -8,9 +8,9 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
     m_curFish = nullptr;
     m_doomed = false;
     setFish(Model::Fish::small);
-    for(const auto* model : m_layout.models())
+    for(auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
-            m_goals.emplace_back(model, model->goal());
+            m_goals.push_back(model);
     buildDepGraph();
 }
 
@@ -241,6 +241,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
     if(model->goal() == Model::Goal::escape) {
         auto depth = m_layout.borderDepth(model);
         if(depth.first >= 0 && depth.second < 0) {
+            model->driven() = true;
             m_keyQueue.clear();
             m_level.killDialogs();
             m_level.schedule([d, model]() {
@@ -249,8 +250,16 @@ void LevelRules::evalMotion(Model* model, Direction d) {
             });
         }
         if(depth.second >= 0) {
-            model->goal() = Model::Goal::none;
-            switchFish();
+            std::erase(m_goals, model);
+            // Promote remaining alive goals to escape
+            if(std::all_of(m_goals.begin(),  m_goals.end(), [](const Model* model) {
+                return model->goal() == Model::Goal::alive;
+            })) {
+                for(auto* other : m_goals)
+                    other->goal() = Model::Goal::escape;
+            }
+            if(model == m_curFish)
+                switchFish();
             if(solved()) {
                 setFish(Model::Fish::none);
                 m_level.transition(framesSolve, [&]() { LOGI("Solved"); });
@@ -365,6 +374,5 @@ bool LevelRules::solvable() const {
 }
 
 bool LevelRules::solved() const {
-    return std::all_of(m_level.layout().models().begin(),  m_level.layout().models().end(),
-                       [](const Model* model) { return model->goal() == Model::Goal::none; });
+    return m_goals.empty();
 }

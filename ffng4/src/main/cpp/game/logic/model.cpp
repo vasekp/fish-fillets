@@ -25,6 +25,7 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_viewShift(),
         m_shape(shape),
         m_pushing(false),
+        m_driven(false),
         m_action(Action::base),
         m_orientation(Orientation::left),
         m_touchDir(),

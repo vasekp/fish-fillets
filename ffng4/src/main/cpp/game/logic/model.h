@@ -70,6 +70,7 @@ private:
     Shape m_shape;
     bool m_alive;
     bool m_pushing;
+    bool m_driven;
     Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
@@ -101,7 +102,7 @@ public:
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk->done(); }
     bool isVirtual() const { return m_type == Type::virt; }
-    bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall); }
+    bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall || m_driven); }
     bool moving() const { return (bool)m_move; }
     bool pushing() const { return m_move && m_pushing; }
     bool falling() const { return !alive() && m_move == Direction::down; }
@@ -112,6 +113,8 @@ public:
     auto& viewShift() { return m_viewShift; }
     auto& goal() { return m_goal; }
     auto goal() const { return m_goal; }
+    auto& driven() { return m_driven; }
+    auto driven() const { return m_driven; }
 
     bool intersects(Model* other, ICoords d) const;
 

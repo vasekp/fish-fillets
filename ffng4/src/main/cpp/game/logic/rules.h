@@ -16,7 +16,7 @@ class LevelRules {
     Model* m_curFish;
     bool m_doomed;
 
-    std::vector<std::pair<const Model*, Model::Goal>> m_goals;
+    std::vector<Model*> m_goals;
 
     std::deque<Key> m_keyQueue;
     std::vector<std::pair<Model*, Direction>> m_motions;
