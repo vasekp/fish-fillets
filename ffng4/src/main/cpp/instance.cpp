@@ -14,7 +14,12 @@
 
 #include <android/configuration.h>
 
-Instance::Instance(android_app* androidApp) : m_app(androidApp), m_jni(m_app), live(false), running(false), quit_request(false) {
+Instance::Instance(android_app* androidApp) :
+        m_app(androidApp),
+        m_jni(m_app),
+        live(false),
+        running(false)
+{
     m_files = std::make_unique<Files>(*this);
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this);

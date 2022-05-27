@@ -118,24 +118,19 @@ void android_main(struct android_app* app) {
 
     while(true) {
         try {
-            int ident;
             int events;
-            struct android_poll_source *source;
+            struct android_poll_source* source;
 
-            while ((ident = ALooper_pollAll(instance.running ? 0 : -1, nullptr, &events,
-                                            (void **) &source)) >= 0) {
-                if (source != nullptr)
+            while(ALooper_pollAll(instance.running ? 0 : -1, nullptr, &events, (void**)&source) >= 0) {
+                if(source != nullptr)
                     source->process(app, source);
-                if (ident == LOOPER_ID_USER) {
-                    // sensors...
-                }
-                if (app->destroyRequested) {
+                if(app->destroyRequested) {
                     LOGD("exiting");
                     return;
                 }
             }
 
-            if (instance.running)
+            if(instance.running)
                 instance.screens().drawFrame();
         } catch(std::exception& e) {
             LOGE("Caught exception: %s", e.what());

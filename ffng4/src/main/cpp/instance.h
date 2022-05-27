@@ -50,7 +50,6 @@ public:
 
     bool live;
     bool running;
-    bool quit_request;
 
     void quit();
 };
