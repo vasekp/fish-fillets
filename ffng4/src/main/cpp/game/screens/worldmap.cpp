@@ -22,10 +22,10 @@ WorldMap::WorldMap(Instance& instance) :
     m_maskColors.insert({Frames::credits, MaskColors::credits});
 
     for(const auto& [name, record] : m_instance.levels()) {
-        if(record->maskColor != LevelRecord::no_color)
-            m_forks.push_back(record);
-        if(record->state() == LevelState::open)
-            m_open.push_back(record);
+        if(record.maskColor != LevelRecord::noColor)
+            m_forks.push_back(&record);
+        if(record.state() == LevelState::open)
+            m_open.push_back(&record);
     }
 }
 
@@ -54,8 +54,8 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
 //            if(record->solved)
                 drawMasked(target, record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
-            if(record->solved)
-                target.blit(m_nodeImages[0], copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
+            if(record.solved)
+                target.blit(m_nodeImages[0], copyProgram, record.coords.fx() - nodeRadius, record.coords.fy() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -101,13 +101,13 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
     } else {
         auto fx = (float)x, fy = (float)y;
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {
-            auto& coords = pair.second->coords;
+            auto& coords = pair.second.coords;
             return std::hypot(coords.fx() - fx, coords.fy() - fy) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
-            m_instance.screens().announceLevel(*it->second);
+            m_instance.screens().announceLevel(it->second);
             staticFrame(WorldMap::Frames::loading);
-            m_instance.screens().startLevel(*it->second);
+            m_instance.screens().startLevel(it->second);
         }
     }
     return true;

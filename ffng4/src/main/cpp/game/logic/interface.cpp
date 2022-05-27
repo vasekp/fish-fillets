@@ -127,10 +127,7 @@ bool Level::level_action_load() {
 }
 
 bool Level::level_save(const std::string& text_models) {
-    auto file = m_instance.files().user("saves/"s + m_record.codename + ".lua");
-    std::ostringstream oss;
-    oss << "saved_moves = '" << m_replay << "'\n\nsaved_models = " << text_models;
-    file.write(oss.str());
+    saveFile().write("saved_moves = '"s + m_replay + "'\n\nsaved_models = " + text_models);
     return true;
 }
 

@@ -23,6 +23,7 @@
 #include <chrono>
 #include <optional>
 
+#include <filesystem>
 #include <android/log.h>
 
 #include "types.h"

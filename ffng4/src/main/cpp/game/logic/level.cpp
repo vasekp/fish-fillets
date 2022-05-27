@@ -113,6 +113,7 @@ void Level::notifyDeath() {
 
 void Level::notifySolved() {
     m_record.solved = true;
+    solveFile().write("saved_moves = '"s + m_replay + "'\n");
     m_screen.exit();
 }
 
@@ -179,5 +180,9 @@ bool Level::loadPossible() const {
 }
 
 UserFile Level::saveFile() const {
-    return m_instance.files().user("saves/"s + m_record.codename + ".lua");
+    return m_instance.files().user(m_record.saveFilename());
+}
+
+UserFile Level::solveFile() const {
+    return m_instance.files().user(m_record.solveFilename());
 }

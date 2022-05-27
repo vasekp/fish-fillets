@@ -61,9 +61,6 @@ public:
     void save();
     void load(bool keepSchedule = false);
     void restart(bool keepSchedule = false);
-    bool savePossible() const;
-    bool loadPossible() const;
-    UserFile saveFile() const;
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
@@ -148,6 +145,11 @@ private:
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
     void clearSchedule();
+
+    bool savePossible() const;
+    bool loadPossible() const;
+    UserFile saveFile() const;
+    UserFile solveFile() const;
 
     constexpr static int index_talk_both = -1;
     constexpr static int index_free_space = -1;

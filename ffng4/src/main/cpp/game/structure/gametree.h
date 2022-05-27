@@ -6,16 +6,15 @@
 #include "subsystem/script.h"
 
 class GameTree : public ScriptReferrer {
-    std::map<std::string, std::shared_ptr<LevelRecord>> m_levels;
-    std::shared_ptr<LevelRecord> m_finale;
+    Instance& m_instance;
+    std::map<std::string, LevelRecord> m_levels;
     Script m_script;
 
 public:
-    GameTree(Instance &);
+    GameTree(Instance& instance);
 
-    auto begin() const { return m_levels.cbegin(); }
-
-    auto end() const { return m_levels.cend(); }
+    auto begin() { return m_levels.begin(); }
+    auto end() { return m_levels.end(); }
 
 private:
     void branch_addNode(const std::string &parent, const std::string &codename, const std::string &filename,

@@ -18,8 +18,8 @@ class WorldMap : public GameScreen {
     AudioSourceRef m_music;
     std::vector<const Image*> m_nodeImages;
     std::map<Frames, Color> m_maskColors;
-    std::vector<std::shared_ptr<LevelRecord>> m_open;
-    std::vector<std::shared_ptr<LevelRecord>> m_forks;
+    std::vector<const LevelRecord*> m_open;
+    std::vector<const LevelRecord*> m_forks;
     Frames m_staticFrame;
 
     static constexpr int nodeRadius = 9;
