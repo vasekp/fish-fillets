@@ -94,8 +94,7 @@ bool Level::level_isNewRound() const {
 }
 
 bool Level::level_isSolved() {
-    //TODO
-    return false;
+    return rules().solved();
 }
 
 void Level::level_planShow(LuaCallback function) {

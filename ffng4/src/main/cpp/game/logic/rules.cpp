@@ -251,20 +251,13 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         }
         if(depth.second >= 0) {
             std::erase(m_goals, model);
-            // Promote remaining alive goals to escape
-            if(std::all_of(m_goals.begin(),  m_goals.end(), [](const Model* model) {
-                return model->goal() == Model::Goal::alive;
-            })) {
-                for(auto* other : m_goals)
-                    other->goal() = Model::Goal::escape;
-            }
             if(model == m_curFish)
                 switchFish();
-            if(solved()) {
-                setFish(Model::Fish::none);
-                m_level.transition(framesSolve, [&]() { LOGI("Solved"); });
-            }
         }
+    }
+    if(solved()) {
+        setFish(Model::Fish::none);
+        m_level.transition(framesSolve, [&]() { LOGI("Solved"); });
     }
 }
 
@@ -374,5 +367,7 @@ bool LevelRules::solvable() const {
 }
 
 bool LevelRules::solved() const {
-    return m_goals.empty();
+    return std::all_of(m_goals.begin(),  m_goals.end(), [](const Model* model) {
+        return (model->goal() == Model::Goal::alive && model->alive()) || model->goal() == Model::Goal::none;
+    });
 }
