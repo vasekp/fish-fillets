@@ -112,10 +112,10 @@ public class MainActivity extends NativeActivity {
         Rect bounds = new Rect();
         fillPaint.getTextBounds(text, 0, text.length(), bounds);
 
-        Bitmap bitmap = Bitmap.createBitmap((int)(bounds.width() + outline) + 2, (int) (lineHeight + outline) + 2, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap((int)(bounds.width() + 2 * outline) + 2, (int) (lineHeight + 2 * outline) + 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        float x = -bounds.left + outline / 2.f + 1.f;
-        float y = top + outline / 2.f + 1.f;
+        float x = -bounds.left + outline + 1.f;
+        float y = top + outline + 1.f;
         if(outline != 0.0)
             canvas.drawText(text, x, y, outlinePaint);
         canvas.drawText(text, x, y, fillPaint);
