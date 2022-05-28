@@ -36,6 +36,7 @@ public:
     bool keypress(Key key);
 
     virtual FCoords shift() { return {}; }
+    float timeAlive();
 
     constexpr static unsigned baseWidth = 640;
     constexpr static unsigned baseHeight = 480;
@@ -47,7 +48,6 @@ protected:
     Image* replaceImage(const std::string& name, const std::string& path);
     Image* getImage(const std::string& name);
     void reloadImages();
-    float timeAlive();
 
     virtual void own_start() { }
     virtual void own_refresh() { }

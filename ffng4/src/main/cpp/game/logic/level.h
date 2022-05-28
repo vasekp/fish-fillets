@@ -84,7 +84,7 @@ private:
     void registerCallbacks();
 
     void level_createRoom(int width, int height, const std::string& bg);
-    int level_getRestartCounter();
+    int level_getRestartCounter() const;
     int level_getDepth() const;
     bool level_isNewRound() const;
     bool level_isSolved();

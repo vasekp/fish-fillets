@@ -21,11 +21,6 @@ class LevelScreen : public GameScreen {
     bool m_fullLoad;
     bool m_quit;
 
-    struct Effect {
-        ogl::Program Shaders::*effect;
-        float startTime;
-    };
-    std::map<const Model*, Effect> m_effects;
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     FCoords m_shift;
 

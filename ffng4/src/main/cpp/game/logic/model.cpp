@@ -29,7 +29,8 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_action(Action::base),
         m_orientation(Orientation::left),
         m_touchDir(),
-        m_warp(1.f)
+        m_warp(1.f),
+        m_effect{Effect::none, 0}
 {
     std::tie(m_type, m_alive, m_supportType, m_weight) = decode(type);
 }
@@ -80,4 +81,25 @@ FCoords Model::fxy() const {
 
 bool Model::intersects(Model* other, ICoords d) const {
     return shape().intersects(other->shape(), other->xy() - (xy() + d));
+}
+
+void Model::setEffect(const std::string& name, float startTime) {
+    m_effect = {readEffect(name), startTime};
+}
+
+Model::Effect Model::readEffect(const std::string& name) {
+    if(name == "none")
+        return Effect::none;
+    else if(name == "disintegrate")
+        return Effect::disintegrate;
+    else if(name == "invisible")
+        return Effect::invisible;
+    else if(name == "reverse")
+        return Effect::reverse;
+    else if(name == "mirror")
+        return Effect::mirror;
+    else {
+        LOGE("Unhandled effect %s", name.c_str());
+        return Effect::none;
+    }
 }

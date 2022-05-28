@@ -57,6 +57,14 @@ public:
         escape
     };
 
+    enum class Effect {
+        none,
+        disintegrate,
+        invisible,
+        reverse,
+        mirror
+    };
+
 private:
     int m_index;
     Type m_type;
@@ -77,6 +85,10 @@ private:
     AudioSourceRef m_talk;
     ICoords m_touchDir;
     float m_warp;
+    struct {
+        Effect name;
+        float startTime;
+    } m_effect;
 
 public:
     Model(int index, const std::string& type, int x, int y, const std::string& shape);
@@ -125,6 +137,10 @@ public:
     void die();
     void disappear() { m_type = Type::virt; }
     AudioSourceRef& talk() { return m_talk; }
+    void setEffect(const std::string& name, float startTime);
+    auto effect() const { return m_effect; }
+
+    static Effect readEffect(const std::string& name);
 
     constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
     constexpr static float fallSpeed = baseSpeed;

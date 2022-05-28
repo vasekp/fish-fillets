@@ -14,7 +14,6 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
 
 void LevelScreen::restore() {
     m_display.reset();
-    m_effects.clear();
     m_shift = {};
 }
 
@@ -57,14 +56,14 @@ void LevelScreen::own_refresh() {
     if(m_display)
         m_display->reload(m_instance);
 
-    const auto& models = m_level.layout().models();
-    auto it = std::find_if(models.begin(),  models.end(), [&](const auto& model) {
-        return m_effects.contains(model) && m_effects.at(model).effect == &Shaders::mirror;
-    });
-    if(it == models.end())
-        m_mirrorTarget = {};
-    else
-        m_mirrorTarget = makeMirrorTarget(**it);
+    {
+        const auto& models = m_level.layout().models();
+        auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
+        if(it == models.end())
+            m_mirrorTarget = {};
+        else
+            m_mirrorTarget = makeMirrorTarget(**it);
+    }
 
     glUseProgram(m_instance.graphics().shaders().rope);
     glUniform4fv(m_instance.graphics().shaders().rope.uniform("uColor"), 1, Color(0x30404E).gl().get());
@@ -111,21 +110,30 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         if(model.isVirtual())
             continue;
         const auto images = model.anim().get(model.orientation());
-        if(m_effects.contains(&model)) {
-            if(m_effects.at(&model).effect == &Shaders::mirror) {
+        auto [effect, effectTime] = model.effect();
+        switch(effect) {
+            case Model::Effect::none:
+                for(auto i = 0u ; i < images.size() ; i++)
+                    target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.fx() * size_unit, model.fy() * size_unit);
+                break;
+            case Model::Effect::invisible:
+                break;
+            case Model::Effect::mirror:
                 mirror = &model;
-                continue;
-            }
-            if(images.size() > 1)
-                LOGE("layered image x effect");
-            auto& record = m_effects[&model];
-            auto& program = m_instance.graphics().shaders().*record.effect;
-            glUseProgram(program);
-            glUniform1f(program.uniform("uTime"), timeAlive() - record.startTime);
-            target.blit(images[0], program, model.fx() * size_unit, model.fy() * size_unit);
-        } else {
-            for (auto i = 0u; i < images.size(); i++)
-                target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.fx() * size_unit, model.fy() * size_unit);
+                break;
+            case Model::Effect::reverse:
+                if(images.size() > 1)
+                    LOGE("layered image x effect");
+                target.blit(images[0], m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
+                break;
+            case Model::Effect::disintegrate:
+                if(images.size() > 1)
+                    LOGE("layered image x effect");
+                auto& program = m_instance.graphics().shaders().disintegrate;
+                glUseProgram(program);
+                glUniform1f(program.uniform("uTime"), timeAlive() - effectTime);
+                target.blit(images[0], program, model.fx() * size_unit, model.fy() * size_unit);
+                break;
         }
     }
 
@@ -178,19 +186,6 @@ void LevelScreen::killAllSounds() {
     m_instance.audio().clear();
     if(m_music)
         m_instance.audio().addSource(m_music);
-}
-
-void LevelScreen::setEffect(Model *model, const std::string &name) {
-    ogl::Program Shaders::*effect;
-    if(name == "disintegrate")
-        effect = &Shaders::disintegrate;
-    else if(name == "mirror")
-        effect = &Shaders::mirror;
-    else {
-        LOGE("Unhandled setEffect %s", name.c_str());
-        return;
-    }
-    m_effects[model] = {effect, timeAlive()};
 }
 
 void LevelScreen::setShift(FCoords shift) {

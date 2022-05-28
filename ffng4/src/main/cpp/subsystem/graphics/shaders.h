@@ -12,6 +12,7 @@ struct Shaders {
     ogl::Program titleText;
     ogl::Program disintegrate;
     ogl::Program mirror;
+    ogl::Program reverse;
     ogl::Program rope;
 
     ogl::Program arrow;

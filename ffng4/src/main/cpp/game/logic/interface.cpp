@@ -81,7 +81,7 @@ void Level::level_createRoom(int width, int height, const std::string& bg) {
     m_screen.addImage(bg, "background");
 }
 
-int Level::level_getRestartCounter() {
+int Level::level_getRestartCounter() const {
     return m_attempt;
 }
 
@@ -199,7 +199,7 @@ void Level::model_setEffect(int index, const std::string &name) {
 }
 
 void Level::setModelEffect(Model* model, const std::string& name) {
-    m_screen.setEffect(model, name);
+    model->setEffect(name, m_screen.timeAlive());
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
