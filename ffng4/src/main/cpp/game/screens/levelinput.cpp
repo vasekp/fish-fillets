@@ -158,8 +158,8 @@ void LevelInput::refresh() {
         float buttonOffset = (fullSize - (buttonCount - 1) * buttonStride - buttonSize) / 2.f;
         glUniform1f(program.uniform("uSize"), buttonSize);
 
-        std::array<std::string, buttonCount> chars{"S", "L", "R", "Q", "O"};
-        std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::exit, Key::options};
+        std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
+        std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
         static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
         static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
         for(int i = 0; i < buttonCount; i++) {
