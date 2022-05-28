@@ -19,10 +19,8 @@ public:
 private:
     void branch_addNode(const std::string &parent, const std::string &codename, const std::string &filename,
             int x, int y, std::optional<int> color, const std::optional<std::string> &ending);
-    void branch_setEnding(const std::string &codename, const std::string &filename,
-                          const std::string &ending);
-    void worldmap_addDesc(const std::string &codename, const std::string &lang,
-                          const std::string &levelname, const std::string &branch);
+    void branch_setEnding(const std::string &codename, const std::string &filename, const std::string &ending);
+    void worldmap_addDesc(const std::string &codename, const std::string &lang, const std::string &levelname, const std::string &branch);
     void node_bestSolution(const std::string &codename, int moves, const std::string &name);
 };
 
