@@ -37,5 +37,5 @@ void AudioSource::setLoop(std::size_t start, std::size_t end) {
     m_loop = (end != start);
     m_loopStart = start;
     m_loopEnd = std::min(end, m_samplesTotal);
-    LOGV("setLoop: %ld %ld", m_loopStart, m_loopEnd);
+    LOGV("setLoop: %d %d", (int)m_loopStart, (int)m_loopEnd);
 }

@@ -92,7 +92,7 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
                                  [](auto& source) { return source->done(); });
     if(newEnd != sources.end()) {
-        LOGD("AudioStream: removing %lu sources", std::distance(newEnd, sources.end()));
+        LOGD("AudioStream: removing %d sources", (int)std::distance(newEnd, sources.end()));
         sources.erase(newEnd, sources.end());
     }
     return oboe::DataCallbackResult::Continue;
@@ -171,7 +171,7 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& p
     AMediaFormat_getInt64(format, AMEDIAFORMAT_KEY_DURATION, &duration);
     std::size_t numSamples = 1 + duration * 22050 / 1000000;
     assert(numSamples > 0);
-    LOGV("numSamples %ld", numSamples);
+    LOGV("numSamples %d", (int)numSamples);
     std::int64_t curSample = 0;
 
     auto ret = std::make_shared<AudioSource>(filename, numSamples, std::make_unique<float[]>(numSamples));
@@ -230,7 +230,7 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& p
                             outIndex);
             }
     } while (!(extractorDone && codecDone));
-    LOGD("loadSound %s: decoded %ld frames", filename.c_str(), curSample);
+    LOGD("loadSound %s: decoded %d frames", filename.c_str(), (int)curSample);
 
     AMediaFormat_delete(format);
     AMediaCodec_delete(codec);
