@@ -8,7 +8,7 @@ AudioStream::AudioStream(Audio& iface) : m_stream() {
     builder.setSharingMode(oboe::SharingMode::Exclusive);
     builder.setSampleRate(22050);
     builder.setSampleRateConversionQuality(
-            oboe::SampleRateConversionQuality::Medium);
+            oboe::SampleRateConversionQuality::Fastest); // Actually sounds much better than ::Best!
     builder.setChannelCount(1);
     builder.setDataCallback(&iface);
 

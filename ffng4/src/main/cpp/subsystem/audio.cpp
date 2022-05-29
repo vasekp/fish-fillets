@@ -179,7 +179,7 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& p
     promise.set_value(ret);
 
     do {
-        auto inIndex = AMediaCodec_dequeueInputBuffer(codec, 2000);
+        auto inIndex = AMediaCodec_dequeueInputBuffer(codec, 0);
         if (inIndex >= 0) {
             std::size_t inputSize;
             auto *inputBuffer = AMediaCodec_getInputBuffer(codec, inIndex, &inputSize);
