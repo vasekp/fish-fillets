@@ -103,6 +103,12 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     target.blit(getImage("background"), wavyProgram);
 
+    for(const auto& rope : m_level.layout().getRopes()) {
+        FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
+        FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
+        target.fill(ropeProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
+    }
+
     const Model* mirror = nullptr;
     for(const auto& uModel : m_level.layout().models()) {
         const auto& model = *uModel;
@@ -133,12 +139,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                 break;
             }
         }
-    }
-
-    for(const auto& rope : m_level.layout().getRopes()) {
-        FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
-        FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
-        target.fill(ropeProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 
     if(mirror) {
