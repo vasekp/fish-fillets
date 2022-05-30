@@ -108,6 +108,7 @@ public class MainActivity extends NativeActivity {
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
         float top = Math.max(-fm.top, -fm.ascent);
         float bottom = Math.max(fm.bottom, fm.descent);
+        Log.d("FFNG", "fontSize " + fontSize + " top " + top + " bottom " + bottom);
         float lineHeight = top + bottom;
         Rect bounds = new Rect();
         fillPaint.getTextBounds(text, 0, text.length(), bounds);
