@@ -3,7 +3,6 @@
 
 struct Shaders {
     ogl::Program copy;
-    ogl::Program copyOverlay;
     ogl::Program maskCopy;
     ogl::Program alpha;
     ogl::Program blur;

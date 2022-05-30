@@ -15,9 +15,9 @@ void LevelTitle::draw(const DrawTarget& target, float opacity) {
     glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
 
     float shift = 2.f / 480.f * dims.fy();
-    glUniform4f(program.uniform("uColor"), colorBg.rf(), colorBg.rg(), colorBg.rb(), opacity);
+    glUniform4fv(program.uniform("uColor"), 1, colorBg.gl(opacity).get());
     target.blit(m_texture, program, offset.fx() + shift, offset.fy() + shift, 0, 0, rect.x(), rect.y());
 
-    glUniform4f(program.uniform("uColor"), colorFg.rf(), colorFg.rg(), colorFg.rb(), opacity);
+    glUniform4fv(program.uniform("uColor"), 1, colorFg.gl(opacity).get());
     target.blit(m_texture, program, offset.fx(), offset.fy(), 0, 0, rect.x(), rect.y());
 }

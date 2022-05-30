@@ -8,5 +8,5 @@ varying vec2 vSrcCoords;
 
 void main(void)
 {
-    gl_FragColor = texture2D(uSrcTexture, vSrcCoords / uSrcSize) * vec4(1.0, 1.0, 1.0, uAlpha);
+    gl_FragColor = uAlpha * texture2D(uSrcTexture, vSrcCoords / uSrcSize);
 }

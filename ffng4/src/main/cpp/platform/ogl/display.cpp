@@ -70,7 +70,7 @@ namespace ogl {
         glEnableVertexAttribArray(0);
 
         glClearColor(0, 0, 0, 0);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+        glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
         LOGD("display: opened %p [%d x %d]", m_display, m_width, m_height);
     }

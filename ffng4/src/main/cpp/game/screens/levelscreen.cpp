@@ -89,7 +89,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 
     const auto& copyProgram = m_instance.graphics().shaders().copy;
-    const auto& overlayProgram = m_instance.graphics().shaders().copyOverlay;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& ropeProgram = m_instance.graphics().shaders().rope;
 
@@ -113,8 +112,8 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         auto [effect, effectTime] = model.effect();
         switch(effect) {
             case Model::Effect::none:
-                for(auto i = 0u ; i < images.size() ; i++)
-                    target.blit(images[i], i == 0 ? copyProgram : overlayProgram, model.fx() * size_unit, model.fy() * size_unit);
+                for(const auto* image : images)
+                    target.blit(image, copyProgram, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             case Model::Effect::invisible:
                 break;
@@ -122,18 +121,17 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                 mirror = &model;
                 break;
             case Model::Effect::reverse:
-                if(images.size() > 1)
-                    LOGE("layered image x effect");
-                target.blit(images[0], m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
+                for(const auto* image : images)
+                    target.blit(image, m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
                 break;
-            case Model::Effect::disintegrate:
-                if(images.size() > 1)
-                    LOGE("layered image x effect");
+            case Model::Effect::disintegrate: {
                 auto& program = m_instance.graphics().shaders().disintegrate;
                 glUseProgram(program);
                 glUniform1f(program.uniform("uTime"), timeAlive() - effectTime);
-                target.blit(images[0], program, model.fx() * size_unit, model.fy() * size_unit);
+                for(const auto* image : images)
+                    target.blit(image, program, model.fx() * size_unit, model.fy() * size_unit);
                 break;
+            }
         }
     }
 
