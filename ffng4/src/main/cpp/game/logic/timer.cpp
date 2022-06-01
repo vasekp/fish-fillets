@@ -2,13 +2,13 @@
 #include <chrono>
 
 void timer_thread(Timer& timer) {
-    LOGD("timer thread started");
+    Log::debug("timer thread started");
     while(!timer.m_stop.load(std::memory_order::relaxed)) {
         timer.m_tick.store(true, std::memory_order::relaxed);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     timer.m_stop.store(false, std::memory_order::release);
-    LOGD("timer thread exited");
+    Log::debug("timer thread exited");
 }
 
 Timer::Timer() : m_thread(), m_tick(false), m_stop(false), m_tickCount(0) {

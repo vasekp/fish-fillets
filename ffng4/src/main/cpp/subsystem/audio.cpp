@@ -27,7 +27,7 @@ public:
 };
 
 void Audio::activate() {
-    LOGD("audio: activate");
+    Log::debug("audio: activate");
     m_stream = std::make_unique<AudioStream>(*this);
 
     if(m_sounds_preload.empty())
@@ -35,7 +35,7 @@ void Audio::activate() {
 }
 
 void Audio::shutdown() {
-    LOGD("audio: shutdown");
+    Log::debug("audio: shutdown");
     m_stream.reset();
 }
 
@@ -48,7 +48,7 @@ void Audio::resume() {
 }
 
 void Audio::addSource(const AudioSource::Ref& source) {
-    LOGD("adding audio source %p (%s)", source.get(), source->filename().c_str());
+    Log::debug("adding audio source ", source.get(), " (", source->filename(), ")");
     auto sources = m_sources.local();
     sources->push_back(source);
     sources.checkDialogs();
@@ -58,9 +58,9 @@ void Audio::removeSource(const AudioSource::Ref& source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
-        LOGD("removeSource: did not match");
+        Log::debug("removeSource: did not match");
     else {
-        LOGD("removing audio source %p (%s)", source.get(), source->filename().c_str());
+        Log::debug("removing audio source ", source.get(), " (", source->filename(), ")");
         sources->erase(it);
     }
     sources.checkDialogs();
@@ -99,7 +99,7 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto newEnd = std::remove_if(sources.begin(), sources.end(),
                                  [](auto& source) { return source->done(); });
     if(newEnd != sources.end()) {
-        LOGD("AudioStream: removing %d sources", (int)std::distance(newEnd, sources.end()));
+        Log::debug("AudioStream: removing ", std::distance(newEnd, sources.end()), " sources");
         sources.erase(newEnd, sources.end());
     }
     return oboe::DataCallbackResult::Continue;
@@ -148,12 +148,12 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& p
     auto fd = AAsset_openFileDescriptor64(asset, &start, &length);
     AMediaExtractor *extractor = AMediaExtractor_new();
     if (AMediaExtractor_setDataSourceFd(extractor, fd, start, length) != AMEDIA_OK)
-        ::error("AMediaExtractor_setDataSourceFd failed");
+        Log::fatal("AMediaExtractor_setDataSourceFd failed");
 
     AMediaFormat *format = AMediaExtractor_getTrackFormat(extractor, 0);
     int32_t sampleRate;
     if (!AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_SAMPLE_RATE, &sampleRate))
-        ::error("AMediaFormat_getInt32 failed (sample rate)");
+        Log::fatal("AMediaFormat_getInt32 failed (sample rate)");
     switch(sampleRate) {
         case 22050:
             doubleSample = false;
@@ -162,32 +162,31 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& p
             doubleSample = true;
             break;
         default:
-            ::error("Bad sample rate.", "Unexpected audio sample rate (%s): %d", filename.c_str(), sampleRate);
+            Log::fatal("Unexpected audio sample rate (", filename, "): ", sampleRate);
     }
 
     int32_t channelCount;
     if (!AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_CHANNEL_COUNT, &channelCount))
-        ::error("AMediaFormat_getInt32 failed (channel count)");
+        Log::fatal("AMediaFormat_getInt32 failed (channel count)");
     if (channelCount != 1)
-        ::error("Bad channel count.", "Unexpected channel count (%s), expected mono: %d",
-                filename.c_str(), channelCount);
+        Log::fatal("Unexpected channel count (", filename, "), expected mono: ", channelCount);
 
     const char *mimeType;
     if (!AMediaFormat_getString(format, AMEDIAFORMAT_KEY_MIME, &mimeType))
-        ::error("AMediaFormat_getString failed (MIME type)");
+        Log::fatal("AMediaFormat_getString failed (MIME type)");
 
     AMediaExtractor_selectTrack(extractor, 0);
     AMediaCodec *codec = AMediaCodec_createDecoderByType(mimeType);
     AMediaCodec_configure(codec, format, nullptr, nullptr, 0);
     AMediaCodec_start(codec);
-    LOGV("input format: %s", AMediaFormat_toString(format));
+    Log::verbose("input format: ", AMediaFormat_toString(format));
 
     bool extractorDone = false, codecDone = false;
     std::int64_t duration;
     AMediaFormat_getInt64(format, AMEDIAFORMAT_KEY_DURATION, &duration);
     std::size_t numSamples = 1 + duration * 22050 / 1000000;
     assert(numSamples > 0);
-    LOGV("numSamples %d", (int)numSamples);
+    Log::verbose("numSamples: ", numSamples);
     std::int64_t curSample = 0;
 
     auto ret = AudioData::create(filename, numSamples);
@@ -211,7 +210,7 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& p
                 extractorDone = true;
             }
         } else if (inIndex != AMEDIACODEC_INFO_TRY_AGAIN_LATER)
-            ::error("AMediaCodec_dequeueInputBuffer failed", "inIndex = %d", inIndex);
+            Log::fatal("AMediaCodec_dequeueInputBuffer failed: inIndex = ", inIndex);
 
         AMediaCodecBufferInfo info;
         auto outIndex = AMediaCodec_dequeueOutputBuffer(codec, &info, 0);
@@ -240,18 +239,18 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& p
             switch (outIndex) {
                 case AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED: {
                     auto ff = AMediaCodec_getOutputFormat(codec);
-                    LOGV("output format: %s", AMediaFormat_toString(ff));
+                    Log::verbose("output format: ", AMediaFormat_toString(ff));
                     AMediaFormat_delete(ff);
                 }
                 case AMEDIACODEC_INFO_TRY_AGAIN_LATER:
                 case AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED:
                     break;
                 default:
-                    ::error("AMediaCodec_dequeueOutputBuffer failed", "outIndex = %d", outIndex);
+                    Log::fatal("AMediaCodec_dequeueOutputBuffer failed: outIndex = ", outIndex);
             }
     } while (!(extractorDone && codecDone));
     numSamples = curSample;
-    LOGD("loadSound %s: decoded %d frames", filename.c_str(), (int)curSample);
+    Log::debug("loadSound ", filename, ": decoded ", curSample, " frames");
 
     AMediaFormat_delete(format);
     AMediaCodec_delete(codec);

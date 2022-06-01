@@ -21,7 +21,7 @@ public:
     AudioData& operator=(const AudioData&) = delete;
     AudioData(AudioData&&) = default;
     AudioData& operator=(AudioData&&) = default;
-    ~AudioData() { if(m_data) LOGD("freeing audio data: %s", m_filename.c_str()); }
+    ~AudioData() { if(m_data) Log::debug("freeing audio data: ", m_filename); }
 
     const std::string& filename() const { return m_filename; }
     float* data() { return m_data.get(); }

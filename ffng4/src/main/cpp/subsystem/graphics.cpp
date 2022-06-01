@@ -4,18 +4,18 @@
 #include <android/bitmap.h>
 
 void Graphics::activate() {
-    LOGD("graphics: activate");
+    Log::debug("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
 }
 
 void Graphics::shutdown() {
-    LOGD("graphics: shutdown");
+    Log::debug("graphics: shutdown");
     m_system.reset();
 }
 
 void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords reserve) {
     if(!m_system)
-        ::error("setWindowSize() called before activate()");
+        Log::fatal("setWindowSize() called before activate()");
     m_system->setWindowSize(width, height, reserve);
 }
 
@@ -32,7 +32,7 @@ void Graphics::setMask(const Image* image) {
 }
 
 ogl::Texture Graphics::loadImage(const SystemFile& file) const {
-    LOGD("loadImage %s", file.getPath().c_str());
+    Log::debug("loadImage ", file.getPath());
     auto& jni = m_instance.jni();
     jstring jPath = jni->NewStringUTF(file.getPath().c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
@@ -44,7 +44,7 @@ ogl::Texture Graphics::loadImage(const SystemFile& file) const {
     void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     if(!jBitmap)
-        throw std::runtime_error("bitmap data null");
+        Log::fatal("bitmap data null (", file.getPath(), ")");
     auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jPath);
@@ -65,7 +65,7 @@ ogl::Texture Graphics::renderText(const std::string& text, const std::string& fo
     void *pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     if (!jBitmap)
-        throw std::runtime_error("bitmap data null");
+        Log::fatal("bitmap data null (renderText)");
     auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jBitmap);

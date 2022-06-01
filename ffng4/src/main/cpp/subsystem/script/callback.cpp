@@ -27,11 +27,11 @@ LuaCallback LuaCallback::from(lua_State* L) {
 }
 
 bool LuaCallback::operator()() {
-    LOGV("calling [%d] tries=%d", m_ref, m_tries);
+    Log::verbose("calling [", m_ref, "] tries=", m_tries);
     lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_ref);
     lua_pushnumber(m_state, m_tries++);
     if(lua_pcall(m_state, 1, 1, 0))
-        ::error("Lua error", "%s", lua_tostring(m_state, -1));
+        Log::fatal("Lua error: ", lua_tostring(m_state, -1));
     bool result = lua_toboolean(m_state, -1);
     lua_pop(m_state, 1);
     return result;

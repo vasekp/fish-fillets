@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Display::Display(ANativeWindow *window) {
+    Display::Display(ANativeWindow* window) {
         m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
         eglInitialize(m_display, nullptr, nullptr);
 
@@ -22,7 +22,7 @@ namespace ogl {
             auto supportedConfigs = std::make_unique<EGLConfig[]>(numConfigs);
             eglChooseConfig(m_display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
             if(!numConfigs)
-                ::error("eglChooseConfig failed");
+                Log::fatal("eglChooseConfig failed");
 
             for (int i = 0; i < numConfigs; i++) {
                 auto &config = supportedConfigs[i];
@@ -36,7 +36,7 @@ namespace ogl {
                 }
             }
 
-            LOGW("No best fit found, using first supported config");
+            Log::warn("No best fit found, using first supported config");
             return supportedConfigs[0];
         }();
 
@@ -51,7 +51,7 @@ namespace ogl {
         m_surface = eglCreateWindowSurface(m_display, config, window, nullptr);
 
         if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
-            ::error("eglMakeCurrent failed");
+            Log::fatal("eglMakeCurrent failed");
 
         m_width = m_height = 0;
         eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
@@ -60,7 +60,7 @@ namespace ogl {
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
             auto info = glGetString(name);
-            LOGV("OpenGL Info: %s", info);
+            Log::verbose("OpenGL Info: ", info);
         }
 
         glDisable(GL_CULL_FACE);
@@ -72,7 +72,7 @@ namespace ogl {
         glClearColor(0, 0, 0, 0);
         glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
-        LOGD("display: opened %p [%d x %d]", m_display, m_width, m_height);
+        Log::debug("display: opened ", (void*)m_display, " ", ICoords{m_width, m_height});
     }
 
     Display::~Display() {
@@ -81,7 +81,7 @@ namespace ogl {
         eglDestroySurface(m_display, m_surface);
         eglTerminate(m_display);
 
-        LOGD("display: closed %p", m_display);
+        Log::debug("display: closed ", (void*)m_display);
     }
 
     void Display::bind() const {

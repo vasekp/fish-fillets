@@ -127,7 +127,7 @@ namespace lua {
             } else
                 return internal::write(L, internal::apply(F, args));
         } catch(std::exception& e) {
-            LOGE("Exception on C++/C boundary: %s", e.what());
+            Log::error("Exception on C++/C boundary: ", e.what());
             return 0;
         }
     }

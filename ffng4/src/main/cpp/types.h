@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_TYPES_H
 #define FISH_FILLETS_TYPES_H
 
+#include <ostream>
+
 struct Color {
     std::uint8_t r;
     std::uint8_t g;
@@ -55,6 +57,8 @@ struct ICoords {
 
     operator bool() const { return x != 0 || y != 0; }
     operator std::pair<int, int>() const { return {x, y}; }
+
+    friend std::ostream& operator<<(std::ostream& os, ICoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
 };
 
 using Direction = ICoords;
@@ -104,6 +108,8 @@ public:
         return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) ||
                 (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
     }
+
+    friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.m_fx << "," << coords.m_fy << "]"; }
 };
 
 #endif //FISH_FILLETS_TYPES_H

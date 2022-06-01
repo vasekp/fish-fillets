@@ -345,7 +345,7 @@ void Level::killModelSound(Model* model) {
 }
 
 bool Level::model_equals(int index, int x, int y) {
-    LOGV("[%d,%d] equals %d?", x, y, index);
+    Log::verbose(ICoords{x, y}, " equals ", index, "?");
     if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
         return false;
     if(index != index_free_space) {
@@ -354,7 +354,7 @@ bool Level::model_equals(int index, int x, int y) {
     } else {
         for(const auto& model : layout().models())
             if(model->shape().covers({x - model->x(), y - model->y()})) {
-                LOGV("found model %d", model->index());
+                Log::verbose("found model ", model->index());
                 return false;
             }
         // none found
@@ -415,7 +415,7 @@ void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int 
     if(type == "rope")
         m_layout->addRope(m_layout->getModel(m1), m_layout->getModel(m2), {dx1, dy1}, {dx2, dy2});
     else
-        LOGE("Unknown decor %s", type.c_str());
+        Log::error("Unknown decor ", type);
 }
 
 void Level::game_setScreenShift(float dx, float dy) {

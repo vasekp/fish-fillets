@@ -21,7 +21,7 @@ Model* LevelLayout::getModel(int index) const {
     if(m_virtModels.contains(index))
         return m_virtModels.at(index).get();
     m_virtModels.emplace(index, std::make_unique<Model>(index, "virtual", 0, 0, ""));
-    LOGD("virtual model %d", index);
+    Log::debug("virtual model ", index);
     return m_virtModels.at(index).get();
 }
 
@@ -58,7 +58,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
         }
         queue.pop_front();
     }
-    LOGV("Obstacles: %d", (int)ret.size());
+    Log::verbose("Obstacles: ", (int)ret.size());
     return ret;
 }
 

@@ -14,7 +14,7 @@ std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const st
     else if(type == "virtual")
         return {Model::Type::virt, false, Model::SupportType::none, Model::Weight::none};
     else
-        ::error("Type not implemented", "Type %s not implemented", type.c_str());
+        Log::fatal("Type not implemented: ", type);
 }
 
 Model::Model(int index, const std::string& type, int x, int y, const std::string& shape) :
@@ -99,7 +99,7 @@ Model::Effect Model::readEffect(const std::string& name) {
     else if(name == "mirror")
         return Effect::mirror;
     else {
-        LOGE("Unhandled effect %s", name.c_str());
+        Log::error("Unhandled effect: ", name);
         return Effect::none;
     }
 }

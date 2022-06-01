@@ -18,7 +18,7 @@ bool SystemFile::exists(const std::filesystem::path &path) const {
 std::string SystemFile::read() const {
     ndk::Asset asset{m_assets, m_path.c_str(), AASSET_MODE_BUFFER};
     if(!asset)
-        ::error("System file not found: " + m_path.string());
+        Log::fatal("System file not found: ", m_path);
     auto size = AAsset_getLength(asset);
     auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
     std::string ret(buffer, buffer + size);
@@ -26,7 +26,7 @@ std::string SystemFile::read() const {
 }
 
 bool SystemFile::write(const std::string& data) const {
-    ::error("Attempt to write to system file.");
+    Log::fatal("Attempt to write to system file.");
 }
 
 ndk::Asset SystemFile::asset(int mode) const {
@@ -37,7 +37,7 @@ std::filesystem::path SystemFile::localize(const std::filesystem::path& base) {
     // TODO
     auto override = "override" / base;
     if (exists(override)) {
-        LOGD("override %s -> %s", base.c_str(), override.c_str());
+        Log::debug("override ", base, " -> ", override);
         return override;
     } else
         return base;

@@ -31,20 +31,20 @@ void GameScreen::reloadImages() {
 }
 
 void GameScreen::start() {
-    LOGD("screen: start");
+    Log::debug("screen: start");
     own_start();
     m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
 
 void GameScreen::refresh() {
-    LOGD("screen: refresh");
+    Log::debug("screen: refresh");
     reloadImages();
     own_setsize();
     own_refresh();
 }
 
 void GameScreen::pause() {
-    LOGD("screen: pause");
+    Log::debug("screen: pause");
     if(!m_running)
         throw std::logic_error("pause() while not running");
     m_pauseTime = std::chrono::steady_clock::now();
@@ -53,7 +53,7 @@ void GameScreen::pause() {
 }
 
 void GameScreen::resume() {
-    LOGD("screen: resume");
+    Log::debug("screen: resume");
     if(m_running)
         throw std::logic_error("resume() while already running");
     m_relStartTime = std::chrono::steady_clock::now() - (m_pauseTime - m_relStartTime);

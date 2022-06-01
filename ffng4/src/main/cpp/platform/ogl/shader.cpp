@@ -4,9 +4,9 @@ namespace ogl {
 
     Shader::Shader(const std::shared_ptr<ogl::Display>& ref, GLenum type, const std::string& code) : m_ref(ref) {
         m_name = glCreateShader(type);
-        LOGV("shader: generate %d", m_name);
+        Log::verbose("shader: generate ", m_name);
         if (!m_name)
-            ::error("glCreateShader failed");
+            Log::fatal("glCreateShader failed");
 
         const auto source = code.c_str();
         glShaderSource(m_name, 1, &source, nullptr);
@@ -21,7 +21,7 @@ namespace ogl {
             std::string error(loglen, '\0');
             glGetShaderInfoLog(m_name, loglen, &actlen, error.data());
             glDeleteShader(m_name);
-            ::error("glCompileShader failed", "%s", error.c_str());
+            Log::fatal("glCompileShader failed: ", error);
         }
     }
 
@@ -36,7 +36,7 @@ namespace ogl {
 
     Shader::~Shader() {
         if(m_name && !m_ref.expired()) {
-            LOGV("shader: delete %d", m_name);
+            Log::verbose("shader: delete ", m_name);
             glDeleteShader(m_name);
         }
     }

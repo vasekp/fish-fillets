@@ -144,7 +144,7 @@ void LevelRules::moveFish(Direction d) {
     }
     for(auto* model : obs)
         model->displace(d, true);
-    LOGV("[%d,%d] -> [%d,%d]", m_curFish->x(), m_curFish->y(), m_curFish->x() + d.x, m_curFish->y() + d.y);
+    Log::verbose(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
     m_level.recordMove(dirToChar(d));
 }
@@ -160,7 +160,7 @@ char LevelRules::dirToChar(Direction d) {
     else if(d == Direction::right)
         return small ? 'r' : 'R';
     else
-        ::error("Invalid direction passed to dirToChar");
+        Log::fatal("Invalid direction passed to dirToChar");
 }
 
 void LevelRules::registerMotion(Model *model, Direction d) {
@@ -217,7 +217,7 @@ void LevelRules::evalSteel() {
 }
 
 void LevelRules::evalMotion(Model* model, Direction d) {
-    LOGV("stopped %d [%d,%d]", model->index(), d.x, d.y);
+    Log::verbose("stopped ", model->index(), " ", d);
     if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
         const auto& fullSupport = m_support[model];
         if(fullSupport.test(Model::SupportType::wall)) {

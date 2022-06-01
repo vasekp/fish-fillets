@@ -36,7 +36,7 @@ void Subtitles::add(const std::string &text, const std::string& colors) {
             if (m_colors.contains(colors))
                 return m_colors.at(colors);
             else {
-                LOGE("Unknown color: %s", colors.c_str());
+                Log::warn("Unknown color: ", colors);
                 return std::pair{Color::white, Color::white};
             }
         }();

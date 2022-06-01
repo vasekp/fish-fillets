@@ -33,7 +33,7 @@ void ScreenManager::startMode(Mode mode) {
     }
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
-    LOGD("startMode duration = %f s", diff.count());
+    Log::debug("startMode duration = ", diff.count(), " s");
 }
 
 void ScreenManager::announceLevel(const LevelRecord& record) {
@@ -54,7 +54,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
     auto end = std::chrono::steady_clock::now();
     m_title_hide = end + std::chrono::seconds(1);
     std::chrono::duration<double> diff = end - start;
-    LOGD("startLevel duration = %f s", diff.count());
+    Log::debug("startLevel duration = ", diff.count(), " s");
 }
 
 void ScreenManager::playIntro() {
@@ -65,7 +65,7 @@ void ScreenManager::playIntro() {
 void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
     if(!graphics.ready()) {
-        LOGE("drawFrame called without active graphics subsystem");
+      Log::error("drawFrame called without active graphics subsystem");
         return;
     }
 

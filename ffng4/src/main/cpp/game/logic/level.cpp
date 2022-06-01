@@ -17,7 +17,7 @@ LevelInput& Level::input() {
 
 void Level::init() {
     m_attempt++;
-    LOGI("Level %s, attempt %d", m_record.codename.c_str(), m_attempt);
+    Log::info("Level ", m_record.codename, ", attempt ", m_attempt);
     m_script.loadFile(m_instance.files().system(m_record.script_filename));
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
@@ -102,7 +102,7 @@ void Level::recordMove(char key) {
 }
 
 void Level::notifyFish(Model::Fish fish) {
-    LOGI("Active fish: %s", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
+    Log::info("Active fish: ", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
     if(accepting())
         input().setFish(fish);
 }

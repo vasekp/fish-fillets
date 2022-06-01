@@ -4,9 +4,9 @@ namespace ogl {
 
     Program::Program(const std::shared_ptr<ogl::Display>& ref, const Shader &vertexShader, const Shader &fragmentShader) : m_ref(ref) {
         m_name = glCreateProgram();
-        LOGV("program: generate %d", m_name);
+        Log::verbose("program: generate ", m_name);
         if (!m_name)
-            ::error("glCreateProgram failed");
+            Log::fatal("glCreateProgram failed");
 
         glAttachShader(m_name, vertexShader);
         glAttachShader(m_name, fragmentShader);
@@ -22,7 +22,7 @@ namespace ogl {
             std::string error(loglen, '\0');
             glGetProgramInfoLog(m_name, loglen, &actlen, error.data());
             glDeleteProgram(m_name);
-            ::error("glLinkProgram failed", "%s", error.c_str());
+            Log::fatal("glLinkProgram failed: ", error);
         }
     }
 
@@ -41,7 +41,7 @@ namespace ogl {
 
     Program::~Program() {
         if(m_name && !m_ref.expired()) {
-            LOGV("program: delete %d", m_name);
+          Log::verbose("program: delete ", m_name);
             glDeleteProgram(m_name);
         }
     }

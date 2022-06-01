@@ -16,7 +16,7 @@ void GameTree::branch_addNode(const std::string& parent, const std::string& code
                               int x, int y, std::optional<int> color, const std::optional<std::string>& ending) {
     LevelRecord* parentRecord = parent.empty() ? nullptr : &m_levels.at(parent);
     int depth = parentRecord ? parentRecord->depth + 1 : 1;
-    LOGD("addNode %s -> %s [%d]", parent.c_str(), codename.c_str(), depth);
+    Log::debug("addNode ", parent, " -> ", codename, " [", depth, "]");
     LevelRecord newRecord{parentRecord, codename, filename, ending.value_or(""), depth, false, FCoords{x, y}, color.value_or(LevelRecord::noColor)};
     newRecord.solved = m_instance.files().user(newRecord.solveFilename()).exists();
     m_levels.insert({codename, std::move(newRecord)});

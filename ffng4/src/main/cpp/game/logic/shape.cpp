@@ -18,16 +18,16 @@ Shape::Shape(const std::string &string) :
             if(m_width == 0)
                 m_width = x;
             else if(x != m_width)
-                LOGE("Inhomogeneous shape");
+                Log::error("Inhomogeneous shape");
             m_bits.push_back(line);
             line.reset();
             x = 0;
             break;
         default:
-            LOGE("Wrong shape character: %c", c);
+            Log::error("Wrong shape character: ", c);
         }
     if(line.any())
-        LOGE("Last shape line unterminated, ignoring");
+        Log::error("Last shape line unterminated, ignoring");
 
     m_height = (int)m_bits.size();
 }

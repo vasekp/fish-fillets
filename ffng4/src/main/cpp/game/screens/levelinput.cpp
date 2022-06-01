@@ -83,10 +83,10 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         dir = Direction::down;
     else if(diff.fy() < -2.f * std::abs(diff.fx()))
         dir = Direction::up;
-    LOGV("move state=%d length=%f dir=[%d,%d]", (int)m_dirpad.state, diff.length(), dir.x, dir.y);
+    Log::verbose("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir);
     switch (m_dirpad.state) {
         case DirpadState::idle:
-            ::error("Inconsistent dirpad state");
+            Log::error("Inconsistent dirpad state");
         case DirpadState::ignore:
             break;
         case DirpadState::wait:
