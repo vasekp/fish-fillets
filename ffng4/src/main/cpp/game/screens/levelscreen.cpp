@@ -152,7 +152,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 }
 
-AudioSourceRef LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
+AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename /*TODO*/, bool single) {
     if(single && m_sounds.contains(name))
         return m_sounds.find(name)->second;
     auto it = m_sounds.insert({name, m_instance.audio().loadSound(filename)});
@@ -168,6 +168,8 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 }
 
 void LevelScreen::playMusic(const std::string &filename) {
+    if(m_music && m_music->filename() == filename)
+        return;
     if(m_fullLoad)
         stopMusic();
     m_music = m_instance.audio().loadMusic(filename);
@@ -180,10 +182,8 @@ void LevelScreen::stopMusic() {
     m_music.reset();
 }
 
-void LevelScreen::killAllSounds() {
-    m_instance.audio().clear();
-    if(m_music)
-        m_instance.audio().addSource(m_music);
+void LevelScreen::killSounds() {
+    m_instance.audio().clearExcept(m_music);
 }
 
 void LevelScreen::setShift(FCoords shift) {

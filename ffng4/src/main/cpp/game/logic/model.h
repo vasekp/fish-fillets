@@ -82,7 +82,7 @@ private:
     Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
-    AudioSourceRef m_talk;
+    AudioSource::Ref m_talk;
     ICoords m_touchDir;
     float m_warp;
     struct {
@@ -136,7 +136,7 @@ public:
     void deltaStop();
     void die();
     void disappear() { m_type = Type::virt; }
-    AudioSourceRef& talk() { return m_talk; }
+    AudioSource::Ref& talk() { return m_talk; }
     void setEffect(const std::string& name, float startTime);
     auto effect() const { return m_effect; }
 

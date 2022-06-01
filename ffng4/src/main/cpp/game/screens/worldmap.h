@@ -15,7 +15,7 @@ class WorldMap : public GameScreen {
     };
 
     BaseInput m_input;
-    AudioSourceRef m_music;
+    AudioSource::Ref m_music;
     std::vector<const Image*> m_nodeImages;
     std::map<Frames, Color> m_maskColors;
     std::vector<const LevelRecord*> m_open;

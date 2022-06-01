@@ -47,28 +47,35 @@ void Audio::resume() {
     m_stream->start();
 }
 
-void Audio::addSource(AudioSourceRef source) {
-    LOGD("adding audio source %s", source->name().c_str());
-    source->rewind();
+void Audio::addSource(const AudioSource::Ref& source) {
+    LOGD("adding audio source %p (%s)", source.get(), source->filename().c_str());
     auto sources = m_sources.local();
     sources->push_back(source);
-    if(source->isDialog())
-        sources.setDialogsLocal(true);
+    sources.checkDialogs();
 }
 
-void Audio::removeSource(AudioSourceRef source) {
+void Audio::removeSource(const AudioSource::Ref& source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
         LOGD("removeSource: did not match");
     else {
-        LOGD("removing audio source %s", source->name().c_str());
+        LOGD("removing audio source %p (%s)", source.get(), source->filename().c_str());
         sources->erase(it);
     }
+    sources.checkDialogs();
 }
 
 void Audio::clear() {
-    m_sources.local()->clear();
+    auto sources = m_sources.local();
+    sources->clear();
+    sources.checkDialogs();
+}
+
+void Audio::clearExcept(const AudioSource::Ref& source) {
+    auto sources = m_sources.local();
+    std::erase_if(sources.vector(), [&source](const auto& other) { return other != source; });
+    sources.checkDialogs();
 }
 
 bool Audio::isDialog() const {
@@ -98,12 +105,12 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     return oboe::DataCallbackResult::Continue;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& promise, Instance& instance);
+void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance);
 
-AudioSourceRef Audio::loadSound(const std::string& filename, bool async) {
+AudioData::Ref Audio::loadSound(const std::string& filename, bool async) {
     if(m_sounds_preload.contains(filename))
         return m_sounds_preload.at(filename);
-    std::promise<AudioSourceRef> promise;
+    std::promise<AudioData::Ref> promise;
     auto future = promise.get_future();
     if(async) {
         std::thread([this, filename, &promise]() {
@@ -117,8 +124,9 @@ AudioSourceRef Audio::loadSound(const std::string& filename, bool async) {
     return future.get();
 }
 
-AudioSourceRef Audio::loadMusic(const std::string& filename, bool async) {
-    auto source = loadSound(filename, async);
+AudioSource::Ref Audio::loadMusic(const std::string& filename, bool async) {
+    auto data = loadSound(filename, async);
+    auto source = AudioSource::from(data);
     auto meta = m_instance.files().system(filename + ".meta");
     if(meta.exists()) {
         auto contents = meta.read();
@@ -132,7 +140,7 @@ AudioSourceRef Audio::loadMusic(const std::string& filename, bool async) {
     return source;
 }
 
-void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& promise, Instance& instance) {
+void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance) {
     auto asset = instance.files().system(filename).asset();
 
     off64_t start, length;
@@ -182,7 +190,7 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioSourceRef>& p
     LOGV("numSamples %d", (int)numSamples);
     std::int64_t curSample = 0;
 
-    auto ret = std::make_shared<AudioSource>(filename, numSamples, std::make_unique<float[]>(numSamples));
+    auto ret = AudioData::create(filename, numSamples);
     auto data = ret->data();
     promise.set_value(ret);
 

@@ -21,7 +21,11 @@ AudioSourceList::SourcesGuard::~SourcesGuard() {
     m_parent.m_sources_lock.store(false, std::memory_order_release);
 }
 
-AudioSourceList::Sources * AudioSourceList::SourcesGuard::operator->() {
+AudioSourceList::Sources& AudioSourceList::SourcesGuard::vector() {
+    return *m_parent.m_sources_local;
+}
+
+AudioSourceList::Sources* AudioSourceList::SourcesGuard::operator->() {
     return m_parent.m_sources_local.get();
 }
 
@@ -41,7 +45,9 @@ AudioSourceList::Sources& AudioSourceList::thread() {
     return *m_sources_thread;
 }
 
-void AudioSourceList::SourcesGuard::setDialogsLocal(bool dialogs) {
+void AudioSourceList::SourcesGuard::checkDialogs() {
+    bool dialogs = std::any_of(m_parent.m_sources_local->begin(), m_parent.m_sources_local->end(),
+            [](const auto& source) { return source->isDialog(); });
     m_parent.m_dialogsLocal.store(dialogs, std::memory_order::release);
 }
 

@@ -12,8 +12,8 @@
 class LevelScreen : public GameScreen {
     Level m_level;
     LevelInput m_input;
-    std::multimap<std::string, AudioSourceRef> m_sounds;
-    AudioSourceRef m_music;
+    std::multimap<std::string, AudioData::Ref> m_sounds;
+    AudioSource::Ref m_music;
     std::array<float, 3> m_waves;
     Timer m_timer;
     Subtitles m_subs;
@@ -34,14 +34,13 @@ public:
     void display(const std::string& filename);
     void restore();
     void setWaves(float amplitude, float period, float speed);
-    AudioSourceRef addSound(const std::string& name, const std::string& filename, bool single = false);
+    AudioData::Ref addSound(const std::string& name, const std::string& filename, bool single = false);
     using GameScreen::addImage;
     using GameScreen::replaceImage;
     void addSubtitle(const std::string& text, const std::string& color);
     void playMusic(const std::string& filename);
     void stopMusic();
-    void killAllSounds();
-    void setEffect(Model* model, const std::string& name);
+    void killSounds();
     void setShift(FCoords shift);
     FCoords shift() override;
     const auto& sounds() const { return m_sounds; }

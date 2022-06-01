@@ -312,7 +312,8 @@ bool Level::model_isTalking(int index) {
 
 void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
     auto& dialog = m_dialogs.at(name);
-    auto source = m_screen.addSound(name, dialog.soundFile, true);
+    auto data = m_screen.addSound(name, dialog.soundFile, true);
+    auto source = AudioSource::from(data);
     source->setVolume((float)volume.value_or(75) / 100.f);
     if(loops.value_or(0) != 0) {
         assert(loops.value() == -1);
@@ -374,9 +375,10 @@ void Level::playSound(const std::string& name, float volume) {
     auto size = multimap.count(name);
     auto it = multimap.lower_bound(name);
     std::advance(it, (int)(m_instance.rng().randomIndex(size)));
-    auto& source = it->second;
+    auto& data = it->second;
+    auto source = AudioSource::from(data);
     source->setVolume(volume);
-    m_instance.audio().addSource(it->second);
+    m_instance.audio().addSource(source);
 }
 
 void Level::sound_playMusic(const std::string& filename) {
@@ -406,7 +408,7 @@ void Level::killDialogs() {
 void Level::killDialogsHard() {
     killDialogs();
     m_screen.subs().clear();
-    m_screen.killAllSounds();
+    m_screen.killSounds();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {

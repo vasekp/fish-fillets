@@ -3,6 +3,7 @@
 
 #include "instance.h"
 
+#include "audio/audiodata.h"
 #include "audio/source.h"
 #include "audio/stream.h"
 #include "audio/sourcelist.h"
@@ -11,7 +12,7 @@ class Audio : public oboe::AudioStreamDataCallback {
     Instance& m_instance;
     AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
-    std::map<std::string, AudioSourceRef> m_sounds_preload;
+    std::map<std::string, AudioData::Ref> m_sounds_preload;
 
 public:
     Audio(Instance& instance) : m_instance(instance) { }
@@ -22,12 +23,13 @@ public:
     void pause();
     void resume();
 
-    void addSource(AudioSourceRef source);
-    void removeSource(AudioSourceRef source);
+    void addSource(const AudioSource::Ref& source);
+    void removeSource(const AudioSource::Ref& source);
     void clear();
+    void clearExcept(const AudioSource::Ref& source);
 
-    AudioSourceRef loadSound(const std::string& filename, bool async = true);
-    AudioSourceRef loadMusic(const std::string& filename, bool async = true);
+    AudioData::Ref loadSound(const std::string& filename, bool async = true);
+    AudioSource::Ref loadMusic(const std::string& filename, bool async = true);
 
     bool isDialog() const;
 
