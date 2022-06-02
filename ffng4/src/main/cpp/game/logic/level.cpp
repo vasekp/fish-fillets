@@ -134,6 +134,7 @@ void Level::save() {
         m_script.doString("script_save()");
         if(m_busy.none())
             input().setLoadPossible(true);
+        m_screen.saveEffect();
     }
 }
 

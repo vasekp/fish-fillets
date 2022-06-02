@@ -9,7 +9,8 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_waves(),
         m_subs(instance),
         m_fullLoad(false),
-        m_quit(false)
+        m_quit(false),
+        m_flashAlpha(0)
 { }
 
 void LevelScreen::restore() {
@@ -64,9 +65,6 @@ void LevelScreen::own_refresh() {
         else
             m_mirrorTarget = makeMirrorTarget(**it);
     }
-
-    glUseProgram(m_instance.graphics().shaders().rope);
-    glUniform4fv(m_instance.graphics().shaders().rope.uniform("uColor"), 1, Color(0x30404E).gl().get());
 }
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
@@ -90,7 +88,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
-    const auto& ropeProgram = m_instance.graphics().shaders().rope;
+    const auto& flatProgram = m_instance.graphics().shaders().flat;
 
     if(m_display) {
         target.blit(&m_display.value(), copyProgram);
@@ -106,7 +104,9 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     for(const auto& rope : m_level.layout().getRopes()) {
         FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
-        target.fill(ropeProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
+        glUseProgram(flatProgram);
+        glUniform4fv(flatProgram.uniform("uColor"), 1, Color(0x30404E /* TODO constexpr */).gl().get());
+        target.fill(flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 
     const Model* mirror = nullptr;
@@ -149,6 +149,13 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                                  0, 0, size_unit * mirror->fx(), size_unit * mirror->fy());
         target.bind();
         target.blit(m_mirrorTarget->texture(), copyProgram, mirror->fx() * size_unit, mirror->fy() * size_unit);
+    }
+
+    if(m_flashAlpha > 0) {
+        glUseProgram(flatProgram);
+        glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).get());
+        target.fill(flatProgram, 0, 0, target.size().fx(), target.size().fy());
+        m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
 }
 
@@ -247,4 +254,10 @@ void LevelScreen::display(const std::string& filename) {
         m_display.emplace(m_instance.files().system(filename), m_instance);
     else
         m_display.reset();
+}
+
+void LevelScreen::saveEffect() {
+    auto data = addSound("shutter", "sound/share/shutter.ogg");
+    m_level.playSound("shutter"); // TODO LevelScreen::
+    m_flashAlpha = flashInit;
 }

@@ -23,6 +23,7 @@ class LevelScreen : public GameScreen {
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     FCoords m_shift;
+    float m_flashAlpha;
 
 public:
     LevelScreen(Instance&, LevelRecord&);
@@ -33,6 +34,8 @@ public:
 
     void display(const std::string& filename);
     void restore();
+    void exit();
+
     void setWaves(float amplitude, float period, float speed);
     AudioData::Ref addSound(const std::string& name, const std::string& filename, bool single = false);
     using GameScreen::addImage;
@@ -44,7 +47,7 @@ public:
     void setShift(FCoords shift);
     FCoords shift() override;
     const auto& sounds() const { return m_sounds; }
-    void exit();
+    void saveEffect();
 
     constexpr static int size_unit = 15;
 
@@ -62,6 +65,9 @@ private:
     void leave();
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
+
+    constexpr static float flashInit = 0.5f;
+    constexpr static float flashDecay = 1.5f;
 };
 
 #endif //FISH_FILLETS_LEVELSCREEN_H

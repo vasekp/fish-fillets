@@ -12,7 +12,7 @@ struct Shaders {
     ogl::Program disintegrate;
     ogl::Program mirror;
     ogl::Program reverse;
-    ogl::Program rope;
+    ogl::Program flat;
 
     ogl::Program arrow;
     ogl::Program button;

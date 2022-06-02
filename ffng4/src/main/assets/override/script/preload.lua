@@ -10,3 +10,4 @@ preload_sound("sound/share/sp-bubles_02.ogg");
 preload_sound("sound/share/sp-bubles_03.ogg");
 preload_sound("sound/share/sp-bubles_04.ogg");
 preload_sound("sound/share/sp-bubles_05.ogg");
+preload_sound("sound/share/shutter.ogg");
