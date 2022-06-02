@@ -96,11 +96,13 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
         source->mixin(outData, numFrames);
     }
     m_sources.setDialogsThread(dialogs > 0);
-    auto newEnd = std::remove_if(sources.begin(), sources.end(),
-                                 [](auto& source) { return source->done(); });
-    if(newEnd != sources.end()) {
-        Log::debug("AudioStream: removing ", std::distance(newEnd, sources.end()), " sources");
-        sources.erase(newEnd, sources.end());
+    if(auto guard = m_sources.threadGuard()) {
+        auto newEnd = std::remove_if(sources.begin(), sources.end(),
+                [](auto& source) { return source->done(); });
+        if(newEnd != sources.end()) {
+            Log::debug("AudioStream: removing ", std::distance(newEnd, sources.end()), " sources");
+            sources.erase(newEnd, sources.end());
+        }
     }
     return oboe::DataCallbackResult::Continue;
 }

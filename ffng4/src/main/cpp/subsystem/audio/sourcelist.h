@@ -22,11 +22,23 @@ class AudioSourceList {
         void checkDialogs();
     };
 
+    class SoftGuard {
+        AudioSourceList& m_parent;
+        bool locked;
+
+    public:
+        SoftGuard(AudioSourceList& parent);
+        ~SoftGuard();
+
+        operator bool() const;
+    };
+
 public:
     AudioSourceList();
 
     SourcesGuard local();
     Sources& thread();
+    SoftGuard threadGuard();
 
     void setDialogsThread(bool dialogs);
     bool hasDialogs() const;
