@@ -9,7 +9,6 @@ class LevelLayout {
     Level& m_level;
     int m_width;
     int m_height;
-    float m_speed;
 
     std::vector<std::unique_ptr<Model>> m_models_internal;
     mutable std::map<int, std::unique_ptr<Model>> m_virtModels;
@@ -54,15 +53,15 @@ public:
     Model* getModel(int index) const;
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
     std::pair<int, int> borderDepth(const Model* model, ICoords delta = {}) const;
-    auto& speed() { return m_speed; }
 
     std::set<Model*> intersections(const Model* model, ICoords d);
     std::set<Model*> obstacles(const Model* root, ICoords d);
 
-    void animate(float dt);
+    void animate(float dt, float speed = speed_normal);
 
     constexpr static float speed_normal = 1.f;
     constexpr static float speed_loading = 10.f;
+    constexpr static float speed_instant = 0.f;
 };
 
 #endif //FISH_FILLETS_LAYOUT_H

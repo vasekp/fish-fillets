@@ -5,7 +5,6 @@
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
         m_width(width), m_height(height),
-        m_speed(1.f),
         m_models_adapted(m_models_internal)
 { }
 
@@ -62,11 +61,14 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
     return ret;
 }
 
-void LevelLayout::animate(float dt) {
+void LevelLayout::animate(float dt, float speed) {
     for (auto* model: m_models_adapted)
         if (model->moving()) {
             auto d = model->movingDir();
-            model->deltaMove(dt, m_speed);
+            if(speed == speed_instant)
+                model->instaMove();
+            else
+                model->deltaMove(dt, speed);
             if (!model->moving())
                 m_level.rules().registerMotion(model, d);
         }

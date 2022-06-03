@@ -3,6 +3,7 @@
 
 #include "subsystem/script.h"
 #include "game/structure/levelrecord.h"
+#include "game/logic/timer.h"
 #include "layout.h"
 #include "rules.h"
 
@@ -16,6 +17,7 @@ class Level : public ScriptReferrer {
     Instance& m_instance;
     LevelScreen& m_screen;
     LevelRecord& m_record;
+    Timer m_timer;
     Script m_script;
     std::unique_ptr<LevelLayout> m_layout;
     std::unique_ptr<LevelRules> m_rules;
@@ -53,10 +55,12 @@ public:
     LevelRules& rules() { return *m_rules; }
     const LevelRules& rules() const { return *m_rules; }
     LevelScreen& screen() { return m_screen; }
+    Timer& timer() { return m_timer; }
     LevelInput& input();
 
     void init();
     void reinit(bool keepSchedule = false);
+    void update(float dt);
     void tick();
     void save();
     void load(bool keepSchedule = false);
@@ -66,9 +70,10 @@ public:
     bool transitioning() const;
     void schedule(Callback&& action);
     bool runScheduled();
+    void runScheduledAll();
     void recordMove(char key);
-    bool quitDemo();
     bool accepting() const;
+    void skipBusy();
 
     void playSound(const std::string& name, float volume = 1.f);
     void killModelSound(Model* model);
@@ -145,6 +150,7 @@ private:
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
     void clearSchedule();
+    bool quitDemo();
 
     bool savePossible() const;
     bool loadPossible() const;

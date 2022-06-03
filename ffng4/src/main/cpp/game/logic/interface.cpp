@@ -133,7 +133,6 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     setBusy(BusyReason::loading);
-    m_layout->speed() = LevelLayout::speed_loading;
     std::vector<Callback> loadMoves;
     for(const auto c : text_moves)
         loadMoves.emplace_back([&,c]() {
@@ -143,7 +142,6 @@ bool Level::level_load(const std::string& text_moves) {
     loadMoves.emplace_back([&] {
         m_script.doString("script_loadState()");
         setBusy(BusyReason::loading, false);
-        m_layout->speed() = LevelLayout::speed_normal;
         return true; });
     m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
     setBusy(BusyReason::schedule);
@@ -174,7 +172,7 @@ int Level::game_addModel(const std::string& type, int x, int y, const std::strin
 }
 
 int Level::game_getCycles() {
-    return m_screen.timer().tickCount();
+    return timer().tickCount();
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {

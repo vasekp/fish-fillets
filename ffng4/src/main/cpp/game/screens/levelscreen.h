@@ -6,7 +6,6 @@
 #include "game/structure/levelrecord.h"
 #include "game/logic/level.h"
 #include "subsystem/audio.h"
-#include "game/logic/timer.h"
 #include "game/graphics/subtitles.h"
 
 class LevelScreen : public GameScreen {
@@ -15,7 +14,6 @@ class LevelScreen : public GameScreen {
     std::multimap<std::string, AudioData::Ref> m_sounds;
     AudioSource::Ref m_music;
     std::array<float, 3> m_waves;
-    Timer m_timer;
     Subtitles m_subs;
     std::optional<Image> m_display;
     bool m_fullLoad;
@@ -30,7 +28,6 @@ public:
 
     IInput& input() override { return m_input; }
     Subtitles& subs() { return m_subs; }
-    Timer& timer() { return m_timer; }
 
     void display(const std::string& filename);
     void restore();

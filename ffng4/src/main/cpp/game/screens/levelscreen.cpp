@@ -76,10 +76,7 @@ std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model)
 }
 
 void LevelScreen::own_draw(const DrawTarget& target, float dt) {
-    m_level.layout().animate(dt);
-    m_level.rules().update();
-    if(m_timer.ticked())
-        m_level.tick();
+    m_level.update(dt);
 
     if(m_quit) {
         leave();
@@ -198,11 +195,11 @@ void LevelScreen::setShift(FCoords shift) {
 }
 
 void LevelScreen::own_pause() {
-    m_timer.stop();
+    m_level.timer().stop();
 }
 
 void LevelScreen::own_resume() {
-    m_timer.start();
+    m_level.timer().start();
 }
 
 bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
@@ -216,15 +213,19 @@ bool LevelScreen::own_key(Key key) {
         case Key::down:
         case Key::left:
         case Key::right:
-        case Key::space:
             if(m_level.accepting()) {
                 m_level.rules().keyInput(key);
                 return true;
             } else
                 return false;
+        case Key::space:
+            if(m_level.accepting())
+                m_level.rules().keyInput(key);
+            else
+                m_level.skipBusy();
+            return true;
         case Key::exit:
-            if(!m_level.quitDemo())
-                leave();
+            leave();
             return true;
         case Key::save:
             m_level.save();

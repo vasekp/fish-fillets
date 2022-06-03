@@ -24,6 +24,13 @@ void Level::init() {
     input().setLoadPossible(loadPossible());
 }
 
+void Level::update(float dt) {
+    layout().animate(dt, isBusy(BusyReason::loading) ? LevelLayout::speed_loading : LevelLayout::speed_normal);
+    rules().update();
+    if(m_timer.ticked())
+        tick();
+}
+
 void Level::tick() {
     for(auto* model : layout().models())
         model->anim().update();
@@ -59,6 +66,13 @@ bool Level::isBusy(BusyReason reason) const {
     return m_busy[reason];
 }
 
+void Level::skipBusy() {
+    if(m_busy[BusyReason::demo])
+        quitDemo();
+    else if(m_busy[BusyReason::loading])
+        runScheduledAll();
+}
+
 void Level::transition(int frames, std::function<void()>&& callback) {
     if(!isBusy(BusyReason::loading))
         m_transitions.push_back({frames, std::move(callback)});
@@ -90,6 +104,13 @@ bool Level::runScheduled() {
         return ret;
     } else
         return false;
+}
+
+void Level::runScheduledAll() {
+    while(!m_moveSchedule.empty()) {
+        layout().animate(0.f, LevelLayout::speed_instant);
+        rules().update();
+    }
 }
 
 void Level::clearSchedule() {

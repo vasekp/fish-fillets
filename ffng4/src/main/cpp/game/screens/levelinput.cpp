@@ -48,6 +48,11 @@ bool LevelInput::handlePointerDown(FCoords pos) {
         m_activeButton = button;
         return true;
     }
+    if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
+        m_instance.screens().dispatchKey(Key::space);
+        m_dirpad.touchTime = absolutePast;
+    } else
+        m_dirpad.touchTime = std::chrono::steady_clock::now();
     if(m_dirpad.fish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
         return false;
@@ -57,11 +62,6 @@ bool LevelInput::handlePointerDown(FCoords pos) {
         m_dirpad.state = DirpadState::ignore;
         return true;
     }
-    if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
-        m_instance.screens().dispatchKey(Key::space);
-        m_dirpad.touchTime = absolutePast;
-    } else
-        m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.refPos = pos;
     m_dirpad.state = DirpadState::wait;
     return true;
