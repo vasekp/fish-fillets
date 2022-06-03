@@ -151,7 +151,7 @@ bool Level::quitDemo() {
 }
 
 void Level::save() {
-    if(m_rules->solvable()) {
+    if(savePossible()) {
         m_script.doString("script_save()");
         if(m_busy.none())
             input().setLoadPossible(true);
@@ -160,7 +160,8 @@ void Level::save() {
 }
 
 void Level::load(bool keepSchedule) {
-    if (auto file = saveFile(); file.exists()) {
+    if(loadPossible()) {
+        auto file = saveFile();
         killDialogsHard();
         m_tickSchedule.clear();
         m_tickSchedule.emplace_back([&, file, keepSchedule]() {
