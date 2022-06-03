@@ -36,9 +36,10 @@ bool LevelInput::handleKeyUp(Key) {
 Key LevelInput::pool() {
     if(m_lastKey != Key::none)
         return m_lastKey;
-    else if(m_dirpad.state == DirpadState::follow)
-        return toKey(m_dirpad.lastDir);
-    else
+    else if(m_dirpad.state == DirpadState::follow) {
+        Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
+        return toKey(m_dirpad.lastNonzeroDir);
+    } else
         return Key::none;
 }
 
@@ -64,7 +65,8 @@ bool LevelInput::handlePointerDown(FCoords pos) {
         m_dirpad.state = DirpadState::ignore;
         return true;
     }
-    m_dirpad.refPos = pos;
+    m_dirpad.history.clear();
+    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), pos);
     m_dirpad.state = DirpadState::wait;
     return handled;
 }
@@ -74,8 +76,14 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         m_activeButton = findButton(pos);
         return true;
     }
-    auto diff = pos - m_dirpad.refPos;
+    auto now = std::chrono::steady_clock::now();
+    m_dirpad.history.emplace_front(now, pos);
+    auto [then, pos2] = m_dirpad.history.back();
+    auto timeDiff = now - then;
+    auto diff = pos - pos2;
     bool small = diff.length() < minDistance * m_instance.graphics().dpi();
+    if(timeDiff > dirpadHistoryLength)
+        m_dirpad.history.pop_back();
     ICoords dir{};
     if(diff.fx() > 2.f * std::abs(diff.fy()))
         dir = Direction::right;
@@ -85,7 +93,8 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         dir = Direction::down;
     else if(diff.fy() < -2.f * std::abs(diff.fx()))
         dir = Direction::up;
-    Log::verbose("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir);
+    Log::verbose("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir,
+            " timediff=", std::chrono::duration<float>(timeDiff).count());
     switch (m_dirpad.state) {
         case DirpadState::idle:
             Log::error("Inconsistent dirpad state");
@@ -94,21 +103,22 @@ bool LevelInput::handlePointerMove(FCoords pos) {
             return false;
         case DirpadState::wait:
             if(!small && dir) {
+                Log::verbose("Input: sending from WAIT: ", dir);
                 m_instance.screens().dispatchKey(toKey(dir));
                 m_dirpad.lastDir = dir;
+                m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.touchTime = absolutePast;
                 m_dirpad.state = DirpadState::follow;
                 return true;
             } else
                 return false;
         case DirpadState::follow:
-            if(small || dir == m_dirpad.lastDir) {
-                m_dirpad.refPos += (pos - m_dirpad.refPos).projectPositive(m_dirpad.lastDir);
-            } else if(dir) {
+            if(small)
+                m_dirpad.lastDir = {};
+            else if(dir && dir != m_dirpad.lastDir) {
+                Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
                 m_instance.screens().dispatchKey(toKey(dir));
-                m_dirpad.lastDir = dir;
-            } else {
-                m_dirpad.state = DirpadState::wait;
+                m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
             }
             return true;
         case DirpadState::button: // handled earlier
@@ -144,7 +154,7 @@ void LevelInput::refresh() {
     {
         auto& program = m_instance.graphics().shaders().arrow;
         glUseProgram(program);
-        glUniform1f(program.uniform("uSize"), minDistance * m_instance.graphics().dpi());
+        glUniform1f(program.uniform("uSize"), arrowSize * m_instance.graphics().dpi());
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
     }
     {
@@ -235,12 +245,13 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     };
     glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &coords[0][0]);
 
-    glUniform2f(program.uniform("uPosition"), m_dirpad.refPos.fx(), m_dirpad.refPos.fy());
+    auto [_, pos] = m_dirpad.history.front();
+    glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
     auto color = m_dirpad.fish == Model::Fish::small ? colorSmall : colorBig;
 
     for(const auto& [dir, vector] : arrows) {
         glUniform2f(program.uniform("uDirection"), vector[0], vector[1]);
-        float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastDir ? 1.f : 0.5f) * baseAlpha;
+        float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir ? 1.f : 0.5f) * baseAlpha;
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }

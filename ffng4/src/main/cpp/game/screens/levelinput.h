@@ -23,8 +23,9 @@ class LevelInput : public IInput {
     struct {
         DirpadState state;
         std::chrono::steady_clock::time_point touchTime;
-        FCoords refPos;
+        std::deque<std::pair<std::chrono::steady_clock::time_point, FCoords>> history;
         ICoords lastDir;
+        ICoords lastNonzeroDir;
         Model::Fish fish;
     } m_dirpad;
 
@@ -83,12 +84,14 @@ private:
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
 
-    constexpr static float minDistance = 0.35f; // inches
+    constexpr static float minDistance = 0.1f; // inches
+    constexpr static float arrowSize = 0.35f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches
     constexpr static float maxButtonGap = 0.35f; // inches
-    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds (1000);
-    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds (300);
-    constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds (300);
+    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds(1000);
+    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds(300);
+    constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds(300);
+    constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = std::chrono::milliseconds(100);
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
     constexpr static int noButton = -1;
 
