@@ -43,6 +43,7 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
+    bool handled = false;
     if(auto button = findButton(pos); button != noButton && m_buttonsEnabled[button]) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
@@ -51,11 +52,12 @@ bool LevelInput::handlePointerDown(FCoords pos) {
     if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
         m_instance.screens().dispatchKey(Key::space);
         m_dirpad.touchTime = absolutePast;
+        handled = true;
     } else
         m_dirpad.touchTime = std::chrono::steady_clock::now();
     if(m_dirpad.fish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
-        return false;
+        return handled;
     }
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
     if(m_instance.screens().dispatchMouse(windowCoords)) {
@@ -64,7 +66,7 @@ bool LevelInput::handlePointerDown(FCoords pos) {
     }
     m_dirpad.refPos = pos;
     m_dirpad.state = DirpadState::wait;
-    return true;
+    return handled;
 }
 
 bool LevelInput::handlePointerMove(FCoords pos) {
@@ -87,32 +89,31 @@ bool LevelInput::handlePointerMove(FCoords pos) {
     switch (m_dirpad.state) {
         case DirpadState::idle:
             Log::error("Inconsistent dirpad state");
+            return false;
         case DirpadState::ignore:
-            break;
+            return false;
         case DirpadState::wait:
             if(!small && dir) {
                 m_instance.screens().dispatchKey(toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.touchTime = absolutePast;
                 m_dirpad.state = DirpadState::follow;
-            }
-            return false;
+                return true;
+            } else
+                return false;
         case DirpadState::follow:
             if(small || dir == m_dirpad.lastDir) {
                 m_dirpad.refPos += (pos - m_dirpad.refPos).projectPositive(m_dirpad.lastDir);
-                return false;
             } else if(dir) {
                 m_instance.screens().dispatchKey(toKey(dir));
                 m_dirpad.lastDir = dir;
-                return true;
             } else {
                 m_dirpad.state = DirpadState::wait;
-                return false;
             }
-        case DirpadState::button:
-            ;// handled earlier
+            return true;
+        case DirpadState::button: // handled earlier
+            return true;
     }
-    return false;
 }
 
 bool LevelInput::handlePointerUp() {

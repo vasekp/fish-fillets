@@ -12,6 +12,8 @@ namespace jni {
         m_methods["playIntro"] = getMethodID("playIntro", "()V");
         m_methods["breakLines"] = getMethodID("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
         m_methods["renderText"] = getMethodID("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
+        m_methods["showUI"] = getMethodID("showUI", "()V");
+        m_methods["hideUI"] = getMethodID("hideUI", "()V");
     }
 
     Env::~Env() {

@@ -13,11 +13,19 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         if(action == AMOTION_EVENT_ACTION_DOWN) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
-            return input.handlePointerDown({sx, sy}) ? 1 : 0;
+            bool ret = input.handlePointerDown({sx, sy});
+            if(!ret)
+                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("showUI"));
+            else
+                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
+            return ret ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_MOVE) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
-            return input.handlePointerMove({sx, sy}) ? 1 : 0;
+            bool ret = input.handlePointerMove({sx, sy}) ? 1 : 0;
+            if(ret)
+                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
+            return ret ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_UP) {
             return input.handlePointerUp() ? 1 : 0;
         }

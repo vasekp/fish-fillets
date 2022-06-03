@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -29,6 +30,7 @@ public class MainActivity extends NativeActivity {
     private static final String TAG = "FFNG4";
 
     private final Map<String, Typeface> fontMap = new HashMap<>();
+    private Handler uiHandler;
 
     static {
         System.loadLibrary("fillets");
@@ -39,13 +41,15 @@ public class MainActivity extends NativeActivity {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= 30) {
-            getWindow().getInsetsController().hide(WindowInsets.Type.statusBars());
-            getWindow().getInsetsController().setSystemBarsBehavior(
-                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            WindowInsetsController insetsController = getWindow().getInsetsController();
+            insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        uiHandler = new Handler(getMainLooper());
     }
 
     Bitmap loadBitmap(String filename) {
@@ -65,7 +69,7 @@ public class MainActivity extends NativeActivity {
     }
 
     Typeface typeface(String fontFile) {
-        if(fontMap.containsKey(fontFile))
+        if (fontMap.containsKey(fontFile))
             return fontMap.get(fontFile);
         else {
             Typeface face = Typeface.createFromAsset(getAssets(), fontFile);
@@ -87,7 +91,7 @@ public class MainActivity extends NativeActivity {
         int lineCount = layout.getLineCount();
 
         String[] ret = new String[lineCount];
-        for(int i = 0; i < lineCount; i++)
+        for (int i = 0; i < lineCount; i++)
             ret[i] = text.substring(layout.getLineStart(i), layout.getLineStart(i + 1));
         return ret;
     }
@@ -108,18 +112,41 @@ public class MainActivity extends NativeActivity {
         Paint.FontMetrics fm = fillPaint.getFontMetrics();
         float top = Math.max(-fm.top, -fm.ascent);
         float bottom = Math.max(fm.bottom, fm.descent);
-        Log.d("FFNG", "fontSize " + fontSize + " top " + top + " bottom " + bottom);
+        Log.d(TAG, "fontSize " + fontSize + " top " + top + " bottom " + bottom);
         float lineHeight = top + bottom;
         Rect bounds = new Rect();
         fillPaint.getTextBounds(text, 0, text.length(), bounds);
 
-        Bitmap bitmap = Bitmap.createBitmap((int)(bounds.width() + 2 * outline) + 2, (int) (lineHeight + 2 * outline) + 2, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap((int) (bounds.width() + 2 * outline) + 2, (int) (lineHeight + 2 * outline) + 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         float x = -bounds.left + outline + 1.f;
         float y = top + outline + 1.f;
-        if(outline != 0.0)
+        if (outline != 0.0)
             canvas.drawText(text, x, y, outlinePaint);
         canvas.drawText(text, x, y, fillPaint);
         return bitmap;
     }
+
+    void showUI() {
+        uiHandler.postDelayed(showUIRunnable, 300);
+        uiHandler.postDelayed(hideUIRunnable, 2000);
+    }
+
+    void hideUI() {
+        uiHandler.removeCallbacks(showUIRunnable);
+        uiHandler.removeCallbacks(hideUIRunnable);
+        uiHandler.post(hideUIRunnable);
+    }
+
+    private final Runnable showUIRunnable = () -> {
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().getInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+        }
+    };
+
+    private final Runnable hideUIRunnable = () -> {
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().getInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+        }
+    };
 }

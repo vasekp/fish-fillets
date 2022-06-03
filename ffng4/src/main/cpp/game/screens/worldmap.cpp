@@ -92,14 +92,18 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
     if(mask_color == WorldMap::MaskColors::exit) {
         staticFrame(WorldMap::Frames::exit);
         m_instance.quit();
+        return true;
     } else if(mask_color == WorldMap::MaskColors::options) {
         m_instance.screens().options() = !m_instance.screens().options();
+        return true;
     } else if(mask_color == WorldMap::MaskColors::intro) {
         staticFrame(WorldMap::Frames::intro);
         m_instance.screens().startMode(ScreenManager::Mode::Intro);
+        return true;
     } else if(mask_color == WorldMap::MaskColors::credits) {
         staticFrame(WorldMap::Frames::credits);
         m_instance.screens().startMode(ScreenManager::Mode::Credits);
+        return true;
     } else {
         auto fx = (float)x, fy = (float)y;
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {
@@ -110,9 +114,10 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
             m_instance.screens().announceLevel(it->second);
             staticFrame(WorldMap::Frames::loading);
             m_instance.screens().startLevel(it->second);
-        }
+            return true;
+        } else
+            return false;
     }
-    return true;
 }
 
 void WorldMap::drawMasked(const DrawTarget& target, Color c) {
