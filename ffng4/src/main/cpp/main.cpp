@@ -100,6 +100,17 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_DESTROY:
             Log::debug("APP_CMD_DESTROY");
             break;
+        case APP_CMD_WINDOW_RESIZED:
+            Log::debug("APP_CMD_WINDOW_RESIZED");
+            Log::debug("native window: ", ANativeWindow_getWidth(app->window), " ", ANativeWindow_getHeight(app->window));
+            break;
+        case APP_CMD_WINDOW_REDRAW_NEEDED:
+            Log::debug("APP_CMD_WINDOW_REDRAW_NEEDED");
+            break;
+        case APP_CMD_CONTENT_RECT_CHANGED:
+            Log::debug("APP_CMD_CONTENT_RECT_CHANGED");
+            Log::debug("rect: ", app->contentRect.left, " ", app->contentRect.top, " ", app->contentRect.right, " ", app->contentRect.bottom);
+            break;
         default:
             break;
     }
