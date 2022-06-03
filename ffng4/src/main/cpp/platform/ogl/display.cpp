@@ -13,6 +13,7 @@ namespace ogl {
                     EGL_BLUE_SIZE, 8,
                     EGL_GREEN_SIZE, 8,
                     EGL_RED_SIZE, 8,
+                    EGL_ALPHA_SIZE, 8,
                     EGL_NONE
             };
 
@@ -25,13 +26,13 @@ namespace ogl {
                 Log::fatal("eglChooseConfig failed");
 
             for (int i = 0; i < numConfigs; i++) {
-                auto &config = supportedConfigs[i];
-                EGLint r, g, b;
-                if (eglGetConfigAttrib(m_display, config, EGL_RED_SIZE, &r) &&
-                    eglGetConfigAttrib(m_display, config, EGL_GREEN_SIZE, &g) &&
-                    eglGetConfigAttrib(m_display, config, EGL_BLUE_SIZE, &b) &&
-                    r == 8 && g == 8 && b == 8) {
-
+                auto& config = supportedConfigs[i];
+                EGLint r, g, b, a;
+                if(eglGetConfigAttrib(m_display, config, EGL_RED_SIZE, &r) &&
+                        eglGetConfigAttrib(m_display, config, EGL_GREEN_SIZE, &g) &&
+                        eglGetConfigAttrib(m_display, config, EGL_BLUE_SIZE, &b) &&
+                        eglGetConfigAttrib(m_display, config, EGL_ALPHA_SIZE, &a) &&
+                        r == 8 && g == 8 && b == 8 && a == 8) {
                     return config;
                 }
             }
