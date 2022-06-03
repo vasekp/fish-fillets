@@ -301,7 +301,11 @@ std::pair<int, int> Level::model_getViewShift(int index) {
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    layout().getModel(index)->action() = busy ? Model::Action::busy : Model::Action::base;
+    auto* model = layout().getModel(index);
+    schedule([model, busy]() {
+        model->action() = busy ? Model::Action::busy : Model::Action::base;
+        return true;
+    });
 }
 
 bool Level::model_isTalking(int index) {
