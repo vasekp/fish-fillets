@@ -1,6 +1,7 @@
 #include "level.h"
 #include "rules.h"
 #include "game/screens/levelinput.h"
+#include "game/screens/levelscreen.h"
 
 LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
@@ -222,7 +223,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         const auto& fullSupport = m_support[model];
         if(fullSupport.test(Model::SupportType::wall)) {
             if(d == Direction::down)
-                m_level.playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
+                m_level.screen().playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
         } else if(fullSupport.any()) {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
@@ -264,7 +265,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
 void LevelRules::death(Model* unit) {
     if(!unit->alive())
         return;
-    m_level.playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
+    m_level.screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     unit->die();
     updateDepGraph(unit);
     m_keyQueue.clear();

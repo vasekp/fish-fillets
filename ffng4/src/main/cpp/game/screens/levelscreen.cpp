@@ -186,6 +186,18 @@ void LevelScreen::stopMusic() {
     m_music.reset();
 }
 
+void LevelScreen::playSound(const std::string& name, float volume) {
+    if(m_level.loading())
+        return;
+    auto size = m_sounds.count(name);
+    auto it = m_sounds.lower_bound(name);
+    std::advance(it, (int)(m_instance.rng().randomIndex(size)));
+    auto& data = it->second;
+    auto source = AudioSource::from(data);
+    source->setVolume(volume);
+    m_instance.audio().addSource(source);
+}
+
 void LevelScreen::killSounds() {
     m_instance.audio().clearExcept(m_music);
 }
@@ -259,6 +271,6 @@ void LevelScreen::display(const std::string& filename) {
 
 void LevelScreen::saveEffect() {
     auto data = addSound("shutter", "sound/share/shutter.ogg");
-    m_level.playSound("shutter"); // TODO LevelScreen::
+    playSound("shutter");
     m_flashAlpha = flashInit;
 }

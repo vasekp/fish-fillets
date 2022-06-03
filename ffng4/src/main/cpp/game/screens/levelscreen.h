@@ -40,10 +40,10 @@ public:
     void addSubtitle(const std::string& text, const std::string& color);
     void playMusic(const std::string& filename);
     void stopMusic();
+    void playSound(const std::string& filename, float volume = 1.f);
     void killSounds();
     void setShift(FCoords shift);
     FCoords shift() override;
-    const auto& sounds() const { return m_sounds; }
     void saveEffect();
 
     constexpr static int size_unit = 15;

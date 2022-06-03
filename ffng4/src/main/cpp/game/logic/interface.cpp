@@ -360,18 +360,7 @@ void Level::sound_addSound(const std::string& name, const std::string& filename)
 }
 
 void Level::sound_playSound(const std::string& name, std::optional<int> volume) {
-    playSound(name, (float)volume.value_or(100) / 100.f);
-}
-
-void Level::playSound(const std::string& name, float volume) {
-    auto& multimap = m_screen.sounds();
-    auto size = multimap.count(name);
-    auto it = multimap.lower_bound(name);
-    std::advance(it, (int)(m_instance.rng().randomIndex(size)));
-    auto& data = it->second;
-    auto source = AudioSource::from(data);
-    source->setVolume(volume);
-    m_instance.audio().addSource(source);
+    m_screen.playSound(name, (float)volume.value_or(100) / 100.f);
 }
 
 void Level::sound_playMusic(const std::string& filename) {

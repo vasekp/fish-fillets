@@ -84,6 +84,10 @@ bool Level::transitioning() const {
     return !m_transitions.empty();
 }
 
+bool Level::loading() const {
+    return isBusy(BusyReason::loading);
+}
+
 bool Level::accepting() const {
     return m_busy.none();
 }

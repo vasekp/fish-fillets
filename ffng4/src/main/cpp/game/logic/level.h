@@ -68,6 +68,7 @@ public:
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
+    bool loading() const;
     void schedule(Callback&& action);
     bool runScheduled();
     void runScheduledAll();
@@ -75,7 +76,6 @@ public:
     bool accepting() const;
     void skipBusy();
 
-    void playSound(const std::string& name, float volume = 1.f);
     void killModelSound(Model* model);
     void killDialogs();
     void killDialogsHard();
