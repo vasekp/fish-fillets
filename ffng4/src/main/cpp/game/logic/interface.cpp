@@ -349,15 +349,10 @@ bool Level::model_equals(int index, int x, int y) {
     if(index != index_free_space) {
         const auto* model = layout().getModel(index);
         return model->shape().covers(ICoords{x, y} - model->xy());
-    } else {
-        for(const auto& model : layout().models())
-            if(model->shape().covers({x - model->x(), y - model->y()})) {
-                Log::verbose("found model ", model->index());
-                return false;
-            }
-        // none found
-        return true;
-    }
+    } else
+        return !std::any_of(layout().models().begin(), layout().models().end(), [x, y](const Model* model) {
+            return model->shape().covers({x - model->x(), y - model->y()});
+        });
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {
