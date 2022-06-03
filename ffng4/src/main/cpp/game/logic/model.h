@@ -62,7 +62,8 @@ public:
         disintegrate,
         invisible,
         reverse,
-        mirror
+        mirror,
+        zx
     };
 
 private:

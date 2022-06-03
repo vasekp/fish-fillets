@@ -104,6 +104,8 @@ Model::Effect Model::readEffect(const std::string& name) {
         return Effect::reverse;
     else if(name == "mirror")
         return Effect::mirror;
+    else if(name == "zx")
+        return Effect::zx;
     else {
         Log::error("Unhandled effect: ", name);
         return Effect::none;

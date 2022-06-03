@@ -14,6 +14,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     mirror = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/mirror.frag").read()});
     reverse = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/reverse.frag").read()});
     flat = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/flat.frag").read()});
+    zx = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/zx.frag").read()});
 
     arrow = ogl::Program(ref,
             {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert").read()},
@@ -22,7 +23,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
             {ref, GL_VERTEX_SHADER, instance.files().system("shader/button.vert").read()},
             {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/button.frag").read()});
 
-    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror, &button}) {
+    for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror, &zx, &button}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uSrcTexture"), Shaders::texImage_shader);
     }

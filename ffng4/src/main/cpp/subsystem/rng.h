@@ -10,6 +10,7 @@ public:
     RNG();
 
     std::size_t randomIndex(std::size_t end);
+    float randomFloat(float min, float max);
 };
 
 #endif //FISH_FILLETS_RNG_H

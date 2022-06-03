@@ -7,6 +7,7 @@
 #include "game/logic/level.h"
 #include "subsystem/audio.h"
 #include "game/graphics/subtitles.h"
+#include "game/graphics/zxeffect.h"
 
 class LevelScreen : public GameScreen {
     Level m_level;
@@ -20,6 +21,7 @@ class LevelScreen : public GameScreen {
     bool m_quit;
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
+    std::unique_ptr<ZXEffect> m_zxEffect;
     FCoords m_shift;
     float m_flashAlpha;
 

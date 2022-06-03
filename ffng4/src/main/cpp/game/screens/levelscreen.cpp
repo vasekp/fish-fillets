@@ -135,6 +135,13 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                     target.blit(image, program, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             }
+            case Model::Effect::zx: {
+                if(!m_zxEffect)
+                    m_zxEffect = std::make_unique<ZXEffect>(m_instance);
+                m_zxEffect->update(m_level.timer().tickCount());
+                m_zxEffect->render(target, images[0]);
+                break;
+            }
         }
     }
 
