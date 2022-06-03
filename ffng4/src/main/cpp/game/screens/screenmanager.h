@@ -38,6 +38,8 @@ public:
 
 private:
     void playIntro();
+
+    constexpr static float titleDuration = 1500; //milliseconds
 };
 
 #endif //FISH_FILLETS_GAME_STATEMANAGER_H

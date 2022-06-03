@@ -52,7 +52,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
     if(m_instance.running)
         curScreen().resume();
     auto end = std::chrono::steady_clock::now();
-    m_title_hide = end + std::chrono::seconds(1);
+    m_title_hide = end + std::chrono::milliseconds((int)titleDuration);
     std::chrono::duration<double> diff = end - start;
     Log::debug("startLevel duration = ", diff.count(), " s");
 }
