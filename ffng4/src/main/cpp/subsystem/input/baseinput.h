@@ -5,9 +5,10 @@ class Instance;
 
 class BaseInput : public IInput {
     Instance& m_instance;
+    bool m_handled;
 
 public:
-    BaseInput(Instance& instance) : m_instance(instance) { }
+    BaseInput(Instance& instance) : m_instance(instance), m_handled(true) { }
 
     bool handleKeyDown(Key key) override;
     bool handleKeyUp(Key key) override;

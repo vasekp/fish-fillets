@@ -56,6 +56,7 @@ public:
 private:
     ButtonGravity m_gravity;
     int m_activeButton;
+    bool m_handled;
 
 public:
     LevelInput(Instance& instance);

@@ -14,20 +14,20 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
             bool ret = input.handlePointerDown({sx, sy});
-            if(!ret)
-                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("showUI"));
-            else
-                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
+            instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
             return ret ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_MOVE) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
             bool ret = input.handlePointerMove({sx, sy});
-            if(ret)
-                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
             return ret ? 1 : 0;
         } else if(action == AMOTION_EVENT_ACTION_UP) {
-            return input.handlePointerUp() ? 1 : 0;
+            bool ret = input.handlePointerUp();
+            if(!ret)
+                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("showUI"));
+            else
+                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
+            return ret ? 1 : 0;
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = Input::AndroidKeymap(AKeyEvent_getKeyCode(event));

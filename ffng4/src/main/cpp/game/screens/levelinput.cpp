@@ -8,7 +8,8 @@ LevelInput::LevelInput(Instance& instance) :
         m_lastKey(Key::none),
         m_dirpad({DirpadState::ignore}),
         m_gravity(ButtonGravity::left),
-        m_activeButton(noButton)
+        m_activeButton(noButton),
+        m_handled(true)
 {
     std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
 }
@@ -44,30 +45,30 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
+    m_handled = false;
     if(auto button = findButton(pos); button != noButton && m_buttonsEnabled[button]) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
-        return true;
+        return m_handled = true;
     }
 
-    bool handled = false;
     if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos); m_instance.screens().dispatchPointer(windowCoords)) {
         m_dirpad.touchTime = absolutePast;
-        handled = true;
+        m_handled = true;
     } else if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
         m_instance.screens().dispatchKey(Key::space);
         m_dirpad.touchTime = absolutePast;
-        handled = true;
+        m_handled = true;
     } else
         m_dirpad.touchTime = std::chrono::steady_clock::now();
     if(m_dirpad.fish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
-        return handled;
+        return m_handled;
     }
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), pos);
     m_dirpad.state = DirpadState::wait;
-    return handled;
+    return m_handled;
 }
 
 bool LevelInput::handlePointerMove(FCoords pos) {
@@ -108,6 +109,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.touchTime = absolutePast;
                 m_dirpad.state = DirpadState::follow;
+                m_handled = true;
                 return true;
             } else
                 return false;
@@ -131,7 +133,7 @@ bool LevelInput::handlePointerUp() {
             m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
     }
     m_dirpad.state = DirpadState::idle;
-    return false;
+    return m_handled;
 }
 
 void LevelInput::checkLongPress() {
@@ -142,6 +144,7 @@ void LevelInput::checkLongPress() {
                 m_instance.screens().dispatchPointer(windowCoords, true))
             m_dirpad.state = DirpadState::ignore; // regardless of success
         m_dirpad.touchTime = absolutePast;
+        m_handled = true;
     }
 }
 
