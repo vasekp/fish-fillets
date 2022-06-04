@@ -19,6 +19,7 @@ namespace Input {
                 return Key::space;
             case AKEYCODE_ESCAPE:
             case AKEYCODE_BACK:
+            case AKEYCODE_Q:
                 return Key::exit;
             case AKEYCODE_F2:
             case AKEYCODE_S:
