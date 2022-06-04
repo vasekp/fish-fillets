@@ -77,8 +77,8 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     for(const auto& line : m_lines)
         if(line.live) {
             glUseProgram(textProgram);
-            glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().get());
-            glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().get());
+            glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
+            glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto width = line.texture.width();
             auto height = line.texture.height() - outline * m_instance.graphics().dpi();

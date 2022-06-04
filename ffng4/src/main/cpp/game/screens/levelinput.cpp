@@ -209,7 +209,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
                 : m_dirpad.state == DirpadState::button && i == m_activeButton
                     ? 1.0f
                     : 0.5f;
-        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).get());
+        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
         GraphicsUtils::rect(0, 0, 1, 1);
     }
 }
@@ -229,14 +229,6 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().arrow;
     glUseProgram(program);
 
-    using Vector = std::array<float, 2>;
-    constexpr std::array<std::pair<ICoords, Vector>, 4> arrows{
-            std::pair{Direction::up, Vector{0,  -1}},
-            std::pair{Direction::down, Vector{0,  1}},
-            std::pair{Direction::left, Vector{-1, 0}},
-            std::pair{Direction::right, Vector{1,  0}}
-    };
-
     constexpr float coords[3][3] = {
             {1, 0, 0},
             {0, 1, 0},
@@ -248,10 +240,10 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
     auto color = m_dirpad.fish == Model::Fish::small ? colorSmall : colorBig;
 
-    for(const auto& [dir, vector] : arrows) {
-        glUniform2f(program.uniform("uDirection"), vector[0], vector[1]);
+    for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
+        glUniform2fv(program.uniform("uDirection"), 1, FCoords{dir}.gl().data());
         float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir ? 1.f : 0.5f) * baseAlpha;
-        glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).get());
+        glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).data());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 }

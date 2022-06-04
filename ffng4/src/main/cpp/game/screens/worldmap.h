@@ -47,7 +47,7 @@ protected:
     bool own_mouse(FCoords coords) override;
 
 private:
-    void drawMasked(const DrawTarget& target, Color c);
+    void drawMasked(const DrawTarget& target, Color maskColor);
 };
 
 #endif //FISH_FILLETS_GAME_WORLDMAP_H

@@ -25,10 +25,8 @@ struct Color {
     constexpr float rg() const { return (float)g / 255.f; }
     constexpr float rb() const { return (float)b / 255.f; }
 
-    std::unique_ptr<float[]> gl(float alpha = 1.f) const {
-        auto ret = std::make_unique<float[]>(4);
-        std::tie(ret[0], ret[1], ret[2], ret[3]) = std::tuple{alpha * rf(), alpha * rg(), alpha * rb(), alpha};
-        return ret;
+    std::array<float, 4> gl(float alpha = 1.f) const {
+        return {alpha * rf(), alpha * rg(), alpha * rb(), alpha};
     }
 
     friend constexpr bool operator==(const Color& x, const Color& y) {
@@ -107,11 +105,11 @@ public:
     friend bool operator>(FCoords a, FCoords b) { return std::abs(a.m_fx) > std::abs(b.m_fx) || std::abs(a.m_fy) > std::abs(b.m_fy); }
     friend bool operator>=(FCoords a, FCoords b) { return a > b || a == b; }
     friend bool operator||(FCoords a, FCoords b) {
-        return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) ||
-                (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
+        return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) || (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
     }
 
     friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.m_fx << "," << coords.m_fy << "]"; }
+    std::array<float, 2> gl() const { return {m_fx, m_fy}; }
 };
 
 #endif //FISH_FILLETS_TYPES_H

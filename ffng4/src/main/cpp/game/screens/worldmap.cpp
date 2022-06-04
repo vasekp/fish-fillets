@@ -118,10 +118,10 @@ bool WorldMap::own_mouse(FCoords coords) {
     }
 }
 
-void WorldMap::drawMasked(const DrawTarget& target, Color c) {
+void WorldMap::drawMasked(const DrawTarget& target, Color maskColor) {
     const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
     glUseProgram(maskProgram);
-    glUniform4fv(maskProgram.uniform("uMaskColor"), 1, c.gl().get());
+    glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColor.gl().data());
     target.blit(getImage("masked"), maskProgram);
 }
 
