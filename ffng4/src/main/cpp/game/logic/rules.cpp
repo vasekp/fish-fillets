@@ -104,10 +104,12 @@ bool LevelRules::switchFish(Model* which) {
     if(target == m_curFish)
         return true;
     setFish(target);
-    m_curFish->action() = Model::Action::activate;
-    m_level.transition(framesActivate, [unit = m_curFish]() {
-        unit->action() = Model::Action::base;
-    });
+    if(which == nullptr) {
+        m_curFish->action() = Model::Action::activate;
+        m_level.transition(framesActivate, [unit = m_curFish]() {
+            unit->action() = Model::Action::base;
+        });
+    }
     return true;
 }
 
