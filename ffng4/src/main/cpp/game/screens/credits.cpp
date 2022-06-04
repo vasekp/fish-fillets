@@ -30,12 +30,12 @@ void CreditsScreen::own_draw(const DrawTarget& target, float) {
     target.blit(getImage("header"), program);
 }
 
-bool CreditsScreen::own_mouse(unsigned int x, unsigned int y) {
+bool CreditsScreen::own_mouse(FCoords) {
     quit();
     return true;
 }
 
-bool CreditsScreen::own_key(Key key) {
+bool CreditsScreen::own_key(Key) {
     quit();
     return true;
 }

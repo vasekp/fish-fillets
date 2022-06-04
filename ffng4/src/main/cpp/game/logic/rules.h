@@ -31,6 +31,7 @@ public:
     void keyInput(Key key);
     void update();
 
+    bool switchFish(Model* which = nullptr);
     Model::Fish activeFish() const;
     std::pair<Model*, Model*> bothFish() const;
     bool solvable() const;
@@ -40,7 +41,6 @@ private:
     void processKey(Key key);
     void moveFish(Model::Fish which, Direction d);
     void moveFish(Direction d);
-    bool switchFish();
 
     void buildDepGraph();
     void updateDepGraph(const Model* model);

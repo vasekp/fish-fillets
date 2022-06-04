@@ -57,7 +57,7 @@ private:
     void own_resume() override;
     void own_draw(const DrawTarget& target, float dt) override;
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
-    bool own_mouse(unsigned int x, unsigned int y) override;
+    bool own_mouse(FCoords coords) override;
     bool own_key(Key key) override;
     void own_setsize() override;
 

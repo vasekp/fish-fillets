@@ -347,16 +347,13 @@ void Level::killModelSound(Model* model) {
 }
 
 bool Level::model_equals(int index, int x, int y) {
-    Log::verbose(ICoords{x, y}, " equals ", index, "?");
     if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
         return false;
     if(index != index_free_space) {
         const auto* model = layout().getModel(index);
         return model->shape().covers(ICoords{x, y} - model->xy());
     } else
-        return !std::any_of(layout().models().begin(), layout().models().end(), [x, y](const Model* model) {
-            return model->shape().covers({x - model->x(), y - model->y()});
-        });
+        return layout().modelAt({x, y}) == nullptr;
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {

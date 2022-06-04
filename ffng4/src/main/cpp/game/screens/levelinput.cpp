@@ -44,13 +44,17 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::handlePointerDown(FCoords pos) {
-    bool handled = false;
     if(auto button = findButton(pos); button != noButton && m_buttonsEnabled[button]) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
     }
-    if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
+
+    bool handled = false;
+    if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos); m_instance.screens().dispatchMouse(windowCoords)) {
+        m_dirpad.touchTime = absolutePast;
+        handled = true;
+    } else if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
         m_instance.screens().dispatchKey(Key::space);
         m_dirpad.touchTime = absolutePast;
         handled = true;
@@ -59,11 +63,6 @@ bool LevelInput::handlePointerDown(FCoords pos) {
     if(m_dirpad.fish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
         return handled;
-    }
-    auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
-    if(m_instance.screens().dispatchMouse(windowCoords)) {
-        m_dirpad.state = DirpadState::ignore;
-        return true;
     }
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), pos);

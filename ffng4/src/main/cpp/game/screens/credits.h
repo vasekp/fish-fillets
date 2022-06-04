@@ -18,7 +18,7 @@ protected:
     void own_start() override;
     void own_refresh() override;
     void own_draw(const DrawTarget& target, float dt) override;
-    bool own_mouse(unsigned x, unsigned y) override;
+    bool own_mouse(FCoords coords) override;
     bool own_key(Key key) override;
 
 private:

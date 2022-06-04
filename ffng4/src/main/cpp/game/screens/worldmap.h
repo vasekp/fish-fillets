@@ -44,7 +44,7 @@ protected:
     void own_resume() override;
     void own_refresh() override;
     void own_draw(const DrawTarget& target, float dt) override;
-    bool own_mouse(unsigned, unsigned) override;
+    bool own_mouse(FCoords coords) override;
 
 private:
     void drawMasked(const DrawTarget& target, Color c);

@@ -221,8 +221,15 @@ void LevelScreen::own_resume() {
     m_level.timer().start();
 }
 
-bool LevelScreen::own_mouse(unsigned int x, unsigned int y) {
-//    TODO: switch fish
+bool LevelScreen::own_mouse(FCoords coords) {
+    if(m_level.accepting()) {
+        ICoords cc = round(coords / size_unit);
+        for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
+            auto* model = m_level.layout().modelAt(cc + ICoords{0, dy});
+            if(model && model->alive())
+                return m_level.rules().switchFish(model);
+        }
+    }
     return false;
 }
 

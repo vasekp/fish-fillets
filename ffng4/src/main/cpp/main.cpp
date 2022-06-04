@@ -22,7 +22,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
         } else if(action == AMOTION_EVENT_ACTION_MOVE) {
             float sx = AMotionEvent_getX(event, 0);
             float sy = AMotionEvent_getY(event, 0);
-            bool ret = input.handlePointerMove({sx, sy}) ? 1 : 0;
+            bool ret = input.handlePointerMove({sx, sy});
             if(ret)
                 instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
             return ret ? 1 : 0;

@@ -16,18 +16,22 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_la
 }
 
 void LevelRules::setFish(Model::Fish fish) {
+    auto* newFish = m_curFish;
     switch(fish) {
         case Model::Fish::small:
-            m_curFish = m_small;
+            newFish = m_small;
             break;
         case Model::Fish::big:
-            m_curFish = m_big;
+            newFish = m_big;
             break;
         case Model::Fish::none:
-            m_curFish = nullptr;
+            newFish = nullptr;
             break;
     }
-    m_level.notifyFish(fish);
+    if(newFish != m_curFish) {
+        m_curFish = newFish;
+        m_level.notifyFish(fish);
+    }
 }
 
 void LevelRules::setFish(Model* which) {
@@ -93,10 +97,12 @@ void LevelRules::processKey(Key key) {
     }
 }
 
-bool LevelRules::switchFish() {
-    Model* target = m_curFish == m_small ? m_big : m_small;
+bool LevelRules::switchFish(Model* which) {
+    Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
     if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0)
         return false;
+    if(target == m_curFish)
+        return true;
     setFish(target);
     m_curFish->action() = Model::Action::activate;
     m_level.transition(framesActivate, [unit = m_curFish]() {

@@ -87,8 +87,8 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
     }
 }
 
-bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
-    auto mask_color = m_instance.graphics().readBuffer().getPixel(x, y);
+bool WorldMap::own_mouse(FCoords coords) {
+    auto mask_color = m_instance.graphics().readBuffer().getPixel(coords.x(), coords.y());
     if(mask_color == WorldMap::MaskColors::exit) {
         staticFrame(WorldMap::Frames::exit);
         m_instance.quit();
@@ -105,10 +105,8 @@ bool WorldMap::own_mouse(unsigned int x, unsigned int y) {
         m_instance.screens().startMode(ScreenManager::Mode::Credits);
         return true;
     } else {
-        auto fx = (float)x, fy = (float)y;
-        auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [fx, fy](auto& pair) {
-            auto& coords = pair.second.coords;
-            return std::hypot(coords.fx() - fx, coords.fy() - fy) < nodeTolerance;
+        auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [coords](auto& pair) {
+            return length(coords - pair.second.coords) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
             m_instance.screens().announceLevel(it->second);

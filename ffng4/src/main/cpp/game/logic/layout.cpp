@@ -24,6 +24,19 @@ Model* LevelLayout::getModel(int index) const {
     return m_virtModels.at(index).get();
 }
 
+Model* LevelLayout::modelAt(ICoords coords) const {
+    auto [x, y] = coords;
+    if(x < 0 || x >= width() || y < 0 || y >= height())
+        return nullptr;
+    auto it = std::find_if(models().begin(), models().end(), [coords](const Model* model) {
+        return model->shape().covers(coords - model->xy());
+    });
+    if(it == models().end())
+        return nullptr;
+    else
+        return *it;
+}
+
 void LevelLayout::addRope(const Model *m1, const Model *m2, ICoords d1, ICoords d2) {
     m_ropes.push_back({m1, m2, d1, d2});
 }

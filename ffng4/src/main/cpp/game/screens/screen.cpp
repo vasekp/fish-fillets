@@ -80,7 +80,7 @@ void GameScreen::drawOverlays(const DrawTarget& target) {
 }
 
 bool GameScreen::mouse(FCoords coords) {
-    return own_mouse(coords.x(), coords.y());
+    return own_mouse(coords);
 }
 
 bool GameScreen::keypress(Key key) {
