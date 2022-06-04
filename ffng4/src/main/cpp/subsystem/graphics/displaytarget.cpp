@@ -10,7 +10,8 @@ DisplayTarget::DisplayTarget(const ogl::Display &display) :
 
 void DisplayTarget::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(m_viewport.origin.x(), m_viewport.origin.y(), m_viewport.extent.x(), m_viewport.extent.y());
+    glViewport(m_viewport.origin.x(), m_display.height() - m_viewport.origin.y() - m_viewport.extent.y(),
+            m_viewport.extent.x(), m_viewport.extent.y());
 }
 
 void DisplayTarget::setReserve(FCoords reserve) {
@@ -21,7 +22,7 @@ void DisplayTarget::setWindow(unsigned int width, unsigned int height) {
     auto displayDim = reducedDisplaySize();
     m_windowDim = {width, height};
     m_scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
-    m_viewport.origin = (displayDim - m_scale * m_windowDim) / 2.f + FCoords{m_reserve.fx(), 0.f};
+    m_viewport.origin = (displayDim - m_scale * m_windowDim) / 2.f + m_reserve;
     m_viewport.extent = m_scale * m_windowDim;
     Log::info("Viewport: ", m_viewport.origin, " ", m_viewport.extent, " (scale ", m_scale, ")");
 }
