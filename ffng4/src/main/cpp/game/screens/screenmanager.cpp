@@ -134,8 +134,8 @@ void ScreenManager::resume() {
     curScreen().resume();
 }
 
-bool ScreenManager::dispatchMouse(FCoords coords) {
-    return curScreen().mouse(coords);
+bool ScreenManager::dispatchPointer(FCoords coords, bool longPress) {
+    return curScreen().pointer(coords, longPress);
 }
 
 bool ScreenManager::dispatchKey(Key key) {

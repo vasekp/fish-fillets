@@ -78,8 +78,8 @@ public:
 
 private:
     static unsigned index(Key key);
-    static Key toKey(ICoords dir);
     int findButton(FCoords pos);
+    void checkLongPress();
 
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
@@ -88,7 +88,7 @@ private:
     constexpr static float arrowSize = 0.35f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches
     constexpr static float maxButtonGap = 0.35f; // inches
-    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds(1000);
+    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds(500);
     constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = std::chrono::milliseconds(100);

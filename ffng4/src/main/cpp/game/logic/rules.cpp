@@ -47,6 +47,10 @@ Model::Fish LevelRules::activeFish() const {
         return Model::Fish::none;
 }
 
+Model* LevelRules::activeFish_model() const {
+    return m_curFish;
+}
+
 void LevelRules::keyInput(Key key) {
     m_keyQueue.push_back(key);
 }

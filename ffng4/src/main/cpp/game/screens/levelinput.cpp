@@ -38,7 +38,7 @@ Key LevelInput::pool() {
         return m_lastKey;
     else if(m_dirpad.state == DirpadState::follow) {
         Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
-        return toKey(m_dirpad.lastNonzeroDir);
+        return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
         return Key::none;
 }
@@ -51,7 +51,7 @@ bool LevelInput::handlePointerDown(FCoords pos) {
     }
 
     bool handled = false;
-    if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos); m_instance.screens().dispatchMouse(windowCoords)) {
+    if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos); m_instance.screens().dispatchPointer(windowCoords)) {
         m_dirpad.touchTime = absolutePast;
         handled = true;
     } else if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
@@ -103,7 +103,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         case DirpadState::wait:
             if(!small && dir) {
                 Log::verbose("Input: sending from WAIT: ", dir);
-                m_instance.screens().dispatchKey(toKey(dir));
+                m_instance.screens().dispatchKey(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.touchTime = absolutePast;
@@ -116,7 +116,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
                 m_dirpad.lastDir = {};
             else if(dir && dir != m_dirpad.lastDir) {
                 Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
-                m_instance.screens().dispatchKey(toKey(dir));
+                m_instance.screens().dispatchKey(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
             }
             return true;
@@ -134,17 +134,15 @@ bool LevelInput::handlePointerUp() {
     return false;
 }
 
-Key LevelInput::toKey(ICoords dir) {
-    if(dir == Direction::up)
-        return Key::up;
-    else if(dir == Direction::down)
-        return Key::down;
-    else if(dir == Direction::left)
-        return Key::left;
-    else if(dir == Direction::right)
-        return Key::right;
-    else
-        return Key::none;
+void LevelInput::checkLongPress() {
+    if(m_dirpad.state == DirpadState::wait
+            && m_dirpad.touchTime != absolutePast
+            && std::chrono::steady_clock::now() > m_dirpad.touchTime + longpressTime) {
+        if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(m_dirpad.history.front().second);
+                m_instance.screens().dispatchPointer(windowCoords, true))
+            m_dirpad.state = DirpadState::ignore; // regardless of success
+        m_dirpad.touchTime = absolutePast;
+    }
 }
 
 void LevelInput::refresh() {
@@ -193,6 +191,7 @@ void LevelInput::setLoadPossible(bool possible) {
 }
 
 void LevelInput::draw(const DrawTarget& target) {
+    checkLongPress();
     drawButtons(target);
     drawDirpad(target);
 }

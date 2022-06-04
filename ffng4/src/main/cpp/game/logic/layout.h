@@ -56,8 +56,11 @@ public:
 
     std::set<Model*> intersections(const Model* model, ICoords d);
     std::set<Model*> obstacles(const Model* root, ICoords d);
+    std::vector<Direction> findPath(const Model* unit, ICoords target);
 
     void animate(float dt, float speed = speed_normal);
+
+    constexpr static std::size_t maxDim = Shape::maxSize;
 
     constexpr static float speed_normal = 1.f;
     constexpr static float speed_loading = 10.f;

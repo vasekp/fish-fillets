@@ -5,7 +5,7 @@ Shape::Shape(const std::string &string) :
     m_height(0)
 {
     int x = 0;
-    std::bitset<64> line;
+    std::bitset<maxSize> line;
     for(const char c : string)
         switch(c) {
         case '.':
@@ -32,7 +32,7 @@ Shape::Shape(const std::string &string) :
     m_height = (int)m_bits.size();
 }
 
-bool lineIntersect(const std::bitset<64>& a, const std::bitset<64>& b, int dx) {
+bool lineIntersect(const std::bitset<Shape::maxSize>& a, const std::bitset<Shape::maxSize>& b, int dx) {
     if(dx >= 0)
         return (a & (b << dx)).any();
     else

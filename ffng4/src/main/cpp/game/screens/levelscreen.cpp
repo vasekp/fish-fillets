@@ -221,16 +221,19 @@ void LevelScreen::own_resume() {
     m_level.timer().start();
 }
 
-bool LevelScreen::own_mouse(FCoords coords) {
-    if(m_level.accepting()) {
-        ICoords cc = round(coords / size_unit);
+bool LevelScreen::own_pointer(FCoords coords, bool longPress) {
+    if(!m_level.accepting())
+        return false;
+    ICoords iCoords = round(coords / size_unit);
+    if(!longPress) {
         for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
-            auto* model = m_level.layout().modelAt(cc + ICoords{0, dy});
+            auto* model = m_level.layout().modelAt(iCoords + ICoords{0, dy});
             if(model && model->alive())
                 return m_level.rules().switchFish(model);
         }
-    }
-    return false;
+        return false;
+    } else
+        return m_level.scheduleGoTo(iCoords);
 }
 
 bool LevelScreen::own_key(Key key) {

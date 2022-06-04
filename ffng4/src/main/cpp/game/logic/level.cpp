@@ -213,3 +213,15 @@ UserFile Level::saveFile() const {
 UserFile Level::solveFile() const {
     return m_instance.files().user(m_record.solveFilename());
 }
+
+bool Level::scheduleGoTo(ICoords coords) {
+    auto* unit = rules().activeFish_model();
+    auto path = layout().findPath(unit, coords);
+    for(auto dir : path) {
+        schedule([&, dir]() {
+            m_rules->keyInput(Input::toKey(dir));
+            return true;
+        });
+    }
+    return !path.empty();
+}

@@ -78,11 +78,3 @@ void GameScreen::drawOverlays(const DrawTarget& target) {
     own_drawOverlays(target, liveTime - m_lastDrawOverlays, liveTime);
     m_lastDrawOverlays = liveTime;
 }
-
-bool GameScreen::mouse(FCoords coords) {
-    return own_mouse(coords);
-}
-
-bool GameScreen::keypress(Key key) {
-    return own_key(key);
-}

@@ -33,6 +33,7 @@ public:
 
     bool switchFish(Model* which = nullptr);
     Model::Fish activeFish() const;
+    Model* activeFish_model() const;
     std::pair<Model*, Model*> bothFish() const;
     bool solvable() const;
     bool solved() const;

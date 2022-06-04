@@ -5,7 +5,11 @@
 #include <bitset>
 
 class Shape {
-    std::vector<std::bitset<64>> m_bits;
+public:
+    constexpr static std::size_t maxSize = 60;
+
+private:
+    std::vector<std::bitset<maxSize>> m_bits;
     unsigned m_width;
     unsigned m_height;
 
@@ -14,6 +18,7 @@ public:
 
     unsigned width() const { return m_width; }
     unsigned height() const { return m_height; }
+    const auto& operator[](int y) const { return m_bits[y]; }
 
     bool intersects(const Shape& other, ICoords d) const;
     bool covers(ICoords xy) const;

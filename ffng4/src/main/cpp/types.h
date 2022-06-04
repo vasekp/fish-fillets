@@ -46,12 +46,14 @@ struct ICoords {
     static const ICoords down;
     static const ICoords left;
     static const ICoords right;
+    static const ICoords none;
 
     friend bool operator==(ICoords a, ICoords b) { return a.x == b.x && a.y == b.y; }
     friend ICoords operator+(ICoords a, ICoords b) { return {a.x + b.x, a.y + b.y}; }
     friend ICoords operator-(ICoords a, ICoords b) { return {a.x - b.x, a.y - b.y}; }
     friend ICoords& operator+=(ICoords& a, ICoords b) { a.x += b.x; a.y += b.y; return a; }
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
+    bool within(ICoords from, ICoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
 
     operator bool() const { return x != 0 || y != 0; }
     operator std::pair<int, int>() const { return {x, y}; }
@@ -59,12 +61,23 @@ struct ICoords {
     friend std::ostream& operator<<(std::ostream& os, ICoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
 };
 
+namespace std {
+    /* Specialization for std::map<ICoords, ...> */
+    template<>
+    struct less<ICoords> {
+        bool operator() (const ICoords& a, const ICoords& b) const {
+            return less<std::pair<int, int>>{}(a, b);
+        }
+    };
+}
+
 using Direction = ICoords;
 
 inline constexpr Direction Direction::up = {0, -1};
 inline constexpr Direction Direction::down = {0, +1};
 inline constexpr Direction Direction::left = {-1, 0};
 inline constexpr Direction Direction::right = {+1, 0};
+inline constexpr Direction Direction::none = {0, 0};
 
 class FCoords {
     int m_x;
@@ -90,7 +103,7 @@ public:
     FCoords clamp(float maxAbs) const { return {std::clamp(m_fx, -maxAbs, maxAbs), std::clamp(m_fy, -maxAbs, maxAbs)}; }
     FCoords project(FCoords other) const { return dot(other) / other.norm2() * other; }
     bool within(FCoords from, FCoords to) const { return m_fx >= from.m_fx && m_fx <= to.m_fx && m_fy >= from.m_fy && m_fy <= to.m_fy; }
-    ICoords round() const { return {(int)(m_fx + .5f), (int)(m_fy + .5f)}; }
+    ICoords round() const { return {(int)m_fx, (int)m_fy}; }
     friend ICoords round(FCoords coords) { return coords.round(); }
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }

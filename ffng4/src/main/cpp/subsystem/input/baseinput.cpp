@@ -12,7 +12,7 @@ bool BaseInput::handleKeyUp(Key) {
 
 bool BaseInput::handlePointerDown(FCoords pos) {
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
-    return m_instance.screens().dispatchMouse(windowCoords);
+    return m_instance.screens().dispatchPointer(windowCoords);
 }
 
 bool BaseInput::handlePointerMove(FCoords pos) {

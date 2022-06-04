@@ -87,7 +87,7 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
     }
 }
 
-bool WorldMap::own_mouse(FCoords coords) {
+bool WorldMap::own_pointer(FCoords coords, bool longPress) {
     auto mask_color = m_instance.graphics().readBuffer().getPixel(coords.x(), coords.y());
     if(mask_color == WorldMap::MaskColors::exit) {
         staticFrame(WorldMap::Frames::exit);

@@ -70,6 +70,7 @@ public:
     bool transitioning() const;
     bool loading() const;
     void schedule(Callback&& action);
+    bool scheduleGoTo(ICoords coords);
     bool runScheduled();
     void runScheduledAll();
     void recordMove(char key);

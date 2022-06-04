@@ -30,7 +30,7 @@ void CreditsScreen::own_draw(const DrawTarget& target, float) {
     target.blit(getImage("header"), program);
 }
 
-bool CreditsScreen::own_mouse(FCoords) {
+bool CreditsScreen::own_pointer(FCoords, bool) {
     quit();
     return true;
 }
