@@ -23,6 +23,7 @@ class Level : public ScriptReferrer {
     std::unique_ptr<LevelRules> m_rules;
     std::string m_replay;
     int m_attempt;
+    bool m_roundFlag;
 
     std::deque<Callback> m_tickSchedule;
     std::deque<Callback> m_moveSchedule;
@@ -84,6 +85,7 @@ public:
     void killDialogsHard();
     void setModelEffect(Model* model, const std::string& name);
 
+    void notifyRound();
     void notifyFish(Model::Fish fish);
     void notifyDeath();
     void notifySolved();

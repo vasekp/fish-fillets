@@ -90,7 +90,7 @@ int Level::level_getDepth() const {
 }
 
 bool Level::level_isNewRound() const {
-    return !transitioning();
+    return m_roundFlag;
 }
 
 bool Level::level_isSolved() {

@@ -6,7 +6,8 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_screen(screen),
         m_record(record),
         m_script(instance, *this),
-        m_attempt(0)
+        m_attempt(0),
+        m_roundFlag(false)
 {
     registerCallbacks();
 }
@@ -47,6 +48,7 @@ void Level::tick() {
     }
     if(isBusy(BusyReason::demo) && m_tickSchedule.empty())
         quitDemo();
+    m_roundFlag = false;
 }
 
 void Level::setBusy(BusyReason reason, bool busy) {
@@ -125,6 +127,10 @@ void Level::clearSchedule() {
 
 void Level::recordMove(char key) {
     m_replay += key;
+}
+
+void Level::notifyRound() {
+    m_roundFlag = true;
 }
 
 void Level::notifyFish(Model::Fish fish) {

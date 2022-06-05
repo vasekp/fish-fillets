@@ -193,6 +193,7 @@ void LevelRules::update() {
             && !m_level.transitioning();
 
     if(ready) {
+        m_level.notifyRound();
         m_level.runScheduled();
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
