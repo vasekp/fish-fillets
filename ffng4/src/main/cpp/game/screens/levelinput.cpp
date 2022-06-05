@@ -140,9 +140,8 @@ void LevelInput::checkLongPress() {
     if(m_dirpad.state == DirpadState::wait
             && m_dirpad.touchTime != absolutePast
             && std::chrono::steady_clock::now() > m_dirpad.touchTime + longpressTime) {
-        if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(m_dirpad.history.front().second);
-                m_instance.screens().dispatchPointer(windowCoords, true))
-            m_dirpad.state = DirpadState::ignore; // regardless of success
+        auto windowCoords = m_instance.graphics().windowTarget().screen2window(m_dirpad.history.front().second);
+        m_instance.screens().dispatchPointer(windowCoords, true);
         m_dirpad.touchTime = absolutePast;
         m_handled = true;
     }

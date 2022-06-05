@@ -92,10 +92,13 @@ bool Level::accepting() const {
     return m_busy.none();
 }
 
-void Level::schedule(Callback&& action, bool blocking) {
+void Level::schedule(Callback&& action) {
     m_moveSchedule.push_back(std::move(action));
-    if(blocking)
-        setBusy(BusyReason::schedule);
+}
+
+void Level::scheduleBlocking(Callback&& action) {
+    schedule(std::move(action));
+    setBusy(BusyReason::schedule);
 }
 
 bool Level::runScheduled() {
@@ -218,11 +221,19 @@ UserFile Level::solveFile() const {
 bool Level::scheduleGoTo(ICoords coords) {
     auto* unit = rules().activeFish_model();
     auto path = layout().findPath(unit, coords);
-    for(auto dir : path) {
-        schedule([&, dir]() {
-            m_rules->keyInput(Input::toKey(dir));
+    if(!path.empty()) {
+        input().setFish(Model::Fish::none);
+        for(auto dir : path) {
+            schedule([&, dir]() {
+                m_rules->keyInput(Input::toKey(dir));
+                return true;
+            });
+        }
+        schedule([&]() {
+            input().setFish(rules().activeFish());
             return true;
         });
-    }
-    return !path.empty();
+        return true;
+    } else
+        return false;
 }
