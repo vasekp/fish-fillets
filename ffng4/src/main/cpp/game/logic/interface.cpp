@@ -305,7 +305,7 @@ void Level::model_setBusy(int index, bool busy) {
     schedule([model, busy]() {
         model->action() = busy ? Model::Action::busy : Model::Action::base;
         return true;
-    });
+    }, false);
 }
 
 bool Level::model_isTalking(int index) {

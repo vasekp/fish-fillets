@@ -92,9 +92,10 @@ bool Level::accepting() const {
     return m_busy.none();
 }
 
-void Level::schedule(Callback&& action) {
+void Level::schedule(Callback&& action, bool blocking) {
     m_moveSchedule.push_back(std::move(action));
-    setBusy(BusyReason::schedule);
+    if(blocking)
+        setBusy(BusyReason::schedule);
 }
 
 bool Level::runScheduled() {

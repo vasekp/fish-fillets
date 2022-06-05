@@ -260,7 +260,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
             m_level.schedule([d, model]() {
                 model->displace(d);
                 return true;
-            });
+            }, false);
         }
         if(depth.second >= 0) {
             std::erase(m_goals, model);

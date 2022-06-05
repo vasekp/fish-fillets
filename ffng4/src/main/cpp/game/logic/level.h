@@ -69,7 +69,7 @@ public:
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     bool loading() const;
-    void schedule(Callback&& action);
+    void schedule(Callback&& action, bool blocking = true);
     bool scheduleGoTo(ICoords coords);
     bool runScheduled();
     void runScheduledAll();
