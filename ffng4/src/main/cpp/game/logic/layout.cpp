@@ -140,12 +140,12 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     ICoords start = unit->xy();
     if(occupied[start.y][start.x])
         Log::fatal("Unit start field marked as occupied.");
-    for(int dx = 0; dx < std::min(unitWidth, target.x); dx++)
-        for(int dy = 0; dy < std::min(unitHeight, target.y); dy++)
-            if(!occupied[target.y - dy][target.x - dx])
-                goto Found;
-            else
+    for(int dx = 0; dx < std::min(unitWidth, target.x + 1); dx++)
+        for(int dy = 0; dy < std::min(unitHeight, target.y + 1); dy++)
+            if(occupied[target.y - dy][target.x - dx])
                 Log::verbose(target - ICoords{dx, dy}, " occupied");
+            else
+                goto Found;
     Log::debug("no suitable final position found");
     return {};
 Found:
