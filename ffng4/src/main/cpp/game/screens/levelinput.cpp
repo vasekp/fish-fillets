@@ -52,11 +52,10 @@ bool LevelInput::handlePointerDown(FCoords pos) {
         return m_handled = true;
     }
 
-    if(auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos); m_instance.screens().dispatchPointer(windowCoords)) {
-        m_dirpad.touchTime = absolutePast;
-        m_handled = true;
-    } else if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
-        m_instance.screens().dispatchKey(Key::space);
+    if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
+        auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
+        if(!m_instance.screens().dispatchPointer(windowCoords))
+            m_instance.screens().dispatchKey(Key::space);
         m_dirpad.touchTime = absolutePast;
         m_handled = true;
     } else
