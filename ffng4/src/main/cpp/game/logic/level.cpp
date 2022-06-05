@@ -51,15 +51,12 @@ void Level::tick() {
 
 void Level::setBusy(BusyReason reason, bool busy) {
     m_busy[reason] = busy;
-    if(m_busy.any()) {
+    if(m_busy.any())
         input().setFish(Model::Fish::none);
-        input().setSavePossible(false);
-        input().setLoadPossible(false);
-    } else {
+    else
         input().setFish(rules().activeFish());
-        input().setSavePossible(savePossible());
-        input().setLoadPossible(loadPossible());
-    }
+    input().setSavePossible(savePossible());
+    input().setLoadPossible(loadPossible());
 }
 
 bool Level::isBusy(BusyReason reason) const {
@@ -203,7 +200,7 @@ void Level::reinit(bool keepSchedule) {
 }
 
 bool Level::savePossible() const {
-    return accepting() && rules().solvable();
+    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && rules().solvable();
 }
 
 bool Level::loadPossible() const {
@@ -222,7 +219,7 @@ bool Level::scheduleGoTo(ICoords coords) {
     auto* unit = rules().activeFish_model();
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
-        input().setFish(Model::Fish::none);
+        setBusy(BusyReason::longpress);
         for(auto dir : path) {
             schedule([&, dir]() {
                 m_rules->keyInput(Input::toKey(dir));
@@ -230,7 +227,7 @@ bool Level::scheduleGoTo(ICoords coords) {
             });
         }
         schedule([&]() {
-            input().setFish(rules().activeFish());
+            setBusy(BusyReason::longpress, false);
             return true;
         });
         return true;

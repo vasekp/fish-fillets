@@ -44,6 +44,7 @@ class Level : public ScriptReferrer {
         loading,
         schedule,
         demo,
+        longpress,
         SIZE
     };
     EnumBitset<BusyReason> m_busy;
