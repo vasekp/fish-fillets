@@ -120,7 +120,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
-        if(model == unit || model->isVirtual())
+        if(model == unit || model->isVirtual() || borderDepth(model).first > 0)
             continue;
         auto [x, y] = model->xy();
         for(int dx = 0; dx < model->shape().width(); dx++)

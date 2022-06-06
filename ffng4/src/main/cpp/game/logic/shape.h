@@ -18,7 +18,7 @@ public:
 
     unsigned width() const { return m_width; }
     unsigned height() const { return m_height; }
-    const auto& operator[](int y) const { return m_bits[y]; }
+    const auto& operator[](unsigned y) const { return m_bits[y]; }
 
     bool intersects(const Shape& other, ICoords d) const;
     bool covers(ICoords xy) const;
