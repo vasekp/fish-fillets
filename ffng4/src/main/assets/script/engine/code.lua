@@ -54,7 +54,7 @@ local function prog_init()
                 if not klicek:isTalking() then
                     klicek:talk("mot-x-motor", VOLUME_FULL, -1)
                 end
-                if math.mod(game_getCycles(), 3) == 0 then
+                if game_getCycles() % 3 == 0 then
                     if radius < 30 then
                         radius = radius + 2
                     end

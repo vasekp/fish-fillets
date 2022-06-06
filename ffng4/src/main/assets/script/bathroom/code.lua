@@ -12,7 +12,7 @@ local function prog_init()
     local function prog_init_room()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
 
-        room.switch = 2 - math.mod(pokus, 2)
+        room.switch = 2 - (pokus % 2)
         room.kdy = 20 + random(20)
         room.bav = random(150)
         room.sprs = 0

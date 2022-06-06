@@ -179,7 +179,7 @@ local function prog_init()
 
         return function()
             if room:isTalking() then
-                switch(math.mod(game_getCycles(), 4)){
+                switch(game_getCycles() % 4){
                     [0] = function()
                         krab1.krabfaze = 7
                     end,
@@ -228,7 +228,7 @@ local function prog_init()
             end
             switch(balalajka.cinnost){
                 [0] = function()
-                    local cycle = math.mod(game_getCycles(), 18)
+                    local cycle = game_getCycles() % 18
                     switch(cycle){
                         [0] = function()
                             if balalajka.tcatcat == 0 then
@@ -318,7 +318,7 @@ local function prog_init()
 
         return function()
             if room:isTalking() then
-                local cycle = math.mod(game_getCycles(), 8)
+                local cycle = game_getCycles() % 8
                 if isIn(cycle, {0, 1, 2, 3}) then
                     pom1 = 0
                 else
@@ -337,10 +337,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas1.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas1.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas1.noha = random(2)
                     end
                     sas1.afaze = sas1.noha * 4 + sas1.kvet
@@ -364,10 +364,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas2.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas2.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas2.noha = random(2)
                     end
                     sas2.afaze = sas2.noha * 4 + sas2.kvet
@@ -391,10 +391,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas3.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas3.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas3.noha = random(2)
                     end
                     sas3.afaze = sas3.noha * 4 + sas3.kvet
@@ -418,10 +418,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas4.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas4.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas4.noha = random(2)
                     end
                     sas4.afaze = sas4.noha * 4 + sas4.kvet
@@ -445,10 +445,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas5.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas5.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas5.noha = random(2)
                     end
                     sas5.afaze = sas5.noha * 4 + sas5.kvet
@@ -472,10 +472,10 @@ local function prog_init()
                 if sas1.sasfaze >= 0 then
                     sas6.afaze = sas1.sasfaze
                 else
-                    if math.mod(game_getCycles(), 3) == 0 and random(100) < 50 then
+                    if game_getCycles() % 3 == 0 and random(100) < 50 then
                         sas6.kvet = random(2) * 2 + 1
                     end
-                    if math.mod(game_getCycles(), 4) == 0 and random(100) < 30 then
+                    if game_getCycles() % 4 == 0 and random(100) < 30 then
                         sas6.noha = random(2)
                     end
                     sas6.afaze = sas6.noha * 4 + sas6.kvet
@@ -634,7 +634,7 @@ local function prog_init()
             end
             if pomb1 or not pomb2 then
                 if odd(game_getCycles()) then
-                    sepie.nohy = math.mod(sepie.nohy + 2 + random(2) * 2, 3)
+                    sepie.nohy = (sepie.nohy + 2 + random(2) * 2) % 3
                 end
                 sepie.afaze = sepie.nohy
                 if pomb1 then
@@ -646,7 +646,7 @@ local function prog_init()
                 end
             else
                 if sepie.dir == dir_left or sepie.dir == dir_right then
-                    sepie.nohy = math.mod(sepie.nohy + 1, 2)
+                    sepie.nohy = (sepie.nohy + 1) % 2
                 else
                     sepie.nohy = 0
                 end

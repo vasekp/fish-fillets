@@ -130,7 +130,7 @@ local function prog_init()
                     peri.cinnost = peri.cinnost + 1
                 end,
                 [9] = function()
-                    if math.mod(game_getCycles(), 3) == 0 then
+                    if game_getCycles() % 3 == 0 then
                         peri.afaze = 6 + random(2)
                     end
                     if peri.delay == 0 then

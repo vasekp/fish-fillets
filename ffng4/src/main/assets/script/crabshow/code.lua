@@ -389,7 +389,7 @@ local function prog_init()
                                 end
                             end,
                             default = function()
-                                switch(math.mod(game_getCycles(), 8)){
+                                switch(game_getCycles() % 8){
                                     [0] = function()
                                         shrimp.afaze = 1
                                     end,

@@ -245,7 +245,7 @@ local function prog_init()
         return function()
             if chobot.dir ~= dir_no then
                 chobot.akcnost = 7
-            elseif chobot.akcnost > 2 and math.mod(game_getCycles(), 5) == 0 then
+            elseif chobot.akcnost > 2 and game_getCycles() % 5 == 0 then
                 chobot.akcnost = chobot.akcnost - 1
             end
             if chobot.dir ~= chobot.lastdir then
@@ -268,7 +268,7 @@ local function prog_init()
                 end
                 chobot.lastdir = chobot.dir
             end
-            if chobot.dir == dir_no and math.mod(game_getCycles(), chobot.akcnost) == 0 then
+            if chobot.dir == dir_no and game_getCycles() % chobot.akcnost == 0 then
                 if random(2) == 0 then
                     if chobot.chapadla < 2 then
                         chobot.chapadla = chobot.chapadla + 1

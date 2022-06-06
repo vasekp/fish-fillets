@@ -47,7 +47,7 @@ local function prog_init()
         room.nep = 0
         room.vic = 0
         room.mrt = 0
-        if math.mod(pokus, 3) > 0 then
+        if pokus % 3 > 0 then
             room.nedobre = 0
         else
             room.nedobre = 1
@@ -125,7 +125,7 @@ local function prog_init()
                     room.nep = 1
                     addv(4, "bank-v-neproplavu"..(1 + random(2)))
                 end
-                if room.vic < 2 and math.mod(game_getCycles(), 8) == 1 then
+                if room.vic < 2 and game_getCycles() % 8 == 1 then
                     pom2 = 0
                     for key, model in pairs(getModelsTable()) do
                         if model.Y < 21 and model.Y > 17 and model.X > 14 and model.X < 29 then
@@ -210,7 +210,7 @@ local function prog_init()
             if game_getCycles() > room.kdy2 then
                 room.kdy2 = room.kdy2 + 1000 + random(10000)
             end
-            if math.mod(game_getCycles(), 800) == 777 then
+            if game_getCycles() % 800 == 777 then
                 switch(random(10)){
                     [1] = function()
                         room.ruk = 0
@@ -250,7 +250,7 @@ local function prog_init()
     -- -------------------------------------------------------------
     local function prog_init_klicka()
         return function()
-            klicka.afaze = math.mod(game_getCycles(), 2)
+            klicka.afaze = game_getCycles() % 2
             klicka:updateAnim()
         end
     end
@@ -284,7 +284,7 @@ local function prog_init()
                     end
                 end
             end
-            if math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            if game_getCycles() % 3 == 0 and random(100) < 40 then
                 horni1.oci = random(5)
             end
             if random(100) < 2 then
@@ -314,7 +314,7 @@ local function prog_init()
                 dolni1.zije = dolni1.zije + 1
                 dolni1.afaze = 1
             else
-                if math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+                if game_getCycles() % 3 == 0 and random(100) < 40 then
                     dolni1.oci = random(4) + 2
                 end
                 pom1 = horni1.poloha
@@ -355,9 +355,9 @@ local function prog_init()
                     end
                     if odd(game_getCycles() + key) then
                         if random(2) > 0 then
-                            tube.afaze = math.mod(tube.afaze + 1, 3)
+                            tube.afaze = (tube.afaze + 1) % 3
                         else
-                            tube.afaze = math.mod(tube.afaze + 2, 3)
+                            tube.afaze = (tube.afaze + 2) % 3
                         end
                     end
                 else
@@ -392,7 +392,7 @@ local function prog_init()
                     end
                 end
             end
-            if math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            if game_getCycles() % 3 == 0 and random(100) < 40 then
                 horni2.oci = random(5)
             end
             if random(100) < 2 then
@@ -422,7 +422,7 @@ local function prog_init()
                 dolni2.zije = dolni2.zije + 1
                 dolni2.afaze = 1
             else
-                if math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+                if game_getCycles() % 3 == 0 and random(100) < 40 then
                     dolni2.oci = random(4) + 2
                 end
                 pom1 = horni2.poloha
@@ -608,7 +608,7 @@ local function prog_init()
             if qldik1.dir ~= dir_no then
                 qldik1.zije = 1
             end
-            if math.mod(game_getCycles(), 3) == 0 then
+            if game_getCycles() % 3 == 0 then
                 if qldik1.zije > 0 then
                     if random(100) < 20 then
                         qldik1.oci = random(5)
@@ -636,7 +636,7 @@ local function prog_init()
             if qldik2.dir ~= dir_no then
                 qldik2.zije = 1
             end
-            if math.mod(game_getCycles(), 3) == 0 then
+            if game_getCycles() % 3 == 0 then
                 if qldik2.zije > 0 then
                     if random(100) < 20 then
                         qldik2.oci = random(5)
@@ -660,7 +660,7 @@ local function prog_init()
         qldik3.skace = 0
 
         return function()
-            if math.mod(game_getCycles(), 2) == 0 then
+            if game_getCycles() % 2 == 0 then
                 if qldik3.skace == 0 then
                     if random(100) < 1 then
                         qldik3.skace = random(7) * 2 + 3
@@ -699,13 +699,13 @@ local function prog_init()
         return function()
             switch(lahvac.rozbit){
                 [0] = function()
-                    if math.mod(game_getCycles(), 4) == 0 then
+                    if game_getCycles() % 4 == 0 then
                         switch(random(4)){
                             [0] = function()
-                                lahvac.vnitrek = math.mod(lahvac.vnitrek + 1, 4)
+                                lahvac.vnitrek = (lahvac.vnitrek + 1) % 4
                             end,
                             [1] = function()
-                                lahvac.vnitrek = math.mod(lahvac.vnitrek + 3, 4)
+                                lahvac.vnitrek = (lahvac.vnitrek + 3) % 4
                             end,
                         }
                     end
@@ -717,7 +717,7 @@ local function prog_init()
                                 lahvac.afaze = 0
                             elseif random(100) < 7 then
                                 lahvac.stav = 1 + random(2)
-                                lahvac.afaze = 7 + lahvac.stav * 4 + math.mod(lahvac.vnitrek, 2)
+                                lahvac.afaze = 7 + lahvac.stav * 4 + (lahvac.vnitrek % 2)
                             else
                                 lahvac.afaze = lahvac.vnitrek
                             end
@@ -725,32 +725,32 @@ local function prog_init()
                         [3] = function()
                             if random(100) < 7 then
                                 lahvac.stav = 2
-                                lahvac.afaze = 15 + math.mod(lahvac.vnitrek, 2)
+                                lahvac.afaze = 15 + (lahvac.vnitrek % 2)
                             elseif random(100) < 7 then
                                 lahvac.stav = 4
-                                lahvac.afaze = 22 + math.mod(lahvac.vnitrek, 2)
-                            elseif math.mod(lahvac.vnitrek, 2) == 1 and random(100) < 10 then
+                                lahvac.afaze = 22 + (lahvac.vnitrek % 2)
+                            elseif lahvac.vnitrek % 2 == 1 and random(100) < 10 then
                                 lahvac.afaze = 19
                             else
-                                lahvac.afaze = 20 + math.mod(lahvac.vnitrek, 2)
+                                lahvac.afaze = 20 + (lahvac.vnitrek % 2)
                             end
                         end,
                         [4] = function()
                             if random(100) < 7 then
                                 lahvac.stav = 3
-                                lahvac.afaze = 20 + math.mod(lahvac.vnitrek, 2)
+                                lahvac.afaze = 20 + (lahvac.vnitrek % 2)
                             end
                         end,
                         default = function()
                             if 1 <= lahvac.stav and lahvac.stav <= 2 then
                                 if random(100) < 7 then
-                                    lahvac.afaze = 7 + lahvac.stav * 4 + math.mod(lahvac.vnitrek, 2)
+                                    lahvac.afaze = 7 + lahvac.stav * 4 + (lahvac.vnitrek % 2)
                                     lahvac.stav = 0
                                 elseif random(100) < 7 and lahvac.stav == 2 then
                                     lahvac.stav = 3
                                     lahvac.afaze = 19
                                 else
-                                    lahvac.afaze = 9 + 4 * lahvac.stav + math.mod(lahvac.vnitrek, 2)
+                                    lahvac.afaze = 9 + 4 * lahvac.stav + (lahvac.vnitrek % 2)
                                     if random(100) < 5 then
                                         lahvac.afaze = lahvac.afaze - 2
                                     end
@@ -767,7 +767,7 @@ local function prog_init()
                                     lahvac.stav = lahvac.stav + 1
                                 end
                             elseif 20 <= lahvac.stav and lahvac.stav <= 25 then
-                                if math.mod(game_getCycles(), 3) == 0 then
+                                if game_getCycles() % 3 == 0 then
                                     if lahvac.smer == 0 then
                                         lahvac.afaze = lahvac.stav - 15
                                     else
@@ -845,9 +845,9 @@ local function prog_init()
                     else
                         if odd(game_getCycles()) then
                             if random(2) == 0 then
-                                lahvac.afaze = math.mod(lahvac.afaze - 30, 3) + 31
+                                lahvac.afaze = ((lahvac.afaze - 30) % 3) + 31
                             else
-                                lahvac.afaze = math.mod(lahvac.afaze - 29, 3) + 31
+                                lahvac.afaze = ((lahvac.afaze - 29) % 3) + 31
                             end
                         end
                         lahvac.stav = lahvac.stav - 1
@@ -952,7 +952,7 @@ local function prog_init()
         malej.oci = 0
 
         return function()
-            if math.mod(game_getCycles(), 3) == 0 then
+            if game_getCycles() % 3 == 0 then
                 if random(100) < 10 then
                     malej.oci = random(5)
                 end
@@ -1041,9 +1041,9 @@ local function prog_init()
                                 ruka.smer = 1 - ruka.smer
                             end
                             if ruka.smer == 0 then
-                                ruka.faze = math.mod(ruka.faze + 1, 7)
+                                ruka.faze = (ruka.faze + 1) % 7
                             else
-                                ruka.faze = math.mod(ruka.faze + 6, 7)
+                                ruka.faze = (ruka.faze + 6) % 7
                             end
                             ruka.afaze = ruka.faze
                         end

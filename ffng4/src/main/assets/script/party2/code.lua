@@ -597,7 +597,7 @@ local function prog_init()
                     glass.afaze = 0
                 else
                     pom2 = pom2 - 1
-                    glass.afaze = 2 - math.mod(math.floor(pom2 / 3), 2)
+                    glass.afaze = 2 - math.floor(pom2 / 3) % 2
                 end
                 glass.wav = pom2
                 glass:updateAnim()

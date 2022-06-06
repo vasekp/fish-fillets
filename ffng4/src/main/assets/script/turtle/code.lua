@@ -531,7 +531,7 @@ local function prog_init()
                 end,
                 [2] = function()
                     goanim(rybka)
-                    if math.mod(game_getCycles(), 3) == 0 then
+                    if game_getCycles() % 3 == 0 then
                         rybka.afaze = random(3) + 1
                     end
                 end,

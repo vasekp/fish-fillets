@@ -82,7 +82,7 @@ function findDir(model, destX, destY)
     table.insert(fifo, {dir=dir_up, x=locX, y=locY - 1})
     table.insert(fifo, {dir=dir_down, x=locX, y=locY + 1})
 
-    while table.getn(fifo) > 0 do
+    while #fifo > 0 do
         local place = table.remove(fifo, 1)
         if tryPlace(data, place) then
             if isInRect(place.x, place.y, w, h, destX, destY) then

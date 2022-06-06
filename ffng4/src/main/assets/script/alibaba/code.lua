@@ -24,14 +24,14 @@ local function prog_init()
                 else
                     room.cas = random(1000) + 600
                     pom1 = roompole[1]
-                    if math.mod(pom1, 4) == 2 then
+                    if pom1 % 4 == 2 then
                         if room.zakaz == 1 then
                             pom1 = pom1 + 1
                         end
                     end
-                    pom2 = math.mod(pom1, 4)
+                    pom2 = pom1 % 4
                     pom1 = pom1 + 1
-                    pom1 = math.mod(pom1, 4)
+                    pom1 = pom1 % 4
                     roompole[1] = pom1
                 end
             end

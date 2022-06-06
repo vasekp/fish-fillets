@@ -731,7 +731,7 @@ local function prog_init()
         hlavadr.mluvi = 0
 
         return function()
-            if math.mod(game_getCycles(), 3) == 1 then
+            if game_getCycles() % 3 == 1 then
                 if hlavadr.mluvi ~= 0 then
                     pom1 = hlavadr.afaze
                     repeat

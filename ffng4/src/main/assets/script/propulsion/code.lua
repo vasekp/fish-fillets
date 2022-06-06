@@ -185,7 +185,7 @@ local function prog_init()
                     end
                 end,
                 [2] = function()
-                    if math.mod(game_getCycles(), 4) == 0 then
+                    if game_getCycles() % 4 == 0 then
                         switch(veve.afaze){
                             [6] = function()
                                 veve.afaze = 7
@@ -307,7 +307,7 @@ local function prog_init()
                     else
                         nasrany.nohy = 1
                     end
-                elseif math.mod(game_getCycles(), 3) == 0 and random(100) < 9 then
+                elseif game_getCycles() % 3 == 0 and random(100) < 9 then
                     nasrany.vyraz = random(4)
                 end
                 if nasrany.vyraz ~= 4 and random(100) < 1 and not odd(nasrany.nohy) then
@@ -367,12 +367,12 @@ local function prog_init()
                         if random(100) < 5 then
                             smutny.cinnost = 0
                         end
-                        if math.mod(game_getCycles(), 3) == 0 then
+                        if game_getCycles() % 3 == 0 then
                             smutny.strana = 1 - smutny.strana
                         end
                     end,
                 }
-                if math.mod(game_getCycles(), 3) == 0 and random(100) < 6 then
+                if game_getCycles() % 3 == 0 and random(100) < 6 then
                     smutny.vyraz = random(4) + 1
                 end
             end
@@ -388,7 +388,7 @@ local function prog_init()
     -- -------------------------------------------------------------
     local function prog_init_plut1()
         return function()
-            plut1.afaze = math.mod(plut1.afaze + 1, 3)
+            plut1.afaze = (plut1.afaze + 1) % 3
             plut1:updateAnim()
         end
     end

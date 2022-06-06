@@ -206,7 +206,7 @@ local function prog_init()
                         if trubka.afaze == 4 then
                             trubka.afaze = 5
                         end
-                        if math.mod(game_getCycles(), 3) == 1 then
+                        if game_getCycles() % 3 == 1 then
                             if random(2) == 0 then
                                 trubka.afaze = trubka.afaze + 1
                             else

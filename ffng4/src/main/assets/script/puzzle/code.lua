@@ -173,9 +173,9 @@ local function prog_init()
                     end
 
                     if random(2) == 0 then
-                        pld.afaze = math.mod(pld.afaze + 1, 4)
+                        pld.afaze = (pld.afaze + 1) % 4
                     else
-                        pld.afaze = math.mod(pld.afaze + 3, 4)
+                        pld.afaze = (pld.afaze + 3) % 4
                     end
                     pld.vlnit = pld.vlnit - 1
                     if pld.vlnit == 0 then

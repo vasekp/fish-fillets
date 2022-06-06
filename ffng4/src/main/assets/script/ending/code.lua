@@ -101,7 +101,7 @@ local function prog_init()
                         end
                     end
                 end
-                switch(math.floor(math.mod(room.cas, 1000) / 100)){
+                switch(math.floor((room.cas % 1000) / 100)){
                     [0] = function()
                     end,
                     [1] = function()
@@ -119,7 +119,7 @@ local function prog_init()
                     [3] = function()
                         pom1 = pom1 - 1
                         if pom1 == 0 then
-                            room:talk("z-c-"..(math.floor(math.mod(room.cas, 1000) / 100)))
+                            room:talk("z-c-"..(math.floor((room.cas % 1000) / 100)))
                         end
                         pom1 = pom1 - 1
                         if pom1 == 0 then
@@ -129,7 +129,7 @@ local function prog_init()
                     [4] = function()
                         pom1 = pom1 - 1
                         if pom1 == 0 then
-                            room:talk("z-c-"..(math.floor(math.mod(room.cas, 1000) / 100)))
+                            room:talk("z-c-"..(math.floor((room.cas % 1000) / 100)))
                         end
                         pom1 = pom1 - 1
                         if pom1 == 0 then
@@ -139,7 +139,7 @@ local function prog_init()
                     default = function()
                         pom1 = pom1 - 1
                         if pom1 == 0 then
-                            room:talk("z-c-"..(math.floor(math.mod(room.cas, 1000) / 100)))
+                            room:talk("z-c-"..(math.floor((room.cas % 1000) / 100)))
                         end
                         pom1 = pom1 - 1
                         if pom1 == 0 then
@@ -147,20 +147,20 @@ local function prog_init()
                         end
                     end,
                 }
-                if math.mod(room.cas, 100) < 20 and math.mod(room.cas, 100) > 0 then
+                if room.cas % 100 < 20 and room.cas % 100 > 0 then
                     pom1 = pom1 - 1
                     if pom1 == 0 then
-                        room:talk("z-c-"..(math.mod(room.cas, 100)))
+                        room:talk("z-c-"..(room.cas % 100))
                     end
-                elseif math.mod(room.cas, 100) >= 20 then
+                elseif room.cas % 100 >= 20 then
                     pom1 = pom1 - 1
                     if pom1 == 0 then
-                        room:talk("z-c-"..(math.floor(math.mod(room.cas, 100) / 10) * 10))
+                        room:talk("z-c-"..(math.floor((room.cas % 100) / 10) * 10))
                     end
-                    if math.mod(room.cas, 10) > 0 then
+                    if room.cas % 10 > 0 then
                         pom1 = pom1 - 1
                         if pom1 == 0 then
-                            room:talk("z-c-"..(math.mod(room.cas, 10)))
+                            room:talk("z-c-"..(room.cas % 10))
                         end
                     end
                 end
@@ -246,7 +246,7 @@ local function prog_init()
                         pldik.suckani = pldik.suckani - 1
                     end,
                 }
-                pldik.suckfaze = math.mod(pldik.suckfaze + 1, 6)
+                pldik.suckfaze = (pldik.suckfaze + 1) % 6
             else
                 model_killSound(ACTOR_SUCK)
             end

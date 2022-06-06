@@ -24,7 +24,7 @@ function Pickle:pickle_(root)
   self:ref_(root)
   local s = {"{"}
 
-  while table.getn(self._refToTable) > savecount do
+  while #self._refToTable > savecount do
     savecount = savecount + 1
     local t = self._refToTable[savecount]
     table.insert(s, "{\n")
@@ -59,7 +59,7 @@ function Pickle:ref_(t)
   if not ref then 
     if t == self then error("can't pickle the pickle class") end
     table.insert(self._refToTable, t)
-    ref = table.getn(self._refToTable)
+    ref = #self._refToTable
     self._tableToRef[t] = ref
   end
   return ref
@@ -81,7 +81,7 @@ function unpickle_table(tables)
   if type(tables) ~= "table" then
     error("can't unpickle a "..type(tables)..", only tables")
   end
-  for tnum = 1, table.getn(tables) do
+  for tnum = 1, #tables do
     local t = tables[tnum]
     local tcopy = {}; for i, v in pairs(t) do tcopy[i] = v end
     for i, v in pairs(tcopy) do

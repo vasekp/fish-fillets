@@ -84,7 +84,7 @@ local function prog_init()
                 end
 
             local count = game_getCycles()
-            plutonium.afaze=math.mod(count, 12)/3
+            plutonium.afaze=(count%12)/3
             plutonium:updateAnim()
             -- very specific because text wouldn't fit otherwise
             if damage_wall.damagestate == 0 and killozap.Y == 2 and killozap.X == 3 and killozap.dir == dir_left and big.X < 9 and big.Y == 3 then

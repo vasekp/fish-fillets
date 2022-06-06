@@ -111,7 +111,7 @@ local function prog_init()
             if meduza.keca ~= 101 then
                 if meduza.X == mic.X and meduza.Y == mic.Y - 3 then
                     mic.beha = 1
-                    meduza.afaze = math.mod(meduza.afaze + 1, 3)
+                    meduza.afaze = (meduza.afaze + 1) % 3
                     meduza:updateAnim()
                 else
                     mic.beha = 0
@@ -131,7 +131,7 @@ local function prog_init()
 
         return function()
             if mic.beha == 1 then
-                mic.afaze = math.mod(mic.afaze + 1, 4)
+                mic.afaze = (mic.afaze + 1) % 4
                 mic:updateAnim()
             end
         end
@@ -202,7 +202,7 @@ local function prog_init()
     -- -------------------------------------------------------------
     local function prog_init_budik()
         return function()
-            switch(math.mod(game_getCycles(), 9)){
+            switch(game_getCycles() % 9){
                 [0] = function()
                     budik.afaze = 0
                 end,

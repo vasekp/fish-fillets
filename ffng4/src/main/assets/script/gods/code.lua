@@ -366,7 +366,7 @@ local function prog_init()
                         buh2.ruka = random(4)
                     end
                 elseif buh2.cinruky > 0 then
-                    if math.mod(game_getCycles(), 3) == 0 then
+                    if game_getCycles() % 3 == 0 then
                         if random(100) < 30 then
                             buh2.ruka = xor1(buh2.ruka)
                         else
@@ -485,11 +485,11 @@ local function prog_init()
                 end,
             }
             if buh1.mluveni > 100 then
-                if odd(game_getCycles()) and buh1.mluveni > 101 or math.mod(game_getCycles(), 4) == 1 then
+                if odd(game_getCycles()) and buh1.mluveni > 101 or game_getCycles() % 4 == 1 then
                     if random(2) == 1 then
-                        buh1.pusa = math.mod(buh1.pusa + 1, 3)
+                        buh1.pusa = (buh1.pusa + 1) % 3
                     else
-                        buh1.pusa = math.mod(buh1.pusa + 2, 3)
+                        buh1.pusa = (buh1.pusa + 2) % 3
                     end
                 end
             end
@@ -539,7 +539,7 @@ local function prog_init()
                     buh1.ruka = random(4)
                 end
             elseif buh1.cinruky > 0 then
-                if math.mod(game_getCycles(), 2) == 0 then
+                if game_getCycles() % 2 == 0 then
                     pom1 = random(3)
                     if pom1 == buh1.ruka then
                         pom1 = 3

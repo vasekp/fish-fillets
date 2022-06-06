@@ -47,7 +47,7 @@ local function prog_init()
                         addm(10 + random(40), "sl-m-velkolepe")
                         room.uvod = room.uvod - 10
                     end
-                    if math.mod(room.uvod, 10) >= 1 then
+                    if room.uvod % 10 >= 1 then
                         addv(20, "sl-v-stopa")
                     end
                     if room.uvod > 10 then

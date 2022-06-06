@@ -184,7 +184,7 @@ end
 local function addBodyAnimBackward(model, directory, anim, phase)
     local picture_00 = directory.."/left/body_"..phase..".png"
     local list = imgList(picture_00)
-    for index = table.getn(list), 1, -1 do
+    for index = #list, 1, -1 do
         local filename = list[index]
         model:addAnim(anim, filename)
         model:addAnim(anim,

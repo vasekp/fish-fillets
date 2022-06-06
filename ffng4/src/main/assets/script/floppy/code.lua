@@ -50,7 +50,7 @@ local function prog_init()
                 elseif room.nepo == 2 then
                     room.nepo = 3
                     pom2 = 8
-                elseif math.mod(svab.pohyby, 121) == 120 then
+                elseif svab.pohyby % 121 == 120 then
                     svab.pohyby = svab.pohyby + 1
                     pom2 = 9
                 elseif stdBorderReport() then

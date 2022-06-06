@@ -94,18 +94,18 @@ local function prog_init()
                 sasanka.fazec = 0
                 sasanka.akcnost = 2 + random(2)
             end
-            if math.mod(game_getCycles(), sasanka.akcnost) == 0 then
+            if game_getCycles() % sasanka.akcnost == 0 then
                 cinnost_table = {
                     [1] = function()
                         sasanka.noha = math.floor(sasanka.fazec / 4)
                         if sasanka.cinnost == 1 then
-                            sasanka.kvet = math.mod(sasanka.fazec, 2) + 1
+                            sasanka.kvet = (sasanka.fazec % 2) + 1
                             sasanka.akcnost = 2
                             if sasanka.kvet == 2 then
                                 sasanka:talk("ncp-x-tup", VOLUME_FULL)
                             end
                         else
-                            sasanka.kvet = math.mod(sasanka.fazec, 2) * 2 + 1
+                            sasanka.kvet = (sasanka.fazec % 2) * 2 + 1
                             sasanka.akcnost = 3
                         end
                         sasanka.fazec = sasanka.fazec + 1

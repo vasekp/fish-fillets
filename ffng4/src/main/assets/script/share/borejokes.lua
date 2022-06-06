@@ -7,7 +7,7 @@ local function wasUsedRecently(n)
     return isIn(n, usedJokes)
 end
 local function rememberUsed(n)
-    peek = math.mod(peek + 1, usedJokesCapacity)
+    peek = (peek + 1) % usedJokesCapacity
     usedJokes[peek] = n
 end
 
@@ -15,7 +15,7 @@ local boredDialogTable = {}
 
 function insertBoreJoke(joke)
     table.insert(boredDialogTable, joke)
-    if usedJokesCapacity * 3 < table.getn(boredDialogTable) then
+    if usedJokesCapacity * 3 < #boredDialogTable then
         usedJokesCapacity = usedJokesCapacity + 1
     end
 end
@@ -250,9 +250,9 @@ function stdBoreJoke()
     if boredUnits() and no_dialog() then
         boredRate = 0
         delayForJoke = delayForJoke * randint(100, 150) / 100
-        n = random(table.getn(boredDialogTable))
+        n = random(#boredDialogTable)
         while wasUsedRecently(n) do
-            n = random(table.getn(boredDialogTable))
+            n = random(#boredDialogTable)
         end
         rememberUsed(n)
         selectJoke(n)

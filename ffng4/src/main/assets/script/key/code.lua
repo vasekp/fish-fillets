@@ -46,7 +46,7 @@ local function prog_init()
             end
 
             if item_named_A.Y == 1 and item_named_B.Y == 1 and item_named_C.Y == 1 then
-                if math.mod(room.keyupdown, 2) == 0 then
+                if room.keyupdown % 2 == 0 then
                     room.keyupdown = room.keyupdown + 1
                     if room.keyupdown < 2 then
                         addv(0, "up-0-0")
@@ -59,7 +59,7 @@ local function prog_init()
                     end
                 end
             else
-                if math.mod(room.keyupdown, 2) == 1 then
+                if room.keyupdown % 2 == 1 then
                     room.keyupdown = room.keyupdown + 1
                     if room.keyupdown < 3 then
                         addv(0, "down-0-0")

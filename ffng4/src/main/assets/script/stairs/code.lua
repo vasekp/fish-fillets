@@ -147,9 +147,9 @@ local function prog_init()
                     end
                 end,
                 [2] = function()
-                    if math.mod(snecek.sour, 3) == 0 and random(100) < 30 then
+                    if snecek.sour % 3 == 0 and random(100) < 30 then
                         snecek.cinnost = 0
-                    elseif math.mod(snecek.sour, 3) == 0 and random(100) < 10 then
+                    elseif snecek.sour % 3 == 0 and random(100) < 10 then
                         snecek.cinnost = 3
                     elseif random(100) < 2 or snecek.smer == -1 and snecek.sour == 0 or snecek.smer == 1 and snecek.sour == 15 then
                         snecek.smer = -snecek.smer

@@ -29,7 +29,7 @@ local function prog_init()
                 else
                 end
             else
-                switch(math.mod(room.houk, 10)){
+                switch(room.houk % 10){
                     [2] = function()
                         room:talk("steel-x-redalert", VOLUME_FULL)
                         bgfaze = 1

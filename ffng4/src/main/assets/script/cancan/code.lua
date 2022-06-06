@@ -51,7 +51,7 @@ local function prog_init()
                 krab3.muze = 1
                 krab4.muze = 1
             end
-            if math.mod(game_getCycles(), 2) == 0 then
+            if game_getCycles() % 2 == 0 then
                 if krab1.krok == 7 then
                     krab1.krok = 0
                 else
@@ -90,7 +90,7 @@ local function prog_init()
                         end,
                     }
                 end
-            elseif krab1.afaze > 5 or math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            elseif krab1.afaze > 5 or game_getCycles() % 3 == 0 and random(100) < 40 then
                 krab1.afaze = random(6)
             end
             krab1:updateAnim()
@@ -136,7 +136,7 @@ local function prog_init()
                         end,
                     }
                 end
-            elseif krab2.afaze > 5 or math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            elseif krab2.afaze > 5 or game_getCycles() % 3 == 0 and random(100) < 40 then
                 krab2.afaze = random(6)
             end
             krab2:updateAnim()
@@ -182,7 +182,7 @@ local function prog_init()
                         end,
                     }
                 end
-            elseif krab3.afaze > 5 or math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            elseif krab3.afaze > 5 or game_getCycles() % 3 == 0 and random(100) < 40 then
                 krab3.afaze = random(6)
             end
             krab3:updateAnim()
@@ -228,7 +228,7 @@ local function prog_init()
                         end,
                     }
                 end
-            elseif krab4.afaze > 5 or math.mod(game_getCycles(), 3) == 0 and random(100) < 40 then
+            elseif krab4.afaze > 5 or game_getCycles() % 3 == 0 and random(100) < 40 then
                 krab4.afaze = random(6)
             end
             krab4:updateAnim()
@@ -276,7 +276,7 @@ local function prog_init()
                     klavir.mrknuti = klavir.mrknuti - 1
                     klavir.otocka = klavir.otocka - 1
                 else
-                    klavir.ruce = math.mod(klavir.ruce + random(3) + 1, 4)
+                    klavir.ruce = (klavir.ruce + random(3) + 1) % 4
                     if klavir.otocka > 0 then
                         klavir.afaze = 4 + klavir.ruce
                         if random(100) < 7 then
@@ -317,7 +317,7 @@ local function prog_init()
             end
             if pomb1 or not pomb2 then
                 if odd(game_getCycles()) then
-                    sepie.nohy = math.mod(sepie.nohy + 2 + random(2) * 2, 3)
+                    sepie.nohy = (sepie.nohy + 2 + random(2) * 2) % 3
                 end
                 sepie.afaze = sepie.nohy
                 if pomb1 then
@@ -329,7 +329,7 @@ local function prog_init()
                 end
             else
                 if sepie.dir == dir_left or sepie.dir == dir_down then
-                    sepie.nohy = math.mod(sepie.nohy + 1, 2)
+                    sepie.nohy = (sepie.nohy + 1) % 2
                 else
                     sepie.nohy = 0
                 end
@@ -351,7 +351,7 @@ local function prog_init()
         rejnok.nespi = 0
 
         return function()
-            if math.mod(game_getCycles(), 2) == 0 or rejnok.nespi > 20 then
+            if game_getCycles() % 2 == 0 or rejnok.nespi > 20 then
                 if rejnok.pozice == 5 then
                     rejnok.pozice = 0
                 else
@@ -384,7 +384,7 @@ local function prog_init()
 
         return function()
             if isWater(sasanka.X, sasanka.Y - 1) then
-                local cycle = math.mod(game_getCycles(), 8)
+                local cycle = game_getCycles() % 8
                 if isIn(cycle, {0, 1, 2, 3}) then
                     sasanka.noha = 0
                 else

@@ -242,7 +242,7 @@ local function prog_init()
 		 and valecek[i].X ~= 8) or
 	         (valecek[i].X == 8 and valecek[i].Y == 11) then
 
-	        nastavvalec(i, math.mod(valecek[i].X, 2)*2-1)
+	        nastavvalec(i, (valecek[i].X % 2)*2-1)
 
 	        svetelko[i].afaze = room.energie
 	        model_setViewShift(svetelko[i].index,

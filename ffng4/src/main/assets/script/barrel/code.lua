@@ -203,7 +203,7 @@ local function prog_init()
                 if not kachnicka:isTalking() then
                     kachnicka:talk("bar-x-kchkch", VOLUME_LOW, -1)
                 end
-                kachnicka.afaze = math.mod(kachnicka.afaze - 5 + 1, 4) + 5
+                kachnicka.afaze = ((kachnicka.afaze - 5 + 1) % 4) + 5
                 kachnicka.cinnost = kachnicka.cinnost + 1
                 if kachnicka.cinnost == 0 then
                     kachnicka.afaze = 0
@@ -222,7 +222,7 @@ local function prog_init()
         had.huba = random(3)
 
         return function()
-            if math.mod(game_getCycles(), 3) == 0 then
+            if game_getCycles() % 3 == 0 then
                 if (had.huba == 0) then
                         if random(1000) < 15 then
                             had.huba = random(2) + 1
@@ -235,7 +235,7 @@ local function prog_init()
                         end
                 end
             end
-            had.streva = math.mod(had.streva + 1, 4)
+            had.streva = (had.streva + 1) % 4
             had.afaze = 4 * had.huba + had.streva
             had:updateAnim()
         end
@@ -368,7 +368,7 @@ local function prog_init()
         kukajda.mrknuti = 0
 
         return function()
-            kukajda.ploutvicka = math.mod(kukajda.ploutvicka + 1, 6)
+            kukajda.ploutvicka = (kukajda.ploutvicka + 1) % 6
             if (kukajda.ploutvicka == 0) or (kukajda.ploutvicka == 1) then
                     kukajda.afaze = 0
             elseif (kukajda.ploutvicka == 2) or (kukajda.ploutvicka == 5) then
@@ -429,7 +429,7 @@ local function prog_init()
         hlubinna.zzzeni = 0
 
         return function()
-            hlubinna.ploutvicka = math.mod(hlubinna.ploutvicka + 1, 5)
+            hlubinna.ploutvicka = (hlubinna.ploutvicka + 1) % 5
             if (hlubinna.ploutvicka == 3) then
                     hlubinna.afaze = 1
             elseif (hlubinna.ploutvicka == 4) then
@@ -502,7 +502,7 @@ local function prog_init()
                     nozka.cinnost = -20 - random(60)
                 end
             else
-                if math.mod(game_getCycles(), 3) == 0 then
+                if game_getCycles() % 3 == 0 then
                     nozka.dup = 1 - nozka.dup
                     if nozka.dup == 0 then
                         nozka:talk("bar-x-tup", VOLUME_LOW)
@@ -595,7 +595,7 @@ local function prog_init()
                 elseif (pldik.suckfaze == 5) then
                         pldik.suckani = pldik.suckani - 1
                 end
-                pldik.suckfaze = math.mod(pldik.suckfaze + 1, 6)
+                pldik.suckfaze = (pldik.suckfaze + 1) % 6
             end
             pldik:updateAnim()
         end
@@ -662,9 +662,9 @@ local function prog_init()
                     end
 
                     if random(2) == 0 then
-                        pldotec.afaze = math.mod(pldotec.afaze + 1, 4)
+                        pldotec.afaze = (pldotec.afaze + 1) % 4
                     else
-                        pldotec.afaze = math.mod(pldotec.afaze + 3, 4)
+                        pldotec.afaze = (pldotec.afaze + 3) % 4
                     end
                     pldotec.vlnit = pldotec.vlnit - 1
                     if pldotec.vlnit == 0 then

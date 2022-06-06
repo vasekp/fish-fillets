@@ -72,7 +72,7 @@ local function prog_init()
         return function()
             local count = game_getCycles()
             for index, model in pairs(tyce) do
-                model.afaze = 2 - math.floor(math.mod(count, 6) / 2)
+                model.afaze = 2 - math.floor((count % 6) / 2)
                 model:updateAnim()
             end
             for pom1, model in pairs(tyce) do
@@ -130,9 +130,9 @@ local function prog_init()
                         pld.del = 1
                     end
                     if random(2) == 0 then
-                        pld.afaze = math.mod(pld.afaze + 1, 4)
+                        pld.afaze = (pld.afaze + 1) % 4
                     else
-                        pld.afaze = math.mod(pld.afaze + 3, 4)
+                        pld.afaze = (pld.afaze + 3) % 4
                     end
                     pld.vlnit = pld.vlnit - 1
                     if pld.vlnit == 0 then
