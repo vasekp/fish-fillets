@@ -2,7 +2,7 @@
 #define FISH_FILLETS_GRAPHICS_TEXTURE_VIEW_H
 
 #include "common.h"
-#include "platform/ogl.h"
+#include "api/ogl.h"
 
 class TextureView {
     const ogl::Texture& m_texture;

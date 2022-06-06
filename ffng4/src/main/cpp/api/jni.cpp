@@ -1,4 +1,4 @@
-#include "platform/jni.h"
+#include "./jni.h"
 
 namespace jni {
     Env::Env(android_app* app) :

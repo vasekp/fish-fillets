@@ -16,8 +16,8 @@ set(CMAKE_SHARED_LINKER_FLAGS
 
 file(GLOB fillets_sources
     "*.cpp"
-    "platform/*.cpp"
-    "platform/*/*.cpp"
+    "api/*.cpp"
+    "api/*/*.cpp"
     "subsystem/*.cpp"
     "subsystem/*/*.cpp"
     "game/*.cpp"

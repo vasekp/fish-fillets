@@ -2,7 +2,7 @@
 #define FISH_FILLETS_GRAPHICS_H
 
 #include "instance.h"
-#include "platform/ogl.h"
+#include "api/ogl.h"
 #include "subsystem/files.h"
 
 #include "graphics/shaders.h"

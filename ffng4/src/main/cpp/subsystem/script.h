@@ -2,7 +2,7 @@
 #define FISH_FILLETS_SCRIPT_H
 
 #include "instance.h"
-#include "platform/lua.h"
+#include "api/lua.h"
 #include "subsystem/files.h"
 #include "script/callback.h"
 

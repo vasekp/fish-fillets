@@ -1,4 +1,4 @@
-#include "platform/ogl.h"
+#include "api/ogl.h"
 
 namespace ogl {
 

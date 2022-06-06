@@ -9,7 +9,7 @@ extern "C" {
 #include "lua/lauxlib.h"
 }
 
-#include "platform/lua/wrapper.h"
+#include "./lua/wrapper.h"
 
 namespace lua {
 

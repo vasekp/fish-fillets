@@ -2,7 +2,7 @@
 #define FISH_FILLETS_INSTANCE_H
 
 #include "common.h"
-#include "platform/jni.h"
+#include "api/jni.h"
 #include "subsystem/rng.h"
 
 struct android_app;

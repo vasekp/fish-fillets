@@ -1,7 +1,7 @@
 #ifndef FISH_FILLETS_FILES_SYSTEM_H
 #define FISH_FILLETS_FILES_SYSTEM_H
 
-#include "platform/ndk.h"
+#include "api/ndk.h"
 
 class SystemFile : public IFile {
     AAssetManager *m_assets;
