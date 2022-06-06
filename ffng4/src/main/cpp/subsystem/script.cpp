@@ -27,7 +27,7 @@ void Script::registerFn(const std::string& name, lua_CFunction function) {
 }
 
 void Script::doString(const std::string& string) {
-    if(luaL_dostring(m_env, string.c_str()))
+    if(luaL_dostring(m_env, string.c_str()) != LUA_OK)
         Log::error("Lua error: ", lua_tostring(m_env, -1));
 }
 

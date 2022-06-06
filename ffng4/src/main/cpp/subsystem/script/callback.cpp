@@ -30,7 +30,7 @@ bool LuaCallback::operator()() {
     Log::verbose("calling [", m_ref, "] tries=", m_tries);
     lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_ref);
     lua_pushnumber(m_state, m_tries++);
-    if(lua_pcall(m_state, 1, 1, 0))
+    if(lua_pcall(m_state, 1, 1, 0) != LUA_OK)
         Log::fatal("Lua error: ", lua_tostring(m_state, -1));
     bool result = lua_toboolean(m_state, -1);
     lua_pop(m_state, 1);
