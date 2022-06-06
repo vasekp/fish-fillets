@@ -8,10 +8,10 @@ class ModelAnim {
     class Layer {
         const std::array<std::vector<const Image*>, 2>& m_set;
         std::size_t m_length;
-        int m_phase;
+        std::size_t m_phase;
 
     public:
-        Layer(const std::array<std::vector<const Image*>, 2>& set, int phase);
+        Layer(const std::array<std::vector<const Image*>, 2>& set, std::size_t phase);
 
         void advance();
         const Image* get(int dir) const;
@@ -25,8 +25,8 @@ class ModelAnim {
 
 public:
     void add(const std::string& name, int dir, const Image* image);
-    void set(const std::string& name, int phase, bool running);
-    void setExtra(const std::string& name, int phase);
+    void set(const std::string& name, std::size_t phase, bool running);
+    void setExtra(const std::string& name, std::size_t phase);
     void removeExtra();
 
     void update();

@@ -124,6 +124,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         case DirpadState::button: // handled earlier
             return true;
     }
+    __builtin_unreachable();
 }
 
 bool LevelInput::handlePointerUp() {
@@ -164,14 +165,14 @@ void LevelInput::refresh() {
         float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
         float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
         float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
-        float buttonOffset = (fullSize - (buttonCount - 1) * buttonStride - buttonSize) / 2.f;
+        float buttonOffset = (fullSize - (float)(buttonCount - 1) * buttonStride - buttonSize) / 2.f;
         glUniform1f(program.uniform("uSize"), buttonSize);
 
         std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
         std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
         static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
         static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
-        for(int i = 0; i < buttonCount; i++) {
+        for(auto i = 0u; i < buttonCount; i++) {
             FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
                     m_instance.graphics().renderText(chars[i], "font/FFArrows.ttf", buttonSize, 0),
@@ -200,13 +201,13 @@ void LevelInput::draw(const DrawTarget& target) {
 void LevelInput::drawButtons(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
     glUseProgram(program);
-    for(int i = 0; i < m_buttons.size(); i++) {
+    for(auto i = 0u; i < m_buttons.size(); i++) {
         glUniform2f(program.uniform("uPosition"), m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy());
         auto& texture = m_buttons[i].texture;
         texture.bind();
         glUniform2f(program.uniform("uSrcSize"), (float) texture.width(), (float) texture.height());
         float alpha = !m_buttonsEnabled[i] ? .25f
-                : m_dirpad.state == DirpadState::button && i == m_activeButton
+                : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
                     ? 1.0f
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
@@ -249,7 +250,7 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
 }
 
 int LevelInput::findButton(FCoords pos) {
-    for(int i = 0; i < m_buttons.size(); i++) {
+    for(auto i = 0u; i < m_buttons.size(); i++) {
         auto& button = m_buttons[i];
         if(pos.within(button.coordsFrom, button.coordsTo))
             return i;
@@ -268,4 +269,5 @@ FCoords LevelInput::getReserve() {
         case ButtonGravity::top:
             return {0.f, m_buttons[0].coordsTo.fy()};
     }
+    __builtin_unreachable();
 }

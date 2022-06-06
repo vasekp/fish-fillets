@@ -15,7 +15,7 @@ int LevelLayout::addModel(const std::string& type, int x, int y, const std::stri
 }
 
 Model* LevelLayout::getModel(int index) const {
-    if(index >= 0 && index < m_models_internal.size())
+    if(index >= 0 && (std::size_t)index < m_models_internal.size())
         return m_models_internal[index].get();
     if(m_virtModels.contains(index))
         return m_virtModels.at(index).get();
@@ -123,25 +123,25 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
         if(model == unit || model->isVirtual() || borderDepth(model).first > 0)
             continue;
         auto [x, y] = model->xy();
-        for(int dx = 0; dx < model->shape().width(); dx++)
-            for(int dy = 0; dy < model->shape().height(); dy++)
+        for(auto dx = 0u; dx < model->shape().width(); dx++)
+            for(auto dy = 0u; dy < model->shape().height(); dy++)
                 occupied[y + dy][x + dx] = model->shape()[dy][dx];
     }
     /* Extend occupied fields to the left and above, as unit covers [x, x+unitWidth) × [y, y + unitHeight)
      * and thus can't start where it could clash with an occupied field due to its nonunit size */
-    auto unitWidth = (int)unit->shape().width();
-    auto unitHeight = (int)unit->shape().height();
-    for(int i = 0; i < unitWidth - 1; i++)
-        for(int y = 0; y < maxDim; y++)
+    auto unitWidth = unit->shape().width();
+    auto unitHeight = unit->shape().height();
+    for(auto i = 0u; i < unitWidth - 1; i++)
+        for(auto y = 0u; y < maxDim; y++)
             occupied[y] |= occupied[y] >> 1;
-    for(int i = 0; i < unitHeight - 1; i++)
-        for(int y = 0; y < maxDim - 1; y++)
+    for(auto i = 0u; i < unitHeight - 1; i++)
+        for(auto y = 0u; y < maxDim - 1; y++)
             occupied[y] |= occupied[y + 1];
     ICoords start = unit->xy();
     if(occupied[start.y][start.x])
         Log::fatal("Unit start field marked as occupied.");
-    for(int dx = 0; dx < std::min(unitWidth, target.x + 1); dx++)
-        for(int dy = 0; dy < std::min(unitHeight, target.y + 1); dy++)
+    for(int dx = 0; dx < std::min((int)unitWidth, target.x + 1); dx++)
+        for(int dy = 0; dy < std::min((int)unitHeight, target.y + 1); dy++)
             if(occupied[target.y - dy][target.x - dx])
                 Log::verbose(target - ICoords{dx, dy}, " occupied");
             else
@@ -155,7 +155,7 @@ Found:
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right})
         queue.emplace_back(start + dir, dir);
     ICoords end{};
-    ICoords accept{unitWidth - 1, unitHeight - 1};
+    ICoords accept{(int)unitWidth - 1, (int)unitHeight - 1};
     while(!queue.empty()) {
         auto [coords, dir] = queue.front();
         queue.pop_front();

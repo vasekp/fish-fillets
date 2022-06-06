@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_ZXEFFECT_H
 #define FISH_FILLETS_ZXEFFECT_H
 
+#include "subsystem/graphics.h"
+
 class ZXEffect {
     Instance& m_instance;
     float m_stripHeight;

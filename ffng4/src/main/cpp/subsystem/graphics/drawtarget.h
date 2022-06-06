@@ -14,7 +14,7 @@ public:
 
     void fill(const ogl::Program &program, float x1, float y1, float x2, float y2) const;
 
-    static constexpr unsigned fullSize = std::numeric_limits<decltype(fullSize)>::max();
+    static constexpr unsigned fullSize = std::numeric_limits<unsigned>::max();
 
 protected:
     virtual bool flipY() const { return false; }

@@ -19,6 +19,7 @@
 #include <utility>
 #include <memory>
 #include <algorithm>
+#include <numeric>
 #include <chrono>
 #include <optional>
 #include <filesystem>

@@ -57,7 +57,7 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
             if(record.visible() && record.solved)
                 target.blit(m_nodeImages[0], copyProgram, record.coords.fx() - nodeRadius, record.coords.fy() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
-        float sin2 = 3.f * std::powf(std::sinf(M_PI * phase), 2.f);
+        float sin2 = 3.f * std::pow(std::sin((float)M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
         const auto& alphaProgram = m_instance.graphics().shaders().alpha;
         glUseProgram(alphaProgram);

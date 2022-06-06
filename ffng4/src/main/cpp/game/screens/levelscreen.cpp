@@ -1,6 +1,7 @@
 #include "levelscreen.h"
 #include "game/logic/level.h"
 #include "screenmanager.h"
+#include "subsystem/rng.h"
 
 LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         GameScreen(instance),

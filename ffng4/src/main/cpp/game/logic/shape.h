@@ -6,7 +6,7 @@
 
 class Shape {
 public:
-    constexpr static std::size_t maxSize = 60;
+    constexpr static unsigned maxSize = 60;
 
 private:
     std::vector<std::bitset<maxSize>> m_bits;

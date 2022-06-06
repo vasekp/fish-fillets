@@ -188,10 +188,9 @@ void Level::save() {
 
 void Level::load(bool keepSchedule) {
     if(loadPossible()) {
-        auto file = saveFile();
         killDialogsHard();
         m_tickSchedule.clear();
-        m_tickSchedule.emplace_back([&, file, keepSchedule]() {
+        m_tickSchedule.emplace_back([&, file = saveFile(), keepSchedule]() {
             reinit(keepSchedule);
             m_script.loadFile(file);
             m_script.doString("script_load()");
