@@ -244,12 +244,16 @@ bool LevelScreen::own_key(Key key) {
         case Key::down:
         case Key::left:
         case Key::right:
+            if(m_level.inGoTo())
+                m_level.skipGoTo(false); // break running goto commands
             if(m_level.accepting()) {
                 m_level.rules().keyInput(key);
                 return true;
             } else
                 return false;
         case Key::space:
+            if(m_level.inGoTo())
+                m_level.skipGoTo(true); // skip to final position before switching fish
             if(m_level.accepting())
                 m_level.rules().keyInput(key);
             else

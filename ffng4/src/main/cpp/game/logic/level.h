@@ -45,10 +45,10 @@ class Level : public ScriptReferrer {
         loading,
         schedule,
         demo,
-        longpress,
         SIZE
     };
     EnumBitset<BusyReason> m_busy;
+    bool m_goto;
 
 public:
     Level(Instance& instance, LevelScreen& screen, LevelRecord& record);
@@ -79,6 +79,8 @@ public:
     void recordMove(char key);
     bool accepting() const;
     void skipBusy();
+    bool inGoTo() const;
+    void skipGoTo(bool finish);
 
     void killModelSound(Model* model);
     void killDialogs();

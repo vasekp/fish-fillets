@@ -7,7 +7,8 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_record(record),
         m_script(instance, *this),
         m_attempt(0),
-        m_roundFlag(false)
+        m_roundFlag(false),
+        m_goto(false)
 {
     registerCallbacks();
 }
@@ -91,6 +92,18 @@ bool Level::accepting() const {
     return m_busy.none();
 }
 
+bool Level::inGoTo() const {
+    return m_goto;
+}
+
+void Level::skipGoTo(bool finish) {
+    if(finish)
+        runScheduledAll();
+    else
+        clearSchedule();
+    m_goto = false;
+}
+
 void Level::schedule(Callback&& action) {
     m_moveSchedule.push_back(std::move(action));
 }
@@ -115,6 +128,9 @@ bool Level::runScheduled() {
 
 void Level::runScheduledAll() {
     while(!m_moveSchedule.empty()) {
+        for(auto& transition : m_transitions)
+            transition.callback();
+        m_transitions.clear();
         layout().animate(0.f, LevelLayout::speed_instant);
         rules().update();
     }
@@ -201,6 +217,7 @@ void Level::reinit(bool keepSchedule) {
     m_replay.clear();
     setBusy(BusyReason::demo, false);
     setBusy(BusyReason::loading, false);
+    m_goto = false;
     if(!keepSchedule)
         clearSchedule();
 }
@@ -225,7 +242,7 @@ bool Level::scheduleGoTo(ICoords coords) {
     auto* unit = rules().activeFish_model();
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
-        setBusy(BusyReason::longpress);
+        m_goto = true;
         for(auto dir : path) {
             schedule([&, dir]() {
                 m_rules->keyInput(Input::toKey(dir));
@@ -233,7 +250,7 @@ bool Level::scheduleGoTo(ICoords coords) {
             });
         }
         schedule([&]() {
-            setBusy(BusyReason::longpress, false);
+            m_goto = false;
             return true;
         });
         return true;
