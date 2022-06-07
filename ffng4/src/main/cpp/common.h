@@ -23,11 +23,20 @@
 #include <chrono>
 #include <optional>
 #include <filesystem>
+#include <functional>
 
 #include "types.h"
 #include "utils.h"
 #include "log.h"
 
 using namespace std::string_literals;
+
+#ifndef __cpp_lib_unreachable
+namespace std {
+    [[noreturn, maybe_unused]] static void unreachable() {
+        __builtin_unreachable();
+    }
+}
+#endif
 
 #endif //FIST_FILLETS_COMMON_H

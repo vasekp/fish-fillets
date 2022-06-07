@@ -124,7 +124,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
         case DirpadState::button: // handled earlier
             return true;
     }
-    __builtin_unreachable();
+    std::unreachable();
 }
 
 bool LevelInput::handlePointerUp() {
@@ -269,5 +269,5 @@ FCoords LevelInput::getReserve() {
         case ButtonGravity::top:
             return {0.f, m_buttons[0].coordsTo.fy()};
     }
-    __builtin_unreachable();
+    std::unreachable();
 }

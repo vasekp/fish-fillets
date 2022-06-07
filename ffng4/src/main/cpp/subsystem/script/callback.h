@@ -1,7 +1,6 @@
 #ifndef FISH_FILLETS_SCRIPT_QUEUED_FUNCTION_H
 #define FISH_FILLETS_SCRIPT_QUEUED_FUNCTION_H
 
-#include <functional>
 #include <variant>
 
 class LuaCallback {

@@ -7,7 +7,6 @@
 #include "layout.h"
 #include "rules.h"
 
-#include <functional>
 #include <variant>
 
 class LevelScreen;

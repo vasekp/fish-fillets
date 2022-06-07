@@ -3,7 +3,7 @@
 
 constexpr const char* tag = "FFNG4";
 
-auto android_loglevel(Log::Level level) {
+static auto android_loglevel(Log::Level level) {
     switch(level) {
         case Log::Level::verbose:
             return ANDROID_LOG_VERBOSE;

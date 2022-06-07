@@ -1,9 +1,8 @@
 #ifndef FISH_FILLETS_LOG_H
 #define FISH_FILLETS_LOG_H
 
+#include "common.h"
 #include <sstream>
-#include <string_view>
-#include <stdexcept>
 
 class Log {
 public:

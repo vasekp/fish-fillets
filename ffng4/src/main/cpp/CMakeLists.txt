@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.20)
+project(Fillets)
 
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 
@@ -7,7 +8,7 @@ add_library(native_app_glue STATIC
 
 find_package (oboe REQUIRED CONFIG)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
 set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
 
