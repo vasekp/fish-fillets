@@ -1,7 +1,7 @@
 #include "subtitles.h"
 
 std::vector<std::string> Subtitles::breakLines(const std::string& text) {
-    auto& jni = m_instance.jni();
+    /*auto& jni = m_instance.jni(); // XXX
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
@@ -20,7 +20,8 @@ std::vector<std::string> Subtitles::breakLines(const std::string& text) {
     jni->DeleteLocalRef(jFilename);
     jni->DeleteLocalRef(jText);
     jni->DeleteLocalRef(jArray);
-    return ret;
+    return ret;*/
+    return {};
 }
 
 void Subtitles::defineColors(const std::string &name, Color color1, Color color2) {

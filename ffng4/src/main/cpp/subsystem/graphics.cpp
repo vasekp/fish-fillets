@@ -1,7 +1,7 @@
 #include "graphics.h"
 #include "game/screens/screen.h"
 #include "game/screens/screenmanager.h"
-#include <android/bitmap.h>
+//#include <android/bitmap.h> // XXX
 
 void Graphics::activate() {
     Log::debug("graphics: activate");
@@ -32,7 +32,8 @@ void Graphics::setMask(const Image* image) {
 }
 
 ogl::Texture Graphics::loadImage(const SystemFile& file) const {
-    Log::debug("loadImage ", file.getPath());
+    return ogl::Texture::empty(system().ref(), 1, 1);
+    /*Log::debug("loadImage ", file.getPath()); // XXX
     auto& jni = m_instance.jni();
     jstring jPath = jni->NewStringUTF(file.getPath().c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
@@ -49,11 +50,12 @@ ogl::Texture Graphics::loadImage(const SystemFile& file) const {
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jPath);
     jni->DeleteLocalRef(jBitmap);
-    return ret;
+    return ret;*/
 }
 
 ogl::Texture Graphics::renderText(const std::string& text, const std::string& font, float fontSize, float outline) const {
-    auto& jni = m_instance.jni();
+    return ogl::Texture::empty(system().ref(), 1, 1);
+    /*auto& jni = m_instance.jni(); // XXX
     auto jFilename = jni->NewStringUTF(font.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
     auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, fontSize, outline);
@@ -71,9 +73,10 @@ ogl::Texture Graphics::renderText(const std::string& text, const std::string& fo
     jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);
     jni->DeleteLocalRef(jText);
-    return ret;
+    return ret;*/
 }
 
 float Graphics::dpi() const {
-    return (float) AConfiguration_getDensity(m_instance.app()->config);
+    //return (float) AConfiguration_getDensity(m_instance.app()->config); // XXX
+    return 72;
 }

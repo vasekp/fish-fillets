@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Display::Display(ANativeWindow* window) {
+    Display::Display(NativeWindowType window) {
         m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
         eglInitialize(m_display, nullptr, nullptr);
 

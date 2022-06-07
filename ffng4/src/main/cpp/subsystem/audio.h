@@ -8,7 +8,7 @@
 #include "audio/stream.h"
 #include "audio/sourcelist.h"
 
-class Audio : public oboe::AudioStreamDataCallback {
+class Audio /*: public oboe::AudioStreamDataCallback */ { // XXX
     Instance& m_instance;
     AudioSourceList m_sources;
     std::unique_ptr<AudioStream> m_stream;
@@ -34,8 +34,8 @@ public:
     bool isDialog() const;
 
 private:
-    oboe::DataCallbackResult
-    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
+    /*oboe::DataCallbackResult // XXX
+    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;*/
 
     friend class AudioPreloader;
 };

@@ -1,49 +1,67 @@
 cmake_minimum_required(VERSION 3.20)
 project(Fillets)
 
-set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
-
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-
-find_package (oboe REQUIRED CONFIG)
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
 set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
 
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    add_library(native_app_glue STATIC
+        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+
+    find_package (oboe REQUIRED CONFIG)
+
+    set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+endif()
 
 file(GLOB fillets_sources
     "*.cpp"
-    "api/*.cpp"
-    "api/*/*.cpp"
+    "api/lua/*.cpp"
+    "api/ogl/*.cpp"
     "subsystem/*.cpp"
     "subsystem/*/*.cpp"
     "game/*.cpp"
     "game/*/*.cpp")
 
-add_library(fillets SHARED ${fillets_sources})
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    file(GLOB fillets_android
+        "platform/android/*.cpp"
+        "platform/android/*/*.cpp"
+        "api/jni.cpp")
+    add_library(fillets SHARED ${fillets_sources} ${fillets_android})
+else()
+    file(GLOB fillets_linux
+        "platform/linux/*.cpp"
+        "platform/linux/*/*.cpp")
+    add_executable(fillets ${fillets_sources} ${fillets_linux})
+endif()
 
 file(GLOB lua_sources "lua/*.c")
+list(FILTER lua_sources EXCLUDE REGEX ".*lua/luac?.c")
 
-add_library(lua
-        STATIC
-        ${lua_sources} )
+add_library(lua SHARED ${lua_sources})
 
 target_compile_definitions(lua PRIVATE -DLUA_USE_POSIX)
 
-target_include_directories(fillets PRIVATE . lua
+target_include_directories(fillets PRIVATE . lua)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    target_include_directories(fillets PRIVATE
         ${ANDROID_NDK}/sources/android/native_app_glue)
+endif()
 
 target_link_libraries(fillets
-    android
-    native_app_glue
-    jnigraphics
-    mediandk
     EGL
     GLESv2
-    oboe::oboe
-    lua
-    log)
+    lua)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    target_link_libraries(fillets
+        android
+        native_app_glue
+        jnigraphics
+        mediandk
+        oboe::oboe
+        log)
+endif()

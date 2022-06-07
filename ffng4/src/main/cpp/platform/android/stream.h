@@ -1,10 +1,10 @@
 #ifndef FISH_FILLETS_AUDIO_STREAM_H
 #define FISH_FILLETS_AUDIO_STREAM_H
 
-//#include <oboe/Oboe.h> // XXX
+#include <oboe/Oboe.h>
 
 class AudioStream {
-    //oboe::AudioStream* m_stream; // XXX
+    oboe::AudioStream* m_stream;
 
 public:
     AudioStream(Audio& iface);

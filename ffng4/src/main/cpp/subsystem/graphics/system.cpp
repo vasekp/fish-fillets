@@ -2,7 +2,7 @@
 #include "system.h"
 
 GraphicsSystem::GraphicsSystem(Instance& instance) :
-        m_display(std::make_shared<ogl::Display>(instance.app()->window)),
+        m_display(std::make_shared<ogl::Display>(NativeWindowType{}/*instance.app()->window*/)), // XXX
         m_windowTarget(*m_display),
         m_fullscreenTarget(*m_display),
         m_blurTargets{ref(), ref()},

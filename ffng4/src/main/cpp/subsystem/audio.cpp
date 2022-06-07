@@ -3,7 +3,7 @@
 #include "subsystem/script.h"
 #include "sstream"
 
-#include <media/NdkMediaExtractor.h>
+//#include <media/NdkMediaExtractor.h> // XXX
 #include <future>
 #include <thread>
 
@@ -28,7 +28,7 @@ public:
 
 void Audio::activate() {
     Log::debug("audio: activate");
-    m_stream = std::make_unique<AudioStream>(*this);
+    //m_stream = std::make_unique<AudioStream>(*this); // XXX
 
     if(m_sounds_preload.empty())
         AudioPreloader(m_instance).load();
@@ -82,7 +82,7 @@ bool Audio::isDialog() const {
     return m_sources.hasDialogs();
 }
 
-oboe::DataCallbackResult
+/*oboe::DataCallbackResult // XXX
 Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     auto outData = reinterpret_cast<float*>(audioData);
     std::memset(audioData, 0, sizeof(float) * numFrames);
@@ -105,7 +105,7 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
         }
     }
     return oboe::DataCallbackResult::Continue;
-}
+}*/
 
 void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance);
 
@@ -143,6 +143,11 @@ AudioSource::Ref Audio::loadMusic(const std::string& filename, bool async) {
 }
 
 void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance) {
+    auto ret = AudioData::create(filename, 0);
+    promise.set_value(ret);
+}
+
+/*void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance) { // XXX
     auto asset = instance.files().system(filename).asset();
 
     off64_t start, length;
@@ -257,4 +262,4 @@ void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& p
     AMediaFormat_delete(format);
     AMediaCodec_delete(codec);
     AMediaExtractor_delete(extractor);
-}
+}*/

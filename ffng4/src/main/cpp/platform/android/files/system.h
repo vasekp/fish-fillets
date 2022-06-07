@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_FILES_SYSTEM_H
 #define FISH_FILLETS_FILES_SYSTEM_H
 
+#include <android_native_app_glue.h>
 #include "api/ndk.h"
 
 class SystemFile : public IFile {

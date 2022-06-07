@@ -61,8 +61,8 @@ void ScreenManager::startLevel(LevelRecord& record) {
 }
 
 void ScreenManager::playIntro() {
-    auto& jni = m_instance.jni();
-    jni->CallVoidMethod(jni.object(), jni.method("playIntro"));
+    /*auto& jni = m_instance.jni(); // XXX
+    jni->CallVoidMethod(jni.object(), jni.method("playIntro"));*/
 }
 
 void ScreenManager::drawFrame() {

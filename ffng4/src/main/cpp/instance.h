@@ -2,9 +2,9 @@
 #define FISH_FILLETS_INSTANCE_H
 
 #include "common.h"
-#include "api/jni.h"
+//#include "api/jni.h" // XXX
 
-struct android_app;
+//struct android_app; // XXX
 class Files;
 class Graphics;
 class Image;
@@ -21,8 +21,8 @@ class RNG;
 };*/
 
 class Instance {
-    android_app* m_app;
-    jni::Env m_jni;
+//    android_app* m_app; // XXX
+//    jni::Env m_jni;
 
     std::unique_ptr<Files> m_files;
     std::unique_ptr<Graphics> m_graphics;
@@ -36,12 +36,12 @@ class Instance {
     //struct saved_state m_screens;
 
 public:
-    Instance(android_app*);
-    static Instance& get(android_app*);
-    ~Instance();
-
-    auto* app() { return m_app; }
-    auto& jni() { return m_jni; }
+//    Instance(android_app*); // XXX
+//    static Instance& get(android_app*);
+//    ~Instance();
+//
+//    auto* app() { return m_app; }
+//    auto& jni() { return m_jni; }
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
