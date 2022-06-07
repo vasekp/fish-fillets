@@ -160,6 +160,7 @@ void LevelRules::moveFish(Direction d) {
     Log::verbose(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
     m_level.recordMove(dirToChar(d));
+    m_level.notifyRound();
 }
 
 char LevelRules::dirToChar(Direction d) {
@@ -193,7 +194,6 @@ void LevelRules::update() {
             && !m_level.transitioning();
 
     if(ready) {
-        m_level.notifyRound();
         m_level.runScheduled();
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
@@ -213,6 +213,8 @@ void LevelRules::evalFalls() {
             continue;
         if (model->movable() && m_support[model].none()) {
             m_keyQueue.clear();
+            if(model->movingDir() != Direction::down)
+                m_level.notifyRound();
             model->displace(Direction::down);
         }
     }

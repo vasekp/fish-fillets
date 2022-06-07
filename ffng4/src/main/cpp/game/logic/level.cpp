@@ -42,7 +42,7 @@ void Level::tick() {
     }
     m_transitions.erase(std::remove_if(m_transitions.begin(), m_transitions.end(), [](const auto& transition) { return transition.countdown == 0; }), m_transitions.end());
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::demo))
-        m_script.doString("script_update();");
+        m_script.doString("script_update()");
     if(!m_tickSchedule.empty()) {
         if(m_tickSchedule.front()())
             m_tickSchedule.pop_front();
