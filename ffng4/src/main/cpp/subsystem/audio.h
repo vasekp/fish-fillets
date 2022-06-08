@@ -5,13 +5,13 @@
 
 #include "audio/audiodata.h"
 #include "audio/source.h"
-#include "audio/stream.h"
+#include "platform/audio.h"
 #include "audio/sourcelist.h"
 
-class Audio /*: public oboe::AudioStreamDataCallback */ { // XXX
+class Audio {
     Instance& m_instance;
     AudioSourceList m_sources;
-    std::unique_ptr<AudioStream> m_stream;
+    std::unique_ptr<AudioSink> m_stream;
     std::map<std::string, AudioData::Ref> m_sounds_preload;
 
 public:
@@ -27,17 +27,13 @@ public:
     void removeSource(const AudioSource::Ref& source);
     void clear();
     void clearExcept(const AudioSource::Ref& source);
+    void preload(const std::string& filename);
 
     AudioData::Ref loadSound(const std::string& filename, bool async = true);
     AudioSource::Ref loadMusic(const std::string& filename, bool async = true);
 
     bool isDialog() const;
-
-private:
-    /*oboe::DataCallbackResult // XXX
-    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;*/
-
-    friend class AudioPreloader;
+    void mix(float* output, std::size_t numSamples);
 };
 
 #endif //FISH_FILLETS_AUDIO_H

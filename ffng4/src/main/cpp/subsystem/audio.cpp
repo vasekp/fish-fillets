@@ -1,11 +1,12 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "subsystem/script.h"
-#include "sstream"
 
 //#include <media/NdkMediaExtractor.h> // XXX
 #include <future>
 #include <thread>
+#include <sstream>
+#include <cstring> // memset
 
 class AudioPreloader : public ScriptReferrer {
     Instance& m_instance;
@@ -22,13 +23,13 @@ public:
     }
 
     void preload_sound(const std::string& filename) {
-        m_audio.m_sounds_preload.insert({filename, m_audio.loadSound(filename, false)});
+        m_audio.preload(filename);
     }
 };
 
 void Audio::activate() {
     Log::debug("audio: activate");
-    //m_stream = std::make_unique<AudioStream>(*this); // XXX
+    m_stream = std::make_unique<AudioSink>(*this);
 
     if(m_sounds_preload.empty())
         AudioPreloader(m_instance).load();
@@ -78,14 +79,16 @@ void Audio::clearExcept(const AudioSource::Ref& source) {
     sources.checkDialogs();
 }
 
+void Audio::preload(const std::string& filename) {
+    m_sounds_preload.insert({filename, loadSound(filename, false)});
+}
+
 bool Audio::isDialog() const {
     return m_sources.hasDialogs();
 }
 
-/*oboe::DataCallbackResult // XXX
-Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
-    auto outData = reinterpret_cast<float*>(audioData);
-    std::memset(audioData, 0, sizeof(float) * numFrames);
+void Audio::mix(float* output, std::size_t numSamples) {
+    std::memset(output, 0, sizeof(float) * numSamples);
     auto& sources = m_sources.thread();
     unsigned dialogs = 0;
     for(const auto& source : sources) {
@@ -93,19 +96,18 @@ Audio::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
             continue;
         if(source->isDialog())
             dialogs++;
-        source->mixin(outData, numFrames);
+        source->mixin(output, numSamples);
     }
     m_sources.setDialogsThread(dialogs > 0);
     if(auto guard = m_sources.threadGuard()) {
         auto newEnd = std::remove_if(sources.begin(), sources.end(),
                 [](auto& source) { return source->done(); });
         if(newEnd != sources.end()) {
-            Log::debug("AudioStream: removing ", std::distance(newEnd, sources.end()), " sources");
+            Log::debug("AudioSink: removing ", std::distance(newEnd, sources.end()), " sources");
             sources.erase(newEnd, sources.end());
         }
     }
-    return oboe::DataCallbackResult::Continue;
-}*/
+}
 
 void loadSoundAsync(const std::string &filename, std::promise<AudioData::Ref>& promise, Instance& instance);
 
