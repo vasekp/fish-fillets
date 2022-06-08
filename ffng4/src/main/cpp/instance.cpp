@@ -25,7 +25,7 @@ Instance::Instance(T platformInit) :
     m_audio = std::make_unique<Audio>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
-    m_input = std::make_unique<AndroidInput>(*this);
+    m_input = std::make_unique<PlatformInput>(*this);
     m_rng = std::make_unique<RNG>();
 }
 

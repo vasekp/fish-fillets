@@ -1,9 +1,9 @@
-#ifndef FISH_FILLETS_ANDROIDINPUT_H
-#define FISH_FILLETS_ANDROIDINPUT_H
+#ifndef FISH_FILLETS_ANDROID_INPUT_H
+#define FISH_FILLETS_ANDROID_INPUT_H
 
 #include <android/input.h>
 
-class AndroidInput : public IInputProvider {
+class PlatformInput : public IInputProvider {
     Instance& m_instance;
 
     Key m_lastKey;
@@ -20,7 +20,7 @@ class AndroidInput : public IInputProvider {
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
 public:
-    AndroidInput(Instance& instance);
+    PlatformInput(Instance& instance);
 
     bool processEvent(AInputEvent* event);
     void ping();
@@ -29,4 +29,4 @@ public:
     // TODO multi touch
 };
 
-#endif //FISH_FILLETS_ANDROIDINPUT_H
+#endif //FISH_FILLETS_ANDROID_INPUT_H

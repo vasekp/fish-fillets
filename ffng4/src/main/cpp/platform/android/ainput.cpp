@@ -1,10 +1,9 @@
 #include "subsystem/input.h"
-#include "game/screens/screenmanager.h"
-#include "game/screens/screen.h"
 #include "instance.h"
+#include "game/screens/screenmanager.h"
 #include "platform/android/ainstance.h"
 
-AndroidInput::AndroidInput(Instance& instance) :
+PlatformInput::PlatformInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -14,7 +13,7 @@ AndroidInput::AndroidInput(Instance& instance) :
         m_pointerHandled(false)
 { }
 
-void AndroidInput::reset() {
+void PlatformInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
     m_lastPointerDownTime = absolutePast;
@@ -52,7 +51,7 @@ static Key AndroidKeymap(unsigned int code) {
     }
 }
 
-bool AndroidInput::processEvent(AInputEvent* event) {
+bool PlatformInput::processEvent(AInputEvent* event) {
     auto& input = m_instance.screens().curScreen().input();
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto action = AMotionEvent_getAction(event);
@@ -103,13 +102,13 @@ bool AndroidInput::processEvent(AInputEvent* event) {
     return false;
 }
 
-void AndroidInput::ping() {
+void PlatformInput::ping() {
     if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
         m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }
 }
 
-Key AndroidInput::poolKey() {
+Key PlatformInput::poolKey() {
     return m_lastKey;
 }
