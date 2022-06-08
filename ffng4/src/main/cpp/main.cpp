@@ -1,45 +1,13 @@
 #include "instance.h"
 
 #include "subsystem/graphics.h"
-#include "subsystem/input/key.h"
-#include "game/screens/screenmanager.h"
+#include "subsystem/input.h"
 #include "game/structure/gametree.h"
+#include "game/screens/screenmanager.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto& instance = Instance::get(app);
-    auto& input = instance.screens().curScreen().input();
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-        auto action = AMotionEvent_getAction(event);
-        if(action == AMOTION_EVENT_ACTION_DOWN) {
-            float sx = AMotionEvent_getX(event, 0);
-            float sy = AMotionEvent_getY(event, 0);
-            bool ret = input.handlePointerDown({sx, sy});
-            instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
-            return ret ? 1 : 0;
-        } else if(action == AMOTION_EVENT_ACTION_MOVE) {
-            float sx = AMotionEvent_getX(event, 0);
-            float sy = AMotionEvent_getY(event, 0);
-            bool ret = input.handlePointerMove({sx, sy});
-            return ret ? 1 : 0;
-        } else if(action == AMOTION_EVENT_ACTION_UP) {
-            bool ret = input.handlePointerUp();
-            if(!ret)
-                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("showUI"));
-            else
-                instance.jni()->CallVoidMethod(instance.jni().object(), instance.jni().method("hideUI"));
-            return ret ? 1 : 0;
-        }
-    } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        auto key = Input::AndroidKeymap(AKeyEvent_getKeyCode(event));
-        auto action = AKeyEvent_getAction(event);
-        if(action == AKEY_EVENT_ACTION_DOWN)
-            return input.handleKeyDown(key) ? 1 : 0;
-        else if(action == AKEY_EVENT_ACTION_UP)
-            return input.handleKeyUp(key) ? 1 : 0;
-        else
-            return 0;
-    }
-    return 0;
+    return instance.input().processEvent(event);
 }
 
 static void handle_cmd(struct android_app* app, int32_t cmd) {
@@ -148,6 +116,7 @@ void android_main(struct android_app* app) {
                     return;
                 }
             }
+            instance.input().ping();
 
             if(instance.running)
                 instance.screens().drawFrame();

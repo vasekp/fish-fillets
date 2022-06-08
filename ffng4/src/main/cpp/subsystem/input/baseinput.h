@@ -3,18 +3,14 @@
 
 class Instance;
 
-class BaseInput : public IInput {
+class BaseInput : public IInputSink {
     Instance& m_instance;
-    bool m_handled;
 
 public:
-    BaseInput(Instance& instance) : m_instance(instance), m_handled(true) { }
+    BaseInput(Instance& instance) : m_instance(instance) { }
 
-    bool handleKeyDown(Key key) override;
-    bool handleKeyUp(Key key) override;
-    bool handlePointerDown(FCoords pos) override;
-    bool handlePointerUp() override;
-    bool handlePointerMove(FCoords pos) override;
+    bool keyDown(Key key) override;
+    bool pointerDown(FCoords coords) override;
 };
 
 #endif //FISH_FILLETS_BASEINPUT_H

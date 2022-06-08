@@ -12,7 +12,7 @@ class CreditsScreen : public GameScreen {
 
 public:
     CreditsScreen(Instance &);
-    IInput &input() override { return m_input; }
+    IInputSink &input() override { return m_input; }
 
 protected:
     void own_start() override;

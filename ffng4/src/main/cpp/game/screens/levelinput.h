@@ -8,9 +8,9 @@
 class Instance;
 class DrawTarget;
 
-class LevelInput : public IInput {
+class LevelInput : public IInputSink {
     Instance& m_instance;
-    Key m_lastKey;
+    Model::Fish m_activeFish;
 
     enum class DirpadState {
         idle,
@@ -26,7 +26,6 @@ class LevelInput : public IInput {
         std::deque<std::pair<std::chrono::steady_clock::time_point, FCoords>> history;
         ICoords lastDir;
         ICoords lastNonzeroDir;
-        Model::Fish fish;
     } m_dirpad;
 
     enum Buttons {
@@ -56,7 +55,6 @@ public:
 private:
     ButtonGravity m_gravity;
     int m_activeButton;
-    bool m_handled;
 
 public:
     LevelInput(Instance& instance);
@@ -65,11 +63,13 @@ public:
     void setSavePossible(bool possible);
     void setLoadPossible(bool possible);
 
-    bool handleKeyDown(Key key) override;
-    bool handleKeyUp(Key key) override;
-    bool handlePointerDown(FCoords pos) override;
-    bool handlePointerUp() override;
-    bool handlePointerMove(FCoords pos) override;
+    bool keyDown(Key key) override;
+    bool keyUp(Key key) override;
+    bool pointerDown(FCoords coords) override;
+    bool pointerUp() override;
+    bool pointerMove(FCoords coords) override;
+    bool longPress(FCoords coords) override;
+    bool doubleTap(FCoords coords) override;
 
     void refresh();
     void draw(const DrawTarget& target);
@@ -78,9 +78,7 @@ public:
     FCoords getReserve();
 
 private:
-    static unsigned index(Key key);
     int findButton(FCoords pos);
-    void checkLongPress();
 
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
@@ -89,8 +87,6 @@ private:
     constexpr static float arrowSize = 0.35f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches
     constexpr static float maxButtonGap = 0.35f; // inches
-    constexpr static std::chrono::steady_clock::duration longpressTime = std::chrono::milliseconds(500);
-    constexpr static std::chrono::steady_clock::duration doubletapTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = std::chrono::milliseconds(100);
     constexpr static std::chrono::steady_clock::time_point absolutePast{};

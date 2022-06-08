@@ -5,38 +5,31 @@
 
 LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
-        m_lastKey(Key::none),
+        m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_gravity(ButtonGravity::left),
-        m_activeButton(noButton),
-        m_handled(true)
+        m_activeButton(noButton)
 {
     std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
 }
 
 void LevelInput::setFish(Model::Fish fish) {
-    m_dirpad.fish = fish;
+    m_activeFish = fish;
     if(fish == Model::Fish::none)
         m_dirpad.state = DirpadState::ignore;
 }
 
-unsigned LevelInput::index(Key key) {
-    return (unsigned)key;
-}
-
-bool LevelInput::handleKeyDown(Key key) {
-    m_lastKey = key;
+bool LevelInput::keyDown(Key key) {
     return m_instance.screens().dispatchKey(key);
 }
 
-bool LevelInput::handleKeyUp(Key) {
-    m_lastKey = Key::none;
+bool LevelInput::keyUp(Key) {
     return false;
 }
 
 Key LevelInput::pool() {
-    if(m_lastKey != Key::none)
-        return m_lastKey;
+    if(auto key = m_instance.input().poolKey(); key != Key::none)
+        return key;
     else if(m_dirpad.state == DirpadState::follow) {
         Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
@@ -44,42 +37,34 @@ Key LevelInput::pool() {
         return Key::none;
 }
 
-bool LevelInput::handlePointerDown(FCoords pos) {
-    m_handled = false;
-    if(auto button = findButton(pos); button != noButton && m_buttonsEnabled[button]) {
+bool LevelInput::pointerDown(FCoords coords) {
+    if(auto button = findButton(coords); button != noButton && m_buttonsEnabled[button]) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
-        return m_handled = true;
+        return true;
     }
 
-    if(std::chrono::steady_clock::now() < m_dirpad.touchTime + doubletapTime) {
-        auto windowCoords = m_instance.graphics().windowTarget().screen2window(pos);
-        if(!m_instance.screens().dispatchPointer(windowCoords))
-            m_instance.screens().dispatchKey(Key::space);
-        m_dirpad.touchTime = absolutePast;
-        m_handled = true;
-    } else
-        m_dirpad.touchTime = std::chrono::steady_clock::now();
-    if(m_dirpad.fish == Model::Fish::none) {
+    if(m_activeFish == Model::Fish::none) {
         m_dirpad.state = DirpadState::ignore;
-        return m_handled;
+        return false;
     }
+    m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.history.clear();
-    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), pos);
+    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
     m_dirpad.state = DirpadState::wait;
-    return m_handled;
+    return false;
 }
 
-bool LevelInput::handlePointerMove(FCoords pos) {
+bool LevelInput::pointerMove(FCoords coords) {
     if(m_dirpad.state == DirpadState::button) {
-        m_activeButton = findButton(pos);
+        m_activeButton = findButton(coords);
         return true;
     }
     auto now = std::chrono::steady_clock::now();
-    m_dirpad.history.emplace_front(now, pos);
+    m_dirpad.history.emplace_front(now, coords);
     auto [then, pos2] = m_dirpad.history.back();
     auto timeDiff = now - then;
-    auto diff = pos - pos2;
+    auto diff = coords - pos2;
     bool small = diff.length() < minDistance * m_instance.graphics().dpi();
     if(timeDiff > dirpadHistoryLength)
         m_dirpad.history.pop_back();
@@ -106,9 +91,7 @@ bool LevelInput::handlePointerMove(FCoords pos) {
                 m_instance.screens().dispatchKey(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
-                m_dirpad.touchTime = absolutePast;
                 m_dirpad.state = DirpadState::follow;
-                m_handled = true;
                 return true;
             } else
                 return false;
@@ -127,24 +110,33 @@ bool LevelInput::handlePointerMove(FCoords pos) {
     std::unreachable();
 }
 
-bool LevelInput::handlePointerUp() {
+bool LevelInput::pointerUp() {
     if(m_dirpad.state == DirpadState::button && m_activeButton != noButton) {
         if(m_buttonsEnabled[m_activeButton])
             m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
+        return true;
     }
     m_dirpad.state = DirpadState::idle;
-    return m_handled;
+    return false;
 }
 
-void LevelInput::checkLongPress() {
-    if(m_dirpad.state == DirpadState::wait
-            && m_dirpad.touchTime != absolutePast
-            && std::chrono::steady_clock::now() > m_dirpad.touchTime + longpressTime) {
-        auto windowCoords = m_instance.graphics().windowTarget().screen2window(m_dirpad.history.front().second);
-        m_instance.screens().dispatchPointer(windowCoords, true);
-        m_dirpad.touchTime = absolutePast;
-        m_handled = true;
-    }
+bool LevelInput::doubleTap(FCoords coords) {
+    auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
+    if(!m_instance.screens().dispatchPointer(windowCoords))
+        m_instance.screens().dispatchKey(Key::space);
+    m_dirpad.touchTime = std::chrono::steady_clock::now();
+    m_dirpad.history.clear();
+    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
+    m_dirpad.state = DirpadState::wait;
+    return true;
+}
+
+bool LevelInput::longPress(FCoords coords) {
+    if(m_dirpad.state == DirpadState::wait) {
+        auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
+        return m_instance.screens().dispatchPointer(windowCoords, true);
+    } else
+        return false;
 }
 
 void LevelInput::refresh() {
@@ -193,7 +185,6 @@ void LevelInput::setLoadPossible(bool possible) {
 }
 
 void LevelInput::draw(const DrawTarget& target) {
-    checkLongPress();
     drawButtons(target);
     drawDirpad(target);
 }
@@ -239,7 +230,7 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
 
     auto [_, pos] = m_dirpad.history.front();
     glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
-    auto color = m_dirpad.fish == Model::Fish::small ? colorSmall : colorBig;
+    auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         glUniform2fv(program.uniform("uDirection"), 1, FCoords{dir}.gl().data());
@@ -253,7 +244,7 @@ int LevelInput::findButton(FCoords pos) {
     for(auto i = 0u; i < m_buttons.size(); i++) {
         auto& button = m_buttons[i];
         if(pos.within(button.coordsFrom, button.coordsTo))
-            return i;
+            return (int)i;
     }
     return noButton;
 }

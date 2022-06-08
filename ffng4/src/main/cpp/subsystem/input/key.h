@@ -26,7 +26,6 @@ enum class Key {
 };
 
 namespace Input {
-    Key AndroidKeymap(unsigned code);
     Key CharKeymap(char code);
     Key toKey(Direction dir);
 }

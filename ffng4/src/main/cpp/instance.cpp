@@ -9,6 +9,7 @@
 #include "subsystem/files.h"
 #include "subsystem/script.h"
 #include "subsystem/rng.h"
+#include "subsystem/input.h"
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
@@ -25,6 +26,7 @@ Instance::Instance(android_app* androidApp) :
     m_audio = std::make_unique<Audio>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
+    m_input = std::make_unique<AndroidInput>(*this);
 }
 
 Instance& Instance::get(android_app* app) {

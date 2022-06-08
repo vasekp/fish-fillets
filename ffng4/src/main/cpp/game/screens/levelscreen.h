@@ -28,7 +28,7 @@ class LevelScreen : public GameScreen {
 public:
     LevelScreen(Instance&, LevelRecord&);
 
-    IInput& input() override { return m_input; }
+    IInputSink& input() override { return m_input; }
     Subtitles& subs() { return m_subs; }
 
     void display(const std::string& filename);
