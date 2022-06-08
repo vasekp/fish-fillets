@@ -5,10 +5,13 @@
 #include "platform/android/ainstance.h"
 #else
 
+#include <EGL/egl.h>
+
 struct PlatformInstance {
     template<typename T>
     PlatformInstance(Instance&, T) { }
     void quit() { }
+    NativeWindowType window() { return { }; }
 };
 
 struct PlatformData { };

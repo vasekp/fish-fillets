@@ -12,9 +12,8 @@ struct PlatformInstance {
 
     PlatformInstance(Instance& instance, android_app* androidApp) : app(androidApp), jni(androidApp) { }
 
-    void quit() {
-        ANativeActivity_finish(app->activity);
-    }
+    void quit() { ANativeActivity_finish(app->activity); }
+    auto window() { return app->window; }
 };
 
 using PlatformData = android_app*;
