@@ -9,7 +9,7 @@ public:
     Image(SystemFile file);
     Image(const SystemFile& file, Instance& instance);
 
-    auto filename() const { return m_file.getPath(); }
+    auto filename() const { return m_file.path(); }
     auto& texture() const { return m_texture; }
     auto width() const { return m_texture.width(); }
     auto height() const { return m_texture.height(); }

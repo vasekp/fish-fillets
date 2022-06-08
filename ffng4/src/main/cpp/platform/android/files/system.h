@@ -11,8 +11,7 @@ class SystemFile : public IFile {
 public:
     SystemFile(const std::string& path, AAssetManager* assets);
 
-    std::string getPath() const { return m_path; }
-
+    std::string path() const { return m_path; }
     bool exists() const override;
     std::string read() const override;
     bool write(const std::string &data) const override;

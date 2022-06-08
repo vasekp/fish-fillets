@@ -8,8 +8,7 @@ class UserFile : public IFile {
 public:
     UserFile(std::string path, const std::filesystem::path& basePath);
 
-    std::string getPath() const { return m_relPath; }
-
+    std::string path() const { return m_relPath; }
     bool exists() const override;
     std::string read() const override;
     bool write(const std::string &data) const override;
