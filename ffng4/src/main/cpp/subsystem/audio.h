@@ -29,8 +29,9 @@ public:
     void clearExcept(const AudioSource::Ref& source);
     void preload(const std::string& filename);
 
-    AudioData::Ref loadSound(const std::string& filename, bool async = true);
-    AudioSource::Ref loadMusic(const std::string& filename, bool async = true);
+    AudioData::Ref loadOGG(const std::string& filename) const;
+    AudioData::Ref loadSound(const std::string& filename) const;
+    AudioSource::Ref loadMusic(const std::string& filename) const;
 
     bool isDialog() const;
     void mix(float* output, std::size_t numSamples);

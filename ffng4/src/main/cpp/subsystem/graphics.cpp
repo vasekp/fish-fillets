@@ -1,7 +1,6 @@
 #include "graphics.h"
 #include "game/screens/screen.h"
 #include "game/screens/screenmanager.h"
-//#include <android/bitmap.h> // XXX
 
 void Graphics::activate() {
     Log::debug("graphics: activate");
@@ -29,28 +28,6 @@ void Graphics::setMask(const ogl::Texture& texture) {
 
 void Graphics::setMask(const Image* image) {
     setMask(image->texture());
-}
-
-ogl::Texture Graphics::loadImage(const SystemFile& file) const {
-    return ogl::Texture::empty(system().ref(), 1, 1);
-    /*Log::debug("loadImage ", file.getPath()); // XXX
-    auto& jni = m_instance.jni();
-    jstring jPath = jni->NewStringUTF(file.getPath().c_str());
-    jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
-    AndroidBitmapInfo info;
-    AndroidBitmap_getInfo(jni, jBitmap, &info);
-    std::uint32_t width = info.width;
-    std::uint32_t height = info.height;
-    std::size_t stride = info.stride;
-    void* pixels;
-    AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-    if(!jBitmap)
-        Log::fatal("bitmap data null (", file.getPath(), ")");
-    auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
-    AndroidBitmap_unlockPixels(jni, jBitmap);
-    jni->DeleteLocalRef(jPath);
-    jni->DeleteLocalRef(jBitmap);
-    return ret;*/
 }
 
 ogl::Texture Graphics::renderText(const std::string& text, const std::string& font, float fontSize, float outline) const {

@@ -3,8 +3,8 @@
 
 #include "instance.h"
 #include "api/ogl.h"
-#include "subsystem/files.h"
 
+#include "subsystem/files.h" // TODO
 #include "graphics/shaders.h"
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
@@ -39,7 +39,7 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    ogl::Texture loadImage(const SystemFile& path) const;
+    ogl::Texture loadPNG(const SystemFile& filename) const;
     ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline) const;
 };
 
