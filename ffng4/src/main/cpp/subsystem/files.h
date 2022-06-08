@@ -3,9 +3,7 @@
 
 #include "instance.h"
 #include "files/ifile.h"
-
-class SystemFile;
-class UserFile;
+#include "platform/files.h"
 
 class Files {
     Instance& m_instance;

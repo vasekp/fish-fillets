@@ -2,6 +2,7 @@
 #include "game/screens/screenmanager.h"
 #include "game/screens/screen.h"
 #include "instance.h"
+#include "platform/android/ainstance.h"
 
 AndroidInput::AndroidInput(Instance& instance) :
         m_instance(instance),
@@ -64,7 +65,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 m_pointerHandled = input.doubleTap(coords);
             else
                 m_pointerHandled = input.pointerDown(coords);
-            m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+            m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
         } else if(action == AMOTION_EVENT_ACTION_MOVE) {
             if(!m_pointerFollow)
                 return false;
@@ -75,9 +76,9 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 return false;
             m_pointerHandled |= input.pointerUp();
             if(!m_pointerHandled)
-                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("showUI"));
+                m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("showUI"));
             else
-                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+                m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
             m_lastPointerDownTime = m_pointerDownTime;
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
