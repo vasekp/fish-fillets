@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "api/jni.h"
-#include "subsystem/rng.h"
 
 struct android_app;
 class Files;
@@ -16,6 +15,7 @@ class Script;
 class GameTree;
 class AudioSource;
 class AndroidInput;
+class RNG;
 
 /*struct saved_state {
 };*/
@@ -31,21 +31,21 @@ class Instance {
     std::unique_ptr<AndroidInput> m_input;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
-
-    RNG m_rng;
+    std::unique_ptr<RNG> m_rng;
 
     //struct saved_state m_screens;
 
 public:
     Instance(android_app*);
     static Instance& get(android_app*);
+    ~Instance();
 
     auto* app() { return m_app; }
     auto& jni() { return m_jni; }
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
-    auto& rng() { return m_rng; }
+    auto& rng() { return *m_rng; }
     auto& input() { return *m_input; }
     auto& screens() { return *m_screens; }
     auto& script() { return *m_script; }
