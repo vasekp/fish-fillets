@@ -288,7 +288,7 @@ FCoords LevelScreen::shift() {
 
 void LevelScreen::display(const std::string& filename) {
     if(!filename.empty())
-        m_display.emplace(m_instance.files().system(filename), m_instance);
+        m_display.emplace(filename, m_instance);
     else
         m_display.reset();
 }

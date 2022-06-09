@@ -11,13 +11,13 @@ Image* GameScreen::addImage(const std::string& filename, const std::string& name
     if(m_images.contains(key))
         return &m_images.at(key);
     else {
-        auto[iterator, _] = m_images.insert({key, Image{m_instance.files().system(filename)}});
+        auto[iterator, _] = m_images.insert({key, Image{filename}});
         return &iterator->second;
     }
 }
 
 Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
-    auto[iterator, _] = m_images.insert_or_assign(name, Image{m_instance.files().system(filename), m_instance});
+    auto[iterator, _] = m_images.insert_or_assign(name, Image{filename, m_instance});
     return &iterator->second;
 }
 

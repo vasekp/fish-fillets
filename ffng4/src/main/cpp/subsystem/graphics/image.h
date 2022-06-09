@@ -2,14 +2,14 @@
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
 class Image {
-    SystemFile m_file;
+    std::string m_filename;
     ogl::Texture m_texture;
 
 public:
-    Image(SystemFile file);
-    Image(const SystemFile& file, Instance& instance);
+    Image(std::string filename);
+    Image(std::string filename, Instance& instance);
 
-    auto filename() const { return m_file.path(); }
+    auto filename() const { return m_filename; }
     auto& texture() const { return m_texture; }
     auto width() const { return m_texture.width(); }
     auto height() const { return m_texture.height(); }

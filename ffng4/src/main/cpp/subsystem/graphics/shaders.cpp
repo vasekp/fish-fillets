@@ -1,4 +1,5 @@
 #include "subsystem/graphics.h"
+#include "subsystem/files.h"
 
 Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     auto vertCommon = ogl::Shader(ref, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert").read());
