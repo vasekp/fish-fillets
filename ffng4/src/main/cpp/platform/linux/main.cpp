@@ -14,10 +14,15 @@ int main(int argc, char **argv) {
     if(!dpy)
       Log::fatal("cannot connect to X server");
     Window root = DefaultRootWindow(dpy);
+
     XSetWindowAttributes swa;
     swa.event_mask = ExposureMask | ButtonPressMask | KeyPressMask;
     Window win = XCreateWindow(dpy, root, 0, 0, 300, 300, 0,
         CopyFromParent, InputOutput, CopyFromParent, CWEventMask, &swa);
+
+    XSetWindowAttributes xattr;
+    xattr.override_redirect = False;
+    XChangeWindowAttributes(dpy, win, CWOverrideRedirect, &xattr);
 
     int one = 1;
     XChangeProperty(dpy, win,
@@ -37,6 +42,19 @@ int main(int argc, char **argv) {
     instance.audio().activate();
     instance.screens().refresh();
     instance.screens().drawFrame();
+
+    XMapWindow(dpy, win);
+    XFlush(dpy);
+
+    instance.screens().resume();
+    instance.audio().resume();
+    instance.running = true;
+
+    Log::info("main loop");
+    for (;;) {
+      if(instance.running)
+        instance.screens().drawFrame();
+    }
   } catch(std::exception& e) {
     Log::error("Caught exception ", e.what(), ", exiting");
     return 1;
