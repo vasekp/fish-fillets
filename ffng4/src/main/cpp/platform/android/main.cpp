@@ -3,11 +3,11 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 #include "subsystem/input.h"
-#include "subsystem/files.h"
-#include "subsystem/script.h"
-#include "subsystem/rng.h"
-#include "subsystem/input.h"
-#include "game/structure/gametree.h"
+#include "subsystem/files.h" // TODO cleanup
+#include "subsystem/script.h" //
+#include "subsystem/rng.h" //
+#include "subsystem/input.h" //
+#include "game/structure/gametree.h" //
 #include "game/screens/screenmanager.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {

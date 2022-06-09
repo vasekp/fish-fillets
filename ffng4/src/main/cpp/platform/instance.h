@@ -3,6 +3,8 @@
 
 #ifdef __ANDROID__
 #include "platform/android/ainstance.h"
+#elifdef __linux__
+#include "platform/linux/xinstance.h"
 #else
 
 #include <EGL/egl.h>

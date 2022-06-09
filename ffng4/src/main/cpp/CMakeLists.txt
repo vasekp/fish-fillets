@@ -64,4 +64,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
         mediandk
         oboe::oboe
         log)
+else()
+    find_package(X11 REQUIRED)
+    target_link_libraries(fillets X11)
 endif()
