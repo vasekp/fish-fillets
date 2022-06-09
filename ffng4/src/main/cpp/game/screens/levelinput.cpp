@@ -111,13 +111,14 @@ bool LevelInput::pointerMove(FCoords coords) {
 }
 
 bool LevelInput::pointerUp() {
-    if(m_dirpad.state == DirpadState::button && m_activeButton != noButton) {
+    auto lastState = m_dirpad.state;
+    m_dirpad.state = DirpadState::idle;
+    if(lastState == DirpadState::button && m_activeButton != noButton) {
         if(m_buttonsEnabled[m_activeButton])
             m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
         return true;
-    }
-    m_dirpad.state = DirpadState::idle;
-    return false;
+    } else
+        return false;
 }
 
 bool LevelInput::doubleTap(FCoords coords) {
