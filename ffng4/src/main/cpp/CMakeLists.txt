@@ -38,7 +38,7 @@ else()
 endif()
 
 file(GLOB lua_sources "lua/*.c")
-list(FILTER lua_sources EXCLUDE REGEX ".*lua/luac?.c")
+list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
 
 add_library(lua SHARED ${lua_sources})
 
