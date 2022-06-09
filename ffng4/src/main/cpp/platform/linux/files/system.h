@@ -9,7 +9,7 @@ public:
     SystemFile(std::string path, const std::filesystem::path& basePath);
 
     std::string path() const { return m_relPath; }
-
+    std::string fullPath() const { return m_fullPath; }
     bool exists() const override;
     std::string read() const override;
     bool write(const std::string &data) const override;

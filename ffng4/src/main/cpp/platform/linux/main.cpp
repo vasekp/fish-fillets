@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     XSetWindowAttributes swa;
     swa.event_mask = ExposureMask | ButtonPressMask | KeyPressMask;
-    Window win = XCreateWindow(dpy, root, 0, 0, 300, 300, 0,
+    Window win = XCreateWindow(dpy, root, 0, 0, 600, 600, 0,
         CopyFromParent, InputOutput, CopyFromParent, CWEventMask, &swa);
 
     XSetWindowAttributes xattr;
