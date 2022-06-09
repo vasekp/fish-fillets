@@ -10,7 +10,8 @@
 
 static void loadSoundAsync(const std::string& filename, std::promise<AudioData::Ref>& promise, Instance& instance);
 
-ogl::Texture Graphics::loadPNG(const std::string& filename) const {
+ogl::Texture Graphics::loadPNG(const std::string& filename0) const {
+    auto filename = m_instance.files().system(filename0).path();
     Log::debug("loadPNG ", filename);
     auto& jni = m_instance.platform().jni;
     jstring jPath = jni->NewStringUTF(filename.c_str());
