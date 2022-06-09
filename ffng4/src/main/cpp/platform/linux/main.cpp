@@ -34,6 +34,9 @@ int main(int argc, char **argv) {
     hints.flags = InputHint;
     XSetWMHints(dpy, win, &hints);
 
+    auto wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+    XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
+
     Instance instance{win};
     instance.screens().startMode(ScreenManager::Mode::WorldMap);
 
@@ -50,11 +53,28 @@ int main(int argc, char **argv) {
     instance.audio().resume();
     instance.running = true;
 
-    Log::info("main loop");
-    for (;;) {
-      if(instance.running)
-        instance.screens().drawFrame();
+    Log::info("Main loop");
+    while(instance.running) {
+      while(XPending(dpy)) {
+        XEvent event;
+        XNextEvent(dpy, &event);
+        switch(event.type) {
+          /*case Expose:
+            break;*/
+          case ClientMessage:
+            if((Atom)event.xclient.data.l[0] == wmDeleteMessage) {
+              Log::info("Quitting");
+              instance.running = false;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+
+      instance.screens().drawFrame();
     }
+
   } catch(std::exception& e) {
     Log::error("Caught exception ", e.what(), ", exiting");
     return 1;
