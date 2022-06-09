@@ -66,10 +66,11 @@ public:
     bool keyDown(Key key) override;
     bool keyUp(Key key) override;
     bool pointerDown(FCoords coords) override;
-    bool pointerUp() override;
+    bool pointerUp(bool empty) override;
     bool pointerMove(FCoords coords) override;
     bool longPress(FCoords coords) override;
     bool doubleTap(FCoords coords) override;
+    bool twoPointTap() override;
 
     void refresh();
     void draw(const DrawTarget& target);

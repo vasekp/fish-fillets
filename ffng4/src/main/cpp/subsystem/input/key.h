@@ -18,6 +18,8 @@ enum class Key {
     bigLeft,
     bigRight,
     space,
+    interrupt,
+    skip,
     save,
     load,
     restart,

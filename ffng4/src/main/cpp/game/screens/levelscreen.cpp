@@ -226,9 +226,10 @@ bool LevelScreen::own_pointer(FCoords coords, bool longPress) {
     if(!m_level.accepting())
         return false;
     ICoords iCoords = round(coords / size_unit);
-    if(longPress)
+    if(longPress) {
+        m_level.skipGoTo(false);
         return m_level.scheduleGoTo(iCoords);
-    else {
+    } else {
         // Activate fish under pointer. Actually only called after a double tap, based on feedback from test.
         for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
             auto* model = m_level.layout().modelAt(iCoords + ICoords{0, dy});
@@ -253,12 +254,19 @@ bool LevelScreen::own_key(Key key) {
             } else
                 return false;
         case Key::space:
-            if(m_level.inGoTo())
-                m_level.skipGoTo(true); // skip to final position before switching fish
             if(m_level.accepting())
                 m_level.rules().keyInput(key);
             else
                 m_level.skipBusy();
+            return true;
+        case Key::interrupt:
+            if(m_level.inGoTo())
+                m_level.skipGoTo(false); // break running goto commands
+            return true;
+        case Key::skip:
+            if(m_level.inGoTo())
+                m_level.skipGoTo(true); // skip to final position before switching fish
+            m_level.skipBusy();
             return true;
         case Key::exit:
             leave();

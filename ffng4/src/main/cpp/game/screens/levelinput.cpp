@@ -110,15 +110,17 @@ bool LevelInput::pointerMove(FCoords coords) {
     std::unreachable();
 }
 
-bool LevelInput::pointerUp() {
+bool LevelInput::pointerUp(bool empty) {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != noButton) {
         if(m_buttonsEnabled[m_activeButton])
             m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
         return true;
-    } else
-        return false;
+    }
+    if(empty)
+        m_instance.screens().dispatchKey(Key::interrupt);
+    return false;
 }
 
 bool LevelInput::doubleTap(FCoords coords) {
@@ -129,6 +131,11 @@ bool LevelInput::doubleTap(FCoords coords) {
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
     m_dirpad.state = DirpadState::wait;
+    return true;
+}
+
+bool LevelInput::twoPointTap() {
+    m_instance.screens().dispatchKey(Key::skip);
     return true;
 }
 

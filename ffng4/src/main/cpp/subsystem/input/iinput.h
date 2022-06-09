@@ -19,9 +19,10 @@ public:
     virtual bool keyUp(Key key) { return false; }
     virtual bool pointerDown(FCoords coords) { return false; }
     virtual bool pointerMove(FCoords coords) { return false; }
-    virtual bool pointerUp() { return false; }
+    virtual bool pointerUp(bool empty) { return false; }
     virtual bool longPress(FCoords coords) { return false; }
     virtual bool doubleTap(FCoords coords) { return false; }
+    virtual bool twoPointTap() { return false; }
     virtual ~IInputSink() { }
 };
 

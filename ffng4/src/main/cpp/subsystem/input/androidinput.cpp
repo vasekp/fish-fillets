@@ -8,6 +8,7 @@ AndroidInput::AndroidInput(Instance& instance) :
         m_lastKey(Key::none),
         m_keyHandled(false),
         m_pointerFollow(false),
+        m_pointerId(-1),
         m_lastPointerDownTime(absolutePast),
         m_pointerDownTime(absolutePast),
         m_pointerHandled(false)
@@ -55,33 +56,55 @@ bool AndroidInput::processEvent(AInputEvent* event) {
     auto& input = m_instance.screens().curScreen().input();
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto action = AMotionEvent_getAction(event);
-        FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
-        if(action == AMOTION_EVENT_ACTION_DOWN) {
-            m_pointerDownTime = std::chrono::steady_clock::now();
-            m_pointerDownCoords = coords;
-            m_pointerFollow = true;
-            if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
-                m_pointerHandled = input.doubleTap(coords);
-            else
-                m_pointerHandled = input.pointerDown(coords);
-            m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
-        } else if(action == AMOTION_EVENT_ACTION_MOVE) {
-            if(!m_pointerFollow)
-                return false;
-            else
-                return m_pointerHandled |= input.pointerMove(coords);
-        } else if(action == AMOTION_EVENT_ACTION_UP) {
-            if(!m_pointerFollow)
-                return false;
-            m_pointerHandled |= input.pointerUp();
-            if(!m_pointerHandled)
-                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("showUI"));
-            else
-                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
-            m_lastPointerDownTime = m_pointerDownTime;
+        if(action == AMOTION_EVENT_ACTION_CANCEL) {
             m_pointerDownTime = absolutePast;
+            m_lastPointerDownTime = absolutePast;
             m_pointerFollow = false;
-            return m_pointerHandled;
+            return false;
+        }
+        auto pointerCount = AMotionEvent_getPointerCount(event);
+        Log::debug("action: ", action, " pointers: ", pointerCount, " primary: ", AMotionEvent_getPointerId(event, 0));
+        if(pointerCount == 1) {
+            auto pointerId = AMotionEvent_getPointerId(event, 0);
+            FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
+            if(action == AMOTION_EVENT_ACTION_DOWN) {
+                m_pointerDownTime = std::chrono::steady_clock::now();
+                m_pointerDownCoords = coords;
+                m_pointerId = pointerId;
+                m_pointerFollow = true;
+                if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
+                    m_pointerHandled = input.doubleTap(coords);
+                else
+                    m_pointerHandled = input.pointerDown(coords);
+                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+            } else if(action == AMOTION_EVENT_ACTION_MOVE) {
+                if(!m_pointerFollow || pointerId != m_pointerId)
+                    return false;
+                else
+                    return m_pointerHandled |= input.pointerMove(coords);
+            } else if(action == AMOTION_EVENT_ACTION_UP) {
+                if(!m_pointerFollow)
+                    return false;
+                if(pointerId == m_pointerId)
+                    m_pointerHandled |= input.pointerUp(!m_pointerHandled);
+                if(!m_pointerHandled)
+                    m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("showUI"));
+                else
+                    m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+                m_lastPointerDownTime = m_pointerDownTime;
+                m_pointerDownTime = absolutePast;
+                m_pointerFollow = false;
+                return m_pointerHandled;
+            }
+        } else if(pointerCount == 2 && (action & AMOTION_EVENT_ACTION_MASK) == AMOTION_EVENT_ACTION_POINTER_DOWN) {
+            Log::debug("secondary: ", AMotionEvent_getPointerId(event, 1));
+            if(!m_pointerFollow)
+                return false;
+            auto id0 = AMotionEvent_getPointerId(event, 0);
+            auto id1 = AMotionEvent_getPointerId(event, 1);
+            if(id0 != m_pointerId && id1 != m_pointerId)
+                return false;
+            return m_pointerHandled |= input.twoPointTap();
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
