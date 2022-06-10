@@ -125,7 +125,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
         auto [x, y] = model->xy();
         for(auto dx = 0u; dx < model->shape().width(); dx++)
             for(auto dy = 0u; dy < model->shape().height(); dy++)
-                occupied[y + dy][x + dx] = model->shape()[dy][dx];
+                occupied[y + dy][x + dx] = occupied[y + dy][x + dx] | model->shape()[dy][dx];
     }
     /* Also avoid borders */
     for(auto x = 0u; x < width(); x++)
