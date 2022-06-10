@@ -20,6 +20,7 @@ public:
     virtual bool pointerDown(FCoords coords) { return false; }
     virtual bool pointerMove(FCoords coords) { return false; }
     virtual bool pointerUp(bool empty) { return false; }
+    virtual void pointerCancel() { }
     virtual bool longPress(FCoords coords) { return false; }
     virtual bool doubleTap(FCoords coords) { return false; }
     virtual bool twoPointTap() { return false; }

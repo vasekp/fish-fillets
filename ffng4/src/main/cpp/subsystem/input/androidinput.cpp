@@ -9,7 +9,6 @@ AndroidInput::AndroidInput(Instance& instance) :
         m_keyHandled(false),
         m_pointerFollow(false),
         m_pointerId(-1),
-        m_lastPointerDownTime(absolutePast),
         m_pointerDownTime(absolutePast),
         m_pointerHandled(false)
 { }
@@ -17,7 +16,6 @@ AndroidInput::AndroidInput(Instance& instance) :
 void AndroidInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
-    m_lastPointerDownTime = absolutePast;
     m_pointerDownTime = absolutePast;
 }
 
@@ -55,10 +53,12 @@ static Key AndroidKeymap(unsigned int code) {
 bool AndroidInput::processEvent(AInputEvent* event) {
     auto& input = m_instance.screens().curScreen().input();
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-        auto action = AMotionEvent_getAction(event);
+        auto combined = AMotionEvent_getAction(event);
+        auto action = combined & AMOTION_EVENT_ACTION_MASK;
+        auto index = (combined & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
         if(action == AMOTION_EVENT_ACTION_CANCEL) {
+            input.pointerCancel();
             m_pointerDownTime = absolutePast;
-            m_lastPointerDownTime = absolutePast;
             m_pointerFollow = false;
             return false;
         }
@@ -68,11 +68,12 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             auto pointerId = AMotionEvent_getPointerId(event, 0);
             FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
             if(action == AMOTION_EVENT_ACTION_DOWN) {
+                auto lastPointerTime = m_pointerDownTime;
                 m_pointerDownTime = std::chrono::steady_clock::now();
                 m_pointerDownCoords = coords;
                 m_pointerId = pointerId;
                 m_pointerFollow = true;
-                if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
+                if(m_pointerDownTime - lastPointerTime < doubletapTime)
                     m_pointerHandled = input.doubleTap(coords);
                 else
                     m_pointerHandled = input.pointerDown(coords);
@@ -87,16 +88,17 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     return false;
                 if(pointerId == m_pointerId)
                     m_pointerHandled |= input.pointerUp(!m_pointerHandled);
-                if(!m_pointerHandled)
+                if(!m_pointerHandled) {
                     m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("showUI"));
-                else
+                    // keep m_pointerDownTime for double tap
+                } else {
                     m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
-                m_lastPointerDownTime = m_pointerDownTime;
-                m_pointerDownTime = absolutePast;
+                    m_pointerDownTime = absolutePast;
+                }
                 m_pointerFollow = false;
                 return m_pointerHandled;
             }
-        } else if(pointerCount == 2 && (action & AMOTION_EVENT_ACTION_MASK) == AMOTION_EVENT_ACTION_POINTER_DOWN) {
+        } else if(pointerCount == 2 && action == AMOTION_EVENT_ACTION_POINTER_DOWN) {
             Log::debug("secondary: ", AMotionEvent_getPointerId(event, 1));
             if(!m_pointerFollow)
                 return false;
@@ -105,6 +107,11 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             if(id0 != m_pointerId && id1 != m_pointerId)
                 return false;
             return m_pointerHandled |= input.twoPointTap();
+        } else if(action == AMOTION_EVENT_ACTION_POINTER_UP && AMotionEvent_getPointerId(event, index) == m_pointerId) {
+            m_pointerHandled |= input.pointerUp(!m_pointerHandled);
+            m_pointerDownTime = absolutePast;
+            m_pointerFollow = false;
+            return m_pointerHandled;
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
@@ -126,7 +133,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
 }
 
 void AndroidInput::ping() {
-    if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
+    if(m_pointerFollow && m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
         m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }

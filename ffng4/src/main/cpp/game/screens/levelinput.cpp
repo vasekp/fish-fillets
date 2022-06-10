@@ -123,6 +123,10 @@ bool LevelInput::pointerUp(bool empty) {
     return false;
 }
 
+void LevelInput::pointerCancel() {
+    m_dirpad.state = DirpadState::idle;
+}
+
 bool LevelInput::doubleTap(FCoords coords) {
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
     if(!m_instance.screens().dispatchPointer(windowCoords))

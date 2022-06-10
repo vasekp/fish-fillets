@@ -66,8 +66,9 @@ public:
     bool keyDown(Key key) override;
     bool keyUp(Key key) override;
     bool pointerDown(FCoords coords) override;
-    bool pointerUp(bool empty) override;
     bool pointerMove(FCoords coords) override;
+    bool pointerUp(bool empty) override;
+    void pointerCancel() override;
     bool longPress(FCoords coords) override;
     bool doubleTap(FCoords coords) override;
     bool twoPointTap() override;
