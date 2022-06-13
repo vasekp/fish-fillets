@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     Window root = DefaultRootWindow(dpy);
 
     XSetWindowAttributes swa;
-    swa.event_mask = ExposureMask | ButtonPressMask | KeyPressMask;
+    swa.event_mask = ExposureMask | ButtonPressMask | KeyPressMask | StructureNotifyMask;
     Window win = XCreateWindow(dpy, root, 0, 0, 600, 600, 0,
         CopyFromParent, InputOutput, CopyFromParent, CWEventMask, &swa);
 
@@ -61,6 +61,12 @@ int main(int argc, char **argv) {
         switch(event.type) {
           /*case Expose:
             break;*/
+          case ConfigureNotify:
+          {
+            Log::debug("Resize: ", instance.graphics().display().width(), "×", instance.graphics().display().height());
+            instance.graphics().system().notifyDisplayResize();
+            break;
+          }
           case ClientMessage:
             if((Atom)event.xclient.data.l[0] == wmDeleteMessage) {
               Log::info("Quitting");

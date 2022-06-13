@@ -54,10 +54,6 @@ namespace ogl {
         if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
             Log::fatal("eglMakeCurrent failed");
 
-        m_width = m_height = 0;
-        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
-        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
-
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
             auto info = glGetString(name);
@@ -73,7 +69,7 @@ namespace ogl {
         glClearColor(0, 0, 0, 0);
         glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
-        Log::debug("display: opened ", (void*)m_display, " ", ICoords{m_width, m_height});
+        Log::debug("display: opened ", (void*)m_display, " ", ICoords{width(), height()});
     }
 
     Display::~Display() {
@@ -92,6 +88,18 @@ namespace ogl {
 
     void Display::swap() const {
         eglSwapBuffers(m_display, m_surface);
+    }
+
+    std::int32_t Display::width() const {
+        std::int32_t width;
+        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
+        return width;
+    }
+
+    std::int32_t Display::height() const {
+        std::int32_t height;
+        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
+        return height;
     }
 
 }
