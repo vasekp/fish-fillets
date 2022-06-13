@@ -4,7 +4,6 @@
 #include <cstring>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
-#include <future>
 #include <thread>
 
 static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
@@ -54,7 +53,7 @@ static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& inst
     }
 
     auto ret = AudioData::create(filename, numSamples);
-    std::thread([=, &instance, data = ret->data()] () mutable {
+    std::thread([=, data = ret->data()] () mutable {
         std::size_t curSample = 0;
         while(true) {
             float** buffer;
