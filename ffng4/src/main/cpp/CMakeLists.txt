@@ -81,5 +81,11 @@ else()
     find_package(X11 REQUIRED)
     find_package(PNG REQUIRED)
     find_package(Ogg REQUIRED)
-    target_link_libraries(fillets X11 png vorbisfile lua)
+    find_package(ALSA REQUIRED)
+    target_link_libraries(fillets
+      X11
+      png
+      vorbisfile
+      lua
+      asound)
 endif()

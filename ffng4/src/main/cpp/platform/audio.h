@@ -3,6 +3,8 @@
 
 #ifdef __ANDROID__
 #include "platform/android/audio.h"
+#elifdef __linux__
+#include "platform/linux/audiosink.h"
 #else
 
 class AudioSink {
