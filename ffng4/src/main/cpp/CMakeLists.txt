@@ -37,6 +37,16 @@ else()
     add_executable(fillets ${fillets_sources} ${fillets_linux})
 endif()
 
+target_precompile_headers(fillets PRIVATE
+    "common.h"
+    "subsystem/graphics.h"
+    "subsystem/audio.h"
+    "subsystem/graphics.h"
+    "subsystem/files.h"
+    "subsystem/input.h"
+    "subsystem/rng.h"
+    "subsystem/script.h")
+
 file(GLOB lua_sources "lua/*.c")
 list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
 
