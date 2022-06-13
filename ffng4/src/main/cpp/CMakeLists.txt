@@ -47,27 +47,29 @@ target_precompile_headers(fillets PRIVATE
     "subsystem/rng.h"
     "subsystem/script.h")
 
-file(GLOB lua_sources "lua/*.c")
-list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
-
-add_library(lua SHARED ${lua_sources})
-
-target_compile_definitions(lua PRIVATE -DLUA_USE_POSIX)
-
-target_include_directories(fillets PRIVATE . lua)
+target_include_directories(fillets PRIVATE .)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    file(GLOB lua_sources "lua/*.c")
+    list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
+
+    add_library(lua SHARED ${lua_sources})
+
+    target_compile_definitions(lua PRIVATE -DLUA_USE_POSIX)
+
+    target_include_directories(fillets PRIVATE lua)
+
     target_include_directories(fillets PRIVATE
         ${ANDROID_NDK}/sources/android/native_app_glue)
 endif()
 
 target_link_libraries(fillets
     EGL
-    GLESv2
-    lua)
+    GLESv2)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     target_link_libraries(fillets
+        lua
         android
         native_app_glue
         jnigraphics
@@ -75,8 +77,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
         oboe::oboe
         log)
 else()
+    find_package(Lua REQUIRED)
     find_package(X11 REQUIRED)
     find_package(PNG REQUIRED)
     find_package(Ogg REQUIRED)
-    target_link_libraries(fillets X11 png vorbisfile)
+    target_link_libraries(fillets X11 png vorbisfile lua)
 endif()
