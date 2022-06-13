@@ -1,5 +1,92 @@
 #include "subsystem/audio.h"
+#include "subsystem/files.h"
+#include <cstdio>
+#include <cstring>
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
+#include <future>
+#include <thread>
+
+static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
 
 AudioData::Ref Audio::loadOGG(const std::string& filename) const {
-    return AudioData::create(filename, 1000);
+    if(auto ret = loadSoundAsync(filename, m_instance))
+        return ret;
+    else {
+        Log::warn("Replacing ", filename, " with silence");
+        return AudioData::create(filename, 1000);
+    }
+}
+static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance) {
+    auto file = instance.files().system(filename);
+    OggVorbis_File vf;
+    bool doubleSample;
+    std::size_t numSamples;
+
+    if(ov_fopen(file.fullPath().c_str(), &vf)) {
+        Log::error("ov_fopen failed on ", file.fullPath());
+        return {};
+    }
+
+    {
+        vorbis_info* vi = ov_info(&vf, -1);
+        Log::verbose(filename, ": sample rate ", vi->rate, ", ", vi->channels, " channels");
+
+        if(vi->channels != 1) {
+            Log::error("Unexpected channel count (", filename, "), expected mono: ", vi->channels);
+            return {};
+        }
+
+        switch(vi->rate) {
+            case 22050:
+                doubleSample = false;
+                break;
+            case 11025:
+                doubleSample = true;
+                break;
+            default:
+                Log::error("Unexpected audio sample rate (", filename, "): ", vi->rate);
+                return {};
+        }
+
+        numSamples = (std::size_t)ov_pcm_total(&vf, -1);
+        Log::verbose("numSamples: ", numSamples);
+    }
+
+    auto ret = AudioData::create(filename, numSamples);
+    std::thread([=, &instance, data = ret->data()] () mutable {
+        std::size_t curSample = 0;
+        while(true) {
+            float** buffer;
+            int section;
+            auto ret = ov_read_float(&vf, &buffer, 1, &section);
+            if(ret > 0) {
+                auto samplesRead = (std::size_t)ret;
+                if(doubleSample) {
+                    assert(curSample + 2u * samplesRead <= numSamples);
+                    for(auto i = 0u; i < samplesRead; i++) {
+                        float curr = buffer[0][i];
+                        float prev = i > 0 ? buffer[0][i - 1] :
+                                     curSample > 0 ? data[curSample - 1] : 0.f;
+                        data[curSample + 2 * i] = curr;
+                        data[curSample + 2 * i - 1] = (curr + prev) / 2.f;
+                    }
+                    curSample += 2u * samplesRead;
+                } else {
+                    std::memcpy(&data[curSample], buffer[0], samplesRead * sizeof(float));
+                    curSample += samplesRead;
+                }
+            } else if(ret == 0)
+                break;
+            else {
+                Log::error("Error in decoding Vorbis data (", filename, "): ", ret);
+                break;
+            }
+        }
+        numSamples = curSample;
+        Log::debug("loadOGG ", filename, ": decoded ", curSample, " frames");
+        ov_clear(&vf);
+    }).detach();
+
+    return ret;
 }
