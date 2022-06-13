@@ -1,7 +1,7 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
-#include <android/input.h>
+#include <X11/Xlib.h>
 
 class PlatformInput : public IInputProvider {
     Instance& m_instance;
@@ -22,7 +22,9 @@ class PlatformInput : public IInputProvider {
 public:
     PlatformInput(Instance& instance);
 
-    bool processEvent(AInputEvent* event);
+    void keyEvent(XKeyEvent& xkey);
+    void buttonEvent(const XButtonEvent& xbutton);
+    void motionEvent(const XMotionEvent& xmotion);
     void ping();
     Key poolKey() override;
     void reset() override;
