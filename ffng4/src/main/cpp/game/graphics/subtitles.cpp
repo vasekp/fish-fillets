@@ -1,6 +1,6 @@
 #include "subtitles.h"
 
-std::vector<std::string> Subtitles::breakLines(const std::string& text) {
+std::vector <std::string> Subtitles::breakLines(const std::string& text) {
     /*auto& jni = m_instance.jni(); // XXX
     auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
     auto jText = jni->NewStringUTF(text.c_str());
@@ -24,17 +24,17 @@ std::vector<std::string> Subtitles::breakLines(const std::string& text) {
     return {};
 }
 
-void Subtitles::defineColors(const std::string &name, Color color1, Color color2) {
+void Subtitles::defineColors(const std::string& name, Color color1, Color color2) {
     m_colors.insert({name, {color1, color2}});
 }
 
-void Subtitles::add(const std::string &text, const std::string& colors) {
+void Subtitles::add(const std::string& text, const std::string& colors) {
     auto lines = breakLines(text);
     auto countLines = lines.size();
     for(const auto& line : lines) {
-        float duration = std::max((float) text.length() * timePerChar, minTimePerLine);
-        auto[color1, color2] = [&]() {
-            if (m_colors.contains(colors))
+        float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
+        auto [color1, color2] = [&]() {
+            if(m_colors.contains(colors))
                 return m_colors.at(colors);
             else {
                 Log::warn("Unknown color: ", colors);
@@ -42,10 +42,11 @@ void Subtitles::add(const std::string &text, const std::string& colors) {
             }
         }();
         auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", fontsize * m_instance.graphics().dpi(), outline * m_instance.graphics().dpi());
-        m_lines.push_back(
-                {line, std::move(texture),
-                 false, 0.f, 0.f, duration,
-                 (unsigned) countLines, color1, color2});
+        m_lines.push_back({
+                line, std::move(texture),
+                false, 0.f, 0.f, duration,
+                (unsigned)countLines, color1, color2
+        });
     }
 }
 
@@ -69,9 +70,9 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
         line.addTime = absTime;
     }
     while(!m_lines.empty()) {
-        const auto &front = m_lines.front();
-        if (front.live && (front.yOffset > 5 || absTime - front.addTime > front.duration))
-            m_lines.erase(m_lines.begin(), m_lines.begin() + (int) m_lines.front().groupSize);
+        const auto& front = m_lines.front();
+        if(front.live && (front.yOffset > 5 || absTime - front.addTime > front.duration))
+            m_lines.erase(m_lines.begin(), m_lines.begin() + (int)m_lines.front().groupSize);
         else
             break;
     }

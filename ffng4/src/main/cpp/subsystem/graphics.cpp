@@ -52,8 +52,3 @@ ogl::Texture Graphics::renderText(const std::string& text, const std::string& fo
     jni->DeleteLocalRef(jText);
     return ret;*/
 }
-
-float Graphics::dpi() const {
-    //return (float) AConfiguration_getDensity(m_instance.app()->config); // XXX
-    return 72;
-}
