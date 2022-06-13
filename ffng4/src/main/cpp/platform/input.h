@@ -3,6 +3,8 @@
 
 #ifdef __ANDROID__
 #include "platform/android/ainput.h"
+#elifdef __linux__
+#include "platform/linux/input.h"
 #else
 
 class PlatformInput : public IInputProvider {

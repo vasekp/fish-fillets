@@ -31,6 +31,7 @@ ogl::Texture Graphics::loadPNG(const std::string& filename) const {
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
     png_set_palette_to_rgb(png_ptr);
+    png_set_gray_to_rgb(png_ptr);
     png_set_add_alpha(png_ptr, 0xFF, PNG_FILLER_AFTER);
     png_read_update_info(png_ptr, info_ptr);
 
