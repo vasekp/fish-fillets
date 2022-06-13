@@ -12,6 +12,7 @@
 #include "graphics/texturetarget.h"
 #include "graphics/system.h"
 #include "graphics/graphicsutils.h"
+#include "platform/font.h"
 
 class Graphics {
     Instance& m_instance;
@@ -39,7 +40,6 @@ public:
     void setMask(const ogl::Texture& texture);
 
     ogl::Texture loadPNG(const std::string& filename) const;
-    ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline) const;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H

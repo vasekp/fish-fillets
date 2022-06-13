@@ -29,26 +29,3 @@ void Graphics::setMask(const ogl::Texture& texture) {
 void Graphics::setMask(const Image* image) {
     setMask(image->texture());
 }
-
-ogl::Texture Graphics::renderText(const std::string& text, const std::string& font, float fontSize, float outline) const {
-    return ogl::Texture::empty(system().ref(), 1, 1);
-    /*auto& jni = m_instance.jni(); // XXX
-    auto jFilename = jni->NewStringUTF(font.c_str());
-    auto jText = jni->NewStringUTF(text.c_str());
-    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, fontSize, outline);
-    AndroidBitmapInfo info;
-    AndroidBitmap_getInfo(jni, jBitmap, &info);
-    std::uint32_t width = info.width;
-    std::uint32_t height = info.height;
-    std::size_t stride = info.stride;
-    void *pixels;
-    AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-    if (!jBitmap)
-        Log::fatal("bitmap data null (renderText)");
-    auto ret = ogl::Texture::fromImageData(system().ref(), width, height, stride, pixels);
-    AndroidBitmap_unlockPixels(jni, jBitmap);
-    jni->DeleteLocalRef(jBitmap);
-    jni->DeleteLocalRef(jFilename);
-    jni->DeleteLocalRef(jText);
-    return ret;*/
-}

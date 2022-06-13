@@ -1,7 +1,14 @@
 #include "leveltitle.h"
 
+LevelTitle::LevelTitle(Instance& instance, std::string text) :
+    m_instance(instance),
+    m_font(instance, fontFilename),
+    m_text(std::move(text))
+{ }
+
 void LevelTitle::refresh() {
-    m_texture = m_instance.graphics().renderText(m_text, "font/font_title.ttf", fontSize * m_instance.graphics().dpi(), 0.0);
+    m_font.setSizes(fontSize * m_instance.graphics().dpi(), 0);
+    m_texture = m_font.renderText(m_text);
 }
 
 void LevelTitle::draw(const DrawTarget& target, float opacity) {

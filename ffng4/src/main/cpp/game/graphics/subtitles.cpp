@@ -1,35 +1,16 @@
 #include "subtitles.h"
 
-std::vector <std::string> Subtitles::breakLines(const std::string& text) {
-    /*auto& jni = m_instance.jni(); // XXX
-    auto jFilename = jni->NewStringUTF("font/font_subtitle.ttf");
-    auto jText = jni->NewStringUTF(text.c_str());
-    auto jArray = (jobjectArray) jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
-            jText, jFilename, fontsize * m_instance.graphics().dpi(),
-            m_instance.graphics().fullscreenTarget().reducedDisplaySize().x());
-    auto length = jni->GetArrayLength(jArray);
-    std::vector<std::string> ret{};
-    ret.reserve(length);
-    for(auto i = 0u ; i < length ; i++) {
-        auto jLine = (jstring) jni->GetObjectArrayElement(jArray, (int) i);
-        auto chars = jni->GetStringUTFChars(jLine, nullptr);
-        ret.emplace_back(chars);
-        jni->ReleaseStringUTFChars(jLine, chars);
-        jni->DeleteLocalRef(jLine);
-    }
-    jni->DeleteLocalRef(jFilename);
-    jni->DeleteLocalRef(jText);
-    jni->DeleteLocalRef(jArray);
-    return ret;*/
-    return {};
-}
+Subtitles::Subtitles(Instance& instance) :
+    m_instance(instance),
+    m_font(instance, fontFilename)
+{ }
 
 void Subtitles::defineColors(const std::string& name, Color color1, Color color2) {
     m_colors.insert({name, {color1, color2}});
 }
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
-    auto lines = breakLines(text);
+    auto lines = m_font.breakLines(text, m_instance.graphics().fullscreenTarget().reducedDisplaySize().fx());
     auto countLines = lines.size();
     for(const auto& line : lines) {
         float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
@@ -41,7 +22,7 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
                 return std::pair{Color::white, Color::white};
             }
         }();
-        auto texture = m_instance.graphics().renderText(line, "font/font_subtitle.ttf", fontsize * m_instance.graphics().dpi(), outline * m_instance.graphics().dpi());
+        auto texture = m_font.renderText(line);
         m_lines.push_back({
                 line, std::move(texture),
                 false, 0.f, 0.f, duration,
@@ -83,7 +64,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto width = line.texture.width();
-            auto height = line.texture.height() - outline * m_instance.graphics().dpi();
+            auto height = line.texture.height() - (unsigned)(outline * m_instance.graphics().dpi());
             const auto& fullscreen = dynamic_cast<const DisplayTarget&>(target);
             float destX = fullscreen.displayOffset().fx() + (fullscreen.reducedDisplaySize().fx() - (float)width) / 2.f;
             float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
@@ -92,8 +73,10 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
 }
 
 void Subtitles::refresh() {
+    auto dpi = m_instance.graphics().dpi();
+    m_font.setSizes(fontsize * dpi, outline * dpi);
     for(auto& line : m_lines) {
         if(!line.texture.live())
-            line.texture = m_instance.graphics().renderText(line.text, "font/font_subtitle.ttf", fontsize * m_instance.graphics().dpi(), outline * m_instance.graphics().dpi());
+            line.texture = m_font.renderText(line.text);
     }
 }

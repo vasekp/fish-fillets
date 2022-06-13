@@ -7,6 +7,7 @@ LevelInput::LevelInput(Instance& instance) :
         m_instance(instance),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
+        m_buttonsFont(instance, fontFilename),
         m_gravity(ButtonGravity::left),
         m_activeButton(noButton)
 {
@@ -164,10 +165,11 @@ void LevelInput::refresh() {
         std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
         static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
         static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
+        m_buttonsFont.setSizes(buttonSize, 0);
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
-                    m_instance.graphics().renderText(chars[i], "font/FFArrows.ttf", buttonSize, 0),
+                    m_buttonsFont.renderText(chars[i]),
                     from,
                     from + FCoords{buttonSize, buttonSize},
                     keys[i]
