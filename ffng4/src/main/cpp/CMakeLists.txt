@@ -80,11 +80,15 @@ else()
     find_package(PNG REQUIRED)
     find_package(Ogg REQUIRED)
     find_package(ALSA REQUIRED)
+    find_package(Freetype REQUIRED)
+
+    target_include_directories(fillets PRIVATE ${FREETYPE_INCLUDE_DIRS})
 
     target_link_libraries(fillets
             X11
             png
             vorbisfile
             lua
-            asound)
+            asound
+            Freetype::Freetype)
 endif()

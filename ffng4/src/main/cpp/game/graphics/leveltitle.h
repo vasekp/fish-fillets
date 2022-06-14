@@ -5,7 +5,7 @@
 
 class LevelTitle {
     Instance& m_instance;
-    Font m_font;
+    FFont m_font;
     std::string m_text;
     ogl::Texture m_texture;
 

@@ -17,7 +17,7 @@ class Subtitles {
     };
 
     Instance& m_instance;
-    Font m_font;
+    FFont m_font;
     std::deque<Title> m_lines;
     std::map<std::string, std::pair<Color, Color>> m_colors;
 
