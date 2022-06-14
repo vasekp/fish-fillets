@@ -1,7 +1,7 @@
 #include "subsystem/input.h"
 #include "instance.h"
 #include "game/screens/screenmanager.h"
-#include "platform/android/ainstance.h"
+#include "./ainstance.h"
 
 PlatformInput::PlatformInput(Instance& instance) :
         m_instance(instance),

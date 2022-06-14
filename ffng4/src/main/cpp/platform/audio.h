@@ -2,7 +2,7 @@
 #define FISH_FILLETS_PLATFORM_AUDIO_H
 
 #ifdef __ANDROID__
-#include "platform/android/audio.h"
+#include "platform/android/audiosink.h"
 #elifdef __linux__
 #include "platform/linux/audiosink.h"
 #else

@@ -2,7 +2,7 @@
 #define FISH_FILLETS_PLATFORM_INPUT_H
 
 #ifdef __ANDROID__
-#include "platform/android/ainput.h"
+#include "platform/android/input.h"
 #elifdef __linux__
 #include "platform/linux/input.h"
 #else
