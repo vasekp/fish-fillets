@@ -3,7 +3,6 @@
 
 #include "instance.h"
 #include "api/ogl.h"
-#include "subsystem/files.h"
 
 #include "graphics/shaders.h"
 #include "graphics/image.h"
@@ -13,6 +12,7 @@
 #include "graphics/texturetarget.h"
 #include "graphics/system.h"
 #include "graphics/graphicsutils.h"
+#include "platform/font.h"
 
 class Graphics {
     Instance& m_instance;
@@ -39,8 +39,7 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    ogl::Texture loadImage(const SystemFile& path) const;
-    ogl::Texture renderText(const std::string& text, const std::string& font /* TODO filesystem */, float fontSize, float outline) const;
+    ogl::Texture loadPNG(const std::string& filename) const;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H

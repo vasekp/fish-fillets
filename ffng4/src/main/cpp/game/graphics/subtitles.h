@@ -17,11 +17,12 @@ class Subtitles {
     };
 
     Instance& m_instance;
+    Font m_font;
     std::deque<Title> m_lines;
     std::map<std::string, std::pair<Color, Color>> m_colors;
 
 public:
-    Subtitles(Instance& instance) : m_instance(instance) { }
+    Subtitles(Instance& instance);
 
     void add(const std::string& text, const std::string& colors);
     void defineColors(const std::string& name, Color color1, Color color2);
@@ -29,15 +30,12 @@ public:
     void refresh();
     void clear();
 
-    constexpr static const char* filename = "font/font_subtitle.ttf";
+    constexpr static const char* fontFilename = "font/font_subtitle.ttf";
     constexpr static float fontsize = 0.1f;
     constexpr static float outline = 0.01f; // both relative to DPI
     constexpr static float timePerChar = 0.09f;
     constexpr static float minTimePerLine = 2.5f;
     constexpr static float speed = 1.f;
-
-private:
-    std::vector<std::string> breakLines(const std::string& text);
 };
 
 #endif //FFNG_GAME_SUBTITLES_H

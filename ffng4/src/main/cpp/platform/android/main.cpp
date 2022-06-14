@@ -1,8 +1,8 @@
 #include "instance.h"
-
+#include "platform/android/ainstance.h"
 #include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 #include "subsystem/input.h"
-#include "game/structure/gametree.h"
 #include "game/screens/screenmanager.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
@@ -21,7 +21,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             Log::debug("APP_CMD_INIT_WINDOW");
-            if (instance.app()->window != nullptr) {
+            if (instance.platform().app->window != nullptr) {
                 instance.live = true;
                 instance.graphics().activate();
                 instance.audio().activate();

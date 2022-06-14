@@ -4,7 +4,6 @@
 #include "instance.h"
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
-#include "subsystem/files.h"
 #include "subsystem/script.h"
 #include "subsystem/input.h"
 

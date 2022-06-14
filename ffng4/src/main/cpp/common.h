@@ -1,5 +1,5 @@
-#ifndef FIST_FILLETS_COMMON_H
-#define FIST_FILLETS_COMMON_H
+#ifndef FISH_FILLETS_COMMON_H
+#define FISH_FILLETS_COMMON_H
 
 #include <cstddef>
 #include <cstdint>
@@ -39,4 +39,4 @@ namespace std {
 }
 #endif
 
-#endif //FIST_FILLETS_COMMON_H
+#endif //FISH_FILLETS_COMMON_H

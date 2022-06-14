@@ -2,9 +2,8 @@
 #define FISH_FILLETS_INSTANCE_H
 
 #include "common.h"
-#include "api/jni.h"
 
-struct android_app;
+struct PlatformInstance;
 class Files;
 class Graphics;
 class Image;
@@ -14,34 +13,30 @@ class ScreenManager;
 class Script;
 class GameTree;
 class AudioSource;
-class AndroidInput;
+class PlatformInput;
 class RNG;
 
-/*struct saved_state {
-};*/
-
 class Instance {
-    android_app* m_app;
-    jni::Env m_jni;
-
+    std::unique_ptr<PlatformInstance> m_platform;
     std::unique_ptr<Files> m_files;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
     std::unique_ptr<ScreenManager> m_screens;
-    std::unique_ptr<AndroidInput> m_input;
+    std::unique_ptr<PlatformInput> m_input;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
     std::unique_ptr<RNG> m_rng;
 
-    //struct saved_state m_screens;
-
 public:
-    Instance(android_app*);
-    static Instance& get(android_app*);
+    template<typename T>
+    Instance(T platformInit);
+
+    template<typename T>
+    static Instance& get(T);
+
     ~Instance();
 
-    auto* app() { return m_app; }
-    auto& jni() { return m_jni; }
+    auto& platform() { return *m_platform; }
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }

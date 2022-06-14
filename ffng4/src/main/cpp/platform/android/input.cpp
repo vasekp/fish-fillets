@@ -1,9 +1,9 @@
 #include "subsystem/input.h"
-#include "game/screens/screenmanager.h"
-#include "game/screens/screen.h"
 #include "instance.h"
+#include "game/screens/screenmanager.h"
+#include "./ainstance.h"
 
-AndroidInput::AndroidInput(Instance& instance) :
+PlatformInput::PlatformInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -13,7 +13,7 @@ AndroidInput::AndroidInput(Instance& instance) :
         m_pointerHandled(false)
 { }
 
-void AndroidInput::reset() {
+void PlatformInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
     m_pointerDownTime = absolutePast;
@@ -50,7 +50,7 @@ static Key AndroidKeymap(unsigned int code) {
     }
 }
 
-bool AndroidInput::processEvent(AInputEvent* event) {
+bool PlatformInput::processEvent(AInputEvent* event) {
     auto& input = m_instance.screens().curScreen().input();
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto combined = AMotionEvent_getAction(event);
@@ -77,7 +77,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     m_pointerHandled = input.doubleTap(coords);
                 else
                     m_pointerHandled = input.pointerDown(coords);
-                m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+                m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
             } else if(action == AMOTION_EVENT_ACTION_MOVE) {
                 if(!m_pointerFollow || pointerId != m_pointerId)
                     return false;
@@ -89,10 +89,10 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 if(pointerId == m_pointerId)
                     m_pointerHandled |= input.pointerUp(!m_pointerHandled);
                 if(!m_pointerHandled) {
-                    m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("showUI"));
+                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("showUI"));
                     // keep m_pointerDownTime for double tap
                 } else {
-                    m_instance.jni()->CallVoidMethod(m_instance.jni().object(), m_instance.jni().method("hideUI"));
+                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
                     m_pointerDownTime = absolutePast;
                 }
                 m_pointerFollow = false;
@@ -132,13 +132,13 @@ bool AndroidInput::processEvent(AInputEvent* event) {
     return false;
 }
 
-void AndroidInput::ping() {
+void PlatformInput::ping() {
     if(m_pointerFollow && m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
         m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }
 }
 
-Key AndroidInput::poolKey() {
+Key PlatformInput::poolKey() {
     return m_lastKey;
 }

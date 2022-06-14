@@ -11,6 +11,10 @@ private:
     ReadBuffer m_readBuffer;
     Shaders m_shaders;
 
+    unsigned m_windowWidth;
+    unsigned m_windowHeight;
+    FCoords m_reserve;
+
 public:
     GraphicsSystem(Instance& instance);
 
@@ -18,6 +22,7 @@ public:
     auto& ref() { return m_display; }
 
     void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
+    void notifyDisplayResize();
 
     friend class Graphics;
 };

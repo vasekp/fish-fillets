@@ -164,7 +164,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     }
 }
 
-AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename /*TODO*/, bool single) {
+AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
     if(single && m_sounds.contains(name))
         return m_sounds.find(name)->second;
     auto it = m_sounds.insert({name, m_instance.audio().loadSound(filename)});
@@ -296,7 +296,7 @@ FCoords LevelScreen::shift() {
 
 void LevelScreen::display(const std::string& filename) {
     if(!filename.empty())
-        m_display.emplace(m_instance.files().system(filename), m_instance);
+        m_display.emplace(filename, m_instance);
     else
         m_display.reset();
 }

@@ -45,6 +45,7 @@ class LevelInput : public IInputSink {
     };
     std::array<Button, Buttons::bSIZE> m_buttons;
     std::array<bool, Buttons::bSIZE> m_buttonsEnabled;
+    Font m_buttonsFont;
 
 public:
     enum class ButtonGravity {
@@ -85,6 +86,7 @@ private:
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
 
+    constexpr static const char* fontFilename = "font/FFArrows.ttf";
     constexpr static float minDistance = 0.1f; // inches
     constexpr static float arrowSize = 0.35f; // inches
     constexpr static float maxButtonSize = 0.35f; // inches

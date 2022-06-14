@@ -8,17 +8,14 @@ namespace ogl {
         EGLSurface m_surface;
         EGLContext m_context;
 
-        std::int32_t m_width;
-        std::int32_t m_height;
-
     public:
-        Display(ANativeWindow* window);
+        Display(NativeWindowType window);
         Display(const Display &) = delete;
         Display &operator=(const Display &) = delete;
         ~Display();
 
-        auto width() const { return m_width; }
-        auto height() const { return m_height; }
+        std::int32_t width() const;
+        std::int32_t height() const;
 
         void bind() const;
         void swap() const;

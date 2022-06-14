@@ -5,16 +5,18 @@
 
 class LevelTitle {
     Instance& m_instance;
+    Font m_font;
     std::string m_text;
     ogl::Texture m_texture;
 
 public:
-    LevelTitle(Instance& instance, std::string text) : m_instance(instance), m_text(std::move(text)) { }
+    LevelTitle(Instance& instance, std::string text);
 
     void refresh();
     void draw(const DrawTarget& target, float opacity);
 
 private:
+    constexpr static const char* fontFilename = "font/font_title.ttf";
     constexpr static float fontSize = 0.1; // relative to DPI
     constexpr static float startY = 400.f / 480.f;
     constexpr static float endY = 470.f / 480.f;

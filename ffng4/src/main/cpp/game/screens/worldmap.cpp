@@ -118,6 +118,15 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
     }
 }
 
+bool WorldMap::own_key(Key key) {
+    if(key == Key::exit) {
+        staticFrame(WorldMap::Frames::exit);
+        m_instance.quit();
+        return true;
+    } else
+        return false;
+}
+
 void WorldMap::drawMasked(const DrawTarget& target, Color maskColor) {
     const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
     glUseProgram(maskProgram);

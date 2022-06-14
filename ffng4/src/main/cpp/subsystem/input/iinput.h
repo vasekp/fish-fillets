@@ -8,8 +8,8 @@ class Instance;
 
 class IInputProvider {
 public:
-    virtual Key poolKey() = 0;
-    virtual void reset() = 0;
+    virtual Key poolKey() { return Key::none; }
+    virtual void reset() { }
     virtual ~IInputProvider() { }
 };
 
