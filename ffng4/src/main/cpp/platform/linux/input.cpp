@@ -98,7 +98,7 @@ void PlatformInput::buttonEvent(const XButtonEvent& event) {
         if(event.button == Button1) {
             if(!m_pointerFollow)
                 return;
-            m_pointerHandled |= input.pointerUp();
+            m_pointerHandled |= input.pointerUp(!m_pointerHandled);
             m_lastPointerDownTime = m_pointerDownTime;
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
