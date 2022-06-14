@@ -108,8 +108,8 @@ public:
 
     friend FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
     friend FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }
-    friend FCoords& operator+=(FCoords& a, FCoords b) { a.m_fx += b.m_fx; a.m_fy += b.m_fy; return a; }
-    friend FCoords& operator-=(FCoords& a, FCoords b) { a.m_fx -= b.m_fx; a.m_fy -= b.m_fy; return a; }
+    friend FCoords& operator+=(FCoords& a, FCoords b) { return a = a + b; }
+    friend FCoords& operator-=(FCoords& a, FCoords b) { return a = a - b; }
     friend FCoords operator*(float f, FCoords c) { return {f * c.fx(), f * c.fy()}; }
     friend FCoords operator*(FCoords c, float f) { return {f * c.fx(), f * c.fy()}; }
     friend FCoords operator/(FCoords c, float f) { return {c.fx() / f, c.fy() / f}; }
