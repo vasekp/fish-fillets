@@ -60,11 +60,6 @@ void ScreenManager::startLevel(LevelRecord& record) {
     Log::debug("startLevel duration = ", diff.count(), " s");
 }
 
-void ScreenManager::playIntro() {
-    /*auto& jni = m_instance.jni(); // XXX
-    jni->CallVoidMethod(jni.object(), jni.method("playIntro"));*/
-}
-
 void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
     if(!graphics.ready()) {
