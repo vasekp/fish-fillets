@@ -4,8 +4,8 @@
 
 GraphicsSystem::GraphicsSystem(Instance& instance) :
         m_display(std::make_shared<ogl::Display>(instance.platform().window())),
-        m_windowTarget(*m_display),
-        m_fullscreenTarget(*m_display),
+        m_windowTarget(*m_display, false),
+        m_fullscreenTarget(*m_display, true),
         m_blurTargets{ref(), ref()},
         m_offscreenTarget(ref()),
         m_readBuffer(m_display),

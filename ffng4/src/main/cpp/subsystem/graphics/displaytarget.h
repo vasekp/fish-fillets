@@ -5,6 +5,7 @@
 
 class DisplayTarget : public DrawTarget {
     const ogl::Display& m_display;
+    bool m_fullscreen;
     FCoords m_windowDim;
     struct {
         FCoords origin;
@@ -14,7 +15,7 @@ class DisplayTarget : public DrawTarget {
     FCoords m_reserve;
 
 public:
-    DisplayTarget(const ogl::Display& display);
+    DisplayTarget(const ogl::Display& display, bool fullscreen);
 
     void bind() const override;
     void setReserve(FCoords reserve); /* Does NOT call setWindow. */

@@ -1,10 +1,11 @@
 #include "subsystem/graphics.h"
 #include "displaytarget.h"
 
-DisplayTarget::DisplayTarget(const ogl::Display &display) :
+DisplayTarget::DisplayTarget(const ogl::Display &display, bool fullscreen) :
     m_display(display),
+    m_fullscreen(fullscreen),
     m_windowDim(display.width(), display.height()),
-    m_viewport{{0.f, 0.f}, {(float)m_display.width(), (float)m_display.height()}},
+    m_viewport{{0.f, 0.f}, {m_display.width(), m_display.height()}},
     m_scale(1.f)
 { }
 
@@ -19,6 +20,8 @@ void DisplayTarget::setReserve(FCoords reserve) {
 }
 
 void DisplayTarget::setWindow(unsigned int width, unsigned int height) {
+    assert(!m_fullscreen);
+    Log::debug("resize window");
     auto displayDim = reducedDisplaySize();
     m_windowDim = {width, height};
     m_scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
@@ -28,7 +31,12 @@ void DisplayTarget::setWindow(unsigned int width, unsigned int height) {
 }
 
 void DisplayTarget::recalc() {
-    setWindow(m_windowDim.x(), m_windowDim.y());
+    if(m_fullscreen) {
+        Log::debug("resize fullscreen");
+        m_windowDim = {m_display.width(), m_display.height()};
+        m_viewport = {{0.f, 0.f}, {m_display.width(),m_display.height()}};
+    } else
+        setWindow(m_windowDim.x(), m_windowDim.y());
 }
 
 FCoords DisplayTarget::screen2window(FCoords screen) const {
