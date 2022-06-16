@@ -20,6 +20,7 @@ public:
     void setReserve(FCoords reserve); /* Does NOT call setWindow. */
     void setWindow(unsigned int width, unsigned int height);
     FCoords size() const override { return m_windowDim; }
+    void recalc();
 
     FCoords screen2window(FCoords screen) const;
     FCoords window2screen(FCoords window) const;

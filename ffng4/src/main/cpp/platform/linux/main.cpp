@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
         instance.running = true;
 
         Log::info("Main loop");
+        int lastWidth = 0, lastHeight = 0;
         while(instance.running) {
             while(XPending(dpy)) {
                 XEvent event;
@@ -79,10 +80,14 @@ int main(int argc, char **argv) {
                         break;
                     case ConfigureNotify:
                         {
+                            if(event.xconfigure.width == lastWidth && event.xconfigure.height == lastHeight)
+                                break;
                             Log::debug("Resize: ",
                                     instance.graphics().display().width(), "×",
                                     instance.graphics().display().height());
                             instance.graphics().system().notifyDisplayResize();
+                            lastWidth = event.xconfigure.width;
+                            lastHeight = event.xconfigure.height;
                             break;
                         }
                     case ClientMessage:

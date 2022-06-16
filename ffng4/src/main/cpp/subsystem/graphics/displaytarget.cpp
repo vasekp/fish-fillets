@@ -27,6 +27,10 @@ void DisplayTarget::setWindow(unsigned int width, unsigned int height) {
     Log::info("Viewport: ", m_viewport.origin, " ", m_viewport.extent, " (scale ", m_scale, ")");
 }
 
+void DisplayTarget::recalc() {
+    setWindow(m_windowDim.x(), m_windowDim.y());
+}
+
 FCoords DisplayTarget::screen2window(FCoords screen) const {
     return {
             (screen.fx() - m_viewport.origin.fx()) / m_viewport.extent.fx() * m_windowDim.fx(),

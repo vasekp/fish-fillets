@@ -11,10 +11,6 @@ private:
     ReadBuffer m_readBuffer;
     Shaders m_shaders;
 
-    unsigned m_windowWidth;
-    unsigned m_windowHeight;
-    FCoords m_reserve;
-
 public:
     GraphicsSystem(Instance& instance);
 

@@ -12,7 +12,8 @@ public:
 
     void bind() const override;
     TextureView texture() const { return {m_texture, m_size}; }
-    void resize(unsigned width, unsigned height);
+    void resizeTexture(unsigned width, unsigned height);
+    void resizeBoth(unsigned width, unsigned height);
     void resize(unsigned width, unsigned height, float widthScale, float heightScale);
     FCoords size() const override;
 };
