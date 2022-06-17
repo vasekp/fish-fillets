@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_LINUX_FONT_H
 #define FISH_FILLETS_LINUX_FONT_H
 
+#include "subsystem/graphics.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_STROKER_H

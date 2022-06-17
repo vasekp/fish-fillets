@@ -10,7 +10,6 @@
 #include "subsystem/files.h"
 #include "subsystem/script.h"
 #include "subsystem/rng.h"
-#include "subsystem/input.h"
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 

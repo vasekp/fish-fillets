@@ -31,17 +31,7 @@ endif()
 
 target_include_directories(fillets PRIVATE .)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
-    target_precompile_headers(fillets PRIVATE
-            "common.h"
-            "subsystem/graphics.h"
-            "subsystem/audio.h"
-            "subsystem/graphics.h"
-            "subsystem/files.h"
-            "subsystem/input.h"
-            "subsystem/rng.h"
-            "subsystem/script.h")
-endif()
+target_precompile_headers(fillets PRIVATE "common.h")
 
 target_link_libraries(fillets
         EGL
