@@ -2,7 +2,7 @@
 #define FISH_FILLETS_LINUX_INSTANCE_H
 
 #include "instance.h"
-#include <X11/Xlib.h>
+#include "xlib-fenced.h"
 
 struct PlatformInstance {
     Window m_window;

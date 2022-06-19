@@ -1,7 +1,7 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
-#include <X11/Xlib.h>
+#include "xlib-fenced.h"
 
 class PlatformInput : public IInputProvider {
     Instance& m_instance;

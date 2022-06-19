@@ -8,7 +8,7 @@
 
 class Instance;
 
-class FFont {
+class Font {
     Instance& m_instance;
     FT_Library m_ft;
     FT_Face m_face;
@@ -16,7 +16,7 @@ class FFont {
     float m_outline;
 
 public:
-    FFont(Instance& instance, const std::string& filename);
+    Font(Instance& instance, const std::string& filename);
 
     void setSizes(float fontSize, float outline);
     std::vector<std::string> breakLines(const std::string& text, float width);

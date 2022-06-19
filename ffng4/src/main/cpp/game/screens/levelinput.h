@@ -45,7 +45,7 @@ class LevelInput : public IInputSink {
     };
     std::array<Button, Buttons::bSIZE> m_buttons;
     std::array<bool, Buttons::bSIZE> m_buttonsEnabled;
-    FFont m_buttonsFont;
+    Font m_buttonsFont;
 
 public:
     enum class ButtonGravity {

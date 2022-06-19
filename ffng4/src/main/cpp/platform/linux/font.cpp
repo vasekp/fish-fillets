@@ -12,7 +12,7 @@ static float from266(FT_F26Dot6 x) {
     return (float)x / 64.f;
 }
 
-FFont::FFont(Instance& instance, const std::string& filename) :
+Font::Font(Instance& instance, const std::string& filename) :
         m_instance(instance),
         m_fontSize(), m_outline()
 {
@@ -24,7 +24,9 @@ FFont::FFont(Instance& instance, const std::string& filename) :
         Log::fatal("Error loading font ", fnFull);
 }
 
-void FFont::setSizes(float fontSize, float outline /* TODO dpi */) {
+void Font::setSizes(float fontSize, float outline /* TODO dpi */) {
+    m_fontSize = fontSize;
+    m_outline = outline;
     if(FT_Set_Char_Size(m_face, to266(/* TODO arbitrary upscale */ 2.f * fontSize), 0, 90, 0) != 0)
         Log::fatal("FT_Set_Char_Size failed");
     m_fontSize = 2.f * fontSize * 90.f / 72.f;
@@ -32,12 +34,12 @@ void FFont::setSizes(float fontSize, float outline /* TODO dpi */) {
     Log::debug("fontSize ", m_fontSize, " outline ", m_outline);
 }
 
-std::vector<std::string> FFont::breakLines(const std::string& text, float width) {
+std::vector<std::string> Font::breakLines(const std::string& text, float width) {
     // TODO
     return {text};
 }
 
-ogl::Texture FFont::renderText(const std::string& text) const {
+ogl::Texture Font::renderText(const std::string& text) const {
     float asc = from266(m_face->size->metrics.ascender);
     float desc = -from266(m_face->size->metrics.descender);
     Log::debug("EM ", m_face->size->metrics.y_ppem, " asc ", asc, " desc ", desc);
