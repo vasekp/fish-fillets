@@ -6,9 +6,9 @@ extern "C" {
 }
 
 AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
-    snd_pcm_t *alsa;
+    snd_pcm_t* alsa;
     snd_pcm_hw_params_t* hw_params;
-    snd_pcm_sw_params_t *sw_params;
+    snd_pcm_sw_params_t* sw_params;
 
     if(int err = snd_pcm_open(&alsa, "default", SND_PCM_STREAM_PLAYBACK, 0); err < 0)
         Log::fatal("cannot open audio device: ", snd_strerror(err));
@@ -31,8 +31,15 @@ AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
     if(int err = snd_pcm_hw_params_set_channels(alsa, hw_params, 1); err < 0)
         Log::fatal("snd_pcm_hw_params_set_channels failed: ", snd_strerror(err));
 
-    if(int err = snd_pcm_hw_params_set_buffer_size(alsa, hw_params, bufSize); err < 0)
-        Log::fatal("snd_pcm_hw_params_set_buffer_size failed: ", snd_strerror(err));
+    auto bufSize = bufSizeTarget;
+    if(int err = snd_pcm_hw_params_set_buffer_size_near(alsa, hw_params, &bufSize); err < 0)
+        Log::fatal("snd_pcm_hw_params_set_buffer_size_near failed: ", snd_strerror(err));
+    Log::debug("Alsa buffer size: ", bufSize);
+
+    auto periodSize = bufSize / 2;
+    if(int err = snd_pcm_hw_params_set_period_size_near(alsa, hw_params, &periodSize, 0); err < 0)
+        Log::fatal("snd_pcm_hw_params_set_period_size_near failed: ", snd_strerror(err));
+    Log::debug("Alsa period size: ", periodSize);
 
     if(int err = snd_pcm_hw_params(alsa, hw_params); err < 0)
         Log::fatal("snd_pcm_hw_params failed: ", snd_strerror(err));
@@ -56,15 +63,15 @@ AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
 
     m_thread = std::thread([=, this]() {
         Log::info("Audio thread started.");
+        auto buffer = std::make_unique<float[]>(bufSize);
 
         if(int err = snd_pcm_prepare(alsa); err < 0)
             Log::fatal("snd_pcm_prepare failed: ", snd_strerror(err));
 
         snd_pcm_sframes_t numFrames;
-        std::array<float, bufSize> buf;
 
         while(!m_quit.load(std::memory_order::relaxed)) {
-            if(int err = snd_pcm_wait(alsa, -1); err < 0) {
+            if(int err = snd_pcm_wait(alsa, millisRefresh); err < 0) {
                 Log::error("snd_pcm_wait failed: ", strerror(errno));
                 break;
             }
@@ -75,8 +82,8 @@ AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
                 break;
             }
 
-            m_audio.mix(buf.data(), numFrames);
-            if(int err = snd_pcm_writei(alsa, (void*)buf.data(), numFrames); err < 0)
+            m_audio.mix(buffer.get(), numFrames);
+            if(int err = snd_pcm_writei(alsa, (void*)buffer.get(), numFrames); err < 0)
                 Log::error("snd_pcm_writei failed: ", snd_strerror(err));
         }
 

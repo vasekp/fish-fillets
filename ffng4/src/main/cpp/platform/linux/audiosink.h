@@ -9,7 +9,8 @@ class AudioSink {
     std::thread m_thread;
     std::atomic<bool> m_quit;
 
-    constexpr static std::size_t bufSize = 1024;
+    constexpr static std::size_t bufSizeTarget = 1024;
+    constexpr static std::size_t millisRefresh = 10;
 
 public:
     AudioSink(Audio& iface);
