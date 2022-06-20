@@ -89,7 +89,7 @@ public:
     void notifyRound();
     void notifyFish(Model::Fish fish);
     void notifyDeath();
-    void notifySolved();
+    void notifyEscape(Model* model);
 
 private:
     void registerCallbacks();
@@ -105,6 +105,7 @@ private:
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
+    bool level_action_saveQuit();
     bool level_save(const std::string& text_models);
     bool level_load(const std::string& text_moves);
     void level_newDemo(const std::string& filename);

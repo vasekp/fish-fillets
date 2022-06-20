@@ -75,7 +75,6 @@ end
 function script_update()
     -- this function is called after every game cycle
     animateUnits()
-    borderShout()
 
     updateModels()
     prog_update()

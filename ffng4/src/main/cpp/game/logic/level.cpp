@@ -159,10 +159,8 @@ void Level::notifyDeath() {
     input().setSavePossible(false);
 }
 
-void Level::notifySolved() {
-    m_record.solved = true;
-    solveFile().write("saved_moves = '"s + m_replay + "'\n");
-    m_screen.exit();
+void Level::notifyEscape(Model* model) {
+    m_script.doString("notify_escape(" + std::to_string(model->index()) + ")");
 }
 
 bool Level::quitDemo() {

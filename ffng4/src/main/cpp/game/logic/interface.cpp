@@ -59,6 +59,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
     m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
+    m_script.registerFn("level_action_saveQuit", lua::wrap<&Level::level_action_saveQuit>);
     m_script.registerFn("level_save", lua::wrap<&Level::level_save>);
     m_script.registerFn("level_load", lua::wrap<&Level::level_load>);
 
@@ -123,6 +124,13 @@ bool Level::level_action_save() {
 
 bool Level::level_action_load() {
     load(true);
+    return true;
+}
+
+bool Level::level_action_saveQuit() {
+    m_record.solved = true;
+    solveFile().write("saved_moves = '"s + m_replay + "'\n");
+    m_screen.exit();
     return true;
 }
 
@@ -237,8 +245,6 @@ std::string Level::model_getState(int index) {
         return "talking";
     else if(model->pushing())
         return "pushing";
-    else if(layout().borderDepth(model).first == 1)
-        return "goout";
     else
         return "normal";
 }
@@ -286,6 +292,8 @@ void Level::model_setGoal(int index, const std::string& goal) {
         layout().getModel(index)->goal() = Model::Goal::alive;
     else if(goal == "goal_escape" || goal == "goal_out") // FIXME: is there any need to differentiate?
         layout().getModel(index)->goal() = Model::Goal::escape;
+    else
+        layout().getModel(index)->goal() = Model::Goal::none;
 }
 
 void Level::model_change_turnSide(int index) {
