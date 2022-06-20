@@ -27,6 +27,8 @@ function notify_escape(modelId)
             if not big:isTalking() then
                 big:talk("sp-shout_big_0"..random(5))
             end
+            small:setGoal("goal_escape");
+            big:setGoal("goal_escape");
         end
     end
     planTimeAction(30, function()
