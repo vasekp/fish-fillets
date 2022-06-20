@@ -123,7 +123,7 @@ void LevelRules::moveFish(Model::Fish which, Direction d) {
 }
 
 void LevelRules::moveFish(Direction d) {
-    if(!m_curFish->alive() || m_curFish->action() == Model::Action::busy)
+    if(!m_curFish->alive() || m_curFish->action() == Model::Action::busy || m_curFish->driven())
         return;
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
@@ -190,7 +190,7 @@ void LevelRules::update() {
             evalMotion(model, d);
     m_motions.clear();
 
-    bool ready = !std::any_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); })
+    bool ready = std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); })
             && !m_level.transitioning();
 
     if(ready) {
