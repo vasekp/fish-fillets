@@ -9,18 +9,18 @@ public:
     using Base::any;
     using Base::all;
     using Base::none;
+    using Base::reset;
+    using Base::operator~;
 
     EnumBitset() { }
 
     void set(Enum element, bool value = true) { Base::set((std::size_t)element, value); }
     void reset(Enum element) { Base::reset((std::size_t)element); }
-    void reset() { Base::reset(); }
     bool test(Enum element) const { return Base::test((std::size_t)element); }
 
     friend bool operator==(const EnumBitset& a, const EnumBitset& b) { return a.base() == b.base(); }
     friend bool operator!=(const EnumBitset& a, const EnumBitset& b) { return a.base() != b.base(); }
 
-    EnumBitset operator~() const { return {~base()}; }
     friend EnumBitset& operator&(const EnumBitset& a, const EnumBitset& b) { return {a.base() & b.base()}; }
     friend EnumBitset& operator|(const EnumBitset& a, const EnumBitset& b) { return {a.base() | b.base()}; }
     friend EnumBitset& operator^(const EnumBitset& a, const EnumBitset& b) { return {a.base() ^ b.base()}; }
