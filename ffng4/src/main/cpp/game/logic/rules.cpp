@@ -240,6 +240,7 @@ void LevelRules::evalSteel() {
 
 void LevelRules::evalMotion(Model* model, Direction d) {
     Log::verbose("stopped ", model->index(), " ", d);
+    m_level.notifyRound();
     if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
         const auto& fullSupport = m_support[model];
         if(fullSupport.test(Model::SupportType::wall)) {
