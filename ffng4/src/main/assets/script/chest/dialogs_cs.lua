@@ -1,6 +1,6 @@
 
 dialogId("tru-v-nasly", "font_big", "So we have finally found it.")
-dialogStr("Tak jsme to konečně našly.")
+dialogStr("Tak jsme to konečně našli.")
 
 
 dialogId("tru-m-co", "font_small", "What?")
@@ -72,7 +72,7 @@ dialogStr("Není ti líto, že tu necháme všechny ty poklady?")
 
 
 dialogId("tru-v-vzit0", "font_big", "We will be glad if we manage to get out ourselves.")
-dialogStr("Budeme rádi, když odjedem aspoň my samy.")
+dialogStr("Budeme rádi, když odjedem aspoň my sami.")
 
 
 dialogId("tru-v-vzit1", "font_big", "Don’t forget our mission.")
