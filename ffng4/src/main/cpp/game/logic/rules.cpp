@@ -208,6 +208,7 @@ void LevelRules::update() {
 }
 
 void LevelRules::evalFalls() {
+    std::vector<Model*> falling;
     for(auto* model : m_layout.models()) {
         if (model->isVirtual())
             continue;
@@ -216,8 +217,13 @@ void LevelRules::evalFalls() {
             if(model->movingDir() != Direction::down)
                 m_level.notifyRound();
             model->displace(Direction::down);
+            falling.push_back(model);
         }
     }
+    for(auto* model : falling)
+        for(auto* other : falling)
+            if(other != model)
+                model->syncFall(other);
 }
 
 void LevelRules::evalSteel() {

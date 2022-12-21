@@ -49,6 +49,11 @@ void Model::displace(ICoords d, bool pushing) {
     m_touchDir = {};
 }
 
+void Model::syncFall(const Model* other) {
+    if(m_warp > other->m_warp)
+        m_warp = other->m_warp;
+}
+
 void Model::deltaMove(float dt, float speed) {
     if(m_move && m_action != Action::busy) {
         m_delta += (falling() ? fallSpeed : baseSpeed) * dt * speed * m_warp * FCoords(m_move);
