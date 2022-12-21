@@ -67,7 +67,7 @@ local function prog_init()
                     addm(2, "1st-m-navod6")
                     planBusy(big, false, 3)
                     planBusy(small, false, 2)
-                    addv(20, "1st-v-navod7")
+                    -- addv(20, "1st-v-navod7")
                     addm(20, "1st-m-navod8")
                     if room.uzreklnavod == 0 then
                         room.uzreklnavod = 1
