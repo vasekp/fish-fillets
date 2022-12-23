@@ -220,10 +220,14 @@ void LevelRules::evalFalls() {
             falling.push_back(model);
         }
     }
-    for(auto* model : falling)
-        for(auto* other : falling)
-            if(other != model)
-                model->syncFall(other);
+    if(!falling.empty())
+        for(bool stable = false; stable;) {
+            stable = true;
+            for(auto* model: falling)
+                for(auto* other: falling)
+                    if(other != model && model->intersects(other, Direction::down))
+                        stable &= !model->syncFall(other);
+        }
 }
 
 void LevelRules::evalSteel() {

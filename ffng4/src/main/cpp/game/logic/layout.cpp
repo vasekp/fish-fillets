@@ -110,7 +110,7 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
     else if(dir == Direction::right)
         return {Direction::right, Direction::up, Direction::down};
     else
-        Log::fatal("unreachable");
+        std::unreachable();
 }
 
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {

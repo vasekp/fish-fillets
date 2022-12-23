@@ -133,7 +133,7 @@ public:
 
     void turn();
     void displace(ICoords d, bool pushing = false);
-    void syncFall(const Model* other);
+    bool syncFall(const Model* other);
     void deltaMove(float dt, float speed = 1.f);
     void instaMove();
     void deltaStop();
