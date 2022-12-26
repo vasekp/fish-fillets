@@ -31,8 +31,6 @@ endif()
 
 target_include_directories(fillets PRIVATE .)
 
-target_precompile_headers(fillets PRIVATE "common.h")
-
 target_link_libraries(fillets
         EGL
         GLESv2)
