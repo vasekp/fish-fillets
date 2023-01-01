@@ -301,11 +301,10 @@ bool LevelScreen::own_key(Key key) {
             m_level.skipBusy();
             return true;
         case Key::exit:
-            /*if(m_level.inSlideshow())
+            if(m_level.inSlideshow())
                 m_level.quitSlideshow();
             else
-                exit();*/
-            m_level.useUndo();
+                exit();
             return true;
         case Key::save:
             if(m_level.savePossible()) {
@@ -324,7 +323,8 @@ bool LevelScreen::own_key(Key key) {
                 return true;
             } else return false;
         case Key::options:
-            m_instance.screens().options().show();
+            m_level.useUndo();
+            //m_instance.screens().options().show();
             return true;
         default:
             return false;

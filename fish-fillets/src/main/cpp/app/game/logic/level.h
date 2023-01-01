@@ -43,6 +43,7 @@ public:
     void success();
 
     void saveUndo();
+    void killUndo();
     void useUndo();
 
     void transition(int frames, std::function<void()>&& callback);
@@ -107,6 +108,8 @@ private:
     };
     util::EnumBitset<BusyReason> m_busy;
     bool m_goto;
+
+    std::optional<std::chrono::steady_clock::time_point> m_undoTime;
 
     void registerCallbacks();
 

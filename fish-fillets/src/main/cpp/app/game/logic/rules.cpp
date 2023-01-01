@@ -218,12 +218,11 @@ void LevelRules::moveFish(Direction d) {
             return;
     }
 
-    m_level.saveUndo();
+    m_level.recordMove(dirToChar(d));
+    Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     for(auto* model : obs)
         model->displace(d, true);
-    Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
-    m_level.recordMove(dirToChar(d));
     m_level.notifyRound();
 }
 

@@ -16,7 +16,8 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_script(instance, *this),
         m_attempt(0),
         m_roundFlag(false),
-        m_goto(false)
+        m_goto(false),
+        m_undoTime()
 {
     registerCallbacks();
     m_script.loadFile("script/globals.lua");
@@ -42,6 +43,7 @@ void Level::init() {
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
     input().setLoadPossible(loadPossible());
+    m_undoTime.reset();
 }
 
 void Level::reinit(bool fromScript) {
@@ -174,8 +176,11 @@ void Level::dispatchMoveQueue() {
 }
 
 void Level::recordMove(char key) {
-    if(!isBusy(BusyReason::loading))
+    if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::replay)) {
         m_replay += key;
+        if(!m_goto && !isBusy(BusyReason::demo))
+            saveUndo();
+    }
 }
 
 void Level::notifyRound() {
@@ -308,6 +313,7 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
     }
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
+        killUndo();
         m_goto = true;
         m_rules->enqueue(path, false);
         m_plan.emplace_back([&]() {
@@ -324,9 +330,18 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
 void Level::saveUndo() {
     Log::debug<Log::lifecycle>("undo: save");
     m_script.doString("script_saveUndo()");
+    m_undoTime = std::chrono::steady_clock::now();
+}
+
+void Level::killUndo() {
+    m_undoTime.reset();
 }
 
 void Level::useUndo() {
+    if(!m_undoTime) {
+        Log::debug<Log::lifecycle>("undo: impossible");
+        return;
+    }
     Log::debug<Log::lifecycle>("undo: use");
     killPlan();
     reinit();
