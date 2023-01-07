@@ -24,7 +24,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if(app->window != nullptr) {
                 instance.live = true;
                 instance.graphics().activate();
-                instance.audio().activate();
+                instance.audio().bindSink(instance.openAudio());
                 instance.screens().refresh();
                 instance.screens().drawFrame();
             }
@@ -32,7 +32,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_TERM_WINDOW:
             Log::debug("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
-            instance.audio().shutdown();
+            instance.audio().unbindSink();
             instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:

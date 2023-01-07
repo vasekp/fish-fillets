@@ -4,21 +4,21 @@
 #include "instance.h"
 
 #include "audio/audiodata.h"
+#include "audio/sink.h"
 #include "audio/source.h"
-#include "platform/audio.h"
 #include "audio/sourcelist.h"
 
 class Audio {
     Instance& m_instance;
     AudioSourceList m_sources;
-    std::unique_ptr<AudioSink> m_stream;
+    AudioSink* m_stream = nullptr;
     std::map<std::string, AudioData::Ref> m_sounds_preload;
 
 public:
-    Audio(Instance& instance) : m_instance(instance) { }
+    Audio(Instance& instance);
 
-    void activate();
-    void shutdown();
+    void bindSink(AudioSink* sink);
+    void unbindSink();
 
     void pause();
     void resume();

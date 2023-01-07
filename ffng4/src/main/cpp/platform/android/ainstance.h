@@ -4,10 +4,13 @@
 #include "instance.h"
 #include "api/jni.h"
 #include "./files.h"
+#include "./oboesink.h"
 
 struct android_app;
 
 class AndroidInstance : public Instance {
+    std::unique_ptr<OboeSink> sink{};
+
 public:
     android_app* app;
     jni::Env jni;
@@ -18,6 +21,15 @@ public:
 
     static AndroidInstance& get(android_app* app) {
         return *static_cast<AndroidInstance*>(app->userData);
+    }
+
+    OboeSink* openAudio() {
+        sink = std::make_unique<OboeSink>(audio());
+        return sink.get();
+    }
+
+    void closeAudio() {
+        sink.reset();
     }
 
     void quit() override {

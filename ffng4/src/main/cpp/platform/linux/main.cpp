@@ -1,9 +1,8 @@
 #include "common.h"
 #include "xinstance.h"
-#include "platform/linux/xinstance.h"
 #include "subsystem/graphics.h"
-#include "subsystem/audio.h"
 #include "game/screens/screenmanager.h"
+#include "alsasink.h"
 
 #include "xlib-fenced.h"
 #include <X11/Xatom.h>
@@ -45,11 +44,13 @@ int main(int argc, char **argv) {
         XkbSetDetectableAutoRepeat(dpy, True, nullptr);
 
         XInstance instance{win};
+        AlsaSink sink{instance.audio()};
+
         instance.screens().startMode(ScreenManager::Mode::WorldMap);
 
         instance.live = true;
         instance.graphics().activate();
-        instance.audio().activate();
+        instance.audio().bindSink(&sink);
         instance.screens().refresh();
         instance.screens().drawFrame();
 
