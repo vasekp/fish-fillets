@@ -1,8 +1,7 @@
-#include "subsystem/input.h"
-#include "instance.h"
+#include "./input.h"
 #include "./ainstance.h"
 
-AndroidInput::AndroidInput(Instance& instance) :
+AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -51,7 +50,7 @@ static Key AndroidKeymap(unsigned int code) {
 
 bool AndroidInput::processEvent(AInputEvent* event) {
     auto& inputSink = m_instance.inputSink();
-    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
+    auto& jni = m_instance.jni;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto combined = AMotionEvent_getAction(event);
         auto action = combined & AMOTION_EVENT_ACTION_MASK;

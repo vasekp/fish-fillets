@@ -4,8 +4,10 @@
 #include "subsystem/input.h"
 #include <android/input.h>
 
+class AndroidInstance;
+
 class AndroidInput : public IInputSource {
-    Instance& m_instance;
+    AndroidInstance& m_instance;
 
     Key m_lastKey;
     bool m_keyHandled;
@@ -21,7 +23,7 @@ class AndroidInput : public IInputSource {
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
 public:
-    AndroidInput(Instance& instance);
+    AndroidInput(AndroidInstance& instance);
 
     bool processEvent(AInputEvent* event);
     void ping();

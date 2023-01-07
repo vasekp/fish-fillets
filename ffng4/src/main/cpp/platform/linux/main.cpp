@@ -70,14 +70,14 @@ int main(int argc, char **argv) {
                 switch(event.type) {
                     case KeyPress: [[fallthrough]];
                     case KeyRelease:
-                        instance.xinput().keyEvent(event.xkey);
+                        instance.inputSource().keyEvent(event.xkey);
                         break;
                     case ButtonPress: [[fallthrough]];
                     case ButtonRelease:
-                        instance.xinput().buttonEvent(event.xbutton);
+                        instance.inputSource().buttonEvent(event.xbutton);
                         break;
                     case MotionNotify:
-                        instance.xinput().motionEvent(event.xmotion);
+                        instance.inputSource().motionEvent(event.xmotion);
                         break;
                     case ConfigureNotify:
                         {

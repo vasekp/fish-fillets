@@ -10,13 +10,14 @@
 struct android_app;
 
 class AndroidInstance : public Instance {
-    std::unique_ptr<OboeSink> sink{};
+    std::unique_ptr<OboeSink> m_sink{};
+    AndroidInput m_input;
 
 public:
     android_app* app;
     jni::Env jni;
 
-    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp), std::make_unique<AndroidInput>(*this)), app(androidApp), jni(androidApp) {
+    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp)), m_input(*this), app(androidApp), jni(androidApp) {
         app->userData = this;
     }
 
@@ -25,12 +26,12 @@ public:
     }
 
     OboeSink* openAudio() {
-        sink = std::make_unique<OboeSink>(audio());
-        return sink.get();
+        m_sink = std::make_unique<OboeSink>(audio());
+        return m_sink.get();
     }
 
     void closeAudio() {
-        sink.reset();
+        m_sink.reset();
     }
 
     void quit() override {
@@ -42,8 +43,8 @@ public:
         return app->window;
     }
 
-    AndroidInput& ainput() {
-        return dynamic_cast<AndroidInput&>(inputSource());
+    AndroidInput& inputSource() override {
+        return m_input;
     }
 };
 

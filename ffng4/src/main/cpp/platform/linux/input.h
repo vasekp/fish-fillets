@@ -4,6 +4,8 @@
 #include "subsystem/input.h"
 #include "xlib-fenced.h"
 
+class XInstance;
+
 class XInput : public IInputSource {
     Instance& m_instance;
 
