@@ -7,14 +7,17 @@
 #include "./input.h"
 
 class XInstance : public Instance {
+    LinuxFiles m_files;
     XInput m_input;
 
 public:
     Window m_window;
 
-    XInstance(Window window) : Instance(std::make_unique<LinuxFiles>()), m_input(*this), m_window(window) { }
+    XInstance(Window window) : m_files(), m_input(*this), m_window(window) { init(); }
 
     void* window() override { return reinterpret_cast<void*>(m_window); }
+
+    LinuxFiles& files() override { return m_files; }
 
     XInput& inputSource() override { return m_input; }
 };

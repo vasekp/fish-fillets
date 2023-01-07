@@ -12,11 +12,10 @@
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
-Instance::Instance(std::unique_ptr<IFiles>&& files) :
-        live(false),
-        running(false)
-{
-    m_files = std::move(files);
+Instance::Instance() = default;
+Instance::~Instance() = default;
+
+void Instance::init() {
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this);
     m_levels = std::make_unique<GameTree>(*this);
@@ -32,5 +31,3 @@ void Instance::quit() {
     running = false;
     audio().clear();
 }
-
-Instance::~Instance() = default;

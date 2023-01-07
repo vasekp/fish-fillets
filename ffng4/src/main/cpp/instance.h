@@ -25,10 +25,13 @@ class Instance {
     std::unique_ptr<GameTree> m_levels;
     std::unique_ptr<RNG> m_rng;
 
-public:
+protected:
+    Instance();
+    void init();
     ~Instance();
 
-    auto& files() { return *m_files; }
+public:
+    virtual IFiles& files() = 0;
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
     auto& rng() { return *m_rng; }
@@ -39,14 +42,11 @@ public:
     virtual IInputSource& inputSource() = 0;
     IInputSink& inputSink();
 
-    bool live;
-    bool running;
+    bool live = false;
+    bool running = false;
 
     virtual void quit();
     virtual void* window() = 0;
-
-protected:
-    Instance(std::unique_ptr<IFiles>&& files);
 };
 
 #endif //FISH_FILLETS_INSTANCE_H

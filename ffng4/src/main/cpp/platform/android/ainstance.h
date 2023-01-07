@@ -11,14 +11,16 @@ struct android_app;
 
 class AndroidInstance : public Instance {
     std::unique_ptr<OboeSink> m_sink{};
+    AndroidFiles m_files;
     AndroidInput m_input;
 
 public:
     android_app* app;
     jni::Env jni;
 
-    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp)), m_input(*this), app(androidApp), jni(androidApp) {
+    AndroidInstance(android_app* androidApp) : m_files(androidApp), m_input(*this), app(androidApp), jni(androidApp) {
         app->userData = this;
+        init();
     }
 
     static AndroidInstance& get(android_app* app) {
@@ -41,6 +43,10 @@ public:
 
     void* window() override {
         return app->window;
+    }
+
+    AndroidFiles& files() override {
+        return m_files;
     }
 
     AndroidInput& inputSource() override {
