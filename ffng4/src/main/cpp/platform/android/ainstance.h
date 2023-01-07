@@ -43,7 +43,7 @@ public:
     }
 
     AndroidInput& ainput() {
-        return dynamic_cast<AndroidInput&>(input());
+        return dynamic_cast<AndroidInput&>(inputSource());
     }
 };
 

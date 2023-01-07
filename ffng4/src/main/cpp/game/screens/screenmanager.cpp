@@ -17,7 +17,7 @@ void ScreenManager::startMode(Mode mode) {
                 curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
-            m_instance.input().reset();
+            m_instance.inputSource().reset();
             break;
         case Mode::Credits:
             m_screen = std::make_unique<CreditsScreen>(m_instance);
@@ -26,7 +26,7 @@ void ScreenManager::startMode(Mode mode) {
                 curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
-            m_instance.input().reset();
+            m_instance.inputSource().reset();
             break;
         case Mode::Intro:
             playIntro();
@@ -55,7 +55,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
         curScreen().resume();
     auto end = std::chrono::steady_clock::now();
     m_title_hide = end + std::chrono::milliseconds((int)titleDuration);
-    m_instance.input().reset();
+    m_instance.inputSource().reset();
     std::chrono::duration<double> diff = end - start;
     Log::debug("startLevel duration = ", diff.count(), " s");
 }

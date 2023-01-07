@@ -4,7 +4,7 @@
 #include "subsystem/input.h"
 #include <android/input.h>
 
-class AndroidInput : public IInputProvider {
+class AndroidInput : public IInputSource {
     Instance& m_instance;
 
     Key m_lastKey;

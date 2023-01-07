@@ -13,8 +13,8 @@ public:
     XInstance(Window window) : Instance(std::make_unique<LinuxFiles>(), std::make_unique<XInput>(*this)), m_window(window) { }
 
     void* window() override { return reinterpret_cast<void*>(m_window); }
-    
-    XInput& xinput() { return dynamic_cast<XInput&>(input()); }
+
+    XInput& xinput() { return dynamic_cast<XInput&>(inputSink()); }
 };
 
 #endif //FF_LINUX_INSTANCE_H

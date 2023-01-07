@@ -4,7 +4,7 @@
 #include "subsystem/input.h"
 #include "xlib-fenced.h"
 
-class XInput : public IInputProvider {
+class XInput : public IInputSource {
     Instance& m_instance;
 
     Key m_lastKey;

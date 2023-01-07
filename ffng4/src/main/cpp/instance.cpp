@@ -12,7 +12,7 @@
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
-Instance::Instance(std::unique_ptr<IFiles>&& files, std::unique_ptr<IInputProvider>&& input) :
+Instance::Instance(std::unique_ptr<IFiles>&& files, std::unique_ptr<IInputSource>&& input) :
         live(false),
         running(false)
 {
@@ -23,6 +23,10 @@ Instance::Instance(std::unique_ptr<IFiles>&& files, std::unique_ptr<IInputProvid
     m_screens = std::make_unique<ScreenManager>(*this);
     m_input = std::move(input);
     m_rng = std::make_unique<RNG>();
+}
+
+IInputSink& Instance::inputSink() {
+    return screens().curScreen().input();
 }
 
 void Instance::quit() {

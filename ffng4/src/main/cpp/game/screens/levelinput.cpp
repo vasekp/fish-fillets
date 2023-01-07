@@ -29,7 +29,7 @@ bool LevelInput::keyUp(Key) {
 }
 
 Key LevelInput::pool() {
-    if(auto key = m_instance.input().poolKey(); key != Key::none)
+    if(auto key = m_instance.inputSource().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
         Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
