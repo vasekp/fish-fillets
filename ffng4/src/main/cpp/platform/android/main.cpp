@@ -7,7 +7,7 @@
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
     auto& instance = AndroidInstance::get(app);
-    return instance.input().processEvent(event);
+    return instance.ainput().processEvent(event);
 }
 
 static void handle_cmd(struct android_app* app, int32_t cmd) {
@@ -115,7 +115,7 @@ void android_main(struct android_app* app) {
                     return;
                 }
             }
-            instance.input().ping();
+            instance.ainput().ping();
 
             if(instance.running)
                 instance.screens().drawFrame();

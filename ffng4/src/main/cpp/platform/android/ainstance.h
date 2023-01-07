@@ -4,6 +4,7 @@
 #include "instance.h"
 #include "api/jni.h"
 #include "./files.h"
+#include "./input.h"
 #include "./oboesink.h"
 
 struct android_app;
@@ -15,7 +16,7 @@ public:
     android_app* app;
     jni::Env jni;
 
-    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp)), app(androidApp), jni(androidApp) {
+    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp), std::make_unique<AndroidInput>(*this)), app(androidApp), jni(androidApp) {
         app->userData = this;
     }
 
@@ -39,6 +40,10 @@ public:
 
     void* window() override {
         return app->window;
+    }
+
+    AndroidInput& ainput() {
+        return dynamic_cast<AndroidInput&>(input());
     }
 };
 

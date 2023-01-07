@@ -1,9 +1,10 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
+#include "subsystem/input.h"
 #include <android/input.h>
 
-class PlatformInput : public IInputProvider {
+class AndroidInput : public IInputProvider {
     Instance& m_instance;
 
     Key m_lastKey;
@@ -20,7 +21,7 @@ class PlatformInput : public IInputProvider {
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
 public:
-    PlatformInput(Instance& instance);
+    AndroidInput(Instance& instance);
 
     bool processEvent(AInputEvent* event);
     void ping();

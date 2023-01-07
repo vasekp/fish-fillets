@@ -12,7 +12,7 @@
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
 
-Instance::Instance(std::unique_ptr<IFiles>&& files) :
+Instance::Instance(std::unique_ptr<IFiles>&& files, std::unique_ptr<IInputProvider>&& input) :
         live(false),
         running(false)
 {
@@ -21,7 +21,7 @@ Instance::Instance(std::unique_ptr<IFiles>&& files) :
     m_audio = std::make_unique<Audio>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
-    m_input = std::make_unique<PlatformInput>(*this);
+    m_input = std::move(input);
     m_rng = std::make_unique<RNG>();
 }
 

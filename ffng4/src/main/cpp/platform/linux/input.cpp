@@ -4,7 +4,7 @@
 #include "./input.h"
 #include <X11/keysym.h>
 
-PlatformInput::PlatformInput(Instance& instance) :
+XInput::XInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -14,7 +14,7 @@ PlatformInput::PlatformInput(Instance& instance) :
         m_pointerHandled(false)
 { }
 
-void PlatformInput::reset() {
+void XInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
     m_lastPointerDownTime = absolutePast;
@@ -67,7 +67,7 @@ Key XKeyMap(KeySym keysym) {
     }
 }
 
-void PlatformInput::keyEvent(XKeyEvent& event) {
+void XInput::keyEvent(XKeyEvent& event) {
     auto& input = m_instance.screens().curScreen().input();
     if(event.type == KeyPress) {
         if(m_lastKey == Key::none) {
@@ -81,7 +81,7 @@ void PlatformInput::keyEvent(XKeyEvent& event) {
     }
 }
 
-void PlatformInput::buttonEvent(const XButtonEvent& event) {
+void XInput::buttonEvent(const XButtonEvent& event) {
     auto& input = m_instance.screens().curScreen().input();
     if(event.type == ButtonPress) {
         FCoords coords{event.x, event.y};
@@ -116,15 +116,15 @@ void PlatformInput::buttonEvent(const XButtonEvent& event) {
     }
 #endif
 
-void PlatformInput::motionEvent(const XMotionEvent& event) { }
+void XInput::motionEvent(const XMotionEvent& event) { }
 
-void PlatformInput::ping() {
+void XInput::ping() {
     if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
         m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }
 }
 
-Key PlatformInput::poolKey() {
+Key XInput::poolKey() {
     return m_lastKey;
 }

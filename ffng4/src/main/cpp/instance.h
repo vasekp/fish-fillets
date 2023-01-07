@@ -12,7 +12,7 @@ class ScreenManager;
 class Script;
 class GameTree;
 class AudioSource;
-class PlatformInput;
+class IInputProvider;
 class RNG;
 
 class Instance {
@@ -20,7 +20,7 @@ class Instance {
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
     std::unique_ptr<ScreenManager> m_screens;
-    std::unique_ptr<PlatformInput> m_input;
+    std::unique_ptr<IInputProvider> m_input;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
     std::unique_ptr<RNG> m_rng;
@@ -44,7 +44,7 @@ public:
     virtual void* window() = 0;
 
 protected:
-    Instance(std::unique_ptr<IFiles>&& files);
+    Instance(std::unique_ptr<IFiles>&& files, std::unique_ptr<IInputProvider>&& input);
 };
 
 #endif //FISH_FILLETS_INSTANCE_H
