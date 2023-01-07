@@ -3,6 +3,7 @@
 
 #include <android_native_app_glue.h>
 #include "api/ndk.h"
+#include "subsystem/files.h"
 
 class SystemFile : public IFile {
     AAssetManager *m_assets;

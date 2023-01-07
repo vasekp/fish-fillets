@@ -2,17 +2,22 @@
 #define FISH_FILLETS_FILES_H
 
 #include "instance.h"
-#include "files/ifile.h"
-#include "platform/files.h"
 
-class Files {
-    Instance& m_instance;
-
+class IFile {
 public:
-    Files(Instance& instance) : m_instance(instance) { }
+    virtual ~IFile() { }
 
-    SystemFile system(const std::string& path) const;
-    UserFile user(const std::string& path) const;
+    virtual bool exists() const = 0;
+    virtual std::string read() const = 0;
+    virtual bool write(const std::string &data) const = 0;
+};
+
+class IFiles {
+public:
+    virtual ~IFiles() { }
+
+    virtual std::unique_ptr<IFile> system(const std::string& path) = 0;
+    virtual std::unique_ptr<IFile> user(const std::string& path) = 0;
 };
 
 #endif //FISH_FILLETS_FILES_H

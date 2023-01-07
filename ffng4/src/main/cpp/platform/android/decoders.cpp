@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
-#include "subsystem/files.h"
+#include "./files.h"
 #include "ainstance.h"
 #include <thread>
 
@@ -10,9 +10,9 @@
 static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
 
 ogl::Texture Graphics::loadPNG(const std::string& filename0) const {
-    auto filename = m_instance.files().system(filename0).path();
+    auto filename = dynamic_cast<SystemFile&>(*m_instance.files().system(filename0)).path();
     Log::debug("loadPNG ", filename);
-    auto& jni = m_instance.platform().jni;
+    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     jstring jPath = jni->NewStringUTF(filename.c_str());
     jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
     AndroidBitmapInfo info;
@@ -42,7 +42,7 @@ AudioData::Ref Audio::loadOGG(const std::string& filename) const {
 
 static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance) {
     auto file = instance.files().system(filename);
-    auto asset = file.asset();
+    auto asset = dynamic_cast<SystemFile&>(*file).asset();
 
     off64_t start, length;
     bool doubleSample;

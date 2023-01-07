@@ -9,7 +9,7 @@ GameTree::GameTree(Instance& instance) :
     m_script.registerFn("branch_setEnding", lua::wrap<&GameTree::branch_setEnding>);
     m_script.registerFn("worldmap_addDesc", lua::wrap<&GameTree::worldmap_addDesc>);
     m_script.registerFn("node_bestSolution", lua::wrap<&GameTree::node_bestSolution>);
-    m_script.loadFile(instance.files().system("script/worldmap.lua"));
+    m_script.loadFile(instance.files().system("script/worldmap.lua").get());
 }
 
 void GameTree::branch_addNode(const std::string& parent, const std::string& codename, const std::string& filename,
@@ -18,7 +18,7 @@ void GameTree::branch_addNode(const std::string& parent, const std::string& code
     int depth = parentRecord ? parentRecord->depth + 1 : 1;
     Log::debug("addNode ", parent, " -> ", codename, " [", depth, "]");
     LevelRecord newRecord{parentRecord, codename, filename, ending.value_or(""), depth, false, FCoords{x, y}, color.value_or(LevelRecord::noColor)};
-    newRecord.solved = m_instance.files().user(newRecord.solveFilename()).exists();
+    newRecord.solved = m_instance.files().user(newRecord.solveFilename())->exists();
     m_levels.insert({codename, std::move(newRecord)});
 }
 

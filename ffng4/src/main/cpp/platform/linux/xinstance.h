@@ -1,18 +1,17 @@
-#ifndef FISH_FILLETS_LINUX_INSTANCE_H
-#define FISH_FILLETS_LINUX_INSTANCE_H
+#ifndef FF_LINUX_INSTANCE_H
+#define FF_LINUX_INSTANCE_H
 
 #include "instance.h"
 #include "xlib-fenced.h"
+#include "./files.h"
 
-struct PlatformInstance {
+class XInstance : public Instance {
+public:
     Window m_window;
 
-    PlatformInstance(Instance&, Window window) : m_window(window) { }
+    XInstance(Window window) : Instance(std::make_unique<LinuxFiles>()), m_window(window) { }
 
-    void quit() { }
-    auto window() { return m_window; }
+    void* window() override { return reinterpret_cast<void*>(m_window); }
 };
 
-using PlatformData = Window;
-
-#endif //FISH_FILLETS_LINUX_INSTANCE_H
+#endif //FF_LINUX_INSTANCE_H

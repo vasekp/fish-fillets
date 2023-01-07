@@ -16,7 +16,7 @@ public:
     }
 
     void load() {
-        m_script.loadFile(m_instance.files().system("script/preload.lua"));
+        m_script.loadFile(m_instance.files().system("script/preload.lua").get());
     }
 
     void preload_sound(const std::string& filename) {
@@ -117,8 +117,8 @@ AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
     auto data = loadSound(filename);
     auto source = AudioSource::from(data);
     auto meta = m_instance.files().system(filename + ".meta");
-    if(meta.exists()) {
-        auto contents = meta.read();
+    if(meta->exists()) {
+        auto contents = meta->read();
         std::istringstream iss{contents};
         std::size_t start, end;
         iss >> start >> end;

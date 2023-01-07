@@ -31,16 +31,16 @@ void Script::doString(const std::string& string) {
         Log::error("Lua error: ", lua_tostring(m_env, -1));
 }
 
-void Script::loadFile(const IFile& file) {
-    doString(file.read());
+void Script::loadFile(const IFile* file) {
+    doString(file->read());
 }
 
 void Script::file_include(const std::string& filename) {
-    loadFile(m_instance.files().system(filename));
+    loadFile(m_instance.files().system(filename).get());
 }
 
 bool Script::file_exists(const std::string& filename) {
-    return m_instance.files().system(filename).exists();
+    return m_instance.files().system(filename)->exists();
 }
 
 void Script::sendMsg(const std::string& target, const std::string& text) {

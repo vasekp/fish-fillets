@@ -2,6 +2,7 @@
 #define FISH_FILLETS_NDK_H
 
 #include <android/asset_manager_jni.h>
+#include <memory>
 
 namespace ndk {
     class Asset {

@@ -2,10 +2,10 @@
 #include "./files.h"
 #include "ainstance.h"
 
-SystemFile Files::system(const std::string& path) const {
-    return {path, m_instance.platform().app->activity->assetManager};
+std::unique_ptr<IFile> AndroidFiles::system(const std::string& path) {
+    return std::make_unique<SystemFile>(path, m_app->activity->assetManager);
 }
 
-UserFile Files::user(const std::string& path) const {
-    return {path, m_instance.platform().app->activity->externalDataPath};
+std::unique_ptr<IFile> AndroidFiles::user(const std::string& path) {
+    return std::make_unique<UserFile>(path, m_app->activity->externalDataPath);
 }

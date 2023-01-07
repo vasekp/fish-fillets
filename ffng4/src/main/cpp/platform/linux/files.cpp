@@ -1,10 +1,10 @@
 #include "subsystem/files.h"
 #include "./files.h"
 
-SystemFile Files::system(const std::string& path) const {
-    return {path, "/home/vasek/prog/android/fish-fillets/ffng4/src/main/assets/"};
+std::unique_ptr<IFile> LinuxFiles::system(const std::string& path) {
+    return std::make_unique<SystemFile>(path, "/home/vasek/prog/android/fish-fillets/ffng4/src/main/assets/");
 }
 
-UserFile Files::user(const std::string& path) const {
-    return {path, ""};
+std::unique_ptr<IFile> LinuxFiles::user(const std::string& path) {
+    return std::make_unique<UserFile>(path, "");
 }

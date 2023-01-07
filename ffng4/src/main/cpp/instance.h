@@ -3,8 +3,7 @@
 
 #include "common.h"
 
-struct PlatformInstance;
-class Files;
+class IFiles;
 class Graphics;
 class Image;
 class Audio;
@@ -17,8 +16,7 @@ class PlatformInput;
 class RNG;
 
 class Instance {
-    std::unique_ptr<PlatformInstance> m_platform;
-    std::unique_ptr<Files> m_files;
+    std::unique_ptr<IFiles> m_files;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
     std::unique_ptr<ScreenManager> m_screens;
@@ -28,15 +26,8 @@ class Instance {
     std::unique_ptr<RNG> m_rng;
 
 public:
-    template<typename T>
-    Instance(T platformInit);
-
-    template<typename T>
-    static Instance& get(T);
-
     ~Instance();
 
-    auto& platform() { return *m_platform; }
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
@@ -49,7 +40,11 @@ public:
     bool live;
     bool running;
 
-    void quit();
+    virtual void quit();
+    virtual void* window() = 0;
+
+protected:
+    Instance(std::unique_ptr<IFiles>&& files);
 };
 
 #endif //FISH_FILLETS_INSTANCE_H

@@ -1,6 +1,7 @@
 #include "font.h"
 #include "subsystem/graphics.h"
 #include "subsystem/files.h"
+#include "./files.h"
 #include <locale>
 #include <codecvt>
 
@@ -16,7 +17,7 @@ Font::Font(Instance& instance, const std::string& filename) :
         m_instance(instance),
         m_fontSize(), m_outline()
 {
-    auto fnFull = instance.files().system(filename).fullPath();
+    auto fnFull = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
     if(FT_Init_FreeType(&m_ft) != 0)
         Log::fatal("Can't initiate FreeType.");
 

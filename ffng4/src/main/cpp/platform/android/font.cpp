@@ -1,14 +1,14 @@
 #include "font.h"
 #include "subsystem/graphics.h"
-#include "subsystem/files.h"
 #include "ainstance.h"
+#include "./files.h"
 #include <android/bitmap.h>
 
 Font::Font(Instance& instance, const std::string& filename) :
         m_instance(instance),
         m_fontSize(), m_outline()
 {
-    m_filename = instance.files().system(filename).path();
+    m_filename = dynamic_cast<SystemFile&>(*instance.files().system(filename)).path();
 }
 
 void Font::setSizes(float fontSize, float outline) {
@@ -17,7 +17,7 @@ void Font::setSizes(float fontSize, float outline) {
 }
 
 std::vector<std::string> Font::breakLines(const std::string& text, float width) {
-    auto& jni = m_instance.platform().jni;
+    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
     auto jArray = (jobjectArray)jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
@@ -39,7 +39,7 @@ std::vector<std::string> Font::breakLines(const std::string& text, float width) 
 }
 
 ogl::Texture Font::renderText(const std::string& text) const {
-    auto& jni = m_instance.platform().jni;
+    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
     auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, m_fontSize, m_outline);

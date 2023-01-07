@@ -1,5 +1,5 @@
 #include "subsystem/audio.h"
-#include "subsystem/files.h"
+#include "./files.h"
 #include <cstdio>
 #include <cstring>
 #include <vorbis/codec.h>
@@ -17,13 +17,13 @@ AudioData::Ref Audio::loadOGG(const std::string& filename) const {
     }
 }
 static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance) {
-    auto file = instance.files().system(filename);
+    auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
     OggVorbis_File vf;
     bool doubleSample;
     std::size_t numSamples;
 
-    if(ov_fopen(file.fullPath().c_str(), &vf)) {
-        Log::error("ov_fopen failed on ", file.fullPath());
+    if(ov_fopen(path.c_str(), &vf)) {
+        Log::error("ov_fopen failed on ", path);
         return {};
     }
 

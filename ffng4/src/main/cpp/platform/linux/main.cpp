@@ -1,5 +1,5 @@
 #include "common.h"
-#include "instance.h"
+#include "xinstance.h"
 #include "platform/linux/xinstance.h"
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
         XkbSetDetectableAutoRepeat(dpy, True, nullptr);
 
-        Instance instance{win};
+        XInstance instance{win};
         instance.screens().startMode(ScreenManager::Mode::WorldMap);
 
         instance.live = true;

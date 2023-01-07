@@ -1,20 +1,20 @@
 #include "subsystem/graphics.h"
-#include "subsystem/files.h"
+#include "./files.h"
 #include <png.h>
 #include <cstdio>
 #include <csetjmp>
 
 ogl::Texture Graphics::loadPNG(const std::string& filename) const {
-    auto file = m_instance.files().system(filename);
+    auto path = dynamic_cast<SystemFile&>(*m_instance.files().system(filename)).fullPath();
     std::array<png_byte, 8> header;
 
-    std::FILE* fp = fopen(file.fullPath().c_str(), "rb");
+    std::FILE* fp = fopen(path.c_str(), "rb");
     if(!fp)
-        Log::error("Error opening file ", file.fullPath());
+        Log::error("Error opening file ", path);
 
     std::fread(header.data(), 1, 8, fp);
     if(png_sig_cmp(header.data(), 0, 8))
-        Log::error("Wrong PNG header: ", file.fullPath());
+        Log::error("Wrong PNG header: ", path);
 
     auto png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if(!png_ptr)

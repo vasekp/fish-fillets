@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_FILES_SYSTEM_H
 #define FISH_FILLETS_FILES_SYSTEM_H
 
+#include "subsystem/files.h"
+
 class SystemFile : public IFile {
     std::filesystem::path m_relPath;
     std::filesystem::path m_fullPath;

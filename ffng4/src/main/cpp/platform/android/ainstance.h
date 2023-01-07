@@ -1,26 +1,33 @@
-#ifndef FISH_FILLETS_ANDROID_INSTANCE_H
-#define FISH_FILLETS_ANDROID_INSTANCE_H
+#ifndef FF_ANDROID_INSTANCE_H
+#define FF_ANDROID_INSTANCE_H
 
 #include "instance.h"
 #include "api/jni.h"
+#include "./files.h"
 
 struct android_app;
 
-struct PlatformInstance {
+class AndroidInstance : public Instance {
+public:
     android_app* app;
     jni::Env jni;
 
-    PlatformInstance(Instance& instance, android_app* androidApp) : app(androidApp), jni(androidApp) { }
+    AndroidInstance(android_app* androidApp) : Instance(std::make_unique<AndroidFiles>(androidApp)), app(androidApp), jni(androidApp) {
+        app->userData = this;
+    }
 
-    void quit() { ANativeActivity_finish(app->activity); }
-    auto window() { return app->window; }
+    static AndroidInstance& get(android_app* app) {
+        return *static_cast<AndroidInstance*>(app->userData);
+    }
+
+    void quit() override {
+        Instance::quit();
+        ANativeActivity_finish(app->activity);
+    }
+
+    void* window() override {
+        return app->window;
+    }
 };
 
-using PlatformData = android_app*;
-
-template<>
-inline Instance& Instance::get(android_app* app) {
-    return *static_cast<Instance*>(app->userData);
-}
-
-#endif //FISH_FILLETS_ANDROID_INSTANCE_H
+#endif //FF_ANDROID_INSTANCE_H

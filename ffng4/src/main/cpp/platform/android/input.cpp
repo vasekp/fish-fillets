@@ -52,6 +52,7 @@ static Key AndroidKeymap(unsigned int code) {
 
 bool PlatformInput::processEvent(AInputEvent* event) {
     auto& input = m_instance.screens().curScreen().input();
+    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto combined = AMotionEvent_getAction(event);
         auto action = combined & AMOTION_EVENT_ACTION_MASK;
@@ -77,7 +78,7 @@ bool PlatformInput::processEvent(AInputEvent* event) {
                     m_pointerHandled = input.doubleTap(coords);
                 else
                     m_pointerHandled = input.pointerDown(coords);
-                m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
+                jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
             } else if(action == AMOTION_EVENT_ACTION_MOVE) {
                 if(!m_pointerFollow || pointerId != m_pointerId)
                     return false;
@@ -89,10 +90,10 @@ bool PlatformInput::processEvent(AInputEvent* event) {
                 if(pointerId == m_pointerId)
                     m_pointerHandled |= input.pointerUp(!m_pointerHandled);
                 if(!m_pointerHandled) {
-                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("showUI"));
+                    jni->CallVoidMethod(jni.object(), jni.method("showUI"));
                     // keep m_pointerDownTime for double tap
                 } else {
-                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
+                    jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
                     m_pointerDownTime = absolutePast;
                 }
                 m_pointerFollow = false;
