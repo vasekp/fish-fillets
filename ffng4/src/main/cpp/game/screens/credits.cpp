@@ -3,7 +3,7 @@
 
 CreditsScreen::CreditsScreen(Instance& instance) :
         GameScreen(instance),
-        m_input(instance)
+        m_input(instance, *this)
 {
     addImage("images/menu/credits.png", "credits");
     addImage("images/menu/credits-header.png", "header");

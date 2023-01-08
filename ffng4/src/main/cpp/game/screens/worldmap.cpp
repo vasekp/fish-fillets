@@ -3,7 +3,7 @@
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
-    m_input(instance),
+    m_input(instance, *this),
     m_staticFrame(Frames::none)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");

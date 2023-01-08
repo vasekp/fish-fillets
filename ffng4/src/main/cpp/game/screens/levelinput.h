@@ -7,9 +7,11 @@
 
 class Instance;
 class DrawTarget;
+class LevelScreen;
 
 class LevelInput : public IInputSink {
     Instance& m_instance;
+    LevelScreen& m_screen;
     Model::Fish m_activeFish;
 
     enum class DirpadState {
@@ -58,7 +60,7 @@ private:
     int m_activeButton;
 
 public:
-    LevelInput(Instance& instance);
+    LevelInput(Instance& instance, LevelScreen& screen);
 
     void setFish(Model::Fish fish);
     void setSavePossible(bool possible);

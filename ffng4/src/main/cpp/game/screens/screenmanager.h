@@ -27,9 +27,6 @@ public:
     void resume();
     void drawFrame();
 
-    bool dispatchPointer(FCoords coords, bool longPress = false);
-    bool dispatchKey(Key key);
-
     void startMode(Mode mode);
     void announceLevel(const LevelRecord& record);
     void startLevel(LevelRecord& record);

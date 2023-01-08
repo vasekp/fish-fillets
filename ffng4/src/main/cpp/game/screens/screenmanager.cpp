@@ -131,11 +131,3 @@ void ScreenManager::pause() {
 void ScreenManager::resume() {
     curScreen().resume();
 }
-
-bool ScreenManager::dispatchPointer(FCoords coords, bool longPress) {
-    return curScreen().pointer(coords, longPress);
-}
-
-bool ScreenManager::dispatchKey(Key key) {
-    return curScreen().keypress(key);
-}

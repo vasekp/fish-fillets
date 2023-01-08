@@ -1,10 +1,11 @@
 #include "levelinput.h"
 #include "instance.h"
-#include "game/screens/screenmanager.h"
 #include "subsystem/graphics.h"
+#include "game/screens/levelscreen.h"
 
-LevelInput::LevelInput(Instance& instance) :
+LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_instance(instance),
+        m_screen(screen),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(instance, fontFilename),
@@ -21,7 +22,7 @@ void LevelInput::setFish(Model::Fish fish) {
 }
 
 bool LevelInput::keyDown(Key key) {
-    return m_instance.screens().dispatchKey(key);
+    return m_screen.keypress(key);
 }
 
 bool LevelInput::keyUp(Key) {
@@ -89,7 +90,7 @@ bool LevelInput::pointerMove(FCoords coords) {
         case DirpadState::wait:
             if(!small && dir) {
                 Log::verbose("Input: sending from WAIT: ", dir);
-                m_instance.screens().dispatchKey(Input::toKey(dir));
+                m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.state = DirpadState::follow;
@@ -101,7 +102,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_dirpad.lastDir = {};
             else if(dir && dir != m_dirpad.lastDir) {
                 Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
-                m_instance.screens().dispatchKey(Input::toKey(dir));
+                m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
             }
             return true;
@@ -116,11 +117,11 @@ bool LevelInput::pointerUp(bool empty) {
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != noButton) {
         if(m_buttonsEnabled[m_activeButton])
-            m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
+            m_screen.keypress(m_buttons[m_activeButton].key);
         return true;
     }
     if(empty)
-        m_instance.screens().dispatchKey(Key::interrupt);
+        m_screen.keypress(Key::interrupt);
     return false;
 }
 
@@ -130,8 +131,8 @@ void LevelInput::pointerCancel() {
 
 bool LevelInput::doubleTap(FCoords coords) {
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
-    if(!m_instance.screens().dispatchPointer(windowCoords))
-        m_instance.screens().dispatchKey(Key::space);
+    if(!m_screen.pointer(windowCoords))
+        m_screen.keypress(Key::space);
     m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
@@ -140,14 +141,14 @@ bool LevelInput::doubleTap(FCoords coords) {
 }
 
 bool LevelInput::twoPointTap() {
-    m_instance.screens().dispatchKey(Key::skip);
+    m_screen.keypress(Key::skip);
     return true;
 }
 
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
-        return m_instance.screens().dispatchPointer(windowCoords, true);
+        return m_screen.pointer(windowCoords, true);
     } else
         return false;
 }

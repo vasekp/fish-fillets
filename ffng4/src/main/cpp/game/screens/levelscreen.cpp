@@ -6,7 +6,7 @@
 LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
-        m_input(instance),
+        m_input(instance, *this),
         m_waves(),
         m_subs(instance),
         m_fullLoad(false),
