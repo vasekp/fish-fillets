@@ -55,9 +55,6 @@ void LevelScreen::own_refresh() {
             m_instance.audio().addSource(m_music);
     }
 
-    if(m_display)
-        m_display->reload(m_instance);
-
     {
         const auto& models = m_level.layout().models();
         auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
@@ -296,7 +293,7 @@ FCoords LevelScreen::shift() {
 
 void LevelScreen::display(const std::string& filename) {
     if(!filename.empty())
-        m_display.emplace(filename, m_instance);
+        m_display = m_instance.graphics().loadImage(filename);
     else
         m_display.reset();
 }

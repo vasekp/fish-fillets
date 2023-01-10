@@ -17,6 +17,7 @@
 class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
+    std::vector<Image*> m_images;
 
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
@@ -39,7 +40,11 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
+    Image loadImage(std::string filename) { return {*this, std::move(filename)}; }
     ogl::Texture loadPNG(const std::string& filename) const;
+    void regImage(Image*);
+    void regImageMove(Image*, Image*);
+    void unregImage(Image*);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H

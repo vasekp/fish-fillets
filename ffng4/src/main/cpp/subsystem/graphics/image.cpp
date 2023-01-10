@@ -1,13 +1,26 @@
 #include "subsystem/graphics.h"
 #include "image.h"
 
-Image::Image(std::string filename) : m_filename(std::move(filename)), m_texture() { }
-
-Image::Image(std::string filename, Instance& instance) : Image(std::move(filename)) {
-    reload(instance);
+Image::Image(Graphics& graphics, std::string filename) : m_graphics(graphics), m_filename(std::move(filename)), m_texture() {
+    graphics.regImage(this);
 }
 
-void Image::reload(Instance& instance) {
-    if(!m_texture.live())
-        m_texture = instance.graphics().loadPNG(m_filename);
+Image::Image(Image&& other) : m_graphics(other.m_graphics), m_filename(std::move(other.m_filename)), m_texture(std::move(other.m_texture)) {
+    m_graphics.get().regImageMove(&other, this);
+}
+
+Image& Image::operator=(Image&& other) {
+    m_graphics = other.m_graphics;
+    m_filename = std::move(other.m_filename);
+    m_texture = std::move(other.m_texture);
+    m_graphics.get().regImageMove(&other, this);
+    return *this;
+}
+
+Image::~Image() {
+    m_graphics.get().unregImage(this);
+}
+
+void Image::renderTexture() {
+    m_texture = m_graphics.get().loadPNG(m_filename);
 }

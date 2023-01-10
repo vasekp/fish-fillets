@@ -5,6 +5,8 @@
 void Graphics::activate() {
     Log::debug("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
+    for(auto* image : m_images)
+        image->renderTexture();
 }
 
 void Graphics::shutdown() {
@@ -28,4 +30,18 @@ void Graphics::setMask(const ogl::Texture& texture) {
 
 void Graphics::setMask(const Image* image) {
     setMask(image->texture());
+}
+
+void Graphics::regImage(Image* image) {
+    m_images.push_back(image);
+    if(m_system)
+        image->renderTexture();
+}
+
+void Graphics::regImageMove(Image* from, Image* to) {
+    *std::find(m_images.begin(), m_images.end(), from) = to;
+}
+
+void Graphics::unregImage(Image* image) {
+    m_images.erase(std::find(m_images.begin(), m_images.end(), image));
 }

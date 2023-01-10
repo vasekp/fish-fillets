@@ -2,12 +2,15 @@
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
 class Image {
+    std::reference_wrapper<Graphics> m_graphics;
     std::string m_filename;
     ogl::Texture m_texture;
 
 public:
-    Image(std::string filename);
-    Image(std::string filename, Instance& instance);
+    Image(Graphics& graphics, std::string filename);
+    Image(Image&&);
+    Image& operator=(Image&&);
+    ~Image();
 
     auto filename() const { return m_filename; }
     auto& texture() const { return m_texture; }
@@ -16,7 +19,9 @@ public:
 
     operator const ogl::Texture&() const { return texture(); }
 
-    void reload(Instance& instance);
+private:
+    void renderTexture();
+    friend class Graphics;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H
