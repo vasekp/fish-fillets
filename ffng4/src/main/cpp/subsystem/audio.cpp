@@ -113,7 +113,7 @@ AudioData::Ref Audio::loadSound(const std::string& filename) const {
     if(m_sounds_preload.contains(filename))
         return m_sounds_preload.at(filename);
     else
-        return loadOGG(filename);
+        return decoders::ogg(m_instance, filename);
 }
 
 AudioSource::Ref Audio::loadMusic(const std::string& filename) const {

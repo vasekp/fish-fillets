@@ -6,17 +6,20 @@
 #include <vorbis/vorbisfile.h>
 #include <thread>
 
-static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
+static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename);
 
-AudioData::Ref Audio::loadOGG(const std::string& filename) const {
-    if(auto ret = loadSoundAsync(filename, m_instance))
-        return ret;
-    else {
-        Log::warn("Replacing ", filename, " with silence");
-        return AudioData::create(filename, 1000);
+namespace decoders {
+    AudioData::Ref ogg(Instance& instance, const std::string& filename) {
+        if(auto ret = loadSoundAsync(instance, filename))
+            return ret;
+        else {
+            Log::warn("Replacing ", filename, " with silence");
+            return AudioData::create(filename, 1000);
+        }
     }
 }
-static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance) {
+
+static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename) {
     auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
     OggVorbis_File vf;
     bool doubleSample;

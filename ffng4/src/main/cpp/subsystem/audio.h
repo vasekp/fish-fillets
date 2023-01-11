@@ -29,12 +29,15 @@ public:
     void clearExcept(const AudioSource::Ref& source);
     void preload(const std::string& filename);
 
-    AudioData::Ref loadOGG(const std::string& filename) const;
     AudioData::Ref loadSound(const std::string& filename) const;
     AudioSource::Ref loadMusic(const std::string& filename) const;
 
     bool isDialog() const;
     void mix(float* output, std::size_t numSamples);
 };
+
+namespace decoders {
+    AudioData::Ref ogg(Instance& instance, const std::string& filename);
+}
 
 #endif //FISH_FILLETS_AUDIO_H

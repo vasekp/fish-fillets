@@ -7,7 +7,7 @@
 #include <android/bitmap.h>
 #include <media/NdkMediaExtractor.h>
 
-static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
+static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename);
 
 namespace decoders {
     ogl::Texture png(Instance& instance, const std::string& filename0) {
@@ -31,18 +31,18 @@ namespace decoders {
         jni->DeleteLocalRef(jBitmap);
         return ret;
     }
-}
 
-AudioData::Ref Audio::loadOGG(const std::string& filename) const {
-    if(auto ret = loadSoundAsync(filename, m_instance))
-        return ret;
-    else {
-        Log::warn("Replacing ", filename, " with silence");
-        return AudioData::create(filename, 1000);
+    AudioData::Ref ogg(Instance& instance, const std::string& filename) {
+        if(auto ret = loadSoundAsync(instance, filename))
+            return ret;
+        else {
+            Log::warn("Replacing ", filename, " with silence");
+            return AudioData::create(filename, 1000);
+        }
     }
 }
 
-static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance) {
+static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename) {
     auto file = instance.files().system(filename);
     auto asset = dynamic_cast<SystemFile&>(*file).asset();
 
