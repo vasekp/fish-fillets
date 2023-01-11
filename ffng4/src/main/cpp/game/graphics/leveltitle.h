@@ -8,7 +8,7 @@ class LevelTitle {
     TextImage m_image;
 
 public:
-    LevelTitle(Instance& instance, Font& font, std::string text);
+    LevelTitle(Instance& instance, IFont& font, std::string text);
 
     void draw(const DrawTarget& target, float opacity);
 

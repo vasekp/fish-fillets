@@ -45,9 +45,9 @@ class LevelInput : public IInputSink {
         FCoords coordsTo;
         Key key;
     };
-    std::array<Button, Buttons::bSIZE> m_buttons;
-    std::array<bool, Buttons::bSIZE> m_buttonsEnabled;
-    Font m_buttonsFont;
+    std::array<Button, bSIZE> m_buttons;
+    std::array<bool, bSIZE> m_buttonsEnabled;
+    std::unique_ptr<IFont> m_buttonsFont;
 
 public:
     enum class ButtonGravity {

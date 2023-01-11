@@ -4,9 +4,9 @@
 #include "instance.h"
 #include "api/ogl.h"
 
-#include "platform/font.h"
 #include "graphics/shaders.h"
 #include "graphics/image.h"
+#include "graphics/ifont.h"
 #include "graphics/readbuffer.h"
 #include "graphics/textureview.h"
 #include "graphics/displaytarget.h"
@@ -40,11 +40,16 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    auto loadImage(std::string filename) { return PNGImage{*this, std::move(filename)}; }
+    PNGImage loadImage(std::string filename) { return {*this, std::move(filename)}; }
     ogl::Texture loadPNG(const std::string& filename) const;
     void regImage(Image*);
     void regImageMove(Image*, Image*) noexcept;
     void unregImage(Image*) noexcept;
 };
+
+namespace decoders {
+    //PNGImage png(const Instance& instance, const std::string& filename);
+    std::unique_ptr<IFont> ttf(Instance& instance, const std::string& filename);
+}
 
 #endif //FISH_FILLETS_GRAPHICS_H

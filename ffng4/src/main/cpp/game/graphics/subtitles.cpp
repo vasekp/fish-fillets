@@ -2,7 +2,7 @@
 
 Subtitles::Subtitles(Instance& instance) :
     m_instance(instance),
-    m_font(instance, fontFilename)
+    m_font(decoders::ttf(instance, fontFilename))
 { }
 
 void Subtitles::defineColors(const std::string& name, Color color1, Color color2) {
@@ -10,7 +10,7 @@ void Subtitles::defineColors(const std::string& name, Color color1, Color color2
 }
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
-    auto lines = m_font.breakLines(text, m_instance.graphics().fullscreenTarget().reducedDisplaySize().fx());
+    auto lines = m_font->breakLines(text, m_instance.graphics().fullscreenTarget().reducedDisplaySize().fx());
     auto countLines = lines.size();
     for(const auto& line : lines) {
         float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
@@ -23,7 +23,7 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
             }
         }();
         m_lines.push_back({
-                TextImage(m_instance.graphics(), m_font, line),
+                TextImage(m_instance.graphics(), *m_font, line),
                 false, 0.f, 0.f, duration,
                 (unsigned)countLines, color1, color2
         });
@@ -73,5 +73,5 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
 
 void Subtitles::refresh() {
     auto dpi = m_instance.graphics().dpi();
-    m_font.setSizes(fontsize * dpi, outline * dpi);
+    m_font->setSizes(fontsize * dpi, outline * dpi);
 }

@@ -36,12 +36,14 @@ private:
     void renderTexture() override;
 };
 
+class IFont;
+
 class TextImage : public Image {
-    std::reference_wrapper<Font> m_font;
+    std::reference_wrapper<IFont> m_font;
     std::string m_text;
 
 public:
-    TextImage(Graphics& graphics, Font& font, std::string text);
+    TextImage(Graphics& graphics, IFont& font, std::string text);
 
 private:
     void renderTexture() override;

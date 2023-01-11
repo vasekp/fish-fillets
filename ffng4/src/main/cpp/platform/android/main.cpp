@@ -1,5 +1,4 @@
-#include "instance.h"
-#include "platform/android/ainstance.h"
+#include "ainstance.h"
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 #include "subsystem/input.h"

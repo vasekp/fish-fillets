@@ -8,7 +8,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_screen(screen),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
-        m_buttonsFont(instance, fontFilename),
+        m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_gravity(ButtonGravity::left),
         m_activeButton(noButton)
 {
@@ -167,7 +167,7 @@ void LevelInput::refresh() {
         glUseProgram(program);
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
 
-        constexpr auto buttonCount = std::tuple_size_v<decltype(m_buttons)>;
+        constexpr auto buttonCount = bSIZE;
         float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
         float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
         float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
@@ -176,13 +176,13 @@ void LevelInput::refresh() {
 
         std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
         std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
-        static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
-        static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
-        m_buttonsFont.setSizes(buttonSize, 0);
+        static_assert(std::tuple_size_v<decltype(chars)> == buttonCount);
+        static_assert(std::tuple_size_v<decltype(keys)> == buttonCount);
+        m_buttonsFont->setSizes(buttonSize, 0);
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
-                    m_buttonsFont.renderText(chars[i]),
+                    m_buttonsFont->renderText(chars[i]),
                     from,
                     from + FCoords{buttonSize, buttonSize},
                     keys[i]

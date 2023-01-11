@@ -1,6 +1,6 @@
 #include "leveltitle.h"
 
-LevelTitle::LevelTitle(Instance& instance, Font& font, std::string text) :
+LevelTitle::LevelTitle(Instance& instance, IFont& font, std::string text) :
     m_instance(instance),
     m_image(instance.graphics(), font, std::move(text))
 { }

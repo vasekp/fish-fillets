@@ -28,7 +28,7 @@ void PNGImage::renderTexture() {
     m_texture = m_graphics.get().loadPNG(m_filename);
 }
 
-TextImage::TextImage(Graphics& graphics, Font& font, std::string text) :
+TextImage::TextImage(Graphics& graphics, IFont& font, std::string text) :
     Image(graphics), m_font(font), m_text(std::move(text))
 {
     init();
