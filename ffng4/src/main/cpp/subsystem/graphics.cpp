@@ -43,5 +43,7 @@ void Graphics::regImageMove(Image* from, Image* to) noexcept {
 }
 
 void Graphics::unregImage(Image* image) noexcept {
-    m_images.erase(std::find(m_images.begin(), m_images.end(), image));
+    auto it = std::find(m_images.begin(), m_images.end(), image);
+    if(it != m_images.end())
+        m_images.erase(it);
 }
