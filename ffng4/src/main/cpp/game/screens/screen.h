@@ -3,14 +3,12 @@
 
 #include "instance.h"
 #include "subsystem/graphics.h"
-#include "subsystem/audio.h"
 #include "subsystem/script.h"
 #include "subsystem/input.h"
 
 class GameScreen {
 protected:
     Instance& m_instance;
-    std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
     float m_lastDraw;

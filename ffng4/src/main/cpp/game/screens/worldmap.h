@@ -3,6 +3,7 @@
 
 #include "screen.h"
 #include "game/structure/gametree.h"
+#include "subsystem/audio.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {

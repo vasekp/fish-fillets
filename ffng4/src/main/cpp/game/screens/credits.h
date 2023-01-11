@@ -2,6 +2,7 @@
 #define FISH_FILLETS_CREDITS_H
 
 #include "screen.h"
+#include "subsystem/audio.h"
 
 class CreditsScreen : public GameScreen {
     BaseInput m_input;
