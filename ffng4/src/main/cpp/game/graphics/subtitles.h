@@ -5,8 +5,7 @@
 
 class Subtitles {
     struct Title {
-        std::string text;
-        ogl::Texture texture;
+        TextImage image;
         bool live;
         float yOffset;
         float addTime;

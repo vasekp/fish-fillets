@@ -22,9 +22,8 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
                 return std::pair{Color::white, Color::white};
             }
         }();
-        auto texture = m_font.renderText(line);
         m_lines.push_back({
-                line, std::move(texture),
+                TextImage(m_instance.graphics(), m_font, line),
                 false, 0.f, 0.f, duration,
                 (unsigned)countLines, color1, color2
         });
@@ -63,20 +62,16 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
-            auto width = line.texture.width();
-            auto height = line.texture.height() - (unsigned)(outline * m_instance.graphics().dpi());
+            auto width = line.image.width();
+            auto height = line.image.height() - (unsigned)(outline * m_instance.graphics().dpi());
             const auto& fullscreen = dynamic_cast<const DisplayTarget&>(target);
             float destX = fullscreen.displayOffset().fx() + (fullscreen.reducedDisplaySize().fx() - (float)width) / 2.f;
             float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.texture, textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
+            target.blit(line.image.texture(), textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
         }
 }
 
 void Subtitles::refresh() {
     auto dpi = m_instance.graphics().dpi();
     m_font.setSizes(fontsize * dpi, outline * dpi);
-    for(auto& line : m_lines) {
-        if(!line.texture.live())
-            line.texture = m_font.renderText(line.text);
-    }
 }

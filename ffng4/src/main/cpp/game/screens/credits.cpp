@@ -5,21 +5,17 @@ CreditsScreen::CreditsScreen(Instance& instance) :
         GameScreen(instance),
         m_input(instance, *this)
 {
-    addImage("images/menu/credits.png", "credits");
+    auto* cImage = addImage("images/menu/credits.png", "credits");
     addImage("images/menu/credits-header.png", "header");
     m_music = m_instance.audio().loadMusic("music/kufrik.ogg");
     m_viewWidth = baseWidth;
     m_viewHeight = baseHeight;
-    m_totalHeight = 0;
+    m_totalHeight = cImage->height();
 }
 
 void CreditsScreen::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
-}
-
-void CreditsScreen::own_refresh() {
-    m_totalHeight = getImage("credits")->height();
 }
 
 void CreditsScreen::own_draw(const DrawTarget& target, float) {
