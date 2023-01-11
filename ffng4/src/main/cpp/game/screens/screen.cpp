@@ -11,7 +11,7 @@ Image* GameScreen::addImage(const std::string& filename, const std::string& name
     if(m_images.contains(key))
         return &m_images.at(key);
     else {
-        auto[iterator, _] = m_images.try_emplace(key, m_instance.graphics(), filename);
+        auto[iterator, _] = m_images.try_emplace(key, m_instance, filename);
         return &iterator->second;
     }
 }

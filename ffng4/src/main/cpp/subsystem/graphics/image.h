@@ -3,10 +3,10 @@
 
 class Image {
 protected:
-    std::reference_wrapper<Graphics> m_graphics;
+    std::reference_wrapper<Instance> m_instance;
     ogl::Texture m_texture;
 
-    Image(Graphics& graphics) : m_graphics(graphics), m_texture() { }
+    Image(Instance& instance) : m_instance(instance), m_texture() { }
     Image(Image&&) noexcept;
     Image& operator=(Image&&) noexcept;
     virtual ~Image() noexcept;
@@ -28,7 +28,7 @@ class PNGImage : public Image {
     std::string m_filename;
 
 public:
-    PNGImage(Graphics& graphics, std::string filename);
+    PNGImage(Instance& instance, std::string filename);
 
     auto filename() const { return m_filename; }
 
@@ -43,7 +43,7 @@ class TextImage : public Image {
     std::string m_text;
 
 public:
-    TextImage(Graphics& graphics, IFont& font, std::string text);
+    TextImage(Instance& instance, IFont& font, std::string text);
 
 private:
     void renderTexture() override;

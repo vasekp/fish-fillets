@@ -9,26 +9,28 @@
 
 static AudioData::Ref loadSoundAsync(const std::string& filename, Instance& instance);
 
-ogl::Texture Graphics::loadPNG(const std::string& filename0) const {
-    auto filename = dynamic_cast<SystemFile&>(*m_instance.files().system(filename0)).path();
-    Log::debug("loadPNG ", filename);
-    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
-    jstring jPath = jni->NewStringUTF(filename.c_str());
-    jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
-    AndroidBitmapInfo info;
-    AndroidBitmap_getInfo(jni, jBitmap, &info);
-    std::uint32_t width = info.width;
-    std::uint32_t height = info.height;
-    std::size_t stride = info.stride;
-    void* pixels;
-    AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-    if(!jBitmap)
-        Log::fatal("bitmap data null (", filename, ")");
-    auto ret = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), width, height, stride, pixels);
-    AndroidBitmap_unlockPixels(jni, jBitmap);
-    jni->DeleteLocalRef(jPath);
-    jni->DeleteLocalRef(jBitmap);
-    return ret;
+namespace decoders {
+    ogl::Texture png(Instance& instance, const std::string& filename0) {
+        auto filename = dynamic_cast<SystemFile&>(*instance.files().system(filename0)).path();
+        Log::debug("loadPNG ", filename);
+        auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
+        jstring jPath = jni->NewStringUTF(filename.c_str());
+        jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
+        AndroidBitmapInfo info;
+        AndroidBitmap_getInfo(jni, jBitmap, &info);
+        std::uint32_t width = info.width;
+        std::uint32_t height = info.height;
+        std::size_t stride = info.stride;
+        void* pixels;
+        AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
+        if(!jBitmap)
+            Log::fatal("bitmap data null (", filename, ")");
+        auto ret = ogl::Texture::fromImageData(instance.graphics().system().ref(), width, height, stride, pixels);
+        AndroidBitmap_unlockPixels(jni, jBitmap);
+        jni->DeleteLocalRef(jPath);
+        jni->DeleteLocalRef(jBitmap);
+        return ret;
+    }
 }
 
 AudioData::Ref Audio::loadOGG(const std::string& filename) const {

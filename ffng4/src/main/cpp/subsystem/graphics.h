@@ -40,15 +40,14 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    PNGImage loadImage(std::string filename) { return {*this, std::move(filename)}; }
-    ogl::Texture loadPNG(const std::string& filename) const;
+    PNGImage loadImage(std::string filename) { return {m_instance, std::move(filename)}; }
     void regImage(Image*);
     void regImageMove(Image*, Image*) noexcept;
     void unregImage(Image*) noexcept;
 };
 
 namespace decoders {
-    //PNGImage png(const Instance& instance, const std::string& filename);
+    ogl::Texture png(Instance& instance, const std::string& filename);
     std::unique_ptr<IFont> ttf(Instance& instance, const std::string& filename);
 }
 

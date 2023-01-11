@@ -2,7 +2,7 @@
 
 LevelTitle::LevelTitle(Instance& instance, IFont& font, std::string text) :
     m_instance(instance),
-    m_image(instance.graphics(), font, std::move(text))
+    m_image(instance, font, std::move(text))
 { }
 
 void LevelTitle::draw(const DrawTarget& target, float opacity) {

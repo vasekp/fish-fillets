@@ -2,34 +2,34 @@
 #include "image.h"
 
 void Image::init() {
-    m_graphics.get().regImage(this);
+    m_instance.get().graphics().regImage(this);
 }
 
-Image::Image(Image&& other) noexcept : m_graphics(other.m_graphics), m_texture(std::move(other.m_texture)) {
-    m_graphics.get().regImageMove(&other, this);
+Image::Image(Image&& other) noexcept : m_instance(other.m_instance), m_texture(std::move(other.m_texture)) {
+    m_instance.get().graphics().regImageMove(&other, this);
 }
 
 Image& Image::operator=(Image&& other) noexcept {
-    m_graphics = other.m_graphics;
+    m_instance = other.m_instance;
     m_texture = std::move(other.m_texture);
-    m_graphics.get().regImageMove(&other, this);
+    m_instance.get().graphics().regImageMove(&other, this);
     return *this;
 }
 
 Image::~Image() noexcept {
-    m_graphics.get().unregImage(this);
+    m_instance.get().graphics().unregImage(this);
 }
 
-PNGImage::PNGImage(Graphics& graphics, std::string filename) : Image(graphics), m_filename(std::move(filename)) {
+PNGImage::PNGImage(Instance& instance, std::string filename) : Image(instance), m_filename(std::move(filename)) {
     init();
 }
 
 void PNGImage::renderTexture() {
-    m_texture = m_graphics.get().loadPNG(m_filename);
+    m_texture = decoders::png(m_instance, m_filename);
 }
 
-TextImage::TextImage(Graphics& graphics, IFont& font, std::string text) :
-    Image(graphics), m_font(font), m_text(std::move(text))
+TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
+    Image(instance), m_font(font), m_text(std::move(text))
 {
     init();
 }

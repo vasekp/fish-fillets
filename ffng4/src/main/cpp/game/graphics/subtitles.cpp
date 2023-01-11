@@ -23,7 +23,7 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
             }
         }();
         m_lines.push_back({
-                TextImage(m_instance.graphics(), *m_font, line),
+                TextImage(m_instance, *m_font, line),
                 false, 0.f, 0.f, duration,
                 (unsigned)countLines, color1, color2
         });
