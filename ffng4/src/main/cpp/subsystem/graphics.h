@@ -40,11 +40,11 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    Image loadImage(std::string filename) { return {*this, std::move(filename)}; }
+    auto loadImage(std::string filename) { return PNGImage{*this, std::move(filename)}; }
     ogl::Texture loadPNG(const std::string& filename) const;
     void regImage(Image*);
-    void regImageMove(Image*, Image*);
-    void unregImage(Image*);
+    void regImageMove(Image*, Image*) noexcept;
+    void unregImage(Image*) noexcept;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_H

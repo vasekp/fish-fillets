@@ -18,7 +18,7 @@ protected:
     bool m_running;
 
 private:
-    std::map<std::string, Image> m_images;
+    std::map<std::string, PNGImage> m_images;
 
 public:
     virtual ~GameScreen() { }

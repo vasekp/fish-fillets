@@ -38,10 +38,10 @@ void Graphics::regImage(Image* image) {
         image->renderTexture();
 }
 
-void Graphics::regImageMove(Image* from, Image* to) {
+void Graphics::regImageMove(Image* from, Image* to) noexcept {
     *std::find(m_images.begin(), m_images.end(), from) = to;
 }
 
-void Graphics::unregImage(Image* image) {
+void Graphics::unregImage(Image* image) noexcept {
     m_images.erase(std::find(m_images.begin(), m_images.end(), image));
 }
