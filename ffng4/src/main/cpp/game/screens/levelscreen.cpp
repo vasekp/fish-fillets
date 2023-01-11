@@ -293,7 +293,7 @@ FCoords LevelScreen::shift() {
 
 void LevelScreen::display(const std::string& filename) {
     if(!filename.empty())
-        m_display = m_instance.graphics().loadImage(filename);
+        m_display = PNGImage(m_instance, filename);
     else
         m_display.reset();
 }

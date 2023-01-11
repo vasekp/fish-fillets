@@ -17,7 +17,7 @@ Image* GameScreen::addImage(const std::string& filename, const std::string& name
 }
 
 Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
-    auto[iterator, _] = m_images.insert_or_assign(name, m_instance.graphics().loadImage(filename));
+    auto[iterator, _] = m_images.insert_or_assign(name, PNGImage(m_instance, filename));
     return &iterator->second;
 }
 

@@ -40,7 +40,6 @@ public:
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
-    PNGImage loadImage(std::string filename) { return {m_instance, std::move(filename)}; }
     void regImage(Image*);
     void regImageMove(Image*, Image*) noexcept;
     void unregImage(Image*) noexcept;
