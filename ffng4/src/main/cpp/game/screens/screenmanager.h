@@ -9,6 +9,7 @@
 class ScreenManager {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
+    Font m_levelFont;
     std::optional<LevelTitle> m_title;
     std::optional<std::chrono::steady_clock::time_point> m_title_hide;
     bool m_options;
@@ -20,7 +21,7 @@ public:
         Credits
     };
 
-    ScreenManager(Instance& instance) : m_instance(instance), m_options(false) { };
+    ScreenManager(Instance& instance) : m_instance(instance), m_levelFont(instance, LevelTitle::fontFilename), m_options(false) { };
 
     void refresh();
     void pause();

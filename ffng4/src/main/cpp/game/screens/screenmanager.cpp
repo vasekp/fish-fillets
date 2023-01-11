@@ -39,10 +39,8 @@ void ScreenManager::startMode(Mode mode) {
 }
 
 void ScreenManager::announceLevel(const LevelRecord& record) {
-    m_title.emplace(m_instance, record.description.at("cs"));
+    m_title.emplace(m_instance, m_levelFont, record.description.at("cs"));
     m_title_hide.reset();
-    if(m_instance.live)
-        m_title->refresh();
 }
 
 void ScreenManager::startLevel(LevelRecord& record) {
@@ -119,8 +117,7 @@ void ScreenManager::drawFrame() {
 }
 
 void ScreenManager::refresh() {
-    if(m_title)
-        m_title->refresh();
+    m_levelFont.setSizes(LevelTitle::fontSize * m_instance.graphics().dpi(), 0);
     curScreen().refresh();
 }
 

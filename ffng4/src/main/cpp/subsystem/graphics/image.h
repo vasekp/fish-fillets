@@ -36,4 +36,15 @@ private:
     void renderTexture() override;
 };
 
+class TextImage : public Image {
+    std::reference_wrapper<Font> m_font;
+    std::string m_text;
+
+public:
+    TextImage(Graphics& graphics, Font& font, std::string text);
+
+private:
+    void renderTexture() override;
+};
+
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

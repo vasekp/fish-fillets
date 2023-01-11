@@ -4,6 +4,7 @@
 #include "instance.h"
 #include "api/ogl.h"
 
+#include "platform/font.h"
 #include "graphics/shaders.h"
 #include "graphics/image.h"
 #include "graphics/readbuffer.h"
@@ -12,7 +13,6 @@
 #include "graphics/texturetarget.h"
 #include "graphics/system.h"
 #include "graphics/graphicsutils.h"
-#include "platform/font.h"
 
 class Graphics {
     Instance& m_instance;
