@@ -2,6 +2,6 @@
 #include "ainstance.h"
 
 void ScreenManager::playIntro() {
-    auto& jni = m_instance.platform().jni;
+    auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     jni->CallVoidMethod(jni.object(), jni.method("playIntro"));
 }

@@ -1,18 +1,25 @@
-#ifndef FISH_FILLETS_LINUX_INSTANCE_H
-#define FISH_FILLETS_LINUX_INSTANCE_H
+#ifndef FF_LINUX_INSTANCE_H
+#define FF_LINUX_INSTANCE_H
 
 #include "instance.h"
-#include "xlib-fenced.h"
+#include "./files.h"
+#include "./input.h"
+#include <X11/Xlib.h>
 
-struct PlatformInstance {
+class XInstance : public Instance {
+    LinuxFiles m_files;
+    XInput m_input;
+
+public:
     Window m_window;
 
-    PlatformInstance(Instance&, Window window) : m_window(window) { }
+    XInstance(Window window) : m_files(), m_input(*this), m_window(window) { init(); }
 
-    void quit() { }
-    auto window() { return m_window; }
+    void* window() override { return reinterpret_cast<void*>(m_window); }
+
+    LinuxFiles& files() override { return m_files; }
+
+    XInput& inputSource() override { return m_input; }
 };
 
-using PlatformData = Window;
-
-#endif //FISH_FILLETS_LINUX_INSTANCE_H
+#endif //FF_LINUX_INSTANCE_H

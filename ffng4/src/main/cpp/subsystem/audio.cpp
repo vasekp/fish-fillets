@@ -6,17 +6,17 @@
 #include <cstring> // memset
 
 class AudioPreloader : public ScriptReferrer {
-    Instance& m_instance;
     Audio& m_audio;
+    Instance& m_instance;
     Script m_script;
 
 public:
-    explicit AudioPreloader(Instance& instance) : m_instance(instance), m_audio(instance.audio()), m_script(instance, *this) {
+    explicit AudioPreloader(Audio& audio, Instance& instance) : m_audio(audio), m_instance(instance), m_script(instance, *this) {
         m_script.registerFn("preload_sound", lua::wrap<&AudioPreloader::preload_sound>);
     }
 
     void load() {
-        m_script.loadFile(m_instance.files().system("script/preload.lua"));
+        m_script.loadFile(m_instance.files().system("script/preload.lua").get());
     }
 
     void preload_sound(const std::string& filename) {
@@ -24,25 +24,28 @@ public:
     }
 };
 
-void Audio::activate() {
-    Log::debug("audio: activate");
-    m_stream = std::make_unique<AudioSink>(*this);
-
-    if(m_sounds_preload.empty())
-        AudioPreloader(m_instance).load();
+Audio::Audio(Instance& instance) : m_instance(instance) {
+    AudioPreloader(*this, instance).load();
 }
 
-void Audio::shutdown() {
-    Log::debug("audio: shutdown");
-    m_stream.reset();
+void Audio::bindSink(AudioSink* sink) {
+    Log::debug("audio: bind");
+    m_stream = sink;
+}
+
+void Audio::unbindSink() {
+    Log::debug("audio: unbind");
+    m_stream = nullptr;
 }
 
 void Audio::pause() {
-    m_stream->stop();
+    if(m_stream)
+        m_stream->stop();
 }
 
 void Audio::resume() {
-    m_stream->start();
+    if(m_stream)
+        m_stream->start();
 }
 
 void Audio::addSource(const AudioSource::Ref& source) {
@@ -110,15 +113,15 @@ AudioData::Ref Audio::loadSound(const std::string& filename) const {
     if(m_sounds_preload.contains(filename))
         return m_sounds_preload.at(filename);
     else
-        return loadOGG(filename);
+        return decoders::ogg(m_instance, filename);
 }
 
 AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
     auto data = loadSound(filename);
     auto source = AudioSource::from(data);
     auto meta = m_instance.files().system(filename + ".meta");
-    if(meta.exists()) {
-        auto contents = meta.read();
+    if(meta->exists()) {
+        auto contents = meta->read();
         std::istringstream iss{contents};
         std::size_t start, end;
         iss >> start >> end;

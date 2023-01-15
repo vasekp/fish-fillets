@@ -1,13 +1,14 @@
 #include "levelinput.h"
 #include "instance.h"
-#include "game/screens/screenmanager.h"
 #include "subsystem/graphics.h"
+#include "game/screens/levelscreen.h"
 
-LevelInput::LevelInput(Instance& instance) :
+LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_instance(instance),
+        m_screen(screen),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
-        m_buttonsFont(instance, fontFilename),
+        m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_gravity(ButtonGravity::left),
         m_activeButton(noButton)
 {
@@ -21,7 +22,7 @@ void LevelInput::setFish(Model::Fish fish) {
 }
 
 bool LevelInput::keyDown(Key key) {
-    return m_instance.screens().dispatchKey(key);
+    return m_screen.keypress(key);
 }
 
 bool LevelInput::keyUp(Key) {
@@ -29,7 +30,7 @@ bool LevelInput::keyUp(Key) {
 }
 
 Key LevelInput::pool() {
-    if(auto key = m_instance.input().poolKey(); key != Key::none)
+    if(auto key = m_instance.inputSource().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
         Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
@@ -89,7 +90,7 @@ bool LevelInput::pointerMove(FCoords coords) {
         case DirpadState::wait:
             if(!small && dir) {
                 Log::verbose("Input: sending from WAIT: ", dir);
-                m_instance.screens().dispatchKey(Input::toKey(dir));
+                m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.state = DirpadState::follow;
@@ -101,7 +102,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_dirpad.lastDir = {};
             else if(dir && dir != m_dirpad.lastDir) {
                 Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
-                m_instance.screens().dispatchKey(Input::toKey(dir));
+                m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
             }
             return true;
@@ -116,11 +117,11 @@ bool LevelInput::pointerUp(bool empty) {
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != noButton) {
         if(m_buttonsEnabled[m_activeButton])
-            m_instance.screens().dispatchKey(m_buttons[m_activeButton].key);
+            m_screen.keypress(m_buttons[m_activeButton].key);
         return true;
     }
     if(empty)
-        m_instance.screens().dispatchKey(Key::interrupt);
+        m_screen.keypress(Key::interrupt);
     return false;
 }
 
@@ -130,8 +131,8 @@ void LevelInput::pointerCancel() {
 
 bool LevelInput::doubleTap(FCoords coords) {
     auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
-    if(!m_instance.screens().dispatchPointer(windowCoords))
-        m_instance.screens().dispatchKey(Key::space);
+    if(!m_screen.pointer(windowCoords))
+        m_screen.keypress(Key::space);
     m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
@@ -140,14 +141,14 @@ bool LevelInput::doubleTap(FCoords coords) {
 }
 
 bool LevelInput::twoPointTap() {
-    m_instance.screens().dispatchKey(Key::skip);
+    m_screen.keypress(Key::skip);
     return true;
 }
 
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
-        return m_instance.screens().dispatchPointer(windowCoords, true);
+        return m_screen.pointer(windowCoords, true);
     } else
         return false;
 }
@@ -166,7 +167,7 @@ void LevelInput::refresh() {
         glUseProgram(program);
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
 
-        constexpr auto buttonCount = std::tuple_size_v<decltype(m_buttons)>;
+        constexpr auto buttonCount = bSIZE;
         float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
         float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
         float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
@@ -175,13 +176,13 @@ void LevelInput::refresh() {
 
         std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
         std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
-        static_assert(std::tuple_size_v<decltype(chars)> == std::tuple_size_v<decltype(m_buttons)>);
-        static_assert(std::tuple_size_v<decltype(keys)> == std::tuple_size_v<decltype(m_buttons)>);
-        m_buttonsFont.setSizes(buttonSize, 0);
+        static_assert(std::tuple_size_v<decltype(chars)> == buttonCount);
+        static_assert(std::tuple_size_v<decltype(keys)> == buttonCount);
+        m_buttonsFont->setSizes(buttonSize, 0);
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
             m_buttons[i] = {
-                    m_buttonsFont.renderText(chars[i]),
+                    m_buttonsFont->renderText(chars[i]),
                     from,
                     from + FCoords{buttonSize, buttonSize},
                     keys[i]

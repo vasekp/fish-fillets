@@ -129,13 +129,13 @@ bool Level::level_action_load() {
 
 bool Level::level_action_saveQuit() {
     m_record.solved = true;
-    solveFile().write("saved_moves = '"s + m_replay + "'\n");
+    solveFile()->write("saved_moves = '"s + m_replay + "'\n");
     m_screen.exit();
     return true;
 }
 
 bool Level::level_save(const std::string& text_models) {
-    saveFile().write("saved_moves = '"s + m_replay + "'\n\nsaved_models = " + text_models);
+    saveFile()->write("saved_moves = '"s + m_replay + "'\n\nsaved_models = " + text_models);
     return true;
 }
 

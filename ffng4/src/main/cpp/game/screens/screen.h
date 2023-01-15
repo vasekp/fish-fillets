@@ -3,14 +3,12 @@
 
 #include "instance.h"
 #include "subsystem/graphics.h"
-#include "subsystem/audio.h"
 #include "subsystem/script.h"
 #include "subsystem/input.h"
 
 class GameScreen {
 protected:
     Instance& m_instance;
-    std::map<std::string, AudioSource> m_sounds;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
     float m_lastDraw;
@@ -18,7 +16,7 @@ protected:
     bool m_running;
 
 private:
-    std::map<std::string, Image> m_images;
+    std::map<std::string, PNGImage> m_images;
 
 public:
     virtual ~GameScreen() { }
@@ -46,7 +44,6 @@ protected:
     Image* addImage(const std::string& path, const std::string& name = "");
     Image* replaceImage(const std::string& name, const std::string& path);
     Image* getImage(const std::string& name);
-    void reloadImages();
 
     virtual void own_start() { }
     virtual void own_refresh() { }

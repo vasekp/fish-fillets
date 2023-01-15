@@ -11,23 +11,18 @@ Image* GameScreen::addImage(const std::string& filename, const std::string& name
     if(m_images.contains(key))
         return &m_images.at(key);
     else {
-        auto[iterator, _] = m_images.insert({key, Image{filename}});
+        auto[iterator, _] = m_images.try_emplace(key, m_instance, filename);
         return &iterator->second;
     }
 }
 
 Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
-    auto[iterator, _] = m_images.insert_or_assign(name, Image{filename, m_instance});
+    auto[iterator, _] = m_images.insert_or_assign(name, PNGImage(m_instance, filename));
     return &iterator->second;
 }
 
 Image* GameScreen::getImage(const std::string& name) {
     return &m_images.at(name);
-}
-
-void GameScreen::reloadImages() {
-    for(auto& [_, image] : m_images)
-        image.reload(m_instance);
 }
 
 void GameScreen::start() {
@@ -38,7 +33,6 @@ void GameScreen::start() {
 
 void GameScreen::refresh() {
     Log::debug("screen: refresh");
-    reloadImages();
     own_setsize();
     own_refresh();
 }

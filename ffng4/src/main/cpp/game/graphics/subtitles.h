@@ -5,8 +5,7 @@
 
 class Subtitles {
     struct Title {
-        std::string text;
-        ogl::Texture texture;
+        TextImage image;
         bool live;
         float yOffset;
         float addTime;
@@ -17,7 +16,7 @@ class Subtitles {
     };
 
     Instance& m_instance;
-    Font m_font;
+    std::unique_ptr<IFont> m_font;
     std::deque<Title> m_lines;
     std::map<std::string, std::pair<Color, Color>> m_colors;
 

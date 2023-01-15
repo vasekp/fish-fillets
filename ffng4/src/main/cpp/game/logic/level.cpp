@@ -20,7 +20,7 @@ LevelInput& Level::input() {
 void Level::init() {
     m_attempt++;
     Log::info("Level ", m_record.codename, ", attempt ", m_attempt);
-    m_script.loadFile(m_instance.files().system(m_record.script_filename));
+    m_script.loadFile(m_instance.files().system(m_record.script_filename).get());
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
     input().setLoadPossible(loadPossible());
@@ -188,9 +188,9 @@ void Level::load(bool keepSchedule) {
     if(loadPossible()) {
         killDialogsHard();
         m_tickSchedule.clear();
-        m_tickSchedule.emplace_back([&, file = saveFile(), keepSchedule]() {
+        m_tickSchedule.emplace_back([&, contents = saveFile()->read(), keepSchedule]() {
             reinit(keepSchedule);
-            m_script.loadFile(file);
+            m_script.doString(contents);
             m_script.doString("script_load()");
             return true;
         });
@@ -224,14 +224,14 @@ bool Level::savePossible() const {
 }
 
 bool Level::loadPossible() const {
-    return saveFile().exists();
+    return saveFile()->exists();
 }
 
-UserFile Level::saveFile() const {
+std::unique_ptr<IFile> Level::saveFile() const {
     return m_instance.files().user(m_record.saveFilename());
 }
 
-UserFile Level::solveFile() const {
+std::unique_ptr<IFile> Level::solveFile() const {
     return m_instance.files().user(m_record.solveFilename());
 }
 

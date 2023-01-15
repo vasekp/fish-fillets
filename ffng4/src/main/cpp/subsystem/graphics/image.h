@@ -2,21 +2,51 @@
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
 class Image {
-    std::string m_filename;
+protected:
+    std::reference_wrapper<Instance> m_instance;
     ogl::Texture m_texture;
 
-public:
-    Image(std::string filename);
-    Image(std::string filename, Instance& instance);
+    Image(Instance& instance) : m_instance(instance), m_texture() { }
+    Image(Image&&) noexcept;
+    Image& operator=(Image&&) noexcept;
+    virtual ~Image() noexcept;
+    void init(); // Must be called at the end of derived classes' constructors.
 
-    auto filename() const { return m_filename; }
+public:
     auto& texture() const { return m_texture; }
     auto width() const { return m_texture.width(); }
     auto height() const { return m_texture.height(); }
 
     operator const ogl::Texture&() const { return texture(); }
 
-    void reload(Instance& instance);
+private:
+    virtual void renderTexture() = 0;
+    friend class Graphics;
+};
+
+class PNGImage : public Image {
+    std::string m_filename;
+
+public:
+    PNGImage(Instance& instance, std::string filename);
+
+    auto filename() const { return m_filename; }
+
+private:
+    void renderTexture() override;
+};
+
+class IFont;
+
+class TextImage : public Image {
+    std::reference_wrapper<IFont> m_font;
+    std::string m_text;
+
+public:
+    TextImage(Instance& instance, IFont& font, std::string text);
+
+private:
+    void renderTexture() override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

@@ -1,9 +1,7 @@
-#include "subsystem/input.h"
-#include "instance.h"
-#include "game/screens/screenmanager.h"
+#include "./input.h"
 #include "./ainstance.h"
 
-PlatformInput::PlatformInput(Instance& instance) :
+AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -13,7 +11,7 @@ PlatformInput::PlatformInput(Instance& instance) :
         m_pointerHandled(false)
 { }
 
-void PlatformInput::reset() {
+void AndroidInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
     m_pointerDownTime = absolutePast;
@@ -50,14 +48,15 @@ static Key AndroidKeymap(unsigned int code) {
     }
 }
 
-bool PlatformInput::processEvent(AInputEvent* event) {
-    auto& input = m_instance.screens().curScreen().input();
+bool AndroidInput::processEvent(AInputEvent* event) {
+    auto& inputSink = m_instance.inputSink();
+    auto& jni = m_instance.jni;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         auto combined = AMotionEvent_getAction(event);
         auto action = combined & AMOTION_EVENT_ACTION_MASK;
         auto index = (combined & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
         if(action == AMOTION_EVENT_ACTION_CANCEL) {
-            input.pointerCancel();
+            inputSink.pointerCancel();
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
             return false;
@@ -74,25 +73,25 @@ bool PlatformInput::processEvent(AInputEvent* event) {
                 m_pointerId = pointerId;
                 m_pointerFollow = true;
                 if(m_pointerDownTime - lastPointerTime < doubletapTime)
-                    m_pointerHandled = input.doubleTap(coords);
+                    m_pointerHandled = inputSink.doubleTap(coords);
                 else
-                    m_pointerHandled = input.pointerDown(coords);
-                m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
+                    m_pointerHandled = inputSink.pointerDown(coords);
+                jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
             } else if(action == AMOTION_EVENT_ACTION_MOVE) {
                 if(!m_pointerFollow || pointerId != m_pointerId)
                     return false;
                 else
-                    return m_pointerHandled |= input.pointerMove(coords);
+                    return m_pointerHandled |= inputSink.pointerMove(coords);
             } else if(action == AMOTION_EVENT_ACTION_UP) {
                 if(!m_pointerFollow)
                     return false;
                 if(pointerId == m_pointerId)
-                    m_pointerHandled |= input.pointerUp(!m_pointerHandled);
+                    m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
                 if(!m_pointerHandled) {
-                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("showUI"));
+                    jni->CallVoidMethod(jni.object(), jni.method("showUI"));
                     // keep m_pointerDownTime for double tap
                 } else {
-                    m_instance.platform().jni->CallVoidMethod(m_instance.platform().jni.object(), m_instance.platform().jni.method("hideUI"));
+                    jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
                     m_pointerDownTime = absolutePast;
                 }
                 m_pointerFollow = false;
@@ -106,9 +105,9 @@ bool PlatformInput::processEvent(AInputEvent* event) {
             auto id1 = AMotionEvent_getPointerId(event, 1);
             if(id0 != m_pointerId && id1 != m_pointerId)
                 return false;
-            return m_pointerHandled |= input.twoPointTap();
+            return m_pointerHandled |= inputSink.twoPointTap();
         } else if(action == AMOTION_EVENT_ACTION_POINTER_UP && AMotionEvent_getPointerId(event, index) == m_pointerId) {
-            m_pointerHandled |= input.pointerUp(!m_pointerHandled);
+            m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
             return m_pointerHandled;
@@ -120,25 +119,25 @@ bool PlatformInput::processEvent(AInputEvent* event) {
             if(m_lastKey != Key::none)
                 return false;
             m_lastKey = key;
-            return m_keyHandled = input.keyDown(key);
+            return m_keyHandled = inputSink.keyDown(key);
         } else if(action == AKEY_EVENT_ACTION_UP) {
             if(key != m_lastKey)
                 return false;
             m_lastKey = Key::none;
-            return m_keyHandled | input.keyUp(key);
+            return m_keyHandled | inputSink.keyUp(key);
         } else
             return false;
     }
     return false;
 }
 
-void PlatformInput::ping() {
+void AndroidInput::ping() {
     if(m_pointerFollow && m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
+        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }
 }
 
-Key PlatformInput::poolKey() {
+Key AndroidInput::poolKey() {
     return m_lastKey;
 }

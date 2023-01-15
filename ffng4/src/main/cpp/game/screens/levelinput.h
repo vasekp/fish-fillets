@@ -7,9 +7,11 @@
 
 class Instance;
 class DrawTarget;
+class LevelScreen;
 
 class LevelInput : public IInputSink {
     Instance& m_instance;
+    LevelScreen& m_screen;
     Model::Fish m_activeFish;
 
     enum class DirpadState {
@@ -43,9 +45,9 @@ class LevelInput : public IInputSink {
         FCoords coordsTo;
         Key key;
     };
-    std::array<Button, Buttons::bSIZE> m_buttons;
-    std::array<bool, Buttons::bSIZE> m_buttonsEnabled;
-    Font m_buttonsFont;
+    std::array<Button, bSIZE> m_buttons;
+    std::array<bool, bSIZE> m_buttonsEnabled;
+    std::unique_ptr<IFont> m_buttonsFont;
 
 public:
     enum class ButtonGravity {
@@ -58,7 +60,7 @@ private:
     int m_activeButton;
 
 public:
-    LevelInput(Instance& instance);
+    LevelInput(Instance& instance, LevelScreen& screen);
 
     void setFish(Model::Fish fish);
     void setSavePossible(bool possible);

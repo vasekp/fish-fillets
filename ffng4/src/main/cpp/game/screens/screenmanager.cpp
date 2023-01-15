@@ -17,7 +17,7 @@ void ScreenManager::startMode(Mode mode) {
                 curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
-            m_instance.input().reset();
+            m_instance.inputSource().reset();
             break;
         case Mode::Credits:
             m_screen = std::make_unique<CreditsScreen>(m_instance);
@@ -26,7 +26,7 @@ void ScreenManager::startMode(Mode mode) {
                 curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
-            m_instance.input().reset();
+            m_instance.inputSource().reset();
             break;
         case Mode::Intro:
             playIntro();
@@ -39,10 +39,8 @@ void ScreenManager::startMode(Mode mode) {
 }
 
 void ScreenManager::announceLevel(const LevelRecord& record) {
-    m_title.emplace(m_instance, record.description.at("cs"));
+    m_title.emplace(m_instance, *m_levelFont, record.description.at("cs"));
     m_title_hide.reset();
-    if(m_instance.live)
-        m_title->refresh();
 }
 
 void ScreenManager::startLevel(LevelRecord& record) {
@@ -55,7 +53,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
         curScreen().resume();
     auto end = std::chrono::steady_clock::now();
     m_title_hide = end + std::chrono::milliseconds((int)titleDuration);
-    m_instance.input().reset();
+    m_instance.inputSource().reset();
     std::chrono::duration<double> diff = end - start;
     Log::debug("startLevel duration = ", diff.count(), " s");
 }
@@ -119,8 +117,7 @@ void ScreenManager::drawFrame() {
 }
 
 void ScreenManager::refresh() {
-    if(m_title)
-        m_title->refresh();
+    m_levelFont->setSizes(LevelTitle::fontSize * m_instance.graphics().dpi(), 0);
     curScreen().refresh();
 }
 
@@ -130,12 +127,4 @@ void ScreenManager::pause() {
 
 void ScreenManager::resume() {
     curScreen().resume();
-}
-
-bool ScreenManager::dispatchPointer(FCoords coords, bool longPress) {
-    return curScreen().pointer(coords, longPress);
-}
-
-bool ScreenManager::dispatchKey(Key key) {
-    return curScreen().keypress(key);
 }

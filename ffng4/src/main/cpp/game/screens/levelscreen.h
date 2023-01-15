@@ -16,7 +16,7 @@ class LevelScreen : public GameScreen {
     AudioSource::Ref m_music;
     std::array<float, 3> m_waves;
     Subtitles m_subs;
-    std::optional<Image> m_display;
+    std::optional<PNGImage> m_display;
     bool m_fullLoad;
     bool m_quit;
 

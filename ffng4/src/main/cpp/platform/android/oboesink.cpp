@@ -1,6 +1,6 @@
-#include "subsystem/audio.h"
+#include "oboesink.h"
 
-AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_stream() {
+OboeSink::OboeSink(Audio& iface) : AudioSink(iface), m_stream() {
     oboe::AudioStreamBuilder builder;
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setFormatConversionAllowed(true);
@@ -16,25 +16,25 @@ AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_stream() {
         Log::fatal("Failed to open audio stream. Error: ", convertToText(result));
 }
 
-AudioSink::~AudioSink() {
+OboeSink::~OboeSink() {
     m_stream->stop();
     m_stream->close();
 }
 
-void AudioSink::start() {
+void OboeSink::start() {
     oboe::Result result = m_stream->requestStart();
     if (result != oboe::Result::OK)
         Log::error("Failed to start audio sink. Error: ", convertToText(result));
 }
 
-void AudioSink::stop() {
+void OboeSink::stop() {
     oboe::Result result = m_stream->requestStop();
     if (result != oboe::Result::OK)
         Log::error("Failed to stop audio sink. Error: ", convertToText(result));
 }
 
 oboe::DataCallbackResult
-AudioSink::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
+OboeSink::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
     m_audio.mix(reinterpret_cast<float*>(audioData), numFrames);
     return oboe::DataCallbackResult::Continue;
 }

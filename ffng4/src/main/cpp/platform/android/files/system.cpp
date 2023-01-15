@@ -1,6 +1,4 @@
-#include "subsystem/files.h"
 #include "system.h"
-
 
 SystemFile::SystemFile(const std::string& path, AAssetManager* assets) :
         m_assets(assets),

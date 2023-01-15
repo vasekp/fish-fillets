@@ -1,17 +1,16 @@
-#include "instance.h"
-#include "platform/android/ainstance.h"
+#include "ainstance.h"
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 #include "subsystem/input.h"
 #include "game/screens/screenmanager.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {
-    auto& instance = Instance::get(app);
-    return instance.input().processEvent(event);
+    auto& instance = AndroidInstance::get(app);
+    return instance.inputSource().processEvent(event);
 }
 
 static void handle_cmd(struct android_app* app, int32_t cmd) {
-    auto& instance = Instance::get(app);
+    auto& instance = AndroidInstance::get(app);
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
             Log::debug("APP_CMD_SAVE_STATE");
@@ -21,10 +20,10 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             Log::debug("APP_CMD_INIT_WINDOW");
-            if (instance.platform().app->window != nullptr) {
+            if(app->window != nullptr) {
                 instance.live = true;
                 instance.graphics().activate();
-                instance.audio().activate();
+                instance.audio().bindSink(instance.openAudio());
                 instance.screens().refresh();
                 instance.screens().drawFrame();
             }
@@ -32,7 +31,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_TERM_WINDOW:
             Log::debug("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
-            instance.audio().shutdown();
+            instance.audio().unbindSink();
             instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
@@ -93,9 +92,8 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
 }
 
 void android_main(struct android_app* app) {
-    Instance instance(app);
+    AndroidInstance instance(app);
 
-    app->userData = &instance;
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
 
@@ -116,7 +114,7 @@ void android_main(struct android_app* app) {
                     return;
                 }
             }
-            instance.input().ping();
+            instance.inputSource().ping();
 
             if(instance.running)
                 instance.screens().drawFrame();

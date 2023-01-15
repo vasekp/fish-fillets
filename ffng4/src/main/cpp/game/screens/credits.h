@@ -2,6 +2,7 @@
 #define FISH_FILLETS_CREDITS_H
 
 #include "screen.h"
+#include "subsystem/audio.h"
 
 class CreditsScreen : public GameScreen {
     BaseInput m_input;
@@ -16,7 +17,6 @@ public:
 
 protected:
     void own_start() override;
-    void own_refresh() override;
     void own_draw(const DrawTarget& target, float dt) override;
     bool own_pointer(FCoords coords, bool longPress) override;
     bool own_key(Key key) override;

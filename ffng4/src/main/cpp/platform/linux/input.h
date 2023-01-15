@@ -1,9 +1,12 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
-#include "xlib-fenced.h"
+#include "subsystem/input.h"
+#include <X11/Xlib.h>
 
-class PlatformInput : public IInputProvider {
+class XInstance;
+
+class XInput : public IInputSource {
     Instance& m_instance;
 
     Key m_lastKey;
@@ -20,7 +23,7 @@ class PlatformInput : public IInputProvider {
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
 public:
-    PlatformInput(Instance& instance);
+    XInput(Instance& instance);
 
     void keyEvent(XKeyEvent& xkey);
     void buttonEvent(const XButtonEvent& xbutton);

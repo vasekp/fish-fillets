@@ -1,11 +1,10 @@
 #include "common.h"
-#include "instance.h"
-#include "platform/linux/xinstance.h"
+#include "xinstance.h"
 #include "subsystem/graphics.h"
-#include "subsystem/audio.h"
 #include "game/screens/screenmanager.h"
+#include "alsasink.h"
 
-#include "xlib-fenced.h"
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
@@ -44,12 +43,14 @@ int main(int argc, char **argv) {
 
         XkbSetDetectableAutoRepeat(dpy, True, nullptr);
 
-        Instance instance{win};
+        XInstance instance{win};
+        AlsaSink sink{instance.audio()};
+
         instance.screens().startMode(ScreenManager::Mode::WorldMap);
 
         instance.live = true;
         instance.graphics().activate();
-        instance.audio().activate();
+        instance.audio().bindSink(&sink);
         instance.screens().refresh();
         instance.screens().drawFrame();
 
@@ -69,14 +70,14 @@ int main(int argc, char **argv) {
                 switch(event.type) {
                     case KeyPress: [[fallthrough]];
                     case KeyRelease:
-                        instance.input().keyEvent(event.xkey);
+                        instance.inputSource().keyEvent(event.xkey);
                         break;
                     case ButtonPress: [[fallthrough]];
                     case ButtonRelease:
-                        instance.input().buttonEvent(event.xbutton);
+                        instance.inputSource().buttonEvent(event.xbutton);
                         break;
                     case MotionNotify:
-                        instance.input().motionEvent(event.xmotion);
+                        instance.inputSource().motionEvent(event.xmotion);
                         break;
                     case ConfigureNotify:
                         {

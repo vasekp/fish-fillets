@@ -1,11 +1,11 @@
-#include "subsystem/audio.h"
+#include "alsasink.h"
 #include <cerrno>
 extern "C" {
 #include <poll.h>
 #include <alsa/asoundlib.h>
 }
 
-AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
+AlsaSink::AlsaSink(Audio& iface) : AudioSink(iface), m_quit(false) {
     snd_pcm_t* alsa;
     snd_pcm_hw_params_t* hw_params;
     snd_pcm_sw_params_t* sw_params;
@@ -92,13 +92,13 @@ AudioSink::AudioSink(Audio& iface) : m_audio(iface), m_quit(false) {
     });
 }
 
-AudioSink::~AudioSink() {
+AlsaSink::~AlsaSink() {
     m_quit.store(true, std::memory_order::relaxed);
     m_thread.join();
 }
 
-void AudioSink::start() {
+void AlsaSink::start() {
 }
 
-void AudioSink::stop() {
+void AlsaSink::stop() {
 }

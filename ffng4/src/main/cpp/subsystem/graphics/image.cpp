@@ -1,13 +1,39 @@
 #include "subsystem/graphics.h"
 #include "image.h"
 
-Image::Image(std::string filename) : m_filename(std::move(filename)), m_texture() { }
-
-Image::Image(std::string filename, Instance& instance) : Image(std::move(filename)) {
-    reload(instance);
+void Image::init() {
+    m_instance.get().graphics().regImage(this);
 }
 
-void Image::reload(Instance& instance) {
-    if(!m_texture.live())
-        m_texture = instance.graphics().loadPNG(m_filename);
+Image::Image(Image&& other) noexcept : m_instance(other.m_instance), m_texture(std::move(other.m_texture)) {
+    m_instance.get().graphics().regImageMove(&other, this);
+}
+
+Image& Image::operator=(Image&& other) noexcept {
+    m_instance = other.m_instance;
+    m_texture = std::move(other.m_texture);
+    m_instance.get().graphics().regImageMove(&other, this);
+    return *this;
+}
+
+Image::~Image() noexcept {
+    m_instance.get().graphics().unregImage(this);
+}
+
+PNGImage::PNGImage(Instance& instance, std::string filename) : Image(instance), m_filename(std::move(filename)) {
+    init();
+}
+
+void PNGImage::renderTexture() {
+    m_texture = decoders::png(m_instance, m_filename);
+}
+
+TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
+    Image(instance), m_font(font), m_text(std::move(text))
+{
+    init();
+}
+
+void TextImage::renderTexture() {
+    m_texture = m_font.get().renderText(m_text);
 }

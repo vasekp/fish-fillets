@@ -6,11 +6,11 @@
 
 class Instance;
 
-class IInputProvider {
+class IInputSource {
 public:
     virtual Key poolKey() { return Key::none; }
     virtual void reset() { }
-    virtual ~IInputProvider() { }
+    virtual ~IInputSource() { }
 };
 
 class IInputSink {

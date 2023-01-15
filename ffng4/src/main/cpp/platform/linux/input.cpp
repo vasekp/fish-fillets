@@ -1,10 +1,9 @@
 #include "subsystem/input.h"
 #include "instance.h"
-#include "game/screens/screenmanager.h"
 #include "./input.h"
 #include <X11/keysym.h>
 
-PlatformInput::PlatformInput(Instance& instance) :
+XInput::XInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_keyHandled(false),
@@ -14,7 +13,7 @@ PlatformInput::PlatformInput(Instance& instance) :
         m_pointerHandled(false)
 { }
 
-void PlatformInput::reset() {
+void XInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
     m_lastPointerDownTime = absolutePast;
@@ -67,12 +66,11 @@ Key XKeyMap(KeySym keysym) {
     }
 }
 
-void PlatformInput::keyEvent(XKeyEvent& event) {
-    auto& input = m_instance.screens().curScreen().input();
+void XInput::keyEvent(XKeyEvent& event) {
     if(event.type == KeyPress) {
         if(m_lastKey == Key::none) {
             m_lastKey = XKeyMap(XLookupKeysym(&event, 0));
-            input.keyDown(m_lastKey);
+            m_instance.inputSink().keyDown(m_lastKey);
         }
         return;
     } else {
@@ -81,8 +79,8 @@ void PlatformInput::keyEvent(XKeyEvent& event) {
     }
 }
 
-void PlatformInput::buttonEvent(const XButtonEvent& event) {
-    auto& input = m_instance.screens().curScreen().input();
+void XInput::buttonEvent(const XButtonEvent& event) {
+    auto& inputSink = m_instance.inputSink();
     if(event.type == ButtonPress) {
         FCoords coords{event.x, event.y};
         if(event.button == Button1) {
@@ -90,15 +88,15 @@ void PlatformInput::buttonEvent(const XButtonEvent& event) {
             m_pointerDownCoords = coords;
             m_pointerFollow = true;
             if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
-                m_pointerHandled = input.doubleTap(coords);
+                m_pointerHandled = inputSink.doubleTap(coords);
             else
-                m_pointerHandled = input.pointerDown(coords);
+                m_pointerHandled = inputSink.pointerDown(coords);
         } // TODO right click
     } else {
         if(event.button == Button1) {
             if(!m_pointerFollow)
                 return;
-            m_pointerHandled |= input.pointerUp(!m_pointerHandled);
+            m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
             m_lastPointerDownTime = m_pointerDownTime;
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
@@ -116,15 +114,15 @@ void PlatformInput::buttonEvent(const XButtonEvent& event) {
     }
 #endif
 
-void PlatformInput::motionEvent(const XMotionEvent& event) { }
+void XInput::motionEvent(const XMotionEvent& event) { }
 
-void PlatformInput::ping() {
+void XInput::ping() {
     if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.screens().curScreen().input().longPress(m_pointerDownCoords);
+        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerDownCoords);
         m_pointerDownTime = absolutePast;
     }
 }
 
-Key PlatformInput::poolKey() {
+Key XInput::poolKey() {
     return m_lastKey;
 }

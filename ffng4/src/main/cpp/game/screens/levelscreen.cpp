@@ -6,7 +6,7 @@
 LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         GameScreen(instance),
         m_level(instance, *this, record),
-        m_input(instance),
+        m_input(instance, *this),
         m_waves(),
         m_subs(instance),
         m_fullLoad(false),
@@ -54,9 +54,6 @@ void LevelScreen::own_refresh() {
         if(m_music)
             m_instance.audio().addSource(m_music);
     }
-
-    if(m_display)
-        m_display->reload(m_instance);
 
     {
         const auto& models = m_level.layout().models();
@@ -296,7 +293,7 @@ FCoords LevelScreen::shift() {
 
 void LevelScreen::display(const std::string& filename) {
     if(!filename.empty())
-        m_display.emplace(filename, m_instance);
+        m_display = PNGImage(m_instance, filename);
     else
         m_display.reset();
 }

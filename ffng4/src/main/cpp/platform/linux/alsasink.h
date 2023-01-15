@@ -1,11 +1,11 @@
 #ifndef FISH_FILLETS_LINUX_AUDIO_SINK_H
 #define FISH_FILLETS_LINUX_AUDIO_SINK_H
 
+#include "subsystem/audio.h"
 #include <thread>
 #include <atomic>
 
-class AudioSink {
-    Audio& m_audio;
+class AlsaSink : public AudioSink {
     std::thread m_thread;
     std::atomic<bool> m_quit;
 
@@ -13,13 +13,13 @@ class AudioSink {
     constexpr static std::size_t millisRefresh = 10;
 
 public:
-    AudioSink(Audio& iface);
-    AudioSink(const AudioSink&) = delete;
-    AudioSink& operator=(const AudioSink&) = delete;
-    ~AudioSink();
+    AlsaSink(Audio& iface);
+    AlsaSink(const AlsaSink&) = delete;
+    AlsaSink& operator=(const AlsaSink&) = delete;
+    ~AlsaSink();
 
-    void start();
-    void stop();
+    void start() override;
+    void stop() override;
 };
 
 #endif //FISH_FILLETS_LINUX_AUDIO_SINK_H
