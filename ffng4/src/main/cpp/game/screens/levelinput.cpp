@@ -9,7 +9,6 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
-        m_gravity(ButtonGravity::left),
         m_activeButton(noButton)
 {
     std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
@@ -67,7 +66,7 @@ bool LevelInput::pointerMove(FCoords coords) {
     auto [then, pos2] = m_dirpad.history.back();
     auto timeDiff = now - then;
     auto diff = coords - pos2;
-    bool small = diff.length() < minDistance * m_instance.graphics().dpi();
+    bool small = diff.length() < minDistance * m_instance.graphics().coords(Graphics::CoordSystems::base).scale;
     if(timeDiff > dirpadHistoryLength)
         m_dirpad.history.pop_back();
     ICoords dir{};
@@ -154,33 +153,34 @@ bool LevelInput::longPress(FCoords coords) {
 }
 
 void LevelInput::refresh() {
-    auto displayWidth = (float) m_instance.graphics().display().width();
-    auto displayHeight = (float) m_instance.graphics().display().height();
+    auto& graphics = m_instance.graphics();
+    auto displayWidth = (float)graphics.display().width();
+    auto displayHeight = (float)graphics.display().height();
+    auto coords = graphics.coords(Graphics::CoordSystems::buttons);
     {
-        auto& program = m_instance.graphics().shaders().arrow;
+        auto& program = graphics.shaders().arrow;
         glUseProgram(program);
-        glUniform1f(program.uniform("uSize"), arrowSize * m_instance.graphics().dpi());
+        glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
     }
     {
-        auto& program = m_instance.graphics().shaders().button;
+        auto& program = graphics.shaders().button;
         glUseProgram(program);
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
 
         constexpr auto buttonCount = bSIZE;
-        float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
-        float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
-        float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
-        float buttonOffset = (fullSize - (float)(buttonCount - 1) * buttonStride - buttonSize) / 2.f;
-        glUniform1f(program.uniform("uSize"), buttonSize);
+        constexpr auto stripSize = 64;
+        FCoords center = coords.principal == FCoords{1.f, 0.f} ? FCoords{coords.out2in_dim(displayWidth) / 2.f, stripSize / 2.f} : FCoords{stripSize / 2.f, coords.out2in_dim(displayHeight) / 2.f};
+        float buttonSizeScaled = buttonSize * coords.scale;
+        glUniform1f(program.uniform("uSize"), buttonSizeScaled);
 
         std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
         std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
         static_assert(std::tuple_size_v<decltype(chars)> == buttonCount);
         static_assert(std::tuple_size_v<decltype(keys)> == buttonCount);
-        m_buttonsFont->setSizes(buttonSize, 0);
+        m_buttonsFont->setSizes(buttonSizeScaled, 0);
         for(auto i = 0u; i < buttonCount; i++) {
-            FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
+            FCoords from = center - FCoords{buttonSize, buttonSize} / 2.f + (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
             m_buttons[i] = {
                     m_buttonsFont->renderText(chars[i]),
                     from,
@@ -206,6 +206,7 @@ void LevelInput::draw(const DrawTarget& target) {
 
 void LevelInput::drawButtons(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
+    //const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
     glUseProgram(program);
     for(auto i = 0u; i < m_buttons.size(); i++) {
         glUniform2f(program.uniform("uPosition"), m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy());
@@ -217,7 +218,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
                     ? 1.0f
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
-        GraphicsUtils::rect(0, 0, 1, 1);
+        GraphicsUtils::rect(0, 0, 1, 1); // TODO
     }
 }
 
@@ -262,18 +263,4 @@ int LevelInput::findButton(FCoords pos) {
             return (int)i;
     }
     return noButton;
-}
-
-void LevelInput::setButtonGravity(ButtonGravity gravity) {
-    m_gravity = gravity;
-}
-
-FCoords LevelInput::getReserve() {
-    switch(m_gravity) {
-        case ButtonGravity::left:
-            return {m_buttons[0].coordsTo.fx(), 0.f};
-        case ButtonGravity::top:
-            return {0.f, m_buttons[0].coordsTo.fy()};
-    }
-    std::unreachable();
 }

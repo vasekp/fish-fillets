@@ -14,10 +14,9 @@ void Graphics::shutdown() {
     m_system.reset();
 }
 
-void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords reserve) {
+void Graphics::setWindowSize(unsigned int width, unsigned int height) {
     if(!m_system)
         Log::fatal("setWindowSize() called before activate()");
-    m_reserve = reserve;
     m_windowDim = { width, height };
     recalc();
 }
@@ -25,20 +24,22 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords re
 void Graphics::notifyDisplayResize() {
     recalc();
     m_system->resizeBuffers();
+    m_instance.screens().refresh();
 }
 
 void Graphics::recalc() {
     FCoords displayDim = {display().width(), display().height()};
-    FCoords displayDimReduced = displayDim - m_reserve;
-    {
-        float scale = std::min(displayDim.fx() / 640, displayDim.fy() / 480); // TODO constexpr
-        m_coords[base] = {(displayDim - scale * m_windowDim) / 2.f, scale};
-    }
-    m_coords[reduced] = {m_reserve, 1};
-    {
-        float scale = std::min(displayDimReduced.fx() / m_windowDim.fx(), displayDimReduced.fy() / m_windowDim.fy());
-        m_coords[window] = {(displayDimReduced - scale * m_windowDim) / 2.f + m_reserve, scale};
-    }
+    float scale0 = std::min(displayDim.fx() / 640, displayDim.fy() / 480); // TODO constexpr
+    m_coords[base] = {(displayDim - scale0 * m_windowDim) / 2.f, scale0};
+    float stripSize = 64 * scale0; // TODO
+    float scale1 = std::min((displayDim.fx() - stripSize) / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
+    float scale2 = std::min(displayDim.fx() / m_windowDim.fx(), (displayDim.fy() - stripSize) / m_windowDim.fy());
+    float scale = std::max(scale1, scale2);
+    FCoords reduce = scale1 > scale2 ? FCoords{ stripSize, 0.f } : FCoords{ 0.f, stripSize };
+    FCoords principal = scale1 > scale2 ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
+    m_coords[buttons] = { {}, scale0, principal};
+    m_coords[reduced] = { reduce, scale0};
+    m_coords[window] = {(displayDim - reduce - scale * m_windowDim) / 2.f + reduce, scale};
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {

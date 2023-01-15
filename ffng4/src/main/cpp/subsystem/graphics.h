@@ -20,12 +20,12 @@ class Graphics {
     std::unique_ptr<GraphicsSystem> m_system;
     std::vector<Image*> m_images;
     FCoords m_windowDim;
-    FCoords m_reserve;
 
 public:
     enum CoordSystems {
         null,
         base,
+        buttons,
         reduced,
         window,
         SIZE
@@ -52,7 +52,7 @@ public:
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
-    void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
+    void setWindowSize(unsigned width, unsigned height);
     void notifyDisplayResize();
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);

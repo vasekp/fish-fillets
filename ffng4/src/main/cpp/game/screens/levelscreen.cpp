@@ -32,13 +32,8 @@ void LevelScreen::own_start() {
 }
 
 void LevelScreen::own_setsize() {
-    FCoords displaySize{m_instance.graphics().display().width(), m_instance.graphics().display().height()};
-    FCoords levelSize{m_level.layout().width(), m_level.layout().height()};
-    m_input.setButtonGravity(levelSize.fx() / levelSize.fy() > displaySize.fx() / displaySize.fy()
-        ? LevelInput::ButtonGravity::top
-        : LevelInput::ButtonGravity::left);
+    m_instance.graphics().setWindowSize(m_level.layout().width() * size_unit, m_level.layout().height() * size_unit);
     m_input.refresh();
-    m_instance.graphics().setWindowSize(m_level.layout().width() * size_unit, m_level.layout().height() * size_unit, m_input.getReserve());
 }
 
 void LevelScreen::own_refresh() {
