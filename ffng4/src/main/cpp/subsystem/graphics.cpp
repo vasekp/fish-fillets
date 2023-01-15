@@ -23,11 +23,17 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords re
 }
 
 void Graphics::recalc() {
-    FCoords displayDim = FCoords{display().width(), display().height()} - m_reserve;
-    m_coords[base] = {{0, 0}, 1};
+    FCoords displayDim = {display().width(), display().height()};
+    FCoords displayDimReduced = displayDim - m_reserve;
+    {
+        float scale = std::min(displayDim.fx() / 640, displayDim.fy() / 480); // TODO constexpr
+        m_coords[base] = {(displayDim - scale * m_windowDim) / 2.f, scale};
+    }
     m_coords[reduced] = {m_reserve, 1};
-    float scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
-    m_coords[window] = {(displayDim - scale * m_windowDim) / 2.f + m_reserve, scale};
+    {
+        float scale = std::min(displayDimReduced.fx() / m_windowDim.fx(), displayDimReduced.fy() / m_windowDim.fy());
+        m_coords[window] = {(displayDimReduced - scale * m_windowDim) / 2.f + m_reserve, scale};
+    }
 }
 
 void Graphics::notifyDisplayResize() {
