@@ -19,7 +19,12 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords re
         Log::fatal("setWindowSize() called before activate()");
     m_reserve = reserve;
     m_windowDim = { width, height };
-    Graphics::recalc();
+    recalc();
+}
+
+void Graphics::notifyDisplayResize() {
+    recalc();
+    m_system->resizeBuffers();
 }
 
 void Graphics::recalc() {
@@ -34,11 +39,6 @@ void Graphics::recalc() {
         float scale = std::min(displayDimReduced.fx() / m_windowDim.fx(), displayDimReduced.fy() / m_windowDim.fy());
         m_coords[window] = {(displayDimReduced - scale * m_windowDim) / 2.f + m_reserve, scale};
     }
-}
-
-void Graphics::notifyDisplayResize() {
-    recalc();
-    m_system->resizeBuffers();
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {

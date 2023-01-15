@@ -65,12 +65,11 @@ void LevelScreen::own_refresh() {
     }
 }
 
-std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
+std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) { // TODO
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
     FCoords modelSizePixel = size_unit * FCoords{model.shape().width(), model.shape().height()};
-    FCoords modelSizeNative = coords.in2out_dim(modelSizePixel);
     auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
-    ret->resize(modelSizeNative.x(), modelSizeNative.y());
+    ret->resize(modelSizePixel.x(), modelSizePixel.y(), coords.scale);
     return ret;
 }
 
