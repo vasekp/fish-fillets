@@ -64,7 +64,7 @@ void ScreenManager::drawFrame() {
       Log::error("drawFrame called without active graphics subsystem");
         return;
     }
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
 
     if(options()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
@@ -79,10 +79,10 @@ void ScreenManager::drawFrame() {
         glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
         blur2.blit(blur1.texture(), coords, blurProgram);
 
-        graphics.windowTarget().bind();
+        graphics.fullscreenTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
-        graphics.windowTarget().blit(blur2.texture(), coords, blurProgram);
+        graphics.fullscreenTarget().blit(blur2.texture(), coords, blurProgram);
     } else {
         const auto& offscreen = graphics.offscreenTarget();
         const auto& copyProgram = graphics.shaders().copy;
@@ -90,10 +90,10 @@ void ScreenManager::drawFrame() {
         offscreen.bind();
         curScreen().draw(offscreen);
 
-        graphics.windowTarget().bind();
+        graphics.fullscreenTarget().bind();
         glClear(GL_COLOR_BUFFER_BIT);
         auto shift = curScreen().shift();
-        graphics.windowTarget().blit(offscreen.texture(), coords, copyProgram, shift.fx(), shift.fy());
+        graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram, shift.fx(), shift.fy());
     }
 
     if(!options()) {

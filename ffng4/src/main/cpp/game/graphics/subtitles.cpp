@@ -67,7 +67,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             const auto& fullscreen = dynamic_cast<const DisplayTarget&>(target);
             float destX = fullscreen.displayOffset().fx() + (fullscreen.reducedDisplaySize().fx() - (float)width) / 2.f;
             float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.image.texture(), m_instance.graphics().coords(Graphics::CoordSystems::base), textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
+            target.blit(line.image.texture(), m_instance.graphics().coords(Graphics::CoordSystems::reduced), textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
         }
 }
 

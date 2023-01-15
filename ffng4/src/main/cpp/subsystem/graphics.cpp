@@ -18,9 +18,12 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords re
     if(!m_system)
         Log::fatal("setWindowSize() called before activate()");
     m_system->setWindowSize(width, height, reserve);
+    FCoords displayDim = FCoords{display().width(), display().height()} - reserve;
     m_coords[base] = {{0, 0}, 1};
-    m_coords[reduced] = {{0, 0}, 1};
-    m_coords[window] = {{0, 0}, 1};
+    m_coords[reduced] = {reserve, 1};
+    m_windowDim = {width, height};
+    float scale = std::min(displayDim.fx() / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
+    m_coords[window] = {(displayDim - scale * m_windowDim) / 2.f + reserve, scale};
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {

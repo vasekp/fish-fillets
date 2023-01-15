@@ -66,8 +66,9 @@ void LevelScreen::own_refresh() {
 }
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
     FCoords modelSizePixel = size_unit * FCoords{model.shape().width(), model.shape().height()};
-    FCoords modelSizeNative = m_instance.graphics().windowTarget().pixelScale() * modelSizePixel;
+    FCoords modelSizeNative = coords.in2out_dim(modelSizePixel);
     auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
     ret->resize(modelSizeNative.x(), modelSizeNative.y(), modelSizePixel.fx(), modelSizePixel.fy());
     return ret;
@@ -84,7 +85,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& flatProgram = m_instance.graphics().shaders().flat;
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
         target.blit(&m_display.value(), coords, copyProgram);

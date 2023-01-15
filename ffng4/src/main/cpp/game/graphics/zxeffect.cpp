@@ -18,7 +18,7 @@ void ZXEffect::render(const DrawTarget& target, const Image* image) {
     glUniform4fv(program.uniform("uColor2"), 1, colors[m_colors].second.gl().data());
     glUniform1f(program.uniform("uPeriod"), 2.f * m_stripHeight);
     glUniform1f(program.uniform("uOffset"), m_stripOffset);
-    target.blit(image, m_instance.graphics().coords(Graphics::CoordSystems::base), program);
+    target.blit(image, m_instance.graphics().coords(Graphics::CoordSystems::window), program);
 }
 
 void ZXEffect::update(int tickCount) {

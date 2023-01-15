@@ -19,9 +19,11 @@ class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
     std::vector<Image*> m_images;
+    FCoords m_windowDim;
 
 public:
     enum CoordSystems {
+        null,
         base,
         reduced,
         window,
@@ -39,7 +41,6 @@ public:
 
     auto& system() const { return *m_system; }
     auto& display() const { return *m_system->m_display; }
-    auto& windowTarget() const { return m_system->m_windowTarget; }
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
     auto& blurTargets() const { return m_system->m_blurTargets; }
     auto& offscreenTarget() const { return m_system->m_offscreenTarget; }

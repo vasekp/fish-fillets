@@ -7,6 +7,6 @@ bool BaseInput::keyDown(Key key) {
 }
 
 bool BaseInput::pointerDown(FCoords coords) {
-    auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
+    auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
     return m_screen.pointer(windowCoords);
 }
