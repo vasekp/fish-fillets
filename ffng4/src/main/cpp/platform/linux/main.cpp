@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
                             Log::debug("Resize: ",
                                     instance.graphics().display().width(), "×",
                                     instance.graphics().display().height());
-                            instance.graphics().system().notifyDisplayResize();
+                            instance.graphics().notifyDisplayResize();
                             lastWidth = event.xconfigure.width;
                             lastHeight = event.xconfigure.height;
                             break;

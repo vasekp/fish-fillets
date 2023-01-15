@@ -20,6 +20,7 @@ class Graphics {
     std::unique_ptr<GraphicsSystem> m_system;
     std::vector<Image*> m_images;
     FCoords m_windowDim;
+    FCoords m_reserve;
 
 public:
     enum CoordSystems {
@@ -52,12 +53,16 @@ public:
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
     void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
+    void notifyDisplayResize();
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 
     void regImage(Image*);
     void regImageMove(Image*, Image*) noexcept;
     void unregImage(Image*) noexcept;
+
+private:
+    void recalc();
 };
 
 namespace decoders {
