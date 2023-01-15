@@ -15,7 +15,7 @@ void GraphicsSystem::resizeBuffers() {
     auto width = m_display->width();
     auto height = m_display->height();
     m_offscreenTarget.resize(width, height);
-    auto blurSize = m_graphics.coords(Graphics::CoordSystems::base).in2out_dim({width, height});
-    m_blurTargets[0].resize(blurSize.x(), blurSize.y());
-    m_blurTargets[1].resize(blurSize.x(), blurSize.y());
+    auto scale = 1 / m_graphics.coords(Graphics::CoordSystems::base).scale;
+    m_blurTargets[0].resize(width, height, scale);
+    m_blurTargets[1].resize(width, height, scale);
 }
