@@ -3,6 +3,7 @@
 
 class GraphicsSystem {
 private:
+    Graphics& m_graphics;
     std::shared_ptr<ogl::Display> m_display;
     DisplayTarget m_fullscreenTarget;
     std::array<TextureTarget, 2> m_blurTargets;

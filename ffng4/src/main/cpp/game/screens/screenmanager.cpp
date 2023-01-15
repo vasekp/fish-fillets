@@ -66,34 +66,31 @@ void ScreenManager::drawFrame() {
     }
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
 
+    const auto& offscreen = graphics.offscreenTarget();
+    const auto& copyProgram = graphics.shaders().copy;
+    offscreen.bind();
+    glClear(GL_COLOR_BUFFER_BIT);
+    curScreen().draw(offscreen);
+
     if(options()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
         const auto& blurProgram = graphics.shaders().blur;
 
         blur1.bind();
-        curScreen().draw(blur1);
-
-        glUseProgram(blurProgram);
+        blur1.blit(offscreen.texture(), coords, copyProgram);
 
         blur2.bind();
+        glUseProgram(blurProgram);
         glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
         blur2.blit(blur1.texture(), coords, blurProgram);
 
         graphics.fullscreenTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
         graphics.fullscreenTarget().blit(blur2.texture(), coords, blurProgram);
     } else {
-        const auto& offscreen = graphics.offscreenTarget();
-        const auto& copyProgram = graphics.shaders().copy;
-
-        offscreen.bind();
-        curScreen().draw(offscreen);
-
         graphics.fullscreenTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
-        auto shift = curScreen().shift();
-        graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram, shift.fx(), shift.fy());
+        //auto shift = curScreen().shift(); // TODO
+        graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram);
     }
 
     if(!options()) {
