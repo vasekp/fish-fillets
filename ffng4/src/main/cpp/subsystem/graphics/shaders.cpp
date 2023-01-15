@@ -17,11 +17,11 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     flat = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/flat.frag")->read()});
     zx = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/zx.frag")->read()});
 
-    arrow = ogl::Program(ref,
+    arrow = ogl::Program(ref, // TODO
             {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert")->read()},
             {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/arrow.frag")->read()});
     button = ogl::Program(ref,
-            {ref, GL_VERTEX_SHADER, instance.files().system("shader/button.vert")->read()},
+            vertCommon,
             {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/button.frag")->read()});
 
     for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror, &zx, &button}) {

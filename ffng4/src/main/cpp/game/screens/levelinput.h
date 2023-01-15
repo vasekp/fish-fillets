@@ -82,7 +82,7 @@ private:
     constexpr static float minDistance = 40.f; // all dimension in "base pixels"
     constexpr static float buttonDistance = 40.f;
     constexpr static float arrowSize = 64.f;
-    constexpr static float buttonSize = 64.f;
+    constexpr static float buttonSize = 48.f;
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = std::chrono::milliseconds(100);
     constexpr static std::chrono::steady_clock::time_point absolutePast{};

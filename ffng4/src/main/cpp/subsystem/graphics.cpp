@@ -35,9 +35,11 @@ void Graphics::recalc() {
     float scale1 = std::min((displayDim.fx() - stripSize) / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
     float scale2 = std::min(displayDim.fx() / m_windowDim.fx(), (displayDim.fy() - stripSize) / m_windowDim.fy());
     float scale = std::max(scale1, scale2);
-    FCoords reduce = scale1 > scale2 ? FCoords{ stripSize, 0.f } : FCoords{ 0.f, stripSize };
-    FCoords principal = scale1 > scale2 ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
-    m_coords[buttons] = { {}, scale0, principal};
+    bool vert = scale1 > scale2;
+    FCoords center = vert ? FCoords{stripSize / 2.f, displayDim.fy() / 2.f} : FCoords{displayDim.fx() / 2.f, stripSize / 2.f};
+    FCoords principal = vert ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
+    m_coords[buttons] = { center, scale0, principal};
+    FCoords reduce = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
     m_coords[reduced] = { reduce, scale0};
     m_coords[window] = {(displayDim - reduce - scale * m_windowDim) / 2.f + reduce, scale};
 }
