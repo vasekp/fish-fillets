@@ -2,9 +2,9 @@
 #define FF_LINUX_INSTANCE_H
 
 #include "instance.h"
-#include "xlib-fenced.h"
 #include "./files.h"
 #include "./input.h"
+#include <X11/Xlib.h>
 
 class XInstance : public Instance {
     LinuxFiles m_files;

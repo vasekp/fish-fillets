@@ -2,7 +2,7 @@
 #define FISH_FILLETS_ANDROID_INPUT_H
 
 #include "subsystem/input.h"
-#include "xlib-fenced.h"
+#include <X11/Xlib.h>
 
 class XInstance;
 
