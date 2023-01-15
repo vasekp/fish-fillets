@@ -18,6 +18,9 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height, FCoords re
     if(!m_system)
         Log::fatal("setWindowSize() called before activate()");
     m_system->setWindowSize(width, height, reserve);
+    m_coords[base] = {{0, 0}, 1};
+    m_coords[reduced] = {{0, 0}, 1};
+    m_coords[window] = {{0, 0}, 1};
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {

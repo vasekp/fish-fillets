@@ -9,6 +9,7 @@
 #include "graphics/ifont.h"
 #include "graphics/readbuffer.h"
 #include "graphics/textureview.h"
+#include "graphics/coords.h"
 #include "graphics/displaytarget.h"
 #include "graphics/texturetarget.h"
 #include "graphics/system.h"
@@ -18,6 +19,17 @@ class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
     std::vector<Image*> m_images;
+
+public:
+    enum CoordSystems {
+        base,
+        reduced,
+        window,
+        SIZE
+    };
+
+private:
+    std::array<Coords, SIZE> m_coords;
 
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
@@ -35,6 +47,8 @@ public:
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
     float dpi() const;
+
+    const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
     void setWindowSize(unsigned width, unsigned height, FCoords reserve = {});
     void setMask(const Image* image);

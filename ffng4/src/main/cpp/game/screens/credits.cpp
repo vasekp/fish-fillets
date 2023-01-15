@@ -21,9 +21,9 @@ void CreditsScreen::own_start() {
 void CreditsScreen::own_draw(const DrawTarget& target, float) {
     float offset = std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight;
     const auto& program = m_instance.graphics().shaders().copy;
-    target.blit(getImage("credits"), program, 0, 0,
+    target.blit(getImage("credits"), m_instance.graphics().coords(Graphics::CoordSystems::base), program, 0, 0,
                 0, offset - (float)m_viewHeight, m_viewWidth, m_viewHeight);
-    target.blit(getImage("header"), program);
+    target.blit(getImage("header"), m_instance.graphics().coords(Graphics::CoordSystems::base), program);
 }
 
 bool CreditsScreen::own_pointer(FCoords, bool) {
