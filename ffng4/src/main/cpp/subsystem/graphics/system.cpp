@@ -9,7 +9,9 @@ GraphicsSystem::GraphicsSystem(Instance& instance) :
         m_offscreenTarget(ref()),
         m_readBuffer(m_display),
         m_shaders(m_display, instance)
-{ }
+{
+    resizeBuffers();
+}
 
 void GraphicsSystem::resizeBuffers() {
     auto width = m_display->width();
