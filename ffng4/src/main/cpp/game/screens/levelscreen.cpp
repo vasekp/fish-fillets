@@ -97,7 +97,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color(0x30404E /* TODO constexpr */).gl().data());
-        target.fill(flatProgram, coords, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
+        target.fill(coords, flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 
     const Model* mirror = nullptr;
@@ -152,7 +152,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     if(m_flashAlpha > 0) {
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.fill(flatProgram, coords, 0, 0, target.size().fx(), target.size().fy());
+        target.fill(coords, flatProgram, 0, 0, target.size().fx(), target.size().fy());
         m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
 }

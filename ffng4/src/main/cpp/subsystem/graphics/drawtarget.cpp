@@ -14,7 +14,7 @@ void DrawTarget::blit(TextureView source, const Coords& coords, const ogl::Progr
     GraphicsUtils::rect(0u, 0u, width == fullSize ? source.width() : width, height == fullSize ? source.height() : height);
 }
 
-void DrawTarget::fill(const ogl::Program &program, const Coords& coords, float x1, float y1, float x2, float y2) const {
+void DrawTarget::fill(const Coords& coords, const ogl::Program &program, float x1, float y1, float x2, float y2) const {
     glUseProgram(program);
     glUniform2f(program.uniform("uSrcSize"), x2 - x1, y2 - y1);
     glUniform2f(program.uniform("uDstSize"), size().fx(), size().fy());

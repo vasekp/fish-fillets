@@ -209,7 +209,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
         m_buttons[i].texture.bind();
-        target.fill(program, coords, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
+        target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
     }
 }
 
