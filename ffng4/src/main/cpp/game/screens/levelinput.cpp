@@ -11,7 +11,11 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_activeButton(noButton)
 {
-    std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit, true });
 }
 
 void LevelInput::setFish(Model::Fish fish) {
@@ -39,7 +43,7 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::pointerDown(FCoords coords) {
-    if(auto button = findButton(coords); button != noButton && m_buttonsEnabled[button]) {
+    if(auto button = findButton(coords); button != noButton && m_buttons[button].enabled) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
@@ -115,7 +119,7 @@ bool LevelInput::pointerUp(bool empty) {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != noButton) {
-        if(m_buttonsEnabled[m_activeButton])
+        if(m_buttons[m_activeButton].enabled)
             m_screen.keypress(m_buttons[m_activeButton].key);
         return true;
     }
@@ -164,33 +168,26 @@ void LevelInput::refresh() {
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
     }
     {
-        constexpr auto buttonCount = bSIZE;
+        auto buttonCount = m_buttons.size();
         float buttonSizeScaled = buttonSize * coords.scale;
 
-        std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
-        std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
-        static_assert(std::tuple_size_v<decltype(chars)> == buttonCount);
-        static_assert(std::tuple_size_v<decltype(keys)> == buttonCount);
         m_buttonsFont->setSizes(buttonSizeScaled, 0);
         FCoords extent = {buttonSize, buttonSize};
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
-            m_buttons[i] = {
-                    m_buttonsFont->renderText(chars[i]),
-                    center - extent / 2.f,
-                    center + extent / 2.f,
-                    keys[i]
-            };
+            m_buttons[i].coordsFrom = center - extent / 2.f;
+            m_buttons[i].coordsTo = center + extent / 2.f;
+            m_buttons[i].image.render();
         }
     }
 }
 
 void LevelInput::setSavePossible(bool possible) {
-    m_buttonsEnabled[Buttons::bSave] = possible;
+    m_buttons[Buttons::bSave].enabled = possible;
 }
 
 void LevelInput::setLoadPossible(bool possible) {
-    m_buttonsEnabled[Buttons::bLoad] = possible;
+    m_buttons[Buttons::bLoad].enabled = possible;
 }
 
 void LevelInput::draw(const DrawTarget& target) {
@@ -203,13 +200,13 @@ void LevelInput::drawButtons(const DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
     glUseProgram(program);
     for(auto i = 0u; i < m_buttons.size(); i++) {
-        float alpha = !m_buttonsEnabled[i] ? .25f
+        float alpha = !m_buttons[i].enabled ? .25f
                 : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
                     ? 1.0f
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
-        glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].texture.width(), (float)m_buttons[i].texture.height());
-        m_buttons[i].texture.bind();
+        glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].image.width(), (float)m_buttons[i].image.height());
+        m_buttons[i].image.texture().bind();
         target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
     }
 }

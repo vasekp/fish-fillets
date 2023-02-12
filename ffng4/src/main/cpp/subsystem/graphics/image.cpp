@@ -24,7 +24,7 @@ PNGImage::PNGImage(Instance& instance, std::string filename) : Image(instance), 
     init();
 }
 
-void PNGImage::renderTexture() {
+void PNGImage::render() {
     m_texture = decoders::png(m_instance, m_filename);
 }
 
@@ -34,6 +34,6 @@ TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
     init();
 }
 
-void TextImage::renderTexture() {
+void TextImage::render() {
     m_texture = m_font.get().renderText(m_text);
 }

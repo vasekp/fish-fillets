@@ -35,19 +35,18 @@ class LevelInput : public IInputSink {
         bLoad,
         bRestart,
         bExit,
-        bOptions,
-        bSIZE
+        bOptions
     };
 
     struct Button {
-        ogl::Texture texture;
+        TextImage image;
         FCoords coordsFrom;
         FCoords coordsTo;
         Key key;
+        bool enabled;
     };
-    std::array<Button, bSIZE> m_buttons;
-    std::array<bool, bSIZE> m_buttonsEnabled;
     std::unique_ptr<IFont> m_buttonsFont;
+    std::vector<Button> m_buttons;
 
     int m_activeButton;
 

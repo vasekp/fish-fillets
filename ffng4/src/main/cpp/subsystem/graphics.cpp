@@ -6,7 +6,7 @@ void Graphics::activate() {
     Log::debug("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
     for(auto* image : m_images)
-        image->renderTexture();
+        image->render();
 }
 
 void Graphics::shutdown() {
@@ -59,7 +59,7 @@ void Graphics::setMask(const Image* image) {
 void Graphics::regImage(Image* image) {
     m_images.push_back(image);
     if(m_system)
-        image->renderTexture();
+        image->render();
 }
 
 void Graphics::regImageMove(Image* from, Image* to) noexcept {

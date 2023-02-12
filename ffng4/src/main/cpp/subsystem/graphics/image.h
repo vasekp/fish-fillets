@@ -18,9 +18,9 @@ public:
     auto height() const { return m_texture.height(); }
 
     operator const ogl::Texture&() const { return texture(); }
+    virtual void render() = 0;
 
 private:
-    virtual void renderTexture() = 0;
     friend class Graphics;
 };
 
@@ -29,11 +29,8 @@ class PNGImage : public Image {
 
 public:
     PNGImage(Instance& instance, std::string filename);
-
     auto filename() const { return m_filename; }
-
-private:
-    void renderTexture() override;
+    void render() override;
 };
 
 class IFont;
@@ -44,9 +41,8 @@ class TextImage : public Image {
 
 public:
     TextImage(Instance& instance, IFont& font, std::string text);
-
-private:
-    void renderTexture() override;
+    TextImage(TextImage&&) = default;
+    void render() override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H
