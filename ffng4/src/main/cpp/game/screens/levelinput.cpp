@@ -208,6 +208,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
                     ? 1.0f
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
+        glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].texture.width(), (float)m_buttons[i].texture.height());
         m_buttons[i].texture.bind();
         target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
     }
