@@ -169,14 +169,12 @@ void LevelInput::refresh() {
     }
     {
         auto buttonCount = m_buttons.size();
-        float buttonSizeScaled = buttonSize * coords.scale;
-
-        m_buttonsFont->setSizes(buttonSizeScaled, 0);
+        m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
         FCoords extent = {buttonSize, buttonSize};
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
-            m_buttons[i].coordsFrom = center - extent / 2.f;
-            m_buttons[i].coordsTo = center + extent / 2.f;
+            m_buttons[i].coordsFrom = coords.in2out(center - extent / 2.f);
+            m_buttons[i].coordsTo = coords.in2out(center + extent / 2.f);
             m_buttons[i].image.render();
         }
     }
@@ -197,7 +195,7 @@ void LevelInput::draw(const DrawTarget& target) {
 
 void LevelInput::drawButtons(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     glUseProgram(program);
     for(auto i = 0u; i < m_buttons.size(); i++) {
         float alpha = !m_buttons[i].enabled ? .25f
