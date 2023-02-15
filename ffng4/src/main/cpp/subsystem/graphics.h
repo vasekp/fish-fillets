@@ -48,7 +48,6 @@ public:
     auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
-    float dpi() const;
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
