@@ -17,7 +17,6 @@ class LevelScreen : public GameScreen {
     std::array<float, 3> m_waves;
     Subtitles m_subs;
     std::optional<PNGImage> m_display;
-    bool m_fullLoad;
     bool m_quit;
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;

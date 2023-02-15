@@ -9,7 +9,6 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_input(instance, *this),
         m_waves(),
         m_subs(instance),
-        m_fullLoad(false),
         m_quit(false),
         m_flashAlpha(0)
 { }
@@ -28,6 +27,7 @@ void LevelScreen::leave() {
 }
 
 void LevelScreen::own_start() {
+    m_instance.audio().clear();
     m_level.init();
 }
 
@@ -43,21 +43,13 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uPeriod"), m_waves[1]);
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
     m_subs.refresh();
-    if(!m_fullLoad) {
-        m_fullLoad = true;
-        m_instance.audio().clear();
-        if(m_music)
-            m_instance.audio().addSource(m_music);
-    }
 
-    {
-        const auto& models = m_level.layout().models();
-        auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
-        if(it == models.end())
-            m_mirrorTarget = {};
-        else
-            m_mirrorTarget = makeMirrorTarget(**it);
-    }
+    const auto& models = m_level.layout().models();
+    auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
+    if(it == models.end())
+        m_mirrorTarget = {};
+    else
+        m_mirrorTarget = makeMirrorTarget(**it);
 }
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) { // TODO
@@ -175,11 +167,9 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 void LevelScreen::playMusic(const std::string &filename) {
     if(m_music && m_music->filename() == filename)
         return;
-    if(m_fullLoad)
-        stopMusic();
+    stopMusic();
     m_music = m_instance.audio().loadMusic(filename);
-    if(m_fullLoad)
-        m_instance.audio().addSource(m_music);
+    m_instance.audio().addSource(m_music);
 }
 
 void LevelScreen::stopMusic() {
