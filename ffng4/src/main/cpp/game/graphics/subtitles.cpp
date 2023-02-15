@@ -11,7 +11,7 @@ void Subtitles::defineColors(const std::string& name, Color color1, Color color2
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto lines = m_font->breakLines(text, 640.f * coords.scale);
+    auto lines = m_font->breakLines(text, Graphics::baseDim.fx() * coords.scale);
     auto countLines = lines.size();
     for(const auto& line : lines) {
         float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
@@ -39,7 +39,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto middleX = coords.in2out({320, 0}).fx();
+    auto middleX = coords.in2out(Graphics::baseDim / 2).fx();
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });

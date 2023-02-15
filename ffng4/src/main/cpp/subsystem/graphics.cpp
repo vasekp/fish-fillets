@@ -28,7 +28,6 @@ void Graphics::notifyDisplayResize() {
 }
 
 void Graphics::recalc() {
-    FCoords baseDim = {640, 480}; // TODO constexpr
     FCoords displayDim = {display().width(), display().height()};
     float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0};

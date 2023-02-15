@@ -21,9 +21,9 @@ public:
     constexpr static float fontSize = 16.f;
 
 private:
-    constexpr static float startY = 400.f / 480.f;
-    constexpr static float endY = 470.f / 480.f;
-    constexpr static float maxWidth = 480.f / 480.f;
+    constexpr static float startY = 400.f; // base pixels
+    constexpr static float endY = 470.f;
+    constexpr static float maxWidth = 480.f;
     constexpr static Color colorFg{255, 210, 40};
     constexpr static Color colorBg{40, 20, 6};
 };

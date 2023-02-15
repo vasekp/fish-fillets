@@ -87,10 +87,10 @@ class FCoords {
 
 public:
     template<typename T>
-    FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
+    constexpr FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
 
-    FCoords(ICoords ic) : FCoords(ic.x, ic.y) { }
-    FCoords() : FCoords(0, 0) { }
+    constexpr FCoords(ICoords ic) : FCoords(ic.x, ic.y) { }
+    constexpr FCoords() : FCoords(0, 0) { }
 
     int x() const { return m_x; }
     int y() const { return m_y; }

@@ -60,6 +60,8 @@ public:
     void regImageMove(Image*, Image*) noexcept;
     void unregImage(Image*) noexcept;
 
+    static constexpr FCoords baseDim{640, 480};
+
 private:
     void recalc();
 };
