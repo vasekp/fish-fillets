@@ -47,6 +47,7 @@ public:
     TextImage(TextImage&&) = default;
     TextImage& operator=(TextImage&&) = default;
 
+    IFont& font() { return m_font.get(); }
     void render() override;
 };
 
