@@ -292,7 +292,7 @@ void LevelRules::death(Model* unit) {
     unit->die();
     updateDepGraph(unit);
     m_keyQueue.clear();
-    m_level.killModelSound(unit);
+    m_level.killModelSound(unit); // TODO kill subtitles
     m_level.killDialogs();
     unit->anim().removeExtra();
     m_level.setModelEffect(unit, "disintegrate");
@@ -304,7 +304,7 @@ void LevelRules::death(Model* unit) {
     m_level.notifyDeath();
     if(unit == m_curFish && !switchFish()) {
         setFish(Model::Fish::none);
-        m_level.transition(framesRestart, [&]() { m_level.restart(); });
+        m_level.transition(framesRestart, [&]() { m_level.restartWhenEmpty(); });
     }
 }
 

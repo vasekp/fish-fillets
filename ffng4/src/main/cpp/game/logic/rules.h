@@ -59,7 +59,7 @@ private:
     constexpr static int framesTurn = 3; // bound to the animation
     constexpr static int framesActivate = 4;
     constexpr static int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
-    constexpr static int framesRestart = 50;
+    constexpr static int framesRestart = 30;
 };
 
 #endif //FISH_FILLETS_RULES_H

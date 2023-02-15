@@ -206,6 +206,16 @@ void Level::restart(bool keepSchedule) {
     });
 }
 
+void Level::restartWhenEmpty() {
+    m_tickSchedule.emplace_back([&]() {
+        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog())
+            reinit();
+        else
+            m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
+        return true;
+    });
+}
+
 void Level::reinit(bool keepSchedule) {
     m_dialogs.clear();
     m_screen.restore();
