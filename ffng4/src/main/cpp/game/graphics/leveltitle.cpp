@@ -24,8 +24,9 @@ void LevelTitle::draw(const DrawTarget& target, float opacity) {
     FCoords rect{maxWidth, endY - startY};
     glUseProgram(program);
     glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
+    glUniform2f(program.uniform("uSrcSizeScaled"), (float)m_image->texture().width() / coords.scale, (float)m_image->texture().height() / coords.scale);
 
-    const FCoords shadow{2.f, 2.f}; // TODO constexpr
+    constexpr FCoords shadow{2.f, 2.f}; // TODO static
     glUniform4fv(program.uniform("uColor"), 1, colorBg.gl(opacity).data());
     target.blit(m_image->texture(), coords, program, offset.fx() + shadow.fx(), offset.fy() + shadow.fy(), 0, 0, rect.x(), rect.y());
 
