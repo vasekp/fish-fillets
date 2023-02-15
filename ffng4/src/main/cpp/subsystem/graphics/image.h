@@ -42,6 +42,7 @@ class TextImage : public Image {
 public:
     TextImage(Instance& instance, IFont& font, std::string text);
     TextImage(TextImage&&) = default;
+    TextImage& operator=(TextImage&&) = default;
     void render() override;
 };
 

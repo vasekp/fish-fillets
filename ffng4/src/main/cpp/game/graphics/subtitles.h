@@ -30,8 +30,8 @@ public:
     void clear();
 
     constexpr static const char* fontFilename = "font/font_subtitle.ttf";
-    constexpr static float fontsize = 0.1f;
-    constexpr static float outline = 0.01f; // both relative to DPI
+    constexpr static float fontSize = 20.f; // in "reduced base pixels": 640x480 window after reducing button strip
+    constexpr static float outline = 2.f;
     constexpr static float timePerChar = 0.09f;
     constexpr static float minTimePerLine = 2.5f;
     constexpr static float speed = 1.f;

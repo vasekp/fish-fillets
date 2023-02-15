@@ -160,7 +160,7 @@ void LevelInput::refresh() {
     auto& graphics = m_instance.graphics();
     auto displayWidth = (float)graphics.display().width();
     auto displayHeight = (float)graphics.display().height();
-    auto coords = graphics.coords(Graphics::CoordSystems::buttons);
+    const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
     {
         auto& program = graphics.shaders().arrow;
         glUseProgram(program);
