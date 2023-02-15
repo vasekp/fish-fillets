@@ -36,7 +36,6 @@ void LevelTitle::draw(const DrawTarget& target, float opacity) {
 
 void LevelTitle::refresh() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    Log::debug("title ", coords.scale);
     m_font->setSizes(fontSize * coords.scale, 0.f);
     if(m_image)
         m_image->render();

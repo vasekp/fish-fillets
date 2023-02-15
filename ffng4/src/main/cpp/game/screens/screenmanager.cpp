@@ -113,8 +113,8 @@ void ScreenManager::drawFrame() {
 }
 
 void ScreenManager::refresh() {
-    m_title.refresh();
     curScreen().refresh();
+    m_title.refresh();
 }
 
 void ScreenManager::pause() {
