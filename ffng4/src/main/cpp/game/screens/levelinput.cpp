@@ -244,11 +244,9 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
 }
 
 int LevelInput::findButton(FCoords pos) {
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
-    auto pos0 = coords.out2in(pos);
     for(auto i = 0u; i < m_buttons.size(); i++) {
         auto& button = m_buttons[i];
-        if(pos0.within(button.coordsFrom, button.coordsTo))
+        if(pos.within(button.coordsFrom, button.coordsTo))
             return (int)i;
     }
     return noButton;
