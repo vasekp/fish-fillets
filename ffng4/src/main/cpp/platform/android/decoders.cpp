@@ -142,8 +142,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                         float curr = data[curSample + i];
                         float prev = i > 0 ? data[curSample + i - 1] :
                                      curSample > 0 ? data[curSample - 2] : 0.f;
-                        data[curSample + 2 * i] = curr;
-                        data[curSample + 2 * i - 1] = (curr + prev) / 2.f;
+                        data[curSample + 2 * i + 1] = curr;
+                        data[curSample + 2 * i] = (curr + prev) / 2.f;
                     }
                     curSample += 2 * samplesRead;
                 } else

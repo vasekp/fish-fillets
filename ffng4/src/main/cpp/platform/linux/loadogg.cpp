@@ -52,6 +52,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
         }
 
         numSamples = (std::size_t)ov_pcm_total(&vf, -1);
+        if(doubleSample)
+            numSamples *= 2;
         Log::verbose("numSamples: ", numSamples);
     }
 
@@ -70,8 +72,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                         float curr = buffer[0][i];
                         float prev = i > 0 ? buffer[0][i - 1] :
                                      curSample > 0 ? data[curSample - 1] : 0.f;
-                        data[curSample + 2 * i] = curr;
-                        data[curSample + 2 * i - 1] = (curr + prev) / 2.f;
+                        data[curSample + 2 * i + 1] = curr;
+                        data[curSample + 2 * i] = (curr + prev) / 2.f;
                     }
                     curSample += 2u * samplesRead;
                 } else {
