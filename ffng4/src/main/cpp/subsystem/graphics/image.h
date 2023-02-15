@@ -29,6 +29,9 @@ class PNGImage : public Image {
 
 public:
     PNGImage(Instance& instance, std::string filename);
+    PNGImage(PNGImage&&) = default;
+    PNGImage& operator=(PNGImage&&) = default;
+
     auto filename() const { return m_filename; }
     void render() override;
 };
@@ -43,6 +46,7 @@ public:
     TextImage(Instance& instance, IFont& font, std::string text);
     TextImage(TextImage&&) = default;
     TextImage& operator=(TextImage&&) = default;
+
     void render() override;
 };
 
