@@ -39,7 +39,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto middleX = coords.in2out(Graphics::baseDim / 2).fx();
+    auto bottomY = coords.out2in(FCoords{0, m_instance.graphics().display().height()}).fy();
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
@@ -65,11 +65,11 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
-            auto width = line.image.width();
-            auto height = line.image.height() - (unsigned)(outline * coords.scale);
-            float destX = middleX - (float)width / 2.f;
-            float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.image.texture(), m_instance.graphics().coords(Graphics::CoordSystems::null), textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
+            auto width = (float)line.image.width() / coords.scale;
+            auto height = (float)line.image.height() / coords.scale;
+            auto destX = 320.f - width / 2.f;
+            auto destY = bottomY - (float)height * (1.5f + line.yOffset);
+            target.blit(line.image.texture(), coords, textProgram, destX, destY - (float)height, 0, 0, width, 3 * height);
         }
 }
 
