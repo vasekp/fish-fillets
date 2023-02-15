@@ -28,9 +28,10 @@ void Graphics::notifyDisplayResize() {
 }
 
 void Graphics::recalc() {
+    FCoords baseDim = {640, 480}; // TODO constexpr
     FCoords displayDim = {display().width(), display().height()};
-    float scale0 = std::min(displayDim.fx() / 640, displayDim.fy() / 480); // TODO constexpr
-    m_coords[base] = {(displayDim - scale0 * m_windowDim) / 2.f, scale0};
+    float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
+    m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0};
     float stripSize = 64 * scale0; // TODO
     float scale1 = std::min((displayDim.fx() - stripSize) / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
     float scale2 = std::min(displayDim.fx() / m_windowDim.fx(), (displayDim.fy() - stripSize) / m_windowDim.fy());
@@ -39,9 +40,11 @@ void Graphics::recalc() {
     FCoords center = vert ? FCoords{stripSize / 2.f, displayDim.fy() / 2.f} : FCoords{displayDim.fx() / 2.f, stripSize / 2.f};
     FCoords principal = vert ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
     m_coords[buttons] = { center, scale0, principal};
-    FCoords reduce = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
-    m_coords[reduced] = { reduce, scale0};
-    m_coords[window] = {(displayDim - reduce - scale * m_windowDim) / 2.f + reduce, scale};
+    FCoords reduceBase = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
+    FCoords reduceDim = displayDim - reduceBase;
+    float scale3 = std::min(reduceDim.fx() / baseDim.fx(), reduceDim.fy() / baseDim.fy()); // TODO constexpr
+    m_coords[reduced] = { reduceBase + (reduceDim - scale3 * baseDim) / 2.f, scale3};
+    m_coords[window] = {(displayDim - reduceBase - scale * m_windowDim) / 2.f + reduceBase, scale};
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {
