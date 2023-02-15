@@ -15,6 +15,7 @@ class LevelScreen : public GameScreen {
     std::multimap<std::string, AudioData::Ref> m_sounds;
     AudioSource::Ref m_music;
     std::array<float, 3> m_waves;
+    FCoords m_winSize;
     Subtitles m_subs;
     std::optional<PNGImage> m_display;
     bool m_quit;

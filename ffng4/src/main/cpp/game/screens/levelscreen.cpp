@@ -8,6 +8,7 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_level(instance, *this, record),
         m_input(instance, *this),
         m_waves(),
+        m_winSize(),
         m_subs(instance),
         m_quit(false),
         m_flashAlpha(0)
@@ -32,7 +33,8 @@ void LevelScreen::own_start() {
 }
 
 void LevelScreen::own_setsize() {
-    m_instance.graphics().setWindowSize(m_level.layout().width() * size_unit, m_level.layout().height() * size_unit);
+    m_winSize = FCoords{m_level.layout().width(), m_level.layout().height()} * size_unit;
+    m_instance.graphics().setWindowSize(m_winSize.x(), m_winSize.y());
     m_input.refresh();
 }
 
@@ -76,6 +78,15 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     if(m_display) {
         target.blit(&m_display.value(), coords, copyProgram);
         return;
+    }
+
+    {
+        FCoords from = coords.in2out({0, 0});
+        FCoords to = coords.in2out(m_winSize);
+        FCoords size = to - from;
+        Log::debug("bounds ", from, ' ', to);
+        glScissor(from.x(), from.y(), size.x(), size.y());
+        glEnable(GL_SCISSOR_TEST);
     }
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
@@ -144,9 +155,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     if(m_flashAlpha > 0) {
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.fill(coords, flatProgram, 0, 0, target.size().fx(), target.size().fy());
+        target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
         m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
+
+    glDisable(GL_SCISSOR_TEST);
 }
 
 AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
