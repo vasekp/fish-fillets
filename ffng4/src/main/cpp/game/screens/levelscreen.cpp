@@ -84,7 +84,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         FCoords from = coords.in2out({0, 0});
         FCoords to = coords.in2out(m_winSize);
         FCoords size = to - from;
-        Log::debug("bounds ", from, ' ', to);
         glScissor(from.x(), from.y(), size.x(), size.y());
         glEnable(GL_SCISSOR_TEST);
     }
@@ -96,10 +95,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     target.blit(getImage("background"), coords, wavyProgram);
 
     for(const auto& rope : m_level.layout().getRopes()) {
+        constexpr Color ropeColor{0x30404E};
         FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
         glUseProgram(flatProgram);
-        glUniform4fv(flatProgram.uniform("uColor"), 1, Color(0x30404E /* TODO constexpr */).gl().data());
+        glUniform4fv(flatProgram.uniform("uColor"), 1, ropeColor.gl().data());
         target.fill(coords, flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 

@@ -89,7 +89,6 @@ void ScreenManager::drawFrame() {
         graphics.fullscreenTarget().blit(blur2.texture(), coords, blurProgram);
     } else {
         graphics.fullscreenTarget().bind();
-        //auto shift = curScreen().shift(); // TODO
         graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram);
     }
 
