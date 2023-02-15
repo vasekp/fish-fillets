@@ -32,7 +32,6 @@ public:
     bool pointer(FCoords coords, bool longPress = false) { return own_pointer(coords, longPress); }
     bool keypress(Key key) { return own_key(key); }
 
-    virtual FCoords shift() { return {}; }
     float timeAlive();
 
 protected:

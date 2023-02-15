@@ -15,7 +15,7 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
 
 void LevelScreen::restore() {
     m_display.reset();
-    m_shift = {};
+    m_instance.graphics().setWindowShift({});
 }
 
 void LevelScreen::exit() {
@@ -194,7 +194,7 @@ void LevelScreen::killSounds() {
 }
 
 void LevelScreen::setShift(FCoords shift) {
-    m_shift = shift;
+    m_instance.graphics().setWindowShift(shift);
 }
 
 void LevelScreen::own_pause() {
@@ -271,10 +271,6 @@ bool LevelScreen::own_key(Key key) {
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
     m_input.draw(target);
-}
-
-FCoords LevelScreen::shift() {
-    return m_shift;
 }
 
 void LevelScreen::display(const std::string& filename) {

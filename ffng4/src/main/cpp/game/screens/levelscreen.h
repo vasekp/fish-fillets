@@ -21,7 +21,6 @@ class LevelScreen : public GameScreen {
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
-    FCoords m_shift;
     float m_flashAlpha;
 
 public:
@@ -43,9 +42,8 @@ public:
     void stopMusic();
     void playSound(const std::string& filename, float volume = 1.f);
     void killSounds();
-    void setShift(FCoords shift);
-    FCoords shift() override;
     void saveEffect();
+    void setShift(FCoords shift);
 
     constexpr static int size_unit = 15;
 

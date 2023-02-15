@@ -18,7 +18,14 @@ void Graphics::setWindowSize(unsigned int width, unsigned int height) {
     if(!m_system)
         Log::fatal("setWindowSize() called before activate()");
     m_windowDim = { width, height };
+    m_windowShift = {};
     recalc();
+}
+
+void Graphics::setWindowShift(FCoords shift) {
+    m_windowShift = shift;
+    m_coords[window] = m_coords[window0];
+    m_coords[window].origin += m_windowShift;
 }
 
 void Graphics::notifyDisplayResize() {
@@ -43,7 +50,9 @@ void Graphics::recalc() {
     FCoords reduceDim = displayDim - reduceBase;
     float scale3 = std::min(reduceDim.fx() / baseDim.fx(), reduceDim.fy() / baseDim.fy()); // TODO constexpr
     m_coords[reduced] = { reduceBase + (reduceDim - scale3 * baseDim) / 2.f, scale3};
-    m_coords[window] = {(displayDim - reduceBase - scale * m_windowDim) / 2.f + reduceBase, scale};
+    m_coords[window0] = {(displayDim - reduceBase - scale * m_windowDim) / 2.f + reduceBase, scale};
+    m_coords[window] = m_coords[window0];
+    m_coords[window].origin += m_windowShift;
 }
 
 void Graphics::setMask(const ogl::Texture& texture) {
