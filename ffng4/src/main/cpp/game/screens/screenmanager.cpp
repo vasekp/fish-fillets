@@ -39,8 +39,8 @@ void ScreenManager::startMode(Mode mode) {
 }
 
 void ScreenManager::announceLevel(const LevelRecord& record) {
-    m_title.emplace(m_instance, *m_levelFont, record.description.at("cs"));
-    m_title_hide.reset();
+    m_title.set(record.description.at("cs"));
+    m_title_hide.reset(); // TODO include in m_title
 }
 
 void ScreenManager::startLevel(LevelRecord& record) {
@@ -64,52 +64,47 @@ void ScreenManager::drawFrame() {
       Log::error("drawFrame called without active graphics subsystem");
         return;
     }
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
+
+    const auto& offscreen = graphics.offscreenTarget();
+    const auto& copyProgram = graphics.shaders().copy;
+    offscreen.bind();
+    glClear(GL_COLOR_BUFFER_BIT);
+    curScreen().draw(offscreen);
 
     if(options()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
         const auto& blurProgram = graphics.shaders().blur;
 
         blur1.bind();
-        curScreen().draw(blur1);
-
-        glUseProgram(blurProgram);
+        blur1.blit(offscreen.texture(), coords, copyProgram);
 
         blur2.bind();
+        glUseProgram(blurProgram);
         glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
-        blur2.blit(blur1.texture(), blurProgram);
+        blur2.blit(blur1.texture(), coords, blurProgram);
 
-        graphics.windowTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
+        graphics.fullscreenTarget().bind();
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
-        graphics.windowTarget().blit(blur2.texture(), blurProgram);
+        graphics.fullscreenTarget().blit(blur2.texture(), coords, blurProgram);
     } else {
-        const auto& offscreen = graphics.offscreenTarget();
-        const auto& copyProgram = graphics.shaders().copy;
-
-        offscreen.bind();
-        curScreen().draw(offscreen);
-
-        graphics.windowTarget().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
-        auto shift = curScreen().shift();
-        graphics.windowTarget().blit(offscreen.texture(), copyProgram, shift.fx(), shift.fy());
+        graphics.fullscreenTarget().bind();
+        graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram);
     }
 
     if(!options()) {
         graphics.fullscreenTarget().bind();
         curScreen().drawOverlays(graphics.fullscreenTarget());
-        if (m_title) {
-            float opacity = 1.0;
-            if (m_title_hide) {
-                auto timeLeft = std::chrono::duration<float>(
-                        m_title_hide.value() - std::chrono::steady_clock::now()).count();
-                opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
-            }
-            if (opacity == 0.f)
-                m_title.reset();
-            else {
-                m_title->draw(graphics.fullscreenTarget(), opacity);
-            }
+        float opacity = 1.0;
+        if (m_title_hide) {
+            auto timeLeft = std::chrono::duration<float>(
+                    m_title_hide.value() - std::chrono::steady_clock::now()).count();
+            opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
+        }
+        if (opacity == 0.f)
+            m_title.reset();
+        else {
+            m_title.draw(graphics.fullscreenTarget(), opacity);
         }
     }
 
@@ -117,8 +112,8 @@ void ScreenManager::drawFrame() {
 }
 
 void ScreenManager::refresh() {
-    m_levelFont->setSizes(LevelTitle::fontSize * m_instance.graphics().dpi(), 0);
     curScreen().refresh();
+    m_title.refresh();
 }
 
 void ScreenManager::pause() {

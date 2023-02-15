@@ -15,14 +15,13 @@ class LevelScreen : public GameScreen {
     std::multimap<std::string, AudioData::Ref> m_sounds;
     AudioSource::Ref m_music;
     std::array<float, 3> m_waves;
+    FCoords m_winSize;
     Subtitles m_subs;
     std::optional<PNGImage> m_display;
-    bool m_fullLoad;
     bool m_quit;
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
-    FCoords m_shift;
     float m_flashAlpha;
 
 public:
@@ -44,9 +43,8 @@ public:
     void stopMusic();
     void playSound(const std::string& filename, float volume = 1.f);
     void killSounds();
-    void setShift(FCoords shift);
-    FCoords shift() override;
     void saveEffect();
+    void setShift(FCoords shift);
 
     constexpr static int size_unit = 15;
 

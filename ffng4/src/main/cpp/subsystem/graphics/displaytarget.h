@@ -5,32 +5,16 @@
 
 class DisplayTarget : public DrawTarget {
     const ogl::Display& m_display;
-    bool m_fullscreen;
-    FCoords m_windowDim;
-    struct {
-        FCoords origin;
-        FCoords extent;
-    } m_viewport;
-    float m_scale;
-    FCoords m_reserve;
 
 public:
-    DisplayTarget(const ogl::Display& display, bool fullscreen);
+    DisplayTarget(const ogl::Display& display) : m_display(display) { }
 
-    void bind() const override;
-    void setReserve(FCoords reserve); /* Does NOT call setWindow. */
-    void setWindow(unsigned int width, unsigned int height);
-    FCoords size() const override { return m_windowDim; }
-    void recalc();
+    void bind() const override {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, m_display.width(), m_display.height());
+    }
 
-    FCoords screen2window(FCoords screen) const;
-    FCoords window2screen(FCoords window) const;
-
-    FCoords windowSize() const { return m_windowDim; }
-    FCoords nativeSize() const { return m_viewport.extent; }
-    FCoords displayOffset() const { return m_reserve; }
-    FCoords reducedDisplaySize() const { return FCoords{m_display.width(), m_display.height()} - m_reserve; }
-    float pixelScale() const { return m_scale; }
+    FCoords size() const override { return {m_display.width(), m_display.height()}; }
 
 protected:
     bool flipY() const override { return true; }

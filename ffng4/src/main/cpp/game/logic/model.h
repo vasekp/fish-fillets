@@ -102,6 +102,7 @@ public:
     FCoords fxy() const;
     float fx() const { return fxy().fx(); }
     float fy() const { return fxy().fy(); }
+    FCoords size() const { return {shape().width(), shape().height()}; }
 
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };

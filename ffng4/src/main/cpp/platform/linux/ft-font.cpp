@@ -24,13 +24,13 @@ FTFont::FTFont(Instance& instance, const std::string& filename) :
         Log::fatal("Error loading font ", fnFull);
 }
 
-void FTFont::setSizes(float fontSize, float outline /* TODO dpi */) {
+void FTFont::setSizes(float fontSize, float outline) {
     m_fontSize = fontSize;
     m_outline = outline;
-    if(FT_Set_Char_Size(m_face, to266(/* TODO arbitrary upscale */ 2.f * fontSize), 0, 90, 0) != 0)
+    if(FT_Set_Char_Size(m_face, to266(fontSize), 0, 72, 0) != 0)
         Log::fatal("FT_Set_Char_Size failed");
-    m_fontSize = 2.f * fontSize * 90.f / 72.f;
-    m_outline = 2.f * outline * 90.f / 72.f;
+    m_fontSize = fontSize;
+    m_outline = outline;
     Log::debug("fontSize ", m_fontSize, " outline ", m_outline);
 }
 

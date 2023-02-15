@@ -66,7 +66,7 @@ namespace ogl {
 
         glEnableVertexAttribArray(0);
 
-        glClearColor(0, 0, 0, 0);
+        glClearColor(0, 0, 0, 1);
         glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
         Log::debug("display: opened ", (void*)m_display, " ", ICoords{width(), height()});

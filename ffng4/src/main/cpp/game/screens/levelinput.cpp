@@ -9,10 +9,13 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
-        m_gravity(ButtonGravity::left),
         m_activeButton(noButton)
 {
-    std::fill(m_buttonsEnabled.begin(),  m_buttonsEnabled.end(), true);
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit, true });
 }
 
 void LevelInput::setFish(Model::Fish fish) {
@@ -40,7 +43,7 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::pointerDown(FCoords coords) {
-    if(auto button = findButton(coords); button != noButton && m_buttonsEnabled[button]) {
+    if(auto button = findButton(coords); button != noButton && m_buttons[button].enabled) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
@@ -67,7 +70,7 @@ bool LevelInput::pointerMove(FCoords coords) {
     auto [then, pos2] = m_dirpad.history.back();
     auto timeDiff = now - then;
     auto diff = coords - pos2;
-    bool small = diff.length() < minDistance * m_instance.graphics().dpi();
+    bool small = diff.length() < minDistance * m_instance.graphics().coords(Graphics::CoordSystems::base).scale;
     if(timeDiff > dirpadHistoryLength)
         m_dirpad.history.pop_back();
     ICoords dir{};
@@ -116,7 +119,7 @@ bool LevelInput::pointerUp(bool empty) {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != noButton) {
-        if(m_buttonsEnabled[m_activeButton])
+        if(m_buttons[m_activeButton].enabled)
             m_screen.keypress(m_buttons[m_activeButton].key);
         return true;
     }
@@ -130,7 +133,7 @@ void LevelInput::pointerCancel() {
 }
 
 bool LevelInput::doubleTap(FCoords coords) {
-    auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
+    auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
     if(!m_screen.pointer(windowCoords))
         m_screen.keypress(Key::space);
     m_dirpad.touchTime = std::chrono::steady_clock::now();
@@ -147,56 +150,42 @@ bool LevelInput::twoPointTap() {
 
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
-        auto windowCoords = m_instance.graphics().windowTarget().screen2window(coords);
+        auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         return m_screen.pointer(windowCoords, true);
     } else
         return false;
 }
 
 void LevelInput::refresh() {
-    auto displayWidth = (float) m_instance.graphics().display().width();
-    auto displayHeight = (float) m_instance.graphics().display().height();
+    auto& graphics = m_instance.graphics();
+    auto displayWidth = (float)graphics.display().width();
+    auto displayHeight = (float)graphics.display().height();
+    const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
     {
-        auto& program = m_instance.graphics().shaders().arrow;
+        auto& program = graphics.shaders().arrow;
         glUseProgram(program);
-        glUniform1f(program.uniform("uSize"), arrowSize * m_instance.graphics().dpi());
+        glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
         glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
     }
     {
-        auto& program = m_instance.graphics().shaders().button;
-        glUseProgram(program);
-        glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
-
-        constexpr auto buttonCount = bSIZE;
-        float buttonSize = std::min(maxButtonSize * m_instance.graphics().dpi(), displayHeight / (float)buttonCount);
-        float fullSize = m_gravity == ButtonGravity::left ? displayHeight : displayWidth;
-        float buttonStride = std::min((fullSize - (float)buttonCount * buttonSize) / (float)(buttonCount - 1), maxButtonGap * m_instance.graphics().dpi()) + buttonSize;
-        float buttonOffset = (fullSize - (float)(buttonCount - 1) * buttonStride - buttonSize) / 2.f;
-        glUniform1f(program.uniform("uSize"), buttonSize);
-
-        std::array<std::string, buttonCount> chars{"S", "L", "R", "O", "Q"};
-        std::array<Key, buttonCount> keys{Key::save, Key::load, Key::restart, Key::options, Key::exit};
-        static_assert(std::tuple_size_v<decltype(chars)> == buttonCount);
-        static_assert(std::tuple_size_v<decltype(keys)> == buttonCount);
-        m_buttonsFont->setSizes(buttonSize, 0);
+        auto buttonCount = m_buttons.size();
+        m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
+        FCoords extent = {buttonSize, buttonSize};
         for(auto i = 0u; i < buttonCount; i++) {
-            FCoords from = m_gravity == ButtonGravity::left ? FCoords{0.f, buttonOffset + (float)i * buttonStride} : FCoords{buttonOffset + (float)i * buttonStride, 0.f};
-            m_buttons[i] = {
-                    m_buttonsFont->renderText(chars[i]),
-                    from,
-                    from + FCoords{buttonSize, buttonSize},
-                    keys[i]
-            };
+            FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
+            m_buttons[i].coordsFrom = coords.in2out(center - extent / 2.f);
+            m_buttons[i].coordsTo = coords.in2out(center + extent / 2.f);
+            m_buttons[i].image.render();
         }
     }
 }
 
 void LevelInput::setSavePossible(bool possible) {
-    m_buttonsEnabled[Buttons::bSave] = possible;
+    m_buttons[Buttons::bSave].enabled = possible;
 }
 
 void LevelInput::setLoadPossible(bool possible) {
-    m_buttonsEnabled[Buttons::bLoad] = possible;
+    m_buttons[Buttons::bLoad].enabled = possible;
 }
 
 void LevelInput::draw(const DrawTarget& target) {
@@ -206,18 +195,17 @@ void LevelInput::draw(const DrawTarget& target) {
 
 void LevelInput::drawButtons(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     glUseProgram(program);
     for(auto i = 0u; i < m_buttons.size(); i++) {
-        glUniform2f(program.uniform("uPosition"), m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy());
-        auto& texture = m_buttons[i].texture;
-        texture.bind();
-        glUniform2f(program.uniform("uSrcSize"), (float) texture.width(), (float) texture.height());
-        float alpha = !m_buttonsEnabled[i] ? .25f
+        float alpha = !m_buttons[i].enabled ? .25f
                 : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
                     ? 1.0f
                     : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
-        GraphicsUtils::rect(0, 0, 1, 1);
+        glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].image.width(), (float)m_buttons[i].image.height());
+        m_buttons[i].image.texture().bind();
+        target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
     }
 }
 
@@ -262,18 +250,4 @@ int LevelInput::findButton(FCoords pos) {
             return (int)i;
     }
     return noButton;
-}
-
-void LevelInput::setButtonGravity(ButtonGravity gravity) {
-    m_gravity = gravity;
-}
-
-FCoords LevelInput::getReserve() {
-    switch(m_gravity) {
-        case ButtonGravity::left:
-            return {m_buttons[0].coordsTo.fx(), 0.f};
-        case ButtonGravity::top:
-            return {0.f, m_buttons[0].coordsTo.fy()};
-    }
-    std::unreachable();
 }

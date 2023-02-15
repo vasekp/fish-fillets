@@ -10,7 +10,8 @@ void Subtitles::defineColors(const std::string& name, Color color1, Color color2
 }
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
-    auto lines = m_font->breakLines(text, m_instance.graphics().fullscreenTarget().reducedDisplaySize().fx());
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
+    auto lines = m_font->breakLines(text, Graphics::baseDim.fx() * coords.scale);
     auto countLines = lines.size();
     for(const auto& line : lines) {
         float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
@@ -37,6 +38,8 @@ void Subtitles::clear() {
 void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     if(m_lines.empty())
         return;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
+    auto bottomY = coords.out2in(FCoords{0, m_instance.graphics().display().height()}).fy();
     const auto& textProgram = m_instance.graphics().shaders().wavyText;
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
@@ -62,16 +65,17 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
-            auto width = line.image.width();
-            auto height = line.image.height() - (unsigned)(outline * m_instance.graphics().dpi());
-            const auto& fullscreen = dynamic_cast<const DisplayTarget&>(target);
-            float destX = fullscreen.displayOffset().fx() + (fullscreen.reducedDisplaySize().fx() - (float)width) / 2.f;
-            float destY = (float)m_instance.graphics().display().height() - (float)height * (1.5f + line.yOffset);
-            target.blit(line.image.texture(), textProgram, destX, destY - (float)height, 0, 0, DrawTarget::fullSize, 3 * height);
+            auto width = (float)line.image.width() / coords.scale;
+            auto height = (float)line.image.height() / coords.scale;
+            auto destX = 320.f - width / 2.f;
+            auto destY = bottomY - (float)height * (1.5f + line.yOffset);
+            target.blit(line.image.texture(), coords, textProgram, destX, destY - (float)height, 0, 0, width, 3 * height);
         }
 }
 
 void Subtitles::refresh() {
-    auto dpi = m_instance.graphics().dpi();
-    m_font->setSizes(fontsize * dpi, outline * dpi);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
+    m_font->setSizes(fontSize * coords.scale, outline * coords.scale);
+    for(auto& line : m_lines)
+        line.image.render();
 }

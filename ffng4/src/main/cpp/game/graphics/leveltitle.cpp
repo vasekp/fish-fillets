@@ -1,24 +1,41 @@
 #include "leveltitle.h"
 
-LevelTitle::LevelTitle(Instance& instance, IFont& font, std::string text) :
+LevelTitle::LevelTitle(Instance& instance) :
     m_instance(instance),
-    m_image(instance, font, std::move(text))
+    m_font(decoders::ttf(instance, LevelTitle::fontFilename))
 { }
 
+void LevelTitle::set(const std::string& text) {
+    m_image.emplace(m_instance, *m_font, text);
+}
+
+void LevelTitle::reset() {
+    m_image.reset();
+}
+
 void LevelTitle::draw(const DrawTarget& target, float opacity) {
-    auto& display = m_instance.graphics().display();
+    if(!m_image)
+        return;
+
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     const auto& program = m_instance.graphics().shaders().titleText;
 
-    FCoords dims{display.width(), display.height()};
-    FCoords offset{dims.fx() / 2.f - dims.fy() * maxWidth / 2.f, startY * dims.fy()};
-    FCoords rect{dims.fy() * maxWidth, (endY - startY) * dims.fy()};
+    FCoords offset{Graphics::baseDim.fx() / 2.f - maxWidth / 2.f, startY};
+    FCoords rect{maxWidth, endY - startY};
     glUseProgram(program);
     glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
+    glUniform2f(program.uniform("uSrcSizeScaled"), (float)m_image->texture().width() / coords.scale, (float)m_image->texture().height() / coords.scale);
 
-    float shift = 2.f / 480.f * dims.fy();
     glUniform4fv(program.uniform("uColor"), 1, colorBg.gl(opacity).data());
-    target.blit(m_image.texture(), program, offset.fx() + shift, offset.fy() + shift, 0, 0, rect.x(), rect.y());
+    target.blit(m_image->texture(), coords, program, offset.fx() + shadow.fx(), offset.fy() + shadow.fy(), 0, 0, rect.x(), rect.y());
 
     glUniform4fv(program.uniform("uColor"), 1, colorFg.gl(opacity).data());
-    target.blit(m_image.texture(), program, offset.fx(), offset.fy(), 0, 0, rect.x(), rect.y());
+    target.blit(m_image->texture(), coords, program, offset.fx(), offset.fy(), 0, 0, rect.x(), rect.y());
+}
+
+void LevelTitle::refresh() {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    m_font->setSizes(fontSize * coords.scale, 0.f);
+    if(m_image)
+        m_image->render();
 }

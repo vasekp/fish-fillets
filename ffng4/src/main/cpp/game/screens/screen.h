@@ -32,11 +32,7 @@ public:
     bool pointer(FCoords coords, bool longPress = false) { return own_pointer(coords, longPress); }
     bool keypress(Key key) { return own_key(key); }
 
-    virtual FCoords shift() { return {}; }
     float timeAlive();
-
-    constexpr static unsigned baseWidth = 640;
-    constexpr static unsigned baseHeight = 480;
 
 protected:
     GameScreen(Instance& instance);
@@ -49,7 +45,7 @@ protected:
     virtual void own_refresh() { }
     virtual void own_pause() { }
     virtual void own_resume() { }
-    virtual void own_setsize() { m_instance.graphics().setWindowSize(baseWidth, baseHeight); }
+    virtual void own_setsize() { m_instance.graphics().setWindowSize(Graphics::baseDim.x(), Graphics::baseDim.y()); }
     virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual void own_drawOverlays(const DrawTarget& target, float dTime, float absTime) { }
     virtual bool own_pointer(FCoords coords, bool longPress) { return false; }

@@ -35,28 +35,19 @@ class LevelInput : public IInputSink {
         bLoad,
         bRestart,
         bExit,
-        bOptions,
-        bSIZE
+        bOptions
     };
 
     struct Button {
-        ogl::Texture texture;
+        TextImage image;
         FCoords coordsFrom;
         FCoords coordsTo;
         Key key;
+        bool enabled;
     };
-    std::array<Button, bSIZE> m_buttons;
-    std::array<bool, bSIZE> m_buttonsEnabled;
     std::unique_ptr<IFont> m_buttonsFont;
+    std::vector<Button> m_buttons;
 
-public:
-    enum class ButtonGravity {
-        left,
-        top
-    };
-
-private:
-    ButtonGravity m_gravity;
     int m_activeButton;
 
 public:
@@ -79,8 +70,6 @@ public:
     void refresh();
     void draw(const DrawTarget& target);
     Key pool();
-    void setButtonGravity(ButtonGravity gravity);
-    FCoords getReserve();
 
 private:
     int findButton(FCoords pos);
@@ -89,10 +78,11 @@ private:
     void drawDirpad(const DrawTarget& target);
 
     constexpr static const char* fontFilename = "font/FFArrows.ttf";
-    constexpr static float minDistance = 0.1f; // inches
-    constexpr static float arrowSize = 0.35f; // inches
-    constexpr static float maxButtonSize = 0.35f; // inches
-    constexpr static float maxButtonGap = 0.35f; // inches
+    constexpr static float minDistance = 40.f; // all dimension in "base pixels"
+    constexpr static float buttonDistance = 40.f;
+    constexpr static float arrowSize = 64.f;
+    constexpr static float buttonSize = 48.f;
+    constexpr static float buttonFontSize = 40.f;
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = std::chrono::milliseconds(300);
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = std::chrono::milliseconds(100);
     constexpr static std::chrono::steady_clock::time_point absolutePast{};

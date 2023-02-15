@@ -8,15 +8,15 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_level(instance, *this, record),
         m_input(instance, *this),
         m_waves(),
+        m_winSize(),
         m_subs(instance),
-        m_fullLoad(false),
         m_quit(false),
         m_flashAlpha(0)
 { }
 
 void LevelScreen::restore() {
     m_display.reset();
-    m_shift = {};
+    m_instance.graphics().setWindowShift({});
 }
 
 void LevelScreen::exit() {
@@ -28,17 +28,14 @@ void LevelScreen::leave() {
 }
 
 void LevelScreen::own_start() {
+    m_instance.audio().clear();
     m_level.init();
 }
 
 void LevelScreen::own_setsize() {
-    FCoords displaySize{m_instance.graphics().display().width(), m_instance.graphics().display().height()};
-    FCoords levelSize{m_level.layout().width(), m_level.layout().height()};
-    m_input.setButtonGravity(levelSize.fx() / levelSize.fy() > displaySize.fx() / displaySize.fy()
-        ? LevelInput::ButtonGravity::top
-        : LevelInput::ButtonGravity::left);
+    m_winSize = FCoords{m_level.layout().width(), m_level.layout().height()} * size_unit;
+    m_instance.graphics().setWindowSize(m_winSize.x(), m_winSize.y());
     m_input.refresh();
-    m_instance.graphics().setWindowSize(m_level.layout().width() * size_unit, m_level.layout().height() * size_unit, m_input.getReserve());
 }
 
 void LevelScreen::own_refresh() {
@@ -48,28 +45,20 @@ void LevelScreen::own_refresh() {
     glUniform1f(program.uniform("uPeriod"), m_waves[1]);
     glUniform1f(program.uniform("uSpeed"), m_waves[2]);
     m_subs.refresh();
-    if(!m_fullLoad) {
-        m_fullLoad = true;
-        m_instance.audio().clear();
-        if(m_music)
-            m_instance.audio().addSource(m_music);
-    }
 
-    {
-        const auto& models = m_level.layout().models();
-        auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
-        if(it == models.end())
-            m_mirrorTarget = {};
-        else
-            m_mirrorTarget = makeMirrorTarget(**it);
-    }
+    const auto& models = m_level.layout().models();
+    auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
+    if(it == models.end())
+        m_mirrorTarget = {};
+    else
+        m_mirrorTarget = makeMirrorTarget(**it);
 }
 
-std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
-    FCoords modelSizePixel = size_unit * FCoords{model.shape().width(), model.shape().height()};
-    FCoords modelSizeNative = m_instance.graphics().windowTarget().pixelScale() * modelSizePixel;
+std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) { // TODO
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
+    FCoords modelSizePixel = coords.in2out_dim(model.size() * size_unit);
     auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
-    ret->resize(modelSizeNative.x(), modelSizeNative.y(), modelSizePixel.fx(), modelSizePixel.fy());
+    ret->resize(modelSizePixel.x(), modelSizePixel.y());
     return ret;
 }
 
@@ -84,24 +73,34 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& flatProgram = m_instance.graphics().shaders().flat;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
-        target.blit(&m_display.value(), copyProgram);
+        target.blit(&m_display.value(), coords, copyProgram);
         return;
+    }
+
+    {
+        FCoords from = coords.in2out({0, 0});
+        FCoords to = coords.in2out(m_winSize);
+        FCoords size = to - from;
+        glScissor(from.x(), from.y(), size.x(), size.y());
+        glEnable(GL_SCISSOR_TEST);
     }
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     glUseProgram(wavyProgram);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
-    target.blit(getImage("background"), wavyProgram);
+    target.blit(getImage("background"), coords, wavyProgram);
 
     for(const auto& rope : m_level.layout().getRopes()) {
+        constexpr Color ropeColor{0x30404E};
         FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
         glUseProgram(flatProgram);
-        glUniform4fv(flatProgram.uniform("uColor"), 1, Color(0x30404E /* TODO constexpr */).gl().data());
-        target.fill(flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
+        glUniform4fv(flatProgram.uniform("uColor"), 1, ropeColor.gl().data());
+        target.fill(coords, flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
     }
 
     const Model* mirror = nullptr;
@@ -114,7 +113,7 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         switch(effect) {
             case Model::Effect::none:
                 for(const auto* image : images)
-                    target.blit(image, copyProgram, model.fx() * size_unit, model.fy() * size_unit);
+                    target.blit(image, coords, copyProgram, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             case Model::Effect::invisible:
                 break;
@@ -123,14 +122,14 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
                 break;
             case Model::Effect::reverse:
                 for(const auto* image : images)
-                    target.blit(image, m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
+                    target.blit(image, coords, m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             case Model::Effect::disintegrate: {
                 auto& program = m_instance.graphics().shaders().disintegrate;
                 glUseProgram(program);
                 glUniform1f(program.uniform("uTime"), timeAlive() - effectTime);
                 for(const auto* image : images)
-                    target.blit(image, program, model.fx() * size_unit, model.fy() * size_unit);
+                    target.blit(image, coords, program, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             }
             case Model::Effect::zx: {
@@ -143,20 +142,25 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         }
     }
 
+    glDisable(GL_SCISSOR_TEST);
+
     if(mirror) {
-        auto* image =  mirror->anim().get(mirror->orientation())[0];
-        m_instance.graphics().setMask(image);
         m_mirrorTarget->bind();
-        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), m_instance.graphics().shaders().mirror,
-                                 0, 0, size_unit * mirror->fx(), size_unit * mirror->fy());
+        FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
+        FCoords size = coords.in2out_dim(mirror->size() * size_unit);
+        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(),
+            m_instance.graphics().coords(Graphics::CoordSystems::null),
+            m_instance.graphics().shaders().copy,
+            0, 0, topLeft.fx() - size.fx(), topLeft.fy(), size.x(), size.y());
         target.bind();
-        target.blit(m_mirrorTarget->texture(), copyProgram, mirror->fx() * size_unit, mirror->fy() * size_unit);
+        m_instance.graphics().setMask(m_mirrorTarget->texture().texture()); // TODO
+        target.blit(mirror->anim().get(mirror->orientation())[0], coords, m_instance.graphics().shaders().mirror, mirror->fx() * size_unit, mirror->fy() * size_unit);
     }
 
     if(m_flashAlpha > 0) {
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.fill(flatProgram, 0, 0, target.size().fx(), target.size().fy());
+        target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
         m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
 }
@@ -179,11 +183,9 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 void LevelScreen::playMusic(const std::string &filename) {
     if(m_music && m_music->filename() == filename)
         return;
-    if(m_fullLoad)
-        stopMusic();
+    stopMusic();
     m_music = m_instance.audio().loadMusic(filename);
-    if(m_fullLoad)
-        m_instance.audio().addSource(m_music);
+    m_instance.audio().addSource(m_music);
 }
 
 void LevelScreen::stopMusic() {
@@ -208,7 +210,7 @@ void LevelScreen::killSounds() {
 }
 
 void LevelScreen::setShift(FCoords shift) {
-    m_shift = shift;
+    m_instance.graphics().setWindowShift(shift);
 }
 
 void LevelScreen::own_pause() {
@@ -285,10 +287,6 @@ bool LevelScreen::own_key(Key key) {
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
     m_input.draw(target);
-}
-
-FCoords LevelScreen::shift() {
-    return m_shift;
 }
 
 void LevelScreen::display(const std::string& filename) {
