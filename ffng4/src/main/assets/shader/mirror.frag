@@ -12,10 +12,11 @@ varying vec2 vDstCoords;
 
 void main(void)
 {
-    vec2 lPixMirrored = vec2(2.0 * uSrcOffset.x - vSrcCoords.x + 3.0, vSrcCoords.y);
-    vec4 lTexColor = texture2D(uMaskTexture, vDstCoords / uDstSize) * 2.0;
+    vec2 lPixMirrored = vSrcCoords / uSrcSize;
+    lPixMirrored.x = 1.0 - lPixMirrored.x;
+    vec4 lTexColor = texture2D(uSrcTexture, vSrcCoords / uSrcSize) * 2.0;
     gl_FragColor = mix(
         lTexColor,
-        texture2D(uSrcTexture, lPixMirrored / uSrcSize),
+        texture2D(uMaskTexture, lPixMirrored),
         smoothstep(1.0, 2.0, lTexColor.a));
 }

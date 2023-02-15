@@ -56,9 +56,9 @@ void LevelScreen::own_refresh() {
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) { // TODO
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
-    FCoords modelSizePixel = size_unit * FCoords{model.shape().width(), model.shape().height()};
+    FCoords modelSizePixel = coords.in2out_dim(model.size() * size_unit);
     auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
-    ret->resize(modelSizePixel.x(), modelSizePixel.y(), coords.scale);
+    ret->resize(modelSizePixel.x(), modelSizePixel.y());
     return ret;
 }
 
@@ -142,14 +142,19 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         }
     }
 
+    glDisable(GL_SCISSOR_TEST);
+
     if(mirror) {
-        auto* image =  mirror->anim().get(mirror->orientation())[0];
-        m_instance.graphics().setMask(image);
         m_mirrorTarget->bind();
-        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(), coords, m_instance.graphics().shaders().mirror,
-                                 0, 0, size_unit * mirror->fx(), size_unit * mirror->fy());
+        FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
+        FCoords size = coords.in2out_dim(mirror->size() * size_unit);
+        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(),
+            m_instance.graphics().coords(Graphics::CoordSystems::null),
+            m_instance.graphics().shaders().copy,
+            0, 0, topLeft.fx() - size.fx(), topLeft.fy(), size.x(), size.y());
         target.bind();
-        target.blit(m_mirrorTarget->texture(), coords, copyProgram, mirror->fx() * size_unit, mirror->fy() * size_unit);
+        m_instance.graphics().setMask(m_mirrorTarget->texture().texture()); // TODO
+        target.blit(mirror->anim().get(mirror->orientation())[0], coords, m_instance.graphics().shaders().mirror, mirror->fx() * size_unit, mirror->fy() * size_unit);
     }
 
     if(m_flashAlpha > 0) {
@@ -158,8 +163,6 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
         m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
-
-    glDisable(GL_SCISSOR_TEST);
 }
 
 AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
