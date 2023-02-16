@@ -2,9 +2,6 @@ precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform sampler2D uMaskTexture;
-uniform vec2 uDstOffset;
-uniform vec2 uDstSize;
-uniform vec2 uSrcOffset;
 uniform vec2 uSrcSize;
 
 varying vec2 vSrcCoords;

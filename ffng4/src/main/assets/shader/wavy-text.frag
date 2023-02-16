@@ -2,7 +2,6 @@ precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
-uniform vec2 uDstSize;
 uniform vec4 uColor1;
 uniform vec4 uColor2;
 uniform vec3 uCoords;
