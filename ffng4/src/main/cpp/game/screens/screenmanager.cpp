@@ -72,6 +72,19 @@ void ScreenManager::drawFrame() {
     glClear(GL_COLOR_BUFFER_BIT);
     curScreen().draw(offscreen);
 
+    curScreen().drawOverlays(offscreen);
+    float opacity = 1.0;
+    if (m_title_hide) {
+        auto timeLeft = std::chrono::duration<float>(
+                m_title_hide.value() - std::chrono::steady_clock::now()).count();
+        opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
+    }
+    if (opacity == 0.f)
+        m_title.reset();
+    else {
+        m_title.draw(offscreen, opacity);
+    }
+
     if(options()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
         const auto& blurProgram = graphics.shaders().blur;
@@ -90,22 +103,6 @@ void ScreenManager::drawFrame() {
     } else {
         graphics.fullscreenTarget().bind();
         graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram);
-    }
-
-    if(!options()) {
-        graphics.fullscreenTarget().bind();
-        curScreen().drawOverlays(graphics.fullscreenTarget());
-        float opacity = 1.0;
-        if (m_title_hide) {
-            auto timeLeft = std::chrono::duration<float>(
-                    m_title_hide.value() - std::chrono::steady_clock::now()).count();
-            opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
-        }
-        if (opacity == 0.f)
-            m_title.reset();
-        else {
-            m_title.draw(graphics.fullscreenTarget(), opacity);
-        }
     }
 
     graphics.system().display().swap();
