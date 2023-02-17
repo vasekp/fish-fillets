@@ -67,9 +67,9 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
             glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
             auto width = (float)line.image.width() / coords.scale;
             auto height = (float)line.image.height() / coords.scale;
-            auto destX = 320.f - width / 2.f;
-            auto destY = bottomY - (float)height * (1.5f + line.yOffset);
-            target.blit(line.image.texture(), coords, textProgram, destX, destY - (float)height, 0, 0, width, 3 * height);
+            FCoords dest0{320.f - width / 2.f, bottomY - (float)height * (2.5f + line.yOffset)};
+            FCoords dest = coords.out2in(coords.in2out(dest0).round());
+            target.blit(line.image.texture(), coords, textProgram, dest.fx(), dest.fy(), 0, 0, width, 3 * height);
         }
 }
 
