@@ -128,10 +128,17 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
                 occupied[y + dy][x + dx] = occupied[y + dy][x + dx] || model->shape()[dy][dx];
     }
     /* Also avoid borders */
-    for(auto x = 0; x < width(); x++)
-        occupied[0][x] = occupied[height() - 1][x] = true;
-    for(auto y = 0; y < height(); y++)
-        occupied[y][0] = occupied[y][width() - 1] = true;
+    if(unit->goal() == Model::Goal::escape) {
+      for(auto x = 0; x < width(); x++)
+          occupied[0][x] = occupied[height() - 1][x] = true;
+      for(auto y = 0; y < height(); y++)
+          occupied[y][0] = occupied[y][width() - 1] = true;
+    } else {
+      for(auto x = 0; x < width(); x++)
+          occupied[height()][x] = true;
+      for(auto y = 0; y < height(); y++)
+          occupied[y][width()] = true;
+    }
     /* Extend occupied fields to the left and above, as unit covers [x, x+unitWidth) × [y, y + unitHeight)
      * and thus can't start where it could clash with an occupied field due to its nonunit size */
     auto unitWidth = unit->shape().width();
