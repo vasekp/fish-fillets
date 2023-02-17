@@ -80,9 +80,9 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
     auto wtext = converter.from_bytes(text);
     float fwidth = 0.f;
 
-    for(auto i = 0u; i < wtext.size(); i++) {
-        if(FT_Load_Char(m_face, wtext[i], 0) != 0) {
-            Log::error("Can't load character ", converter.to_bytes(wtext[i]));
+    for(auto c : wtext) {
+        if(FT_Load_Char(m_face, c, 0) != 0) {
+            Log::error("Can't load character ", converter.to_bytes(c));
             continue;
         }
         auto slot = m_face->glyph;
@@ -115,9 +115,9 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
         FT_Stroker_New(m_ft, &stroker);
         FT_Stroker_Set(stroker, to266(m_outline), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 
-        for(auto i = 0u; i < wtext.size(); i++) {
-            if(FT_Load_Char(m_face, wtext[i], 0) != 0) {
-                Log::error("Can't load character ", converter.to_bytes(wtext[i]));
+        for(auto c : wtext) {
+            if(FT_Load_Char(m_face, c, 0) != 0) {
+                Log::error("Can't load character ", converter.to_bytes(c));
                 continue;
             }
             auto slot = m_face->glyph;
@@ -130,7 +130,7 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
             if(FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, &vector, 1) != 0)
                 Log::error("FT_Glyph_To_Bitmap");
             auto bmpGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-            Log::debug("glyph ", converter.to_bytes(wtext[i]),
+            Log::debug("glyph ", converter.to_bytes(c),
                     " at ", pen, " ", bmpGlyph->left, " ", bmpGlyph->top,
                     " ", bmpGlyph->bitmap.width, "x", bmpGlyph->bitmap.rows,
                     " advance ", from266(slot->advance.x), ", ", from266(slot->advance.y));
@@ -143,13 +143,13 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
 
     {
         auto pen = origin;
-        for(auto i = 0u; i < wtext.size(); i++) {
-            if(FT_Load_Char(m_face, wtext[i], FT_LOAD_RENDER) != 0) {
-                Log::error("Can't load character ", converter.to_bytes(wtext[i]));
+        for(auto c : wtext) {
+            if(FT_Load_Char(m_face, c, FT_LOAD_RENDER) != 0) {
+                Log::error("Can't load character ", converter.to_bytes(c));
                 continue;
             }
             auto slot = m_face->glyph;
-            Log::verbose("glyph ", converter.to_bytes(wtext[i]),
+            Log::verbose("glyph ", converter.to_bytes(c),
                     " at ", pen, " ", slot->bitmap_left, " ", slot->bitmap_top);
             blend(slot->bitmap, pen.x() + slot->bitmap_left, pen.y() - slot->bitmap_top, true);
             pen += FCoords{from266(slot->advance.x), from266(slot->advance.y)};
