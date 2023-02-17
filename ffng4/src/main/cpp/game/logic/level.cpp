@@ -211,8 +211,11 @@ void Level::restart(bool keepSchedule) {
 
 void Level::restartWhenEmpty() {
     m_tickSchedule.emplace_back([&]() {
-        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog())
+        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
+            m_screen.subs().clear();
+            m_screen.killSounds();
             reinit();
+        }
         else
             m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
         return true;
