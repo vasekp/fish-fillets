@@ -80,9 +80,10 @@ void XInput::keyEvent(XKeyEvent& event) {
 }
 
 void XInput::buttonEvent(const XButtonEvent& event) {
+    FCoords coords{event.x, event.y};
     auto& inputSink = m_instance.inputSink();
-    if(event.type == ButtonPress) {
-        FCoords coords{event.x, event.y};
+    switch(event.type) {
+    case ButtonPress:
         if(event.button == Button1) {
             m_pointerDownTime = std::chrono::steady_clock::now();
             m_pointerDownCoords = coords;
@@ -91,8 +92,11 @@ void XInput::buttonEvent(const XButtonEvent& event) {
                 m_pointerHandled = inputSink.doubleTap(coords);
             else
                 m_pointerHandled = inputSink.pointerDown(coords);
-        } // TODO right click
-    } else {
+        } else if(event.button == Button3) {
+            m_pointerHandled |= inputSink.twoPointTap(); // TODO rename
+        }
+        break;
+    case ButtonRelease:
         if(event.button == Button1) {
             if(!m_pointerFollow)
                 return;
@@ -101,20 +105,16 @@ void XInput::buttonEvent(const XButtonEvent& event) {
             m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
         }
+        break;
     }
 }
-#if 0
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-        } else if(action == AMOTION_EVENT_ACTION_MOVE) {
-            if(!m_pointerFollow)
-                return false;
-            else
-                return m_pointerHandled |= input.pointerMove(coords);
-        }
-    }
-#endif
 
-void XInput::motionEvent(const XMotionEvent& event) { }
+void XInput::motionEvent(const XMotionEvent& event) {
+    if(!m_pointerFollow || !(event.state & Button1Mask))
+        return;
+    FCoords coords{event.x, event.y};
+    m_pointerHandled |= m_instance.inputSink().pointerMove(coords);
+}
 
 void XInput::ping() {
     if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
