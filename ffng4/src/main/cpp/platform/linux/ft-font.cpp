@@ -35,8 +35,40 @@ void FTFont::setSizes(float fontSize, float outline) {
 }
 
 std::vector<std::string> FTFont::breakLines(const std::string& text, float width) {
-    // TODO
-    return {text};
+    std::vector<std::size_t> breaks{};
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter{};
+    auto wtext = converter.from_bytes(text);
+
+    float fwidth = 0.f;
+    std::size_t lastBreak = 0;
+    float lastBreakX = 0;
+
+    for(auto i = 0u; i < wtext.size(); i++) {
+        auto c = wtext[i];
+        if(FT_Load_Char(m_face, wtext[i], 0) != 0) {
+            Log::error("Can't load character ", converter.to_bytes(wtext[i]));
+            continue;
+        }
+        auto slot = m_face->glyph;
+        fwidth += from266(slot->advance.x);
+        if(c == L' ') {
+            lastBreak = i;
+            lastBreakX = fwidth;
+        }
+        if(fwidth > width) {
+            breaks.push_back(lastBreak);
+            fwidth -= lastBreakX;
+        }
+    }
+
+    std::vector<std::string> ret{};
+    std::size_t prev = 0;
+    for(auto brk : breaks) {
+        ret.push_back(converter.to_bytes(wtext.substr(prev, brk - prev)));
+        prev = brk + 1;
+    }
+    ret.push_back(converter.to_bytes(wtext.substr(prev)));
+    return ret;
 }
 
 ogl::Texture FTFont::renderText(const std::string& text) const {
