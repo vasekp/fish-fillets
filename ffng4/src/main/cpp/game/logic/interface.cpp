@@ -320,7 +320,12 @@ bool Level::model_isTalking(int index) {
     return layout().getModel(index)->talking();
 }
 
-void Level::model_talk(int index, const std::string& name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
+void Level::model_talk(int index, std::string name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
+    std::string param{};
+    if(auto at = name.find('@'); at != std::string::npos) {
+        param = name.substr(at + 1);
+        name = name.substr(0, at);
+    }
     auto& dialog = m_dialogs.at(name);
     auto data = m_screen.addSound(name, dialog.soundFile, true);
     auto source = AudioSource::from(data);
@@ -339,8 +344,17 @@ void Level::model_talk(int index, const std::string& name, std::optional<int> vo
         big->talk() = source;
     }
     m_instance.audio().addSource(source);
-    if(!dialog.text.empty())
-        m_screen.addSubtitle(dialog.text, dialog.colors);
+    if(!dialog.text.empty()) {
+        if(!param.empty()) {
+            auto string = dialog.text;
+            auto ix = string.find("%1");
+            if(ix == std::string::npos)
+                throw std::runtime_error("replacement required but dialog text does not contain '%1'");
+            string.replace(ix, 2, param);
+            m_screen.addSubtitle(string, dialog.colors);
+        } else
+            m_screen.addSubtitle(dialog.text, dialog.colors);
+    }
 }
 
 void Level::model_killSound(int index) {
