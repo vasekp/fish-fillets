@@ -104,8 +104,11 @@ void Level::skipGoTo(bool finish) {
     m_goto = false;
 }
 
-void Level::schedule(Callback&& action) {
-    m_moveSchedule.push_back(std::move(action));
+void Level::schedule(Callback&& action, bool front) {
+    if(front)
+        m_moveSchedule.push_front(std::move(action));
+    else
+        m_moveSchedule.push_back(std::move(action));
 }
 
 void Level::scheduleBlocking(Callback&& action) {
