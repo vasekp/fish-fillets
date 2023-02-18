@@ -20,6 +20,5 @@ void main() {
     vCoords = aPosition;
     vec2 xy = uPosition + uSize * matrix * (triangle * aPosition).xy;
     vec2 clip = xy / uDstSize * 2.0 - vec2(1.0);
-    clip.y = -clip.y;
     gl_Position = vec4(clip, 0.0, 1.0);
 }
