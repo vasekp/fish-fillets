@@ -107,7 +107,7 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         return true;
     } else {
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [coords](auto& pair) {
-            return length(coords - pair.second.coords) < nodeTolerance;
+            return !!pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
             m_instance.screens().announceLevel(it->second);

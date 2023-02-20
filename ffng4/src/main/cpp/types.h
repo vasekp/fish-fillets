@@ -55,7 +55,8 @@ struct ICoords {
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
     bool within(ICoords from, ICoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
 
-    operator bool() const { return x != 0 || y != 0; }
+    bool operator!() const { return x == 0 && y == 0; }
+    explicit operator bool() const { return !!*this; }
     operator std::pair<int, int>() const { return {x, y}; }
 
     friend std::ostream& operator<<(std::ostream& os, ICoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
@@ -120,6 +121,8 @@ public:
     friend bool operator||(FCoords a, FCoords b) {
         return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) || (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
     }
+    bool operator!() const { return m_fx == 0 && m_fy == 0; }
+    explicit operator bool() const { return !!*this; }
 
     friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.m_fx << "," << coords.m_fy << "]"; }
     std::array<float, 2> gl() const { return {m_fx, m_fy}; }
