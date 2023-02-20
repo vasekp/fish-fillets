@@ -10,7 +10,6 @@ class ScreenManager {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
     LevelTitle m_title;
-    std::optional<std::chrono::steady_clock::time_point> m_title_hide;
     bool m_options;
 
 public:
@@ -37,7 +36,6 @@ public:
 private:
     void playIntro();
 
-    constexpr static float titleDuration = 1500; //milliseconds
 };
 
 #endif //FISH_FILLETS_GAME_STATEMANAGER_H

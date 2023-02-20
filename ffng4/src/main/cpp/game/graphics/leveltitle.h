@@ -6,16 +6,17 @@
 class LevelTitle {
     Instance& m_instance;
     std::unique_ptr<IFont> m_font;
-
     std::optional<TextImage> m_image;
+    std::optional<std::chrono::steady_clock::time_point> m_hide;
 
 public:
     LevelTitle(Instance& instance);
 
-    void set(const std::string& text);
-    void reset();
+    void show(const std::string& text);
+    void fadeout();
+    void hide();
     void refresh();
-    void draw(const DrawTarget& target, float opacity);
+    void draw(const DrawTarget& target);
 
 private:
     constexpr static const char* fontFilename = "font/font_title.ttf";
@@ -26,6 +27,8 @@ private:
     constexpr static Color colorFg{255, 210, 40};
     constexpr static Color colorBg{40, 20, 6};
     constexpr static FCoords shadow{2.f, 2.f};
+    constexpr static float lingerTime = 1200; //milliseconds
+    constexpr static float fadeoutTime = 300; //milliseconds
 };
 
 #endif //FFNG_LEVEL_TITLE_H

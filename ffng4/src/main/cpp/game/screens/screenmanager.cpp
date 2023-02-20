@@ -39,8 +39,7 @@ void ScreenManager::startMode(Mode mode) {
 }
 
 void ScreenManager::announceLevel(const LevelRecord& record) {
-    m_title.set(record.description.at("cs"));
-    m_title_hide.reset(); // TODO include in m_title
+    m_title.show(record.description.at("cs"));
 }
 
 void ScreenManager::startLevel(LevelRecord& record) {
@@ -52,7 +51,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
     if(m_instance.running)
         curScreen().resume();
     auto end = std::chrono::steady_clock::now();
-    m_title_hide = end + std::chrono::milliseconds((int)titleDuration);
+    m_title.fadeout();
     m_instance.inputSource().reset();
     std::chrono::duration<double> diff = end - start;
     Log::debug("startLevel duration = ", diff.count(), " s");
@@ -73,17 +72,7 @@ void ScreenManager::drawFrame() {
     curScreen().draw(offscreen);
 
     curScreen().drawOverlays(offscreen);
-    float opacity = 1.0;
-    if (m_title_hide) {
-        auto timeLeft = std::chrono::duration<float>(
-                m_title_hide.value() - std::chrono::steady_clock::now()).count();
-        opacity = std::clamp(3.f * timeLeft, 0.f, 1.f);
-    }
-    if (opacity == 0.f)
-        m_title.reset();
-    else {
-        m_title.draw(offscreen, opacity);
-    }
+    m_title.draw(offscreen);
 
     if(options()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
