@@ -27,13 +27,16 @@ public:
         return *static_cast<AndroidInstance*>(app->userData);
     }
 
-    OboeSink* openAudio() {
+    void openAudio() {
         m_sink = std::make_unique<OboeSink>(audio());
-        return m_sink.get();
     }
 
     void closeAudio() {
         m_sink.reset();
+    }
+
+    OboeSink& audioSink() {
+        return *m_sink;
     }
 
     void quit() override {

@@ -4,7 +4,8 @@
 #include "subsystem/audio.h"
 #include <oboe/Oboe.h>
 
-class OboeSink : public AudioSink, oboe::AudioStreamDataCallback {
+class OboeSink : oboe::AudioStreamDataCallback {
+    Audio& m_audio;
     oboe::AudioStream* m_stream;
 
 public:
@@ -13,8 +14,8 @@ public:
     OboeSink& operator=(const OboeSink&) = delete;
     ~OboeSink();
 
-    void start() override;
-    void stop() override;
+    void start();
+    void stop();
 
     oboe::DataCallbackResult
     onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;

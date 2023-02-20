@@ -50,7 +50,6 @@ int main(int argc, char **argv) {
 
         instance.live = true;
         instance.graphics().activate();
-        instance.audio().bindSink(&sink);
         instance.screens().refresh();
         instance.screens().drawFrame();
 
@@ -58,7 +57,6 @@ int main(int argc, char **argv) {
         XFlush(dpy);
 
         instance.screens().resume();
-        instance.audio().resume();
         instance.running = true;
 
         Log::info("Main loop");

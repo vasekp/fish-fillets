@@ -23,7 +23,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             if(app->window != nullptr) {
                 instance.live = true;
                 instance.graphics().activate();
-                instance.audio().bindSink(instance.openAudio());
+                instance.openAudio();
                 instance.screens().refresh();
                 instance.screens().drawFrame();
             }
@@ -31,14 +31,14 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_TERM_WINDOW:
             Log::debug("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
-            instance.audio().unbindSink();
+            instance.closeAudio();
             instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
             Log::debug("APP_CMD_GAINED_FOCUS");
             if(!instance.running) {
                 instance.screens().resume();
-                instance.audio().resume();
+                instance.audioSink().start();
                 instance.running = true;
             }
             break;
@@ -46,7 +46,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_LOST_FOCUS");
             if(instance.running) {
                 instance.screens().pause();
-                instance.audio().pause();
+                instance.audioSink().stop();
                 instance.running = false;
             }
             break;
@@ -57,7 +57,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_PAUSE");
             if(instance.live && instance.running) {
                 instance.screens().pause();
-                instance.audio().pause();
+                instance.audioSink().stop();
                 instance.running = false;
             }
             break;
@@ -65,7 +65,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_RESUME");
             if(instance.live && !instance.running) {
                 instance.screens().resume();
-                instance.audio().resume();
+                instance.audioSink().start();
                 instance.running = true;
             }
             break;

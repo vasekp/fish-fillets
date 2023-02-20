@@ -1,6 +1,6 @@
 #include "oboesink.h"
 
-OboeSink::OboeSink(Audio& iface) : AudioSink(iface), m_stream() {
+OboeSink::OboeSink(Audio& iface) : m_audio(iface), m_stream() {
     oboe::AudioStreamBuilder builder;
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setFormatConversionAllowed(true);

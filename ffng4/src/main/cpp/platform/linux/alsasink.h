@@ -5,7 +5,8 @@
 #include <thread>
 #include <atomic>
 
-class AlsaSink : public AudioSink {
+class AlsaSink {
+    Audio& m_audio;
     std::thread m_thread;
     std::atomic<bool> m_quit;
 
@@ -17,9 +18,6 @@ public:
     AlsaSink(const AlsaSink&) = delete;
     AlsaSink& operator=(const AlsaSink&) = delete;
     ~AlsaSink();
-
-    void start() override;
-    void stop() override;
 };
 
 #endif //FISH_FILLETS_LINUX_AUDIO_SINK_H

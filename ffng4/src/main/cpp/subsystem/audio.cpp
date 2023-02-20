@@ -28,26 +28,6 @@ Audio::Audio(Instance& instance) : m_instance(instance) {
     AudioPreloader(*this, instance).load();
 }
 
-void Audio::bindSink(AudioSink* sink) {
-    Log::debug("audio: bind");
-    m_stream = sink;
-}
-
-void Audio::unbindSink() {
-    Log::debug("audio: unbind");
-    m_stream = nullptr;
-}
-
-void Audio::pause() {
-    if(m_stream)
-        m_stream->stop();
-}
-
-void Audio::resume() {
-    if(m_stream)
-        m_stream->start();
-}
-
 void Audio::addSource(const AudioSource::Ref& source) {
     Log::debug("adding audio source ", source.get(), " (", source->filename(), ")");
     auto sources = m_sources.local();

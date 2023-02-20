@@ -5,7 +5,7 @@ extern "C" {
 #include <alsa/asoundlib.h>
 }
 
-AlsaSink::AlsaSink(Audio& iface) : AudioSink(iface), m_quit(false) {
+AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
     snd_pcm_t* alsa;
     snd_pcm_hw_params_t* hw_params;
     snd_pcm_sw_params_t* sw_params;
@@ -95,10 +95,4 @@ AlsaSink::AlsaSink(Audio& iface) : AudioSink(iface), m_quit(false) {
 AlsaSink::~AlsaSink() {
     m_quit.store(true, std::memory_order::relaxed);
     m_thread.join();
-}
-
-void AlsaSink::start() {
-}
-
-void AlsaSink::stop() {
 }
