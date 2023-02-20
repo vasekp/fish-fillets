@@ -9,7 +9,7 @@ class OboeSink : oboe::AudioStreamDataCallback {
     oboe::AudioStream* m_stream;
 
 public:
-    OboeSink(Audio&);
+    OboeSink(Audio&, oboe::AudioStreamErrorCallback*);
     OboeSink(const OboeSink&) = delete;
     OboeSink& operator=(const OboeSink&) = delete;
     ~OboeSink();

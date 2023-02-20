@@ -38,7 +38,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_GAINED_FOCUS");
             if(!instance.running) {
                 instance.screens().resume();
-                instance.audioSink().start();
+                instance.startAudio();
                 instance.running = true;
             }
             break;
@@ -46,7 +46,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_LOST_FOCUS");
             if(instance.running) {
                 instance.screens().pause();
-                instance.audioSink().stop();
+                instance.stopAudio();
                 instance.running = false;
             }
             break;
@@ -57,7 +57,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_PAUSE");
             if(instance.live && instance.running) {
                 instance.screens().pause();
-                instance.audioSink().stop();
+                instance.stopAudio();
                 instance.running = false;
             }
             break;
@@ -65,7 +65,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_RESUME");
             if(instance.live && !instance.running) {
                 instance.screens().resume();
-                instance.audioSink().start();
+                instance.startAudio();
                 instance.running = true;
             }
             break;

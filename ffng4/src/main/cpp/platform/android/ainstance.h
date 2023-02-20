@@ -9,10 +9,11 @@
 
 struct android_app;
 
-class AndroidInstance : public Instance {
+class AndroidInstance : public Instance, public oboe::AudioStreamErrorCallback {
     std::unique_ptr<OboeSink> m_sink{};
     AndroidFiles m_files;
     AndroidInput m_input;
+    bool m_audioOn;
 
 public:
     android_app* app;
@@ -28,15 +29,21 @@ public:
     }
 
     void openAudio() {
-        m_sink = std::make_unique<OboeSink>(audio());
+        m_sink = std::make_unique<OboeSink>(audio(), this);
+    }
+
+    void startAudio() {
+        m_audioOn = true;
+        m_sink->start();
+    }
+
+    void stopAudio() {
+        m_sink->stop();
+        m_audioOn = false;
     }
 
     void closeAudio() {
         m_sink.reset();
-    }
-
-    OboeSink& audioSink() {
-        return *m_sink;
     }
 
     void quit() override {
@@ -54,6 +61,18 @@ public:
 
     AndroidInput& inputSource() override {
         return m_input;
+    }
+
+private:
+    void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override {
+        if(error == oboe::Result::ErrorDisconnected) {
+            Log::info("restarting Oboe stream");
+            m_sink = std::make_unique<OboeSink>(audio(), this);
+            if(m_audioOn)
+                startAudio();
+        } else {
+            Log::info("Oboe error: ", (int)error);
+        }
     }
 };
 
