@@ -1,24 +1,46 @@
-#ifndef FF_ANDROID_AUDIO_SINK_H
-#define FF_ANDROID_AUDIO_SINK_H
+#ifndef FISH_FILLETS_OBOESINK_H
+#define FISH_FILLETS_OBOESINK_H
 
-#include "subsystem/audio.h"
-#include <oboe/Oboe.h>
+#include "instance.h"
+#include "oboestream.h"
 
-class OboeSink : oboe::AudioStreamDataCallback {
-    Audio& m_audio;
-    oboe::AudioStream* m_stream;
+class OboeSink: public oboe::AudioStreamErrorCallback {
+    Instance& m_instance;
+    std::unique_ptr<OboeStream> m_stream;
+    bool m_running;
 
 public:
-    OboeSink(Audio&, oboe::AudioStreamErrorCallback*);
-    OboeSink(const OboeSink&) = delete;
-    OboeSink& operator=(const OboeSink&) = delete;
-    ~OboeSink();
+    OboeSink(Instance& instance) : m_instance(instance), m_stream(), m_running(false) { }
 
-    void start();
-    void stop();
+    void open() {
+        m_stream = std::make_unique<OboeStream>(m_instance.audio(), this);
+    }
 
-    oboe::DataCallbackResult
-    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
+    void start() {
+        m_running = true;
+        m_stream->start();
+    }
+
+    void stop() {
+        m_stream->stop();
+        m_running = false;
+    }
+
+    void close() {
+        stop();
+        m_stream.reset();
+    }
+
+private:
+    void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override {
+        if(error == oboe::Result::ErrorDisconnected) {
+            Log::info("restarting Oboe stream");
+            open();
+            if(m_running)
+                start();
+        } else
+            Log::error("Oboe error: ", (int)error);
+    }
 };
 
-#endif //FF_ANDROID_AUDIO_SINK_H
+#endif
