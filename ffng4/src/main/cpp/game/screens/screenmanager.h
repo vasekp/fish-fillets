@@ -27,7 +27,7 @@ public:
     void drawFrame();
 
     void startMode(Mode mode);
-    void announceLevel(const LevelRecord& record);
+    void announceLevel(const std::string& title);
     void startLevel(LevelRecord& record);
 
     GameScreen& curScreen();

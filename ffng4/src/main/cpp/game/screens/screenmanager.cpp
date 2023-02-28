@@ -38,8 +38,11 @@ void ScreenManager::startMode(Mode mode) {
     Log::debug("startMode duration = ", diff.count(), " s");
 }
 
-void ScreenManager::announceLevel(const LevelRecord& record) {
-    m_title.show(record.description.at("cs"));
+void ScreenManager::announceLevel(const std::string& title) {
+    if(!title.empty())
+        m_title.show(title);
+    else
+        m_title.hide();
 }
 
 void ScreenManager::startLevel(LevelRecord& record) {

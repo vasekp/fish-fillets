@@ -111,6 +111,7 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
             case Pedometer::Buttons::replay:
             case Pedometer::Buttons::close:
                 m_pm.reset();
+                m_instance.screens().announceLevel("");
                 return true;
             default:
                 return false;
@@ -122,8 +123,8 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         });
         if(it != m_instance.levels().end()) {
             const auto& record = it->second;
+            m_instance.screens().announceLevel(it->second.description.at("cs")); // TODO
             if(record.state() == LevelState::solved) {
-                m_instance.screens().announceLevel(it->second);
                 auto solve = m_instance.files().user(record.solveFilename())->read();
                 auto i = solve.find('\'');
                 auto j = solve.find('\'', i + 1);
