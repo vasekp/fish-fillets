@@ -109,6 +109,9 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         switch(m_pm->findButton(coords)) {
             case Pedometer::Buttons::retry:
             case Pedometer::Buttons::replay:
+                staticFrame(WorldMap::Frames::loading);
+                m_instance.screens().startLevel(m_pm->level());
+                return true;
             case Pedometer::Buttons::close:
                 m_pm.reset();
                 m_instance.screens().announceLevel("");
@@ -124,14 +127,9 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         if(it != m_instance.levels().end()) {
             const auto& record = it->second;
             m_instance.screens().announceLevel(it->second.description.at("cs")); // TODO
-            if(record.state() == LevelState::solved) {
-                auto solve = m_instance.files().user(record.solveFilename())->read();
-                auto i = solve.find('\'');
-                auto j = solve.find('\'', i + 1);
-                if(i == std::string::npos || j == std::string::npos)
-                    Log::error("Solve file does not contain '-delimited string: ", record.solveFilename());
-                m_pm.emplace(m_instance, j - i - 1);
-            } else {
+            if(record.state() == LevelState::solved)
+                m_pm.emplace(m_instance, it->second);
+            else {
                 staticFrame(WorldMap::Frames::loading);
                 m_instance.screens().startLevel(it->second);
             }

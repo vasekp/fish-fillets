@@ -2,9 +2,11 @@
 #define FISH_FILLETS_GAME_PEDOMETER_H
 
 #include "subsystem/graphics.h"
+#include "game/structure/levelrecord.h"
 
 class Pedometer {
     Instance& m_instance;
+    LevelRecord& m_level;
     PNGImage m_pmImage;
     PNGImage m_digImage;
 
@@ -28,10 +30,11 @@ private:
     } m_buttons[3];
 
 public:
-    Pedometer(Instance& instance, unsigned steps);
+    Pedometer(Instance& instance, LevelRecord& level);
 
     void draw(const DrawTarget& target, float dt, FCoords hover);
     Buttons findButton(FCoords coords);
+    LevelRecord& level() { return m_level; }
 
 private:
     static constexpr ICoords pos{193, 141};

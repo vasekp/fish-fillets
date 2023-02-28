@@ -1,7 +1,9 @@
 #include "pedometer.h"
+#include "subsystem/files.h"
 
-Pedometer::Pedometer(Instance& instance, unsigned steps):
+Pedometer::Pedometer(Instance& instance, LevelRecord& level):
     m_instance(instance),
+    m_level(level),
     m_pmImage{instance, "images/menu/pedometer.png"},
     m_digImage{instance, "images/menu/numbers.png"},
     m_digits{},
@@ -12,6 +14,12 @@ Pedometer::Pedometer(Instance& instance, unsigned steps):
         {Buttons::close, {instance, "images/menu/pm-close.png"}, {343, 223}}
     }
 {
+    auto solve = m_instance.files().user(m_level.solveFilename())->read();
+    auto i = solve.find('\'');
+    auto j = solve.find('\'', i + 1);
+    if(i == std::string::npos || j == std::string::npos)
+        Log::error("Solve file does not contain '-delimited string: ", m_level.solveFilename());
+    auto steps = j - i - 1;
     for(auto i = m_digits.size(); i > 0; i--) {
         m_digits[i - 1] = steps % 10;
         steps /= 10;
