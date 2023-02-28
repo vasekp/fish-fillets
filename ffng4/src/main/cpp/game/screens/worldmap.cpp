@@ -37,6 +37,7 @@ void WorldMap::staticFrame(Frames frame) {
 void WorldMap::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
+    m_instance.screens().announceLevel("");
 }
 
 void WorldMap::own_draw(const DrawTarget& target, float dt) {
@@ -141,8 +142,13 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
 
 bool WorldMap::own_key(Key key) {
     if(key == Key::exit) {
-        staticFrame(WorldMap::Frames::exit);
-        m_instance.quit();
+        if(m_pm) {
+            m_pm.reset();
+            m_instance.screens().announceLevel("");
+        } else {
+            staticFrame(WorldMap::Frames::exit);
+            m_instance.quit();
+        }
         return true;
     } else
         return false;
