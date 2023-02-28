@@ -69,6 +69,6 @@ void GameScreen::draw(const DrawTarget& target) {
 void GameScreen::drawOverlays(const DrawTarget& target) {
     target.bind();
     auto liveTime = timeAlive();
-    own_drawOverlays(target, liveTime - m_lastDrawOverlays, liveTime);
+    own_drawOverlays(target, liveTime - m_lastDrawOverlays, liveTime); // TODO 3rd argument not needed
     m_lastDrawOverlays = liveTime;
 }

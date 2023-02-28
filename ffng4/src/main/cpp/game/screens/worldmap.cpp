@@ -39,17 +39,13 @@ void WorldMap::own_start() {
     m_instance.audio().addSource(m_music);
 }
 
-void WorldMap::own_refresh() {
-    m_instance.graphics().readBuffer().setImage(getImage("mask"));
-    m_instance.graphics().setMask(getImage("mask"));
-}
-
 void WorldMap::own_draw(const DrawTarget& target, float) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
+    m_instance.graphics().setMask(getImage("mask"));
     target.blit(getImage("background"), coords, copyProgram);
-    if(m_staticFrame != Frames::loading) {
+    if(m_staticFrame != Frames::loading && !m_pm) {
         drawMasked(target, MaskColors::mainBranch);
         for(const auto& record : m_forks)
 //            if(record->solved)
@@ -74,6 +70,9 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
     if(m_instance.screens().options())
         drawMasked(target, m_maskColors.at(Frames::options));
 
+    if(m_pm)
+        m_pm->draw(target, {});
+
     switch(m_staticFrame) {
         case Frames::loading:
             target.blit(getImage("loading"), coords, copyProgram, 227, 160);
@@ -89,6 +88,7 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
 }
 
 bool WorldMap::own_pointer(FCoords coords, bool longPress) {
+    m_instance.graphics().readBuffer().setImage(getImage("mask"));
     auto mask_color = m_instance.graphics().readBuffer().getPixel(coords.x(), coords.y());
     if(mask_color == WorldMap::MaskColors::exit) {
         staticFrame(WorldMap::Frames::exit);
@@ -105,14 +105,26 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         staticFrame(WorldMap::Frames::credits);
         m_instance.screens().startMode(ScreenManager::Mode::Credits);
         return true;
+    } else if(m_pm) {
+        switch(m_pm->findButton(coords)) {
+            case Pedometer::Buttons::retry:
+            case Pedometer::Buttons::replay:
+            case Pedometer::Buttons::close:
+                m_pm.reset();
+                return true;
+            default:
+                return false;
+        }
+        // TODO hide level title
     } else {
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [coords](auto& pair) {
             return !!pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
             m_instance.screens().announceLevel(it->second);
-            staticFrame(WorldMap::Frames::loading);
-            m_instance.screens().startLevel(it->second);
+            m_pm.emplace(m_instance);
+            /*staticFrame(WorldMap::Frames::loading);
+            m_instance.screens().startLevel(it->second);*/
             return true;
         } else
             return false;

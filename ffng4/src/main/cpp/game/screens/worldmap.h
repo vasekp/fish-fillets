@@ -4,6 +4,7 @@
 #include "screen.h"
 #include "game/structure/gametree.h"
 #include "subsystem/audio.h"
+#include "pedometer.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {
@@ -22,6 +23,7 @@ class WorldMap : public GameScreen {
     std::vector<const LevelRecord*> m_open;
     std::vector<const LevelRecord*> m_forks;
     Frames m_staticFrame;
+    std::optional<Pedometer> m_pm;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
@@ -43,7 +45,6 @@ public:
 protected:
     void own_start() override;
     void own_resume() override;
-    void own_refresh() override;
     void own_draw(const DrawTarget& target, float dt) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords, bool longPress) override;
