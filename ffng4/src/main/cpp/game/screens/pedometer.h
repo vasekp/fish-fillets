@@ -6,6 +6,10 @@
 class Pedometer {
     Instance& m_instance;
     PNGImage m_pmImage;
+    PNGImage m_digImage;
+
+    const std::array<float, 5> m_digits;
+    float m_time;
 
 public:
     enum class Buttons {
@@ -26,11 +30,14 @@ private:
 public:
     Pedometer(Instance& instance);
 
-    void draw(const DrawTarget& target, FCoords hover);
+    void draw(const DrawTarget& target, float dt, FCoords hover);
     Buttons findButton(FCoords coords);
 
 private:
     static constexpr ICoords pos{193, 141};
+    static constexpr ICoords digitArray{275, 177};
+    static constexpr ICoords digitSize{19, 24};
+    static constexpr float digitSpeed = 4.f; // digits per second
 };
 
 #endif //FISH_FILLETS_GAME_PEDOMETER_H

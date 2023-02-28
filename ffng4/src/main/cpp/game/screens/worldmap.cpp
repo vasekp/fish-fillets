@@ -39,7 +39,7 @@ void WorldMap::own_start() {
     m_instance.audio().addSource(m_music);
 }
 
-void WorldMap::own_draw(const DrawTarget& target, float) {
+void WorldMap::own_draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
@@ -71,7 +71,7 @@ void WorldMap::own_draw(const DrawTarget& target, float) {
         drawMasked(target, m_maskColors.at(Frames::options));
 
     if(m_pm)
-        m_pm->draw(target, {});
+        m_pm->draw(target, dt, {});
 
     switch(m_staticFrame) {
         case Frames::loading:
