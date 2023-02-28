@@ -121,10 +121,19 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
             return !!pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
-            m_instance.screens().announceLevel(it->second);
-            m_pm.emplace(m_instance);
-            /*staticFrame(WorldMap::Frames::loading);
-            m_instance.screens().startLevel(it->second);*/
+            const auto& record = it->second;
+            if(record.state() == LevelState::solved) {
+                m_instance.screens().announceLevel(it->second);
+                auto solve = m_instance.files().user(record.solveFilename())->read();
+                auto i = solve.find('\'');
+                auto j = solve.find('\'', i + 1);
+                if(i == std::string::npos || j == std::string::npos)
+                    Log::error("Solve file does not contain '-delimited string: ", record.solveFilename());
+                m_pm.emplace(m_instance, j - i - 1);
+            } else {
+                staticFrame(WorldMap::Frames::loading);
+                m_instance.screens().startLevel(it->second);
+            }
             return true;
         } else
             return false;

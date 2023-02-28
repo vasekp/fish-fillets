@@ -1,17 +1,22 @@
 #include "pedometer.h"
 
-Pedometer::Pedometer(Instance& instance):
+Pedometer::Pedometer(Instance& instance, unsigned steps):
     m_instance(instance),
     m_pmImage{instance, "images/menu/pedometer.png"},
     m_digImage{instance, "images/menu/numbers.png"},
-    m_digits{{0, 1, 5, 3, 7}},
+    m_digits{},
     m_time(-1),
     m_buttons{
         {Buttons::retry, {instance, "images/menu/pm-retry.png"}, {259, 223}},
         {Buttons::replay, {instance, "images/menu/pm-replay.png"}, {301, 223}},
         {Buttons::close, {instance, "images/menu/pm-close.png"}, {343, 223}}
     }
-{ }
+{
+    for(auto i = m_digits.size(); i > 0; i--) {
+        m_digits[i - 1] = steps % 10;
+        steps /= 10;
+    }
+}
 
 void Pedometer::draw(const DrawTarget& target, float dt, FCoords hover) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
