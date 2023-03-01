@@ -229,7 +229,8 @@ bool LevelScreen::own_pointer(FCoords coords, bool longPress) {
         m_level.skipGoTo(false);
         return m_level.scheduleGoTo(iCoords);
     } else {
-        // Activate fish under pointer. Actually only called after a double tap, based on feedback from test.
+        // Activate fish under pointer. Actually only called after a double tap (from
+        // LevelInput::doubleTap rather than LevelInput::pointerDown), based on UX feedback.
         for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
             auto* model = m_level.layout().modelAt(iCoords + ICoords{0, dy});
             if(model && model->alive())

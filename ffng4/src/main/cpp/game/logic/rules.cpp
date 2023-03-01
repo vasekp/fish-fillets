@@ -105,15 +105,11 @@ bool LevelRules::switchFish(Model* which) {
     Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
     if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0)
         return false;
-    if(target == m_curFish)
-        return true;
     setFish(target);
-    if(which == nullptr) {
-        m_curFish->action() = Model::Action::activate;
-        m_level.transition(framesActivate, [unit = m_curFish]() {
-            unit->action() = Model::Action::base;
-        });
-    }
+    m_curFish->action() = Model::Action::activate;
+    m_level.transition(framesActivate, [unit = m_curFish]() {
+        unit->action() = Model::Action::base;
+    });
     return true;
 }
 
