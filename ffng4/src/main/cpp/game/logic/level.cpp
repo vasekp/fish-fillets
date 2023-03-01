@@ -200,7 +200,23 @@ void Level::load(bool keepSchedule) {
     }
 }
 
+void Level::success() {
+    m_tickSchedule.emplace_back([&]() {
+        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
+            if(!m_record.solved) {
+                m_record.solved = true;
+                solveFile()->write("saved_moves = '"s + m_replay + "'\n");
+            }
+            m_screen.exit();
+        }
+        else
+            m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
+        return true;
+    });
+}
+
 void Level::replay() {
+    setBusy(BusyReason::replay);
     m_tickSchedule.emplace_back([&, contents = solveFile()->read()]() {
         m_script.doString(contents);
         m_script.doString("saved_models = {{}}");
@@ -220,6 +236,7 @@ void Level::restart(bool keepSchedule) {
 
 void Level::restartWhenEmpty() {
     m_tickSchedule.emplace_back([&]() {
+        Log::debug("size: ", m_tickSchedule.size());
         if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
             m_screen.subs().clear();
             m_screen.killSounds();
@@ -245,7 +262,7 @@ void Level::reinit(bool keepSchedule) {
 }
 
 bool Level::savePossible() const {
-    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && rules().solvable();
+    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && !isBusy(BusyReason::replay) && rules().solvable();
 }
 
 bool Level::loadPossible() const {

@@ -279,8 +279,10 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         if(depth.second >= 0) {
             std::erase(m_goals, model);
             if(model == m_curFish)
-                if(!switchFish())
+                if(!switchFish()) {
                     setFish(Model::Fish::none);
+                    m_level.success();
+                }
         }
     }
 }

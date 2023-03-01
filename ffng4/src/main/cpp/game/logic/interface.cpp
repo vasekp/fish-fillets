@@ -59,7 +59,6 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
     m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
-    m_script.registerFn("level_action_saveQuit", lua::wrap<&Level::level_action_saveQuit>);
     m_script.registerFn("level_save", lua::wrap<&Level::level_save>);
     m_script.registerFn("level_load", lua::wrap<&Level::level_load>);
 
@@ -124,13 +123,6 @@ bool Level::level_action_save() {
 
 bool Level::level_action_load() {
     load(true);
-    return true;
-}
-
-bool Level::level_action_saveQuit() {
-    m_record.solved = true;
-    solveFile()->write("saved_moves = '"s + m_replay + "'\n");
-    m_screen.exit();
     return true;
 }
 
@@ -321,7 +313,7 @@ bool Level::model_isTalking(int index) {
 }
 
 void Level::model_talk(int index, std::string name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
-    if(isBusy(BusyReason::loading))
+    if(isBusy(BusyReason::loading) || isBusy(BusyReason::replay))
         return;
     std::string param{};
     if(auto at = name.find('@'); at != std::string::npos) {

@@ -44,6 +44,7 @@ class Level : public ScriptReferrer {
         loading,
         schedule,
         demo,
+        replay,
         SIZE
     };
     EnumBitset<BusyReason> m_busy;
@@ -64,6 +65,7 @@ public:
     void update(float dt);
     void tick();
     void save();
+    void success();
     void load(bool keepSchedule = false);
     void restart(bool keepSchedule = false);
     void restartWhenEmpty();
@@ -107,7 +109,6 @@ private:
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
-    bool level_action_saveQuit();
     bool level_save(const std::string& text_models);
     bool level_load(const std::string& text_moves);
     void level_newDemo(const std::string& filename);
