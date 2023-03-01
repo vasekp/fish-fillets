@@ -49,7 +49,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
     if(m_staticFrame != Frames::loading && !m_pm) {
         drawMasked(target, MaskColors::mainBranch);
         for(const auto& record : m_forks)
-//            if(record->solved)
+            if(record->solved)
                 drawMasked(target, record->maskColor);
         for(const auto& [name, record] : m_instance.levels())
             if(record.visible() && record.solved)
@@ -125,10 +125,12 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         }
     } else {
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [coords](auto& pair) {
-            return !!pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;
+            return pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;
         });
         if(it != m_instance.levels().end()) {
             const auto& record = it->second;
+            if(record.state() == LevelState::locked)
+                return false;
             m_instance.screens().announceLevel(it->second.description.at("cs")); // TODO
             if(record.state() == LevelState::solved)
                 m_pm.emplace(m_instance, it->second);
