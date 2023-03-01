@@ -203,7 +203,7 @@ void Level::load(bool keepSchedule) {
 void Level::success() {
     m_tickSchedule.emplace_back([&]() {
         if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
-            if(!m_record.solved) {
+            if(!isBusy(BusyReason::replay)) {
                 m_record.solved = true;
                 solveFile()->write("saved_moves = '"s + m_replay + "'\n");
             }
