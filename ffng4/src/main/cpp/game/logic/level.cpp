@@ -200,6 +200,15 @@ void Level::load(bool keepSchedule) {
     }
 }
 
+void Level::replay() {
+    m_tickSchedule.emplace_back([&, contents = solveFile()->read()]() {
+        m_script.doString(contents);
+        m_script.doString("saved_models = {{}}");
+        m_script.doString("script_load()");
+        return true;
+    });
+}
+
 void Level::restart(bool keepSchedule) {
     killDialogsHard();
     m_tickSchedule.clear();

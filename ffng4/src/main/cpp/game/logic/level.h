@@ -67,6 +67,7 @@ public:
     void load(bool keepSchedule = false);
     void restart(bool keepSchedule = false);
     void restartWhenEmpty();
+    void replay();
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;

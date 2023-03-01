@@ -321,6 +321,8 @@ bool Level::model_isTalking(int index) {
 }
 
 void Level::model_talk(int index, std::string name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag) {
+    if(isBusy(BusyReason::loading))
+        return;
     std::string param{};
     if(auto at = name.find('@'); at != std::string::npos) {
         param = name.substr(at + 1);

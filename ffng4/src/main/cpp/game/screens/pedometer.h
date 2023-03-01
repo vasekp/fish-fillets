@@ -6,7 +6,7 @@
 
 class Pedometer {
     Instance& m_instance;
-    LevelRecord& m_level;
+    LevelRecord& m_record;
     PNGImage m_pmImage;
     PNGImage m_digImage;
 
@@ -34,7 +34,7 @@ public:
 
     void draw(const DrawTarget& target, float dt, FCoords hover);
     Buttons findButton(FCoords coords);
-    LevelRecord& level() { return m_level; }
+    LevelRecord& record() { return m_record; }
 
 private:
     static constexpr ICoords pos{193, 141};

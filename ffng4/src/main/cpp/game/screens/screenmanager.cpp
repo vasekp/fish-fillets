@@ -45,9 +45,11 @@ void ScreenManager::announceLevel(const std::string& title) {
         m_title.hide();
 }
 
-void ScreenManager::startLevel(LevelRecord& record) {
+Level& ScreenManager::startLevel(LevelRecord& record) {
     auto start = std::chrono::steady_clock::now();
-    m_screen = std::make_unique<LevelScreen>(m_instance, record);
+    auto screen = std::make_unique<LevelScreen>(m_instance, record);
+    auto& level = screen->level();
+    m_screen = std::move(screen);
     curScreen().start();
     if(m_instance.live)
         curScreen().refresh();
@@ -58,6 +60,7 @@ void ScreenManager::startLevel(LevelRecord& record) {
     m_instance.inputSource().reset();
     std::chrono::duration<double> diff = end - start;
     Log::debug("startLevel duration = ", diff.count(), " s");
+    return level;
 }
 
 void ScreenManager::drawFrame() {

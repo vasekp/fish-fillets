@@ -3,7 +3,7 @@
 
 #include "instance.h"
 #include "screen.h"
-#include "game/structure/levelrecord.h"
+#include "game/logic/level.h"
 #include "game/graphics/leveltitle.h"
 
 class ScreenManager {
@@ -28,7 +28,7 @@ public:
 
     void startMode(Mode mode);
     void announceLevel(const std::string& title);
-    void startLevel(LevelRecord& record);
+    Level& startLevel(LevelRecord& record);
 
     GameScreen& curScreen();
     bool& options() { return m_options; }

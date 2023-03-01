@@ -107,12 +107,15 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         m_instance.screens().startMode(ScreenManager::Mode::Credits);
         return true;
     } else if(m_pm) {
-        switch(m_pm->findButton(coords)) {
+        switch(auto button = m_pm->findButton(coords)) {
             case Pedometer::Buttons::retry:
-            case Pedometer::Buttons::replay:
+            case Pedometer::Buttons::replay: {
                 staticFrame(WorldMap::Frames::loading);
-                m_instance.screens().startLevel(m_pm->level());
+                auto& level = m_instance.screens().startLevel(m_pm->record());
+                if(button == Pedometer::Buttons::replay)
+                    level.replay();
                 return true;
+            }
             case Pedometer::Buttons::close:
                 m_pm.reset();
                 m_instance.screens().announceLevel("");
@@ -120,7 +123,6 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
             default:
                 return false;
         }
-        // TODO hide level title
     } else {
         auto it = std::find_if(m_instance.levels().begin(), m_instance.levels().end(), [coords](auto& pair) {
             return !!pair.second.coords && length(coords - pair.second.coords) < nodeTolerance;

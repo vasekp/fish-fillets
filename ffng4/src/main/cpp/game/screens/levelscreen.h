@@ -27,6 +27,7 @@ class LevelScreen : public GameScreen {
 public:
     LevelScreen(Instance&, LevelRecord&);
 
+    Level& level() { return m_level; }
     IInputSink& input() override { return m_input; }
     Subtitles& subs() { return m_subs; }
 
