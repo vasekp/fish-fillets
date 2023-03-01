@@ -71,7 +71,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
     if(m_instance.screens().options())
         drawMasked(target, m_maskColors.at(Frames::options));
 
-    if(m_pm)
+    if(m_pm && m_staticFrame != Frames::loading)
         m_pm->draw(target, dt, {});
 
     switch(m_staticFrame) {
