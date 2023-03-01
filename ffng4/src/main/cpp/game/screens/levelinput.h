@@ -28,6 +28,7 @@ class LevelInput : public IInputSink {
         std::deque<std::pair<std::chrono::steady_clock::time_point, FCoords>> history;
         ICoords lastDir;
         ICoords lastNonzeroDir;
+        bool inside;
     } m_dirpad;
 
     enum Buttons {

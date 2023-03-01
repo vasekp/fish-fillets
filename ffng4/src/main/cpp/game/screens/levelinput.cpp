@@ -57,6 +57,7 @@ bool LevelInput::pointerDown(FCoords coords) {
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
     m_dirpad.state = DirpadState::wait;
+    m_dirpad.inside = false;
     return false;
 }
 
@@ -97,6 +98,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.state = DirpadState::follow;
+                m_dirpad.inside = false;
                 return true;
             } else
                 return false;
@@ -107,6 +109,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
+                m_dirpad.inside = false;
             }
             return true;
         case DirpadState::button: // handled earlier
@@ -151,7 +154,10 @@ bool LevelInput::twoPointTap() {
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-        return m_screen.pointer(windowCoords, true);
+        bool ret = m_screen.pointer(windowCoords, true);
+        if(ret)
+            m_dirpad.inside = true;
+        return ret;
     } else
         return false;
 }
@@ -224,10 +230,11 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().arrow;
     glUseProgram(program);
 
-    constexpr float coords[3][3] = {
-            {1, 0, 0},
-            {0, 1, 0},
-            {0, 0, 1}
+    float s = m_dirpad.inside ? -1 : 1;
+    float coords[3][3] = {
+        {s, 0, 0},
+        {0, s, 0},
+        {0, 0, s}
     };
     glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &coords[0][0]);
 
