@@ -104,7 +104,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
     std::int64_t curSample = 0;
 
     auto ret = AudioData::create(filename, numSamples);
-    std::thread([=, data = ret->data()]() mutable {
+    std::thread([=]() mutable {
+        auto data = ret->data();
         do {
             auto inIndex = AMediaCodec_dequeueInputBuffer(codec, 0);
             if(inIndex >= 0) {

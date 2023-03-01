@@ -58,7 +58,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
     }
 
     auto ret = AudioData::create(filename, numSamples);
-    std::thread([=, data = ret->data()] () mutable {
+    std::thread([=] () mutable {
+        auto data = ret->data();
         std::size_t curSample = 0;
         while(true) {
             float** buffer;
