@@ -7,6 +7,8 @@ namespace ogl {
         EGLDisplay m_display;
         EGLSurface m_surface;
         EGLContext m_context;
+        FCoords m_origin;
+        FCoords m_size;
 
     public:
         Display(NativeWindowType window);
@@ -14,8 +16,9 @@ namespace ogl {
         Display &operator=(const Display &) = delete;
         ~Display();
 
-        std::int32_t width() const;
-        std::int32_t height() const;
+        void setViewport(FCoords origin, FCoords size);
+        std::pair<FCoords, FCoords> getViewport() const;
+        FCoords size() const;
 
         void bind() const;
         void swap() const;

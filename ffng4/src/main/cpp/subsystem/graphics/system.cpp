@@ -14,10 +14,9 @@ GraphicsSystem::GraphicsSystem(Instance& instance) :
 }
 
 void GraphicsSystem::resizeBuffers() {
-    auto width = m_display->width();
-    auto height = m_display->height();
-    m_offscreenTarget.resize(width, height);
+    auto size = m_display->size();
+    m_offscreenTarget.resize(size.x(), size.y());
     auto scale = 1 / m_graphics.coords(Graphics::CoordSystems::base).scale;
-    m_blurTargets[0].resize(width, height, scale);
-    m_blurTargets[1].resize(width, height, scale);
+    m_blurTargets[0].resize(size.x(), size.y(), scale);
+    m_blurTargets[1].resize(size.x(), size.y(), scale);
 }

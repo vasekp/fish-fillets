@@ -5,16 +5,15 @@
 
 class DisplayTarget : public DrawTarget {
     const ogl::Display& m_display;
+    FCoords m_origin;
+    FCoords m_size;
 
 public:
     DisplayTarget(const ogl::Display& display) : m_display(display) { }
 
-    void bind() const override {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, m_display.width(), m_display.height());
-    }
+    void bind() const override { m_display.bind(); }
 
-    FCoords size() const override { return {m_display.width(), m_display.height()}; }
+    FCoords size() const override { return m_display.getViewport().second; }
 
 protected:
     bool flipY() const override { return true; }

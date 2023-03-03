@@ -54,6 +54,14 @@ namespace ogl {
         if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
             Log::fatal("eglMakeCurrent failed");
 
+        {
+            std::int32_t width;
+            std::int32_t height;
+            eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
+            eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
+
+            Log::debug("display: opened ", (void*)m_display, " ", ICoords{width, height});
+        }
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
             auto info = glGetString(name);
@@ -68,8 +76,6 @@ namespace ogl {
 
         glClearColor(0, 0, 0, 1);
         glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-
-        Log::debug("display: opened ", (void*)m_display, " ", ICoords{width(), height()});
     }
 
     Display::~Display() {
@@ -81,25 +87,26 @@ namespace ogl {
         Log::debug("display: closed ", (void*)m_display);
     }
 
+    void Display::setViewport(FCoords origin, FCoords size) {
+        m_origin = origin;
+        m_size = size;
+    }
+
+    std::pair<FCoords, FCoords> Display::getViewport() const {
+        return {m_origin, m_size};
+    }
+
+    FCoords Display::size() const {
+        return m_size;
+    }
+
     void Display::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, width(), height());
+        glViewport(m_origin.x(), m_origin.y(), m_size.x(), m_size.y());
     }
 
     void Display::swap() const {
         eglSwapBuffers(m_display, m_surface);
-    }
-
-    std::int32_t Display::width() const {
-        std::int32_t width;
-        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
-        return width;
-    }
-
-    std::int32_t Display::height() const {
-        std::int32_t height;
-        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
-        return height;
     }
 
 }

@@ -231,10 +231,9 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     };
     glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &vertices[0][0]);
 
-    auto displayWidth = (float)graphics.display().width();
-    auto displayHeight = (float)graphics.display().height();
+    auto displayDim = graphics.display().size();
     glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
-    glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
+    glUniform2f(program.uniform("uDstSize"), displayDim.fx(), displayDim.fy());
     auto [_, pos] = m_dirpad.history.front();
     glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
     auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
