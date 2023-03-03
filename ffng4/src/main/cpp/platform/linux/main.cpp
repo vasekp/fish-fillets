@@ -78,10 +78,8 @@ int main(int argc, char **argv) {
                         {
                             if(event.xconfigure.width == lastWidth && event.xconfigure.height == lastHeight)
                                 break;
-                            Log::debug("Resize: ",
-                                    instance.graphics().display().width(), "×",
-                                    instance.graphics().display().height());
-                            instance.graphics().notifyDisplayResize();
+                            Log::debug("Resize: ", event.xconfigure.width, "×", event.xconfigure.height);
+                            instance.graphics().setViewport({0, 0}, {event.xconfigure.width, event.xconfigure.height});
                             lastWidth = event.xconfigure.width;
                             lastHeight = event.xconfigure.height;
                             break;
