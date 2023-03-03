@@ -21,28 +21,35 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             Log::debug("APP_CMD_INIT_WINDOW");
             if(app->window != nullptr) {
+                instance.live = true;
                 instance.graphics().activate();
                 instance.oboe().open();
                 instance.screens().resize();
                 instance.screens().drawFrame();
             }
+            instance.startstop();
             break;
         case APP_CMD_TERM_WINDOW:
             Log::debug("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
             instance.oboe().close();
+            instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
-            Log::debug("APP_CMD_LOST_FOCUS");
-            instance.oboe().start();
-            instance.screens().resume();
-            instance.running = true;
+        case APP_CMD_RESUME:
+            Log::debug(cmd == APP_CMD_RESUME ? "APP_CMD_RESUME" : "APP_CMD_GAINED_FOCUS");
+            if(!instance.running) {
+                instance.running = true;
+                instance.startstop();
+            }
             break;
         case APP_CMD_LOST_FOCUS:
-            Log::debug("APP_CMD_LOST_FOCUS");
-            instance.screens().pause();
-            instance.oboe().stop();
-            instance.running = false;
+        case APP_CMD_PAUSE:
+            Log::debug(cmd == APP_CMD_PAUSE ? "APP_CMD_PAUSE" : "APP_CMD_LOST_FOCUS");
+            if(instance.running) {
+                instance.running = false;
+                instance.startstop();
+            }
             break;
         case APP_CMD_START:
             Log::debug("APP_CMD_START");
@@ -50,16 +57,13 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_STOP:
             Log::debug("APP_CMD_STOP");
             break;
-        case APP_CMD_RESUME:
-            Log::debug("APP_CMD_RESUME");
-        case APP_CMD_PAUSE:
-            Log::debug("APP_CMD_PAUSE");
         case APP_CMD_DESTROY:
             Log::debug("APP_CMD_DESTROY");
             break;
         case APP_CMD_WINDOW_RESIZED:
             Log::debug("APP_CMD_WINDOW_RESIZED");
             Log::debug("native window: ", ANativeWindow_getWidth(app->window), " ", ANativeWindow_getHeight(app->window));
+            instance.graphics().notifyDisplayResize();
             break;
         case APP_CMD_WINDOW_REDRAW_NEEDED:
             Log::debug("APP_CMD_WINDOW_REDRAW_NEEDED");
@@ -97,7 +101,7 @@ void android_main(struct android_app* app) {
                 }
             }
 
-            if(instance.running) {
+            if(instance.live && instance.running) {
                 instance.inputSource().ping();
                 instance.screens().drawFrame();
             }
