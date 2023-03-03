@@ -21,10 +21,9 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_INIT_WINDOW:
             Log::debug("APP_CMD_INIT_WINDOW");
             if(app->window != nullptr) {
-                instance.live = true;
                 instance.graphics().activate();
                 instance.oboe().open();
-                instance.screens().refresh();
+                instance.screens().resize();
                 instance.screens().drawFrame();
             }
             break;
@@ -32,7 +31,6 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug("APP_CMD_TERM_WINDOW");
             instance.graphics().shutdown();
             instance.oboe().close();
-            instance.live = false;
             break;
         case APP_CMD_GAINED_FOCUS:
             Log::debug("APP_CMD_GAINED_FOCUS");
@@ -55,7 +53,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_PAUSE:
             Log::debug("APP_CMD_PAUSE");
-            if(instance.live && instance.running) {
+            if(instance.running) {
                 instance.screens().pause();
                 instance.oboe().stop();
                 instance.running = false;
@@ -63,7 +61,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_RESUME:
             Log::debug("APP_CMD_RESUME");
-            if(instance.live && !instance.running) {
+            if(!instance.running) {
                 instance.screens().resume();
                 instance.oboe().start();
                 instance.running = true;
@@ -114,10 +112,11 @@ void android_main(struct android_app* app) {
                     return;
                 }
             }
-            instance.inputSource().ping();
 
-            if(instance.running)
+            if(instance.running) {
+                instance.inputSource().ping();
                 instance.screens().drawFrame();
+            }
         } catch(std::exception& e) {
             Log::error("Caught exception: %s", e.what());
             instance.quit();

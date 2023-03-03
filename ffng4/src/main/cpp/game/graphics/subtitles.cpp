@@ -73,7 +73,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
         }
 }
 
-void Subtitles::refresh() {
+void Subtitles::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
     m_font->setSizes(fontSize * coords.scale, outline * coords.scale);
     for(auto& line : m_lines)

@@ -32,19 +32,11 @@ void LevelScreen::own_start() {
     m_level.init();
 }
 
-void LevelScreen::own_setsize() {
+void LevelScreen::own_resize() {
     m_winSize = FCoords{m_level.layout().width(), m_level.layout().height()} * size_unit;
     m_instance.graphics().setWindowSize(m_winSize.x(), m_winSize.y());
-    m_input.refresh();
-}
-
-void LevelScreen::own_refresh() {
-    auto& program = m_instance.graphics().shaders().wavyImage;
-    glUseProgram(program);
-    glUniform1f(program.uniform("uAmplitude"), m_waves[0]);
-    glUniform1f(program.uniform("uPeriod"), m_waves[1]);
-    glUniform1f(program.uniform("uSpeed"), m_waves[2]);
-    m_subs.refresh();
+    m_input.resize();
+    m_subs.resize();
 
     const auto& models = m_level.layout().models();
     auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
@@ -90,6 +82,9 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     glUseProgram(wavyProgram);
+    glUniform1f(wavyProgram.uniform("uAmplitude"), m_waves[0]);
+    glUniform1f(wavyProgram.uniform("uPeriod"), m_waves[1]);
+    glUniform1f(wavyProgram.uniform("uSpeed"), m_waves[2]);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
     target.blit(getImage("background"), coords, wavyProgram);

@@ -21,7 +21,7 @@ public:
 
     ScreenManager(Instance& instance) : m_instance(instance), m_title(instance), m_options(false) { };
 
-    void refresh();
+    void resize();
     void pause();
     void resume();
     void drawFrame();

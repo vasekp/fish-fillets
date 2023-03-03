@@ -15,7 +15,7 @@ public:
     void show(const std::string& text);
     void fadeout();
     void hide();
-    void refresh();
+    void resize();
     void draw(const DrawTarget& target);
 
 private:

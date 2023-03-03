@@ -28,13 +28,16 @@ Image* GameScreen::getImage(const std::string& name) {
 void GameScreen::start() {
     Log::debug("screen: start");
     own_start();
+    resize();
     m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
 
-void GameScreen::refresh() {
-    Log::debug("screen: refresh");
-    own_setsize();
-    own_refresh();
+void GameScreen::resize() {
+    own_resize();
+}
+
+void GameScreen::own_resize() {
+    m_instance.graphics().setWindowSize(Graphics::baseDim.x(), Graphics::baseDim.y());
 }
 
 void GameScreen::pause() {

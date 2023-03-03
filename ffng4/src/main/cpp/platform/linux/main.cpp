@@ -46,11 +46,8 @@ int main(int argc, char **argv) {
         XInstance instance{win};
         AlsaSink sink{instance.audio()};
 
-        instance.screens().startMode(ScreenManager::Mode::WorldMap);
-
-        instance.live = true;
         instance.graphics().activate();
-        instance.screens().refresh();
+        instance.screens().startMode(ScreenManager::Mode::WorldMap);
         instance.screens().drawFrame();
 
         XMapWindow(dpy, win);

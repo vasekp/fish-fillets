@@ -31,7 +31,7 @@ void Graphics::setWindowShift(FCoords shift) {
 void Graphics::notifyDisplayResize() {
     recalc();
     m_system->resizeBuffers();
-    m_instance.screens().refresh();
+    m_instance.screens().resize();
 }
 
 void Graphics::recalc() {
