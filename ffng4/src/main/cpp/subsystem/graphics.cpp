@@ -15,11 +15,10 @@ void Graphics::shutdown() {
 }
 
 void Graphics::setWindowSize(unsigned int width, unsigned int height) {
-    if(!m_system)
-        Log::fatal("setWindowSize() called before activate()");
     m_windowDim = { width, height };
     m_windowShift = {};
-    recalc();
+    if(m_system)
+        recalc();
 }
 
 void Graphics::setWindowShift(FCoords shift) {
