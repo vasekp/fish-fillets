@@ -13,8 +13,6 @@ void ScreenManager::startMode(Mode mode) {
         case Mode::WorldMap:
             m_screen = std::make_unique<WorldMap>(m_instance);
             curScreen().start();
-            if(m_instance.live)
-                curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
             m_instance.inputSource().reset();
@@ -22,8 +20,6 @@ void ScreenManager::startMode(Mode mode) {
         case Mode::Credits:
             m_screen = std::make_unique<CreditsScreen>(m_instance);
             curScreen().start();
-            if(m_instance.live)
-                curScreen().refresh();
             if(m_instance.running)
                 curScreen().resume();
             m_instance.inputSource().reset();
@@ -51,8 +47,6 @@ Level& ScreenManager::startLevel(LevelRecord& record) {
     auto& level = screen->level();
     m_screen = std::move(screen);
     curScreen().start();
-    if(m_instance.live)
-        curScreen().refresh();
     if(m_instance.running)
         curScreen().resume();
     auto end = std::chrono::steady_clock::now();
@@ -103,9 +97,9 @@ void ScreenManager::drawFrame() {
     graphics.system().display().swap();
 }
 
-void ScreenManager::refresh() {
-    curScreen().refresh();
-    m_title.refresh();
+void ScreenManager::resize() {
+    curScreen().resize();
+    m_title.resize();
 }
 
 void ScreenManager::pause() {

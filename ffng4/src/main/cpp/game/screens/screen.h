@@ -24,7 +24,7 @@ public:
     virtual IInputSink& input() = 0;
 
     void start();
-    void refresh();
+    void resize();
     void pause();
     void resume();
     void draw(const DrawTarget& target);
@@ -42,10 +42,9 @@ protected:
     Image* getImage(const std::string& name);
 
     virtual void own_start() { }
-    virtual void own_refresh() { }
     virtual void own_pause() { }
     virtual void own_resume() { }
-    virtual void own_setsize() { m_instance.graphics().setWindowSize(Graphics::baseDim.x(), Graphics::baseDim.y()); }
+    virtual void own_resize();
     virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual void own_drawOverlays(const DrawTarget& target, float dTime, float absTime) { }
     virtual bool own_pointer(FCoords coords, bool longPress) { return false; }

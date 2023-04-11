@@ -51,14 +51,13 @@ public:
 
 private:
     void own_start() override;
-    void own_refresh() override;
+    void own_resize() override;
     void own_pause() override;
     void own_resume() override;
     void own_draw(const DrawTarget& target, float dt) override;
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
     bool own_pointer(FCoords coords, bool longPress) override;
     bool own_key(Key key) override;
-    void own_setsize() override;
 
     void leave();
 

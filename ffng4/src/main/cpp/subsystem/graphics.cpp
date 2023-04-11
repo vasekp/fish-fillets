@@ -15,11 +15,10 @@ void Graphics::shutdown() {
 }
 
 void Graphics::setWindowSize(unsigned int width, unsigned int height) {
-    if(!m_system)
-        Log::fatal("setWindowSize() called before activate()");
     m_windowDim = { width, height };
     m_windowShift = {};
-    recalc();
+    if(m_system)
+        recalc();
 }
 
 void Graphics::setWindowShift(FCoords shift) {
@@ -28,14 +27,16 @@ void Graphics::setWindowShift(FCoords shift) {
     m_coords[window].origin += m_windowShift;
 }
 
-void Graphics::notifyDisplayResize() {
+void Graphics::setViewport(FCoords origin, FCoords size) {
+    Log::debug("viewport origin ", origin, " size ", size);
+    m_system->display().setViewport(origin, size);
     recalc();
     m_system->resizeBuffers();
-    m_instance.screens().refresh();
+    m_instance.screens().resize();
 }
 
 void Graphics::recalc() {
-    FCoords displayDim = {display().width(), display().height()};
+    FCoords displayDim = display().size();
     float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0};
     float stripSize = 64 * scale0; // TODO

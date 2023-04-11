@@ -42,7 +42,6 @@ public:
     virtual IInputSource& inputSource() = 0;
     IInputSink& inputSink();
 
-    bool live = false;
     bool running = false;
 
     virtual void quit();

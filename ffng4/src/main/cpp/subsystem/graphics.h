@@ -55,7 +55,7 @@ public:
 
     void setWindowSize(unsigned width, unsigned height);
     void setWindowShift(FCoords shift);
-    void notifyDisplayResize();
+    void setViewport(FCoords origin, FCoords size);
     void setMask(const Image* image);
     void setMask(const ogl::Texture& texture);
 

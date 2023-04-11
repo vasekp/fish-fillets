@@ -52,7 +52,7 @@ void LevelTitle::draw(const DrawTarget& target) {
     target.blit(m_image->texture(), coords, program, offset.fx(), offset.fy(), 0, 0, rect.x(), rect.y());
 }
 
-void LevelTitle::refresh() {
+void LevelTitle::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     m_font->setSizes(fontSize * coords.scale, 0.f);
     if(m_image)

@@ -68,7 +68,7 @@ public:
     bool doubleTap(FCoords coords) override;
     bool twoPointTap() override;
 
-    void refresh();
+    void resize();
     void draw(const DrawTarget& target);
     Key pool();
 

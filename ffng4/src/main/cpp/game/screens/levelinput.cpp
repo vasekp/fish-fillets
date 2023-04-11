@@ -162,17 +162,8 @@ bool LevelInput::longPress(FCoords coords) {
         return false;
 }
 
-void LevelInput::refresh() {
-    auto& graphics = m_instance.graphics();
-    auto displayWidth = (float)graphics.display().width();
-    auto displayHeight = (float)graphics.display().height();
-    const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
-    {
-        auto& program = graphics.shaders().arrow;
-        glUseProgram(program);
-        glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
-        glUniform2f(program.uniform("uDstSize"), displayWidth, displayHeight);
-    }
+void LevelInput::resize() {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
     {
         auto buttonCount = m_buttons.size();
         m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
@@ -227,17 +218,22 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     } else
         baseAlpha = 1;
 
-    auto& program = m_instance.graphics().shaders().arrow;
+    auto& graphics = m_instance.graphics();
+    auto& program = graphics.shaders().arrow;
+    const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
     glUseProgram(program);
 
-    float s = m_dirpad.inside ? -1 : 1;
-    float coords[3][3] = {
+    float s = m_dirpad.inside ? -1 : 1; // TODO uniform bool?
+    float vertices[3][3] = {
         {s, 0, 0},
         {0, s, 0},
         {0, 0, s}
     };
-    glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &coords[0][0]);
+    glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &vertices[0][0]);
 
+    auto displayDim = graphics.display().size();
+    glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
+    glUniform2f(program.uniform("uDstSize"), displayDim.fx(), displayDim.fy());
     auto [_, pos] = m_dirpad.history.front();
     glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
     auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
