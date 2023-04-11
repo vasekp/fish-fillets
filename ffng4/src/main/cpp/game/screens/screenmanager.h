@@ -9,6 +9,7 @@
 class ScreenManager {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
+    std::unique_ptr<GameScreen> m_next;
     LevelTitle m_title;
     bool m_options;
 
@@ -30,12 +31,14 @@ public:
     void announceLevel(const std::string& title);
     Level& startLevel(LevelRecord& record);
 
-    GameScreen& curScreen();
+    template<class ScreenType, typename... Ts>
+    ScreenType& open(Ts&&... ts);
+
+    GameScreen& curScreen() { return *m_screen; }
     bool& options() { return m_options; }
 
 private:
     void playIntro();
-
 };
 
 #endif //FISH_FILLETS_GAME_STATEMANAGER_H

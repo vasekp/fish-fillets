@@ -3,35 +3,31 @@
 #include "game/screens/credits.h"
 #include "game/screens/levelscreen.h"
 
-GameScreen& ScreenManager::curScreen() {
-    return *m_screen;
-}
-
 void ScreenManager::startMode(Mode mode) {
-    auto start = std::chrono::steady_clock::now();
     switch(mode) {
         case Mode::WorldMap:
-            m_screen = std::make_unique<WorldMap>(m_instance);
-            curScreen().start();
-            if(m_instance.running)
-                curScreen().resume();
-            m_instance.inputSource().reset();
+            open<WorldMap>();
             break;
         case Mode::Credits:
-            m_screen = std::make_unique<CreditsScreen>(m_instance);
-            curScreen().start();
-            if(m_instance.running)
-                curScreen().resume();
-            m_instance.inputSource().reset();
+            open<CreditsScreen>();
             break;
         case Mode::Intro:
             playIntro();
             // Don't set m_screen.
             return;
     }
+}
+
+template<class ScreenType, typename... Ts>
+ScreenType& ScreenManager::open(Ts&&... ts) {
+    auto start = std::chrono::steady_clock::now();
+    auto ptr = std::make_unique<ScreenType>(m_instance, std::forward<Ts>(ts)...);
+    auto& screen = *ptr;
+    (m_screen ? m_next : m_screen) = std::move(ptr);
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
-    Log::debug("startMode duration = ", diff.count(), " s");
+    Log::debug("ScreenManager::open duration = ", diff.count(), " s");
+    return screen;
 }
 
 void ScreenManager::announceLevel(const std::string& title) {
@@ -42,22 +38,20 @@ void ScreenManager::announceLevel(const std::string& title) {
 }
 
 Level& ScreenManager::startLevel(LevelRecord& record) {
-    auto start = std::chrono::steady_clock::now();
-    auto screen = std::make_unique<LevelScreen>(m_instance, record);
-    auto& level = screen->level();
-    m_screen = std::move(screen);
-    curScreen().start();
-    if(m_instance.running)
-        curScreen().resume();
-    auto end = std::chrono::steady_clock::now();
+    auto& level = open<LevelScreen>(record).level();
     m_title.fadeout();
-    m_instance.inputSource().reset();
-    std::chrono::duration<double> diff = end - start;
-    Log::debug("startLevel duration = ", diff.count(), " s");
     return level;
 }
 
 void ScreenManager::drawFrame() {
+    if(m_next) {
+        m_screen = std::move(m_next);
+        curScreen().start();
+        if(m_instance.running)
+            curScreen().resume();
+        m_instance.inputSource().reset();
+    }
+
     auto& graphics = m_instance.graphics();
     if(!graphics.ready()) {
       Log::error("drawFrame called without active graphics subsystem");
