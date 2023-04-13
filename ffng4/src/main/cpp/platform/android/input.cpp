@@ -62,7 +62,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             return false;
         }
         auto pointerCount = AMotionEvent_getPointerCount(event);
-        Log::debug("action: ", action, " pointers: ", pointerCount, " primary: ", AMotionEvent_getPointerId(event, 0));
+        Log::verbose("action: ", action, " pointers: ", pointerCount, " primary: ", AMotionEvent_getPointerId(event, 0));
         if(pointerCount == 1) {
             auto pointerId = AMotionEvent_getPointerId(event, 0);
             FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};

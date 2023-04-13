@@ -31,7 +31,7 @@ void LevelTitle::draw(const DrawTarget& target) {
                 m_hide.value() - std::chrono::steady_clock::now()).count();
         opacity = std::clamp(fadeoutFactor * timeLeft, 0.f, 1.f);
     }
-    if(!opacity) {
+    if(opacity == 0.f) {
         hide();
         return;
     }
