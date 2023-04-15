@@ -7,7 +7,6 @@
 #include "graphics/shaders.h"
 #include "graphics/image.h"
 #include "graphics/ifont.h"
-#include "graphics/readbuffer.h"
 #include "graphics/textureview.h"
 #include "graphics/coords.h"
 #include "graphics/displaytarget.h"
@@ -47,7 +46,6 @@ public:
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
     auto& blurTargets() const { return m_system->m_blurTargets; }
     auto& offscreenTarget() const { return m_system->m_offscreenTarget; }
-    auto& readBuffer() const { return m_system->m_readBuffer; }
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }
 

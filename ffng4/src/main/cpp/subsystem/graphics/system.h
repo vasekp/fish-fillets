@@ -8,7 +8,6 @@ private:
     DisplayTarget m_fullscreenTarget;
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
-    ReadBuffer m_readBuffer;
     Shaders m_shaders;
 
 public:
