@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
         Window root = DefaultRootWindow(dpy);
 
         XSetWindowAttributes swa;
-        swa.event_mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask 
+        swa.event_mask = ButtonPressMask | ButtonReleaseMask | PointerMotionMask 
             |
             KeyPressMask | KeyReleaseMask | StructureNotifyMask;
         Window win = XCreateWindow(dpy, root, 0, 0, 600, 600, 0,

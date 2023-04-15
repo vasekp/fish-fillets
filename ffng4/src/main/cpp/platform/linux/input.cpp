@@ -10,7 +10,8 @@ XInput::XInput(Instance& instance) :
         m_pointerFollow(false),
         m_lastPointerDownTime(absolutePast),
         m_pointerDownTime(absolutePast),
-        m_pointerHandled(false)
+        m_pointerHandled(false),
+        m_lastHover(noHover)
 { }
 
 void XInput::reset() {
@@ -110,9 +111,10 @@ void XInput::buttonEvent(const XButtonEvent& event) {
 }
 
 void XInput::motionEvent(const XMotionEvent& event) {
+    FCoords coords{event.x, event.y};
+    m_lastHover = coords;
     if(!m_pointerFollow || !(event.state & Button1Mask))
         return;
-    FCoords coords{event.x, event.y};
     m_pointerHandled |= m_instance.inputSink().pointerMove(coords);
 }
 
@@ -125,4 +127,8 @@ void XInput::ping() {
 
 Key XInput::poolKey() {
     return m_lastKey;
+}
+
+FCoords XInput::hover() {
+    return m_lastHover;
 }
