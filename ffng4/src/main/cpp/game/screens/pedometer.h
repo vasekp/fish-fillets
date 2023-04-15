@@ -10,7 +10,7 @@ class Pedometer {
     PNGImage m_pmImage;
     PNGImage m_digImage;
 
-    std::array<float, 5> m_digits;
+    std::array<int, 5> m_digits;
     float m_time;
 
 public:
@@ -25,8 +25,8 @@ private:
     struct Button {
         Buttons type;
         PNGImage image;
-        ICoords origin;
-        inline static constexpr ICoords size{43, 44};
+        FCoords origin;
+        inline static constexpr FCoords size{43, 44};
     } m_buttons[3];
 
 public:
@@ -38,8 +38,8 @@ public:
 
 private:
     static constexpr ICoords pos{193, 141};
-    static constexpr ICoords digitArray{275, 177};
-    static constexpr ICoords digitSize{19, 24};
+    static constexpr FCoords digitArray{275, 177};
+    static constexpr FCoords digitSize{19, 24};
     static constexpr float digitSpeed = 4.f; // digits per second
 };
 

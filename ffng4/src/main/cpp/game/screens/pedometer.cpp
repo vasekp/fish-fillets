@@ -15,11 +15,13 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level):
     }
 {
     auto solve = m_instance.files().user(m_record.solveFilename())->read();
-    auto i = solve.find('\'');
-    auto j = solve.find('\'', i + 1);
-    if(i == std::string::npos || j == std::string::npos)
-        Log::error("Solve file does not contain '-delimited string: ", m_record.solveFilename());
-    auto steps = j - i - 1;
+    auto steps = [&]() {
+        auto i = solve.find('\'');
+        auto j = solve.find('\'', i + 1);
+        if(i == std::string::npos || j == std::string::npos)
+            Log::error("Solve file does not contain '-delimited string: ", m_record.solveFilename());
+        return int(j - i - 1);
+    }();
     for(auto i = m_digits.size(); i > 0; i--) {
         m_digits[i - 1] = steps % 10;
         steps /= 10;
@@ -31,15 +33,15 @@ void Pedometer::draw(const DrawTarget& target, float dt, FCoords hover) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.blit(&m_pmImage, coords, copyProgram, pos.x, pos.y);
     const auto& button = m_buttons[1];
-    target.blit(&button.image, coords, copyProgram, button.origin.x, button.origin.y);
+    target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
     if(m_time < 0)
         m_time = 0; // first call
     else
         m_time += dt;
     float yBase = m_time * digitSpeed;
     for(auto x = 0u; x < m_digits.size(); x++) {
-        float y = std::min(m_digits[x], yBase);
-        target.blit(&m_digImage, coords, copyProgram, digitArray.x + x * digitSize.x, digitArray.y, 0, (9.f - y) * digitSize.y, digitSize.x, digitSize.y);
+        float y = std::min((float)m_digits[x], yBase);
+        target.blit(&m_digImage, coords, copyProgram, digitArray.fx() + (float)x * digitSize.fx(), digitArray.fy(), 0, (9.f - y) * digitSize.fy(), digitSize.x(), digitSize.y());
     }
 }
 
