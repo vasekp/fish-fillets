@@ -1,5 +1,6 @@
 #include "pedometer.h"
 #include "subsystem/files.h"
+#include "subsystem/input.h"
 
 Pedometer::Pedometer(Instance& instance, LevelRecord& level):
         m_instance(instance),
@@ -28,12 +29,16 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level):
     }
 }
 
-void Pedometer::draw(const DrawTarget& target, float dt, FCoords hover) {
+void Pedometer::draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.blit(&m_pmImage, coords, copyProgram, pos.x, pos.y);
-    const auto& button = m_buttons[1];
-    target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
+    if(auto hover = m_instance.inputSource().hover(); hover != IInputSource::noHover) {
+        auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
+        for(const auto& button : m_buttons)
+            if(hcoords.within(button.origin, button.origin + Button::size))
+                target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
+    }
     if(m_time < 0)
         m_time = 0; // first call
     else

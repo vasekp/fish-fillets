@@ -32,7 +32,7 @@ private:
 public:
     Pedometer(Instance& instance, LevelRecord& level);
 
-    void draw(const DrawTarget& target, float dt, FCoords hover);
+    void draw(const DrawTarget& target, float dt);
     Buttons findButton(FCoords coords);
     LevelRecord& record() { return m_record; }
 

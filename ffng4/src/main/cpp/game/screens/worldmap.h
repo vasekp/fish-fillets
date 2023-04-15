@@ -28,7 +28,6 @@ class WorldMap : public GameScreen {
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
 
-public:
     struct MaskColors {
         static constexpr Color exit = 0x008080;
         static constexpr Color options = 0x008000;
@@ -37,6 +36,21 @@ public:
         static constexpr Color mainBranch = 0xFFFFFF;
     };
 
+    struct ActiveAreas {
+        FCoords from;
+        FCoords to;
+        Frames frame;
+    };
+
+    static constexpr std::array<ActiveAreas, 5> areas {{
+            {{0, 0}, {138, 127}, Frames::intro},
+            {{517, 0}, {640, 130}, Frames::exit},
+            {{0, 364}, {124, 480}, Frames::credits},
+            {{0, 403}, {145, 480}, Frames::credits}, /* a single rectangle would overlap a level */
+            {{487, 362}, {640, 480}, Frames::options}
+    }};
+
+public:
     WorldMap(Instance&);
     void staticFrame(Frames frame);
 
