@@ -8,9 +8,12 @@ class Instance;
 
 class IInputSource {
 public:
+    virtual ~IInputSource() { }
     virtual Key poolKey() { return Key::none; }
     virtual void reset() { }
-    virtual ~IInputSource() { }
+    virtual FCoords hover() { return noHover; }
+
+    static constexpr FCoords noHover{-1, -1};
 };
 
 class IInputSink {

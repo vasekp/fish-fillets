@@ -8,7 +8,8 @@ AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_pointerFollow(false),
         m_pointerId(-1),
         m_pointerDownTime(absolutePast),
-        m_pointerHandled(false)
+        m_pointerHandled(false),
+        m_lastHover(noHover)
 { }
 
 void AndroidInput::reset() {
@@ -66,36 +67,50 @@ bool AndroidInput::processEvent(AInputEvent* event) {
         if(pointerCount == 1) {
             auto pointerId = AMotionEvent_getPointerId(event, 0);
             FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
-            if(action == AMOTION_EVENT_ACTION_DOWN) {
-                auto lastPointerTime = m_pointerDownTime;
-                m_pointerDownTime = std::chrono::steady_clock::now();
-                m_pointerDownCoords = coords;
-                m_pointerId = pointerId;
-                m_pointerFollow = true;
-                if(m_pointerDownTime - lastPointerTime < doubletapTime)
-                    m_pointerHandled = inputSink.doubleTap(coords);
-                else
-                    m_pointerHandled = inputSink.pointerDown(coords);
-                jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
-            } else if(action == AMOTION_EVENT_ACTION_MOVE) {
-                if(!m_pointerFollow || pointerId != m_pointerId)
-                    return false;
-                else
-                    return m_pointerHandled |= inputSink.pointerMove(coords);
-            } else if(action == AMOTION_EVENT_ACTION_UP) {
-                if(!m_pointerFollow)
-                    return false;
-                if(pointerId == m_pointerId)
-                    m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
-                if(!m_pointerHandled) {
-                    jni->CallVoidMethod(jni.object(), jni.method("showUI"));
-                    // keep m_pointerDownTime for double tap
-                } else {
+            switch(action) {
+                case AMOTION_EVENT_ACTION_DOWN: {
+                    auto lastPointerTime = m_pointerDownTime;
+                    m_pointerDownTime = std::chrono::steady_clock::now();
+                    m_pointerDownCoords = coords;
+                    m_pointerId = pointerId;
+                    m_pointerFollow = true;
+                    if(m_pointerDownTime - lastPointerTime < doubletapTime)
+                        m_pointerHandled = inputSink.doubleTap(coords);
+                    else
+                        m_pointerHandled = inputSink.pointerDown(coords);
                     jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
-                    m_pointerDownTime = absolutePast;
                 }
-                m_pointerFollow = false;
-                return m_pointerHandled;
+                case AMOTION_EVENT_ACTION_MOVE: {
+                    if(!m_pointerFollow || pointerId != m_pointerId)
+                        return false;
+                    else
+                        return m_pointerHandled |= inputSink.pointerMove(coords);
+                }
+                case AMOTION_EVENT_ACTION_UP: {
+                    if(!m_pointerFollow)
+                        return false;
+                    if(pointerId == m_pointerId)
+                        m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
+                    if(!m_pointerHandled) {
+                        jni->CallVoidMethod(jni.object(), jni.method("showUI"));
+                        // keep m_pointerDownTime for double tap
+                    } else {
+                        jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
+                        m_pointerDownTime = absolutePast;
+                    }
+                    m_pointerFollow = false;
+                    return m_pointerHandled;
+                }
+                case AMOTION_EVENT_ACTION_HOVER_ENTER:
+                    [[fallthrough]];
+                case AMOTION_EVENT_ACTION_HOVER_MOVE:
+                    m_lastHover = coords;
+                    return false;
+                case AMOTION_EVENT_ACTION_HOVER_EXIT:
+                    m_lastHover = noHover;
+                    return false;
+                default:
+                    return false;
             }
         } else if(pointerCount == 2 && action == AMOTION_EVENT_ACTION_POINTER_DOWN) {
             Log::debug("secondary: ", AMotionEvent_getPointerId(event, 1));
@@ -140,4 +155,8 @@ void AndroidInput::ping() {
 
 Key AndroidInput::poolKey() {
     return m_lastKey;
+}
+
+FCoords AndroidInput::hover() {
+    return m_lastHover;
 }

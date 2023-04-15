@@ -66,7 +66,17 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
             target.blit(m_nodeImages[base + 1], coords, copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
             target.blit(m_nodeImages[base + 2], coords, alphaProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
         }
+        if(auto hover = m_instance.inputSource().hover(); hover != IInputSource::noHover) {
+            if(auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover); hcoords.within({0, 0}, Graphics::baseDim)) {
+                auto mask_color = m_instance.graphics().readBuffer().getPixel(hcoords.x(), hcoords.y());
+                Log::verbose("hover ", hcoords, " color ", mask_color);
+                if(mask_color == WorldMap::MaskColors::exit || mask_color == WorldMap::MaskColors::options || mask_color == WorldMap::MaskColors::credits || mask_color == WorldMap::MaskColors::intro)
+                    drawMasked(target, mask_color);
+            }
+        }
     }
+
+    drawMasked(target, MaskColors::exit);
 
     if(m_instance.screens().options())
         drawMasked(target, m_maskColors.at(Frames::options));
