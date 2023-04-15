@@ -2,6 +2,7 @@
 #define FISH_FILLETS_TYPES_H
 
 #include <ostream>
+#include <charconv>
 
 struct Color {
     std::uint8_t r;
@@ -31,6 +32,12 @@ struct Color {
 
     friend constexpr bool operator==(const Color& x, const Color& y) {
         return x.r == y.r && x.g == y.g && x.b == y.b;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Color& color) {
+        std::array<char, 8> str{0, 0, 0, 0, 0, 0, 0, 0};
+        std::to_chars(str.begin(), &str[7], 0x1000000 + color.rgb(), 16);
+        return os << &str[1];
     }
 
     static const Color white;
