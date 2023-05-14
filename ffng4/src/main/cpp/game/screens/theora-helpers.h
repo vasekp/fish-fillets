@@ -35,8 +35,6 @@ using VorbisComment = OggStruct<vorbis_comment, vorbis_comment_init, vorbis_comm
 using TheoraInfo = OggStruct<th_info, th_info_init, th_info_clear>;
 using TheoraComment = OggStruct<th_comment, th_comment_init, th_comment_clear>;
 using TheoraSetup = OggPointer<th_setup_info, th_setup_free>;
-using TheoraDecoder = OggPointer<th_dec_ctx, th_decode_free>;
-using VorbisBlock = OggStruct<vorbis_block, nullptr, vorbis_block_clear>;
 
 class OggPage {
     ogg_page m_native;
@@ -81,11 +79,38 @@ public:
     }
 };
 
+class VorbisBlock : public OggStruct<vorbis_block, nullptr, vorbis_block_clear> {
+public:
+    int synthesis(ogg_packet* packet) {
+        return vorbis_synthesis(native(), packet);
+    }
+};
+
 class VorbisDecoder : public OggStruct<vorbis_dsp_state, vorbis_synthesis_init, vorbis_dsp_clear> {
 public:
     VorbisBlock block() {
         vorbis_block block;
         vorbis_block_init(native(), &block);
         return {std::move(block)};
+    }
+
+    void blockin(VorbisBlock& block) {
+        vorbis_synthesis_blockin(native(), block);
+    }
+
+    std::vector<float> pcmout() {
+        float **pcm;
+        auto size = vorbis_synthesis_pcmout(native(), &pcm);
+        std::vector<float> ret{};
+        ret.resize(size);
+        std::memcpy(ret.data(), pcm[0], size);
+        return ret;
+    }
+};
+
+class TheoraDecoder : public OggPointer<th_dec_ctx, th_decode_free> {
+public:
+    int packetin(ogg_packet* packet, std::int64_t* granulepos) {
+        return th_decode_packetin(native(), packet, granulepos);
     }
 };

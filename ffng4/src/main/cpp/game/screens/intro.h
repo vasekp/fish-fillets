@@ -20,6 +20,8 @@ class IntroScreen : public GameScreen {
     std::unique_ptr<VorbisDecoder> m_vbDecoder;
     std::unique_ptr<VorbisBlock> m_vbBlock;
 
+    constexpr static int buffSize = 5;
+
     std::string m_data;
     std::size_t m_offset;
 
@@ -37,6 +39,7 @@ protected:
 private:
     void more_data();
     void queue_page(OggPage&);
+    void fill_buffers();
 };
 
 #endif //FISH_FILLETS_GAME_INTRO_H

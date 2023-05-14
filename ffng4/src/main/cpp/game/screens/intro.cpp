@@ -82,6 +82,8 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_vbBlock = std::make_unique<VorbisBlock>(m_vbDecoder->block());
     Log::debug("Audio: ", m_vbInfo->channels, " channels, ", m_vbInfo->rate, " Hz");
     // TODO check 22050, 1 channel
+
+    fill_buffers();
 }
 
 void IntroScreen::more_data() {
@@ -94,6 +96,40 @@ void IntroScreen::queue_page(OggPage& page) {
         m_vbStream->pagein(page);
     if(m_thStream)
         m_thStream->pagein(page);
+}
+
+void IntroScreen::fill_buffers() {
+    bool vframe = false;
+    bool aframe = false;
+    for(;;) {
+        while(!aframe) {
+            if(auto ret = m_vbDecoder->pcmout(); ret.size() != 0) {
+                Log::debug("audio packet size ", ret.size());
+                aframe = true;
+            } else {
+                if(auto packet = m_vbStream->packetout()) {
+                    if(m_vbBlock->synthesis(&*packet) == 0)
+                        m_vbDecoder->blockin(*m_vbBlock);
+                } else
+                    break;
+            }
+        }
+        while(!vframe) {
+            if(auto packet = m_thStream->packetout()) {
+                if(m_thDecoder->packetin(&*packet, nullptr) == 0) {
+                    Log::debug("video packet in");
+                    vframe = true;
+                }
+            } else
+                break;
+        }
+        if(!vframe || !aframe) {
+            more_data();
+            while(auto page = m_oggSync.pageout())
+                queue_page(*page);
+        } else
+            break;
+    }
 }
 
 void IntroScreen::own_start() {
