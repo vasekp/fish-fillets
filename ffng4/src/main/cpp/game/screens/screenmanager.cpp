@@ -1,6 +1,7 @@
 #include "screenmanager.h"
 #include "game/screens/worldmap.h"
 #include "game/screens/credits.h"
+#include "game/screens/intro.h"
 #include "game/screens/levelscreen.h"
 
 void ScreenManager::startMode(Mode mode) {
@@ -12,8 +13,7 @@ void ScreenManager::startMode(Mode mode) {
             open<CreditsScreen>();
             break;
         case Mode::Intro:
-            playIntro();
-            // Don't set m_screen.
+            open<IntroScreen>();
             return;
     }
 }

@@ -36,9 +36,6 @@ public:
 
     GameScreen& curScreen() { return *m_screen; }
     bool& options() { return m_options; }
-
-private:
-    void playIntro();
 };
 
 #endif //FISH_FILLETS_GAME_STATEMANAGER_H
