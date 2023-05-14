@@ -75,6 +75,9 @@ else()
     target_link_libraries(fillets
             X11
             png
+            ogg
+            vorbis
+            theoradec
             vorbisfile
             lua
             asound
