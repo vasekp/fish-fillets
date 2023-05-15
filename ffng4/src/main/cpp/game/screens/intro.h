@@ -27,7 +27,9 @@ class IntroScreen : public GameScreen {
         std::array<unsigned char, 320 * 240> data_cr;
         float time;
     };
-    std::deque<Frame> m_buffer;
+    std::deque<Frame> m_vBuffer;
+
+    std::deque<std::vector<float>> m_aBuffer;
 
     std::string m_data;
     std::size_t m_offset;

@@ -106,9 +106,12 @@ void IntroScreen::queue_page(OggPage& page) {
 
 void IntroScreen::fill_buffers() {
     for(;;) {
+        std::vector<float> adata{};
         for(;;) {
             if(auto ret = m_vbDecoder->pcmout(); ret.size() != 0) {
-                Log::debug("audio packet size ", ret.size());
+                //Log::debug("audio packet size ", ret.size());
+                adata.reserve(adata.size() + ret.size());
+                adata.insert(adata.end(), ret.begin(), ret.end());
                 m_vbDecoder->read(ret.size());
             } else {
                 if(auto packet = m_vbStream->packetout()) {
@@ -118,7 +121,11 @@ void IntroScreen::fill_buffers() {
                     break;
             }
         }
-        while(m_buffer.size() < 2) {
+        if(!adata.empty()) {
+            Log::debug("audio data: ", adata.size(), " frames");
+            m_aBuffer.push_back(std::move(adata));
+        }
+        while(m_vBuffer.size() < 2) {
             if(auto packet = m_thStream->packetout()) {
                 std::int64_t granulepos;
                 if(m_thDecoder->packetin(&*packet, &granulepos) == 0) {
@@ -130,8 +137,8 @@ void IntroScreen::fill_buffers() {
                         ycbcr[0].width, 'x', ycbcr[0].height, '%', ycbcr[0].stride, ' ',
                         ycbcr[1].width, 'x', ycbcr[1].height, '%', ycbcr[1].stride, ' ',
                         ycbcr[2].width, 'x', ycbcr[2].height, '%', ycbcr[2].stride);*/
-                    m_buffer.emplace_back();
-                    Frame& frame = m_buffer.back();
+                    m_vBuffer.emplace_back();
+                    Frame& frame = m_vBuffer.back();
                     frame.time = time;
                     auto copy = [&](th_img_plane& src, auto& dst, int width, int height) {
                         if(src.stride == width)
@@ -153,7 +160,7 @@ void IntroScreen::fill_buffers() {
             } else
                 break;
         }
-        if(m_buffer.size() < 2) {
+        if(m_vBuffer.size() < 2 || m_aBuffer.empty()) {
             more_data();
             while(auto page = m_oggSync.pageout())
                 queue_page(*page);
@@ -168,11 +175,16 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
-    if(m_buffer.size() == 2 && m_buffer.back().time < timeAlive())
-        m_buffer.pop_front();
-    if(m_buffer.empty())
+    if(m_vBuffer.size() == 2 && m_vBuffer.back().time < timeAlive())
+        m_vBuffer.pop_front();
+    if(m_vBuffer.empty())
         return; // TODO quit screen
-    Log::debug("drawing frame ", m_buffer.front().time, " @ ", timeAlive());
+    Frame& frame = m_vBuffer.front();
+    Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
+    auto tex = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.data_y.data(), 1);
+    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    target.blit(tex, coords, copyProgram);
     fill_buffers();
 }
 
