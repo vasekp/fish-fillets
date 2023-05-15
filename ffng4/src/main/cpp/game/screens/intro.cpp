@@ -62,7 +62,8 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_thDecoder = std::make_unique<TheoraDecoder>(th_decode_alloc(m_thInfo, m_thSetup));
     Log::debug("Video: ", m_thInfo->pic_width, 'x', m_thInfo->pic_height,
             ' ', (float)m_thInfo->fps_numerator / m_thInfo->fps_denominator, "fps");
-    // TODO check 640x480?
+    if(m_thInfo->pic_width != 640 || m_thInfo->pic_height != 480)
+        Log::fatal("Video expected in 640x480!");
     th_pixel_fmt fmt = m_thInfo->pixel_fmt;
     switch(fmt) {
         case TH_PF_420:
@@ -77,35 +78,38 @@ IntroScreen::IntroScreen(Instance& instance) :
         default:
             Log::error("Video: unknown sampling");
     }
+    if(fmt != TH_PF_420)
+        Log::fatal("Video expected in 4:2:0 Y'CbCr!");
     // TODO postprocessing level?
     m_vbDecoder = std::make_unique<VorbisDecoder>(m_vbInfo.native());
     m_vbBlock = std::make_unique<VorbisBlock>(m_vbDecoder->block());
     Log::debug("Audio: ", m_vbInfo->channels, " channels, ", m_vbInfo->rate, " Hz");
-    // TODO check 22050, 1 channel
+    if(m_vbInfo->rate != 22050 || m_vbInfo->channels != 1)
+        Log::fatal("Audio expected in 22050 Hz, mono!");
 
     fill_buffers();
 }
 
-void IntroScreen::more_data() {
+void IntroScreen::more_data() { // TODO eof
     m_oggSync.write(m_data.data() + m_offset, 4096);
     m_offset += 4096;
 }
 
 void IntroScreen::queue_page(OggPage& page) {
     if(m_vbStream)
-        m_vbStream->pagein(page);
+        if(m_vbStream->pagein(page) == 0)
+            Log::debug("Vorbis page");
     if(m_thStream)
-        m_thStream->pagein(page);
+        if(m_thStream->pagein(page) == 0)
+            Log::debug("Theora page");
 }
 
 void IntroScreen::fill_buffers() {
-    bool vframe = false;
-    bool aframe = false;
     for(;;) {
-        while(!aframe) {
+        for(;;) {
             if(auto ret = m_vbDecoder->pcmout(); ret.size() != 0) {
                 Log::debug("audio packet size ", ret.size());
-                aframe = true;
+                m_vbDecoder->read(ret.size());
             } else {
                 if(auto packet = m_vbStream->packetout()) {
                     if(m_vbBlock->synthesis(&*packet) == 0)
@@ -114,16 +118,42 @@ void IntroScreen::fill_buffers() {
                     break;
             }
         }
-        while(!vframe) {
+        while(m_buffer.size() < 2) {
             if(auto packet = m_thStream->packetout()) {
-                if(m_thDecoder->packetin(&*packet, nullptr) == 0) {
-                    Log::debug("video packet in");
-                    vframe = true;
+                std::int64_t granulepos;
+                if(m_thDecoder->packetin(&*packet, &granulepos) == 0) {
+                    auto time = th_granule_time(*m_thDecoder, granulepos);
+                    Log::debug("video packet in @ ", time);
+                    th_ycbcr_buffer ycbcr;
+                    th_decode_ycbcr_out(*m_thDecoder, ycbcr);
+                    /*Log::debug("YUV ",
+                        ycbcr[0].width, 'x', ycbcr[0].height, '%', ycbcr[0].stride, ' ',
+                        ycbcr[1].width, 'x', ycbcr[1].height, '%', ycbcr[1].stride, ' ',
+                        ycbcr[2].width, 'x', ycbcr[2].height, '%', ycbcr[2].stride);*/
+                    m_buffer.emplace_back();
+                    Frame& frame = m_buffer.back();
+                    frame.time = time;
+                    auto copy = [&](th_img_plane& src, auto& dst, int width, int height) {
+                        if(src.stride == width)
+                            std::memcpy(dst.data(), src.data, width * height);
+                        else {
+                            unsigned char* srcp = src.data;
+                            unsigned char* dstp = dst.data();
+                            for(int y = 0; y < height; y++) {
+                                std::memcpy(dstp, srcp, width);
+                                srcp += src.stride;
+                                dstp += width;
+                            }
+                        }
+                    };
+                    copy(ycbcr[0], frame.data_y, 640, 480);
+                    copy(ycbcr[1], frame.data_cb, 320, 240);
+                    copy(ycbcr[2], frame.data_cr, 320, 240);
                 }
             } else
                 break;
         }
-        if(!vframe || !aframe) {
+        if(m_buffer.size() < 2) {
             more_data();
             while(auto page = m_oggSync.pageout())
                 queue_page(*page);
@@ -138,6 +168,12 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
+    if(m_buffer.size() == 2 && m_buffer.back().time < timeAlive())
+        m_buffer.pop_front();
+    if(m_buffer.empty())
+        return; // TODO quit screen
+    Log::debug("drawing frame ", m_buffer.front().time, " @ ", timeAlive());
+    fill_buffers();
 }
 
 bool IntroScreen::own_pointer(FCoords coords, bool longPress) {

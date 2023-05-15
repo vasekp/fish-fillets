@@ -23,7 +23,9 @@ ScreenType& ScreenManager::open(Ts&&... ts) {
     auto start = std::chrono::steady_clock::now();
     auto ptr = std::make_unique<ScreenType>(m_instance, std::forward<Ts>(ts)...);
     auto& screen = *ptr;
-    (m_screen ? m_next : m_screen) = std::move(ptr);
+    m_next = std::move(ptr);
+    if(!m_screen)
+        useNext();
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
     Log::debug("ScreenManager::open duration = ", diff.count(), " s");
@@ -43,14 +45,17 @@ Level& ScreenManager::startLevel(LevelRecord& record) {
     return level;
 }
 
+void ScreenManager::useNext() {
+    m_screen = std::move(m_next);
+    curScreen().start();
+    if(m_instance.running)
+        curScreen().resume();
+    m_instance.inputSource().reset();
+}
+
 void ScreenManager::drawFrame() {
-    if(m_next) {
-        m_screen = std::move(m_next);
-        curScreen().start();
-        if(m_instance.running)
-            curScreen().resume();
-        m_instance.inputSource().reset();
-    }
+    if(m_next)
+        useNext();
 
     auto& graphics = m_instance.graphics();
     if(!graphics.ready()) {

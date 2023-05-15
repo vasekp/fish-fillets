@@ -106,6 +106,10 @@ public:
         std::memcpy(ret.data(), pcm[0], size);
         return ret;
     }
+
+    void read(int samples) {
+        vorbis_synthesis_read(native(), samples);
+    }
 };
 
 class TheoraDecoder : public OggPointer<th_dec_ctx, th_decode_free> {

@@ -20,7 +20,14 @@ class IntroScreen : public GameScreen {
     std::unique_ptr<VorbisDecoder> m_vbDecoder;
     std::unique_ptr<VorbisBlock> m_vbBlock;
 
-    constexpr static int buffSize = 5;
+    constexpr static int buffSize = 2;
+    struct Frame {
+        std::array<unsigned char, 640 * 480> data_y;
+        std::array<unsigned char, 320 * 240> data_cb;
+        std::array<unsigned char, 320 * 240> data_cr;
+        float time;
+    };
+    std::deque<Frame> m_buffer;
 
     std::string m_data;
     std::size_t m_offset;
