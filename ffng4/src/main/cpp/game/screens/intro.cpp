@@ -181,10 +181,17 @@ void IntroScreen::own_draw(const DrawTarget& target, float dt) {
         return; // TODO quit screen
     Frame& frame = m_vBuffer.front();
     Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
-    auto tex = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.data_y.data(), 1);
-    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.data_y.data(), 1);
+    auto texCb = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.data_cb.data(), 1);
+    auto texCr = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.data_cr.data(), 1);
+    const auto& program = m_instance.graphics().shaders().ycbcr;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    target.blit(tex, coords, copyProgram);
+    glActiveTexture(Shaders::texCb_gl);
+    glBindTexture(GL_TEXTURE_2D, texCb);
+    glActiveTexture(Shaders::texCr_gl);
+    glBindTexture(GL_TEXTURE_2D, texCr);
+    glActiveTexture(Shaders::texImage_gl);
+    target.blit(texY, coords, program);
     fill_buffers();
 }
 
