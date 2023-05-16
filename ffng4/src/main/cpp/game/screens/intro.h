@@ -4,6 +4,66 @@
 #include "screen.h"
 #include "subsystem/audio.h"
 #include "theora-helpers.h"
+#include <forward_list>
+
+using namespace std::string_view_literals; // TODO global
+
+class IntroAudioSource : public AudioSourceBase {
+    std::forward_list<std::vector<float>> m_queue;
+    decltype(m_queue)::iterator m_curVector;
+    std::atomic<decltype(m_queue)::iterator> m_end;
+    decltype(m_queue)::iterator m_last;
+    std::size_t m_curIndex;
+    std::size_t m_total;
+
+    std::chrono::steady_clock::time_point m_relStartTime;
+
+public:
+    IntroAudioSource() : m_queue{}, m_curVector{m_queue.end()}, m_end{m_queue.end()}, m_last{m_queue.before_begin()}, m_total{0} { }
+
+    using Ref = std::shared_ptr<IntroAudioSource>;
+
+    void push_back(std::vector<float>&& vector) {
+        m_total += vector.size();
+        m_queue.insert_after(m_last, std::move(vector));
+        m_last++;
+        m_end = m_queue.end();
+    }
+
+    void start() {
+        m_curVector = m_queue.begin();
+        m_curIndex = 0;
+        m_relStartTime = std::chrono::steady_clock::now();
+    }
+
+    /* Side-effect: frees no longer needed vectors, leaves empty queue at end */
+    void mixin(float output[], std::size_t numSamples) override {
+        Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count());
+        if(m_curIndex + numSamples < m_curVector->size()) {
+            for(auto i = 0u; i < numSamples; i++)
+                output[i] += m_volume * (*m_curVector)[m_curIndex++];
+        } else if(!done()) {
+            auto countRead = m_curVector->size() - m_curIndex;
+            for(auto i = 0u; i < countRead; i++)
+                output[i] += m_volume * (*m_curVector)[m_curIndex++];
+            if(std::next(m_curVector) != m_end.load()) {
+                m_curVector++;
+                m_queue.pop_front();
+            } else {
+                Log::error("Audio data underflow!");
+            }
+            m_curIndex = 0;
+            mixin(output + countRead, numSamples - countRead);
+        } else
+            Log::debug("C");
+    }
+
+    bool done() const override { return m_curVector == m_end.load(); } // called from audio thread only
+
+    std::size_t total() const { return m_total; }
+
+    std::string_view name() const override { return "intro audio"sv; }
+};
 
 class IntroScreen : public GameScreen {
     BaseInput m_input;
@@ -29,7 +89,7 @@ class IntroScreen : public GameScreen {
     };
     std::deque<Frame> m_vBuffer;
 
-    std::deque<std::vector<float>> m_aBuffer;
+    IntroAudioSource::Ref m_aBuffer;
 
     std::string m_data;
     std::size_t m_offset;

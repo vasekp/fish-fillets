@@ -6,6 +6,7 @@ IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
     m_oggSync(),
+    m_aBuffer(std::make_shared<IntroAudioSource>()),
     m_data(instance.files().system("video/intro.ogv")->read()), // TODO
     m_offset(0)
 {
@@ -88,6 +89,7 @@ IntroScreen::IntroScreen(Instance& instance) :
         Log::fatal("Audio expected in 22050 Hz, mono!");
 
     fill_buffers();
+    m_aBuffer->start();
 }
 
 void IntroScreen::more_data() { // TODO eof
@@ -98,7 +100,7 @@ void IntroScreen::more_data() { // TODO eof
 void IntroScreen::queue_page(OggPage& page) {
     if(m_vbStream)
         if(m_vbStream->pagein(page) == 0)
-            Log::debug("Vorbis page");
+            Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(*m_vbDecoder, ogg_page_granulepos(page)) : 0);
     if(m_thStream)
         if(m_thStream->pagein(page) == 0)
             Log::debug("Theora page");
@@ -123,7 +125,7 @@ void IntroScreen::fill_buffers() {
         }
         if(!adata.empty()) {
             Log::debug("audio data: ", adata.size(), " frames");
-            m_aBuffer.push_back(std::move(adata));
+            m_aBuffer->push_back(std::move(adata));
         }
         while(m_vBuffer.size() < 2) {
             if(auto packet = m_thStream->packetout()) {
@@ -160,7 +162,7 @@ void IntroScreen::fill_buffers() {
             } else
                 break;
         }
-        if(m_vBuffer.size() < 2 || m_aBuffer.empty()) {
+        if(m_vBuffer.size() < 2 || m_aBuffer->total() < (timeAlive() + 1) * 22050) {
             more_data();
             while(auto page = m_oggSync.pageout())
                 queue_page(*page);
@@ -171,6 +173,7 @@ void IntroScreen::fill_buffers() {
 
 void IntroScreen::own_start() {
     m_instance.audio().clear();
+    m_instance.audio().addSource(m_aBuffer);
     m_instance.screens().announceLevel("");
 }
 

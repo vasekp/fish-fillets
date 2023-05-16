@@ -9,9 +9,7 @@ AudioSource::AudioSource(AudioData::Ref data, Private) :
     m_sampleIndex(),
     m_loop(false),
     m_loopStart(0),
-    m_loopEnd(0),
-    m_volume(1.f),
-    m_dialog(false)
+    m_loopEnd(0)
 { }
 
 AudioSource::Ref AudioSource::from(const AudioData::Ref& data) {
@@ -21,7 +19,7 @@ AudioSource::Ref AudioSource::from(const AudioData::Ref& data) {
 void AudioSource::mixin(float *output, std::size_t numSamples) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);
     for (auto i = 0u; i < countRead; i++)
-        output[i] += m_volume * (*m_data)[m_sampleIndex++];
+        output[i] += m_volume * (*m_data)[m_sampleIndex++]; // TODO m_volume → volume()
     if(m_loop && m_sampleIndex >= m_loopEnd) {
         Log::debug("music loop");
         m_sampleIndex = m_loopStart;

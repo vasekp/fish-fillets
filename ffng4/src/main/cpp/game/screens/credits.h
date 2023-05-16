@@ -6,7 +6,7 @@
 
 class CreditsScreen : public GameScreen {
     BaseInput m_input;
-    std::shared_ptr<AudioSource> m_music;
+    AudioSource::Ref m_music;
     unsigned m_totalHeight;
 
 public:

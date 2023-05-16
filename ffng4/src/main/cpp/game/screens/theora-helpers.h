@@ -103,7 +103,7 @@ public:
         auto size = vorbis_synthesis_pcmout(native(), &pcm);
         std::vector<float> ret{};
         ret.resize(size);
-        std::memcpy(ret.data(), pcm[0], size);
+        std::memcpy(ret.data(), pcm[0], size * sizeof(float));
         return ret;
     }
 
