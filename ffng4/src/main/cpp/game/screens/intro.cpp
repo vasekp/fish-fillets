@@ -178,7 +178,7 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
-    if(m_vBuffer.size() == 2 && m_vBuffer.back().time < timeAlive())
+    while(!m_vBuffer.empty() && m_vBuffer.front().time + 1 < timeAlive()) // libtheora: This is the "end time" for the frame, or the latest time it should be displayed. It is not the presentation time.
         m_vBuffer.pop_front();
     if(m_vBuffer.empty())
         return; // TODO quit screen
