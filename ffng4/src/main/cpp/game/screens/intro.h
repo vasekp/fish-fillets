@@ -15,6 +15,7 @@ class IntroAudioSource : public AudioSourceBase {
     decltype(m_queue)::iterator m_last;
     std::size_t m_curIndex;
     std::size_t m_total;
+    std::size_t m_played = 0;
 
     std::chrono::steady_clock::time_point m_relStartTime;
 
@@ -38,10 +39,18 @@ public:
 
     /* Side-effect: frees no longer needed vectors, leaves empty queue at end */
     void mixin(float output[], std::size_t numSamples) override {
-        Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count());
+        Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count(), " total ", m_played);
+        for(auto i = 0u; i < numSamples; i++) {
+            if((i + m_played) % 22050 > 20580) {
+                output[i] += 0.15 * (i & 2);
+                if((i + m_played) % 88200 < 22050)
+                    output[i] += 0.15 * (i & 2);
+            }
+        }
         if(m_curIndex + numSamples < m_curVector->size()) {
             for(auto i = 0u; i < numSamples; i++)
                 output[i] += m_volume * (*m_curVector)[m_curIndex++];
+            m_played += numSamples;
         } else if(!done()) {
             auto countRead = m_curVector->size() - m_curIndex;
             for(auto i = 0u; i < countRead; i++)
@@ -53,9 +62,9 @@ public:
                 Log::error("Audio data underflow!");
             }
             m_curIndex = 0;
-            mixin(output + countRead, numSamples - countRead);
-        } else
-            Log::debug("C");
+            m_played += countRead;
+            return mixin(output + countRead, numSamples - countRead);
+        }
     }
 
     bool done() const override { return m_curVector == m_end.load(); } // called from audio thread only

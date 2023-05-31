@@ -158,6 +158,11 @@ void IntroScreen::fill_buffers() {
                     copy(ycbcr[0], frame.data_y, 640, 480);
                     copy(ycbcr[1], frame.data_cb, 320, 240);
                     copy(ycbcr[2], frame.data_cr, 320, 240);
+                    if(auto x = int(frame.time * 30 + 0.5) % 30; x == 0 || x == 29) {
+                        frame.data_cb.fill(255);
+                        if(auto y = int(frame.time * 30 + 1.5) / 30; y % 4 == 1)
+                        frame.data_cr.fill(255);
+                    }
                 }
             } else
                 break;
@@ -178,7 +183,7 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
-    while(!m_vBuffer.empty() && m_vBuffer.front().time + 1 < timeAlive()) // libtheora: This is the "end time" for the frame, or the latest time it should be displayed. It is not the presentation time.
+    while(!m_vBuffer.empty() && m_vBuffer.front().time < timeAlive()) // libtheora: This is the "end time" for the frame, or the latest time it should be displayed. It is not the presentation time.
         m_vBuffer.pop_front();
     if(m_vBuffer.empty())
         return; // TODO quit screen
