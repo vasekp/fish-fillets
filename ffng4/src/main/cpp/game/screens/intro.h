@@ -10,7 +10,7 @@ using namespace std::string_view_literals; // TODO global
 class IntroScreen : public GameScreen {
     BaseInput m_input;
 
-    ogg::OggSync m_oggSync;
+    ogg::OggSync m_ogg;
     ogg::TheoraInfo m_thInfo;
     ogg::TheoraComment m_thComment;
     ogg::TheoraSetup m_thSetup;
@@ -20,7 +20,6 @@ class IntroScreen : public GameScreen {
     std::unique_ptr<ogg::OggStream> m_thStream;
     std::unique_ptr<ogg::OggStream> m_vbStream;
     std::unique_ptr<ogg::VorbisDecoder> m_vbDecoder;
-    std::unique_ptr<ogg::VorbisBlock> m_vbBlock;
 
     struct Frame {
         std::array<unsigned char, 640 * 480> data_y;
@@ -31,9 +30,6 @@ class IntroScreen : public GameScreen {
     std::deque<Frame> m_vBuffer;
 
     AudioSourceQueue::Ref m_aBuffer;
-
-    std::string m_data;
-    std::size_t m_offset;
 
 public:
     IntroScreen(Instance&);
@@ -47,7 +43,6 @@ protected:
     bool own_pointer(FCoords coords, bool longPress) override;
 
 private:
-    void more_data();
     void queue_page(ogg_page&);
     void fill_buffers();
 

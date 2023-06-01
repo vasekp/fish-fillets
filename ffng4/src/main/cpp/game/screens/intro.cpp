@@ -5,57 +5,53 @@
 IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
-    m_oggSync(),
-    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio")),
-    m_data(instance.files().system("video/intro.ogv")->read()), // TODO
-    m_offset(0)
+    m_ogg(),
+    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio"))
 {
+    ogg_page page;
+    m_ogg << instance.files().system("video/intro.ogv")->read(); // Load all data at once, 12 MB is not much
+
     /* parse headers and find audio and video streams */
-    [&]() {
-        for(;;) {
-            more_data();
-            while(auto page = m_oggSync.pageout()) {
-                if(!ogg_page_bos(&*page)) {
-                    queue_page(*page);
-                    return;
-                }
-                std::unique_ptr<ogg::OggStream> stream = std::make_unique<ogg::OggStream>(ogg_page_serialno(&*page));
-                stream->pagein(&*page);
-                auto packet = stream->packetout();
-                if(!m_thStream && th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &*packet) >= 0)
-                    m_thStream = std::move(stream);
-                else if(!m_vbStream && vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &*packet) >= 0)
-                    m_vbStream = std::move(stream);
-                else
-                    Log::warn("discarding ogg stream");
-            }
-        }
-    }();
+    while(m_ogg >> page) {
+        if(!ogg_page_bos(&page))
+            break;
+        std::unique_ptr<ogg::OggStream> stream = std::make_unique<ogg::OggStream>(ogg_page_serialno(&page));
+        *stream << page;
+        ogg_packet packet;
+        *stream >> packet;
+        if(!m_thStream && th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &packet) >= 0)
+            m_thStream = std::move(stream);
+        else if(!m_vbStream && vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &packet) >= 0)
+            m_vbStream = std::move(stream);
+        else
+            Log::warn("discarding ogg stream");
+    }
     if(!m_thStream)
         Log::fatal("Theora stream not found in intro.ogv");
     if(!m_vbStream)
         Log::fatal("Vorbis stream not found in intro.ogv");
     Log::debug("intro: audio & video streams found");
+    queue_page(page);
 
     /* parse header packets */
     for(int vbPackets = 1, thPackets = 1; vbPackets < 3 || thPackets < 3; ) {
-        std::optional<ogg_packet> packet;
-        while(vbPackets < 3 && (packet = m_vbStream->packetout())) {
-            if(vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &*packet) < 0)
+        ogg_packet packet;
+        while(vbPackets < 3 && *m_vbStream >> packet) {
+            if(vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &packet) < 0)
                 Log::fatal("Error parsing Vorbis headers");
             else
                 vbPackets++;
         }
-        while(thPackets < 3 && (packet = m_thStream->packetout())) {
-            if(th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &*packet) < 0)
+        while(thPackets < 3 && *m_thStream >> packet) {
+            if(th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &packet) < 0)
                 Log::fatal("Error parsing Theora headers");
             else
                 thPackets++;
         }
-        if(auto page = m_oggSync.pageout())
-            queue_page(*page);
+        if(m_ogg >> page)
+            queue_page(page);
         else
-            more_data();
+            Log::fatal("EOF while parsing stream headers");
     }
     Log::debug("intro: packet parsing successful");
 
@@ -83,7 +79,6 @@ IntroScreen::IntroScreen(Instance& instance) :
         Log::fatal("Video expected in 4:2:0 Y'CbCr!");
     // TODO postprocessing level?
     m_vbDecoder = std::make_unique<ogg::VorbisDecoder>(&m_vbInfo);
-    m_vbBlock = std::make_unique<ogg::VorbisBlock>(m_vbDecoder->block());
     Log::debug("Audio: ", m_vbInfo.channels, " channels, ", m_vbInfo.rate, " Hz");
     if(m_vbInfo.rate != 22050 || m_vbInfo.channels != 1)
         Log::fatal("Audio expected in 22050 Hz, mono!");
@@ -91,34 +86,25 @@ IntroScreen::IntroScreen(Instance& instance) :
     fill_buffers();
 }
 
-void IntroScreen::more_data() { // TODO eof
-    m_oggSync.write(m_data.data() + m_offset, 4096);
-    m_offset += 4096;
-}
-
 void IntroScreen::queue_page(ogg_page& page) {
-    if(m_vbStream)
-        if(m_vbStream->pagein(&page) == 0)
-            Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(&*m_vbDecoder, ogg_page_granulepos(&page)) : 0);
-    if(m_thStream)
-        if(m_thStream->pagein(&page) == 0)
-            Log::debug("Theora page");
+    assert(m_vbStream && m_thStream);
+    if(*m_vbStream << page)
+        Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(&*m_vbDecoder, ogg_page_granulepos(&page)) : 0);
+    if(*m_thStream << page)
+        Log::debug("Theora page");
 }
 
 void IntroScreen::fill_buffers() {
     for(;;) {
         std::vector<float> adata{};
         for(;;) {
-            if(auto ret = m_vbDecoder->pcmout(); ret.size() != 0) {
-                //Log::debug("audio packet size ", ret.size());
-                adata.reserve(adata.size() + ret.size());
-                adata.insert(adata.end(), ret.begin(), ret.end());
-                m_vbDecoder->read(ret.size());
+            if(auto ret = *m_vbDecoder >> adata) {
+                Log::debug("audio packet: ", ret);
             } else {
-                if(auto packet = m_vbStream->packetout()) {
-                    if(vorbis_synthesis(&*m_vbBlock, &*packet) == 0)
-                        m_vbDecoder->blockin(&*m_vbBlock);
-                } else
+                ogg_packet packet;
+                if(*m_vbStream >> packet)
+                    *m_vbDecoder << packet;
+                else
                     break;
             }
         }
@@ -127,11 +113,12 @@ void IntroScreen::fill_buffers() {
             m_aBuffer->enqueue(std::move(adata));
         }
         while(m_vBuffer.size() < vBufSize) {
-            if(auto packet = m_thStream->packetout()) {
-                if(packet->granulepos > 0)
-                    th_decode_ctl(m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet->granulepos, sizeof(packet->granulepos));
+            ogg_packet packet;
+            if(*m_thStream >> packet) {
+                if(packet.granulepos > 0)
+                    th_decode_ctl(m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
                 std::int64_t granulepos;
-                if(th_decode_packetin(m_thDecoder, &*packet, &granulepos) == 0) {
+                if(th_decode_packetin(m_thDecoder, &packet, &granulepos) == 0) {
                     auto time = th_granule_time(m_thDecoder, granulepos);
                     Log::debug("video packet in @ ", time);
                     th_ycbcr_buffer ycbcr;
@@ -165,9 +152,10 @@ void IntroScreen::fill_buffers() {
                 break;
         }
         if(m_vBuffer.size() < 2 || m_aBuffer->total() < (timeAlive() + 1) * 22050) {
-            more_data();
-            while(auto page = m_oggSync.pageout())
-                queue_page(*page);
+            if(ogg_page page; m_ogg >> page)
+                queue_page(page);
+            else
+                Log::fatal("EOF");
         } else
             break;
     }
