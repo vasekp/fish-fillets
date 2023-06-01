@@ -15,11 +15,11 @@ IntroScreen::IntroScreen(Instance& instance) :
         for(;;) {
             more_data();
             while(auto page = m_oggSync.pageout()) {
-                if(!page->bos()) {
+                if(!ogg_page_bos(&*page)) {
                     queue_page(*page);
                     return;
                 }
-                std::unique_ptr<OggStream> stream = std::make_unique<OggStream>(page->serialno());
+                std::unique_ptr<ogg::OggStream> stream = std::make_unique<ogg::OggStream>(ogg_page_serialno(&*page));
                 stream->pagein(&*page);
                 auto packet = stream->packetout();
                 if(!m_thStream && th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &*packet) >= 0)
@@ -82,8 +82,8 @@ IntroScreen::IntroScreen(Instance& instance) :
     if(fmt != TH_PF_420)
         Log::fatal("Video expected in 4:2:0 Y'CbCr!");
     // TODO postprocessing level?
-    m_vbDecoder = std::make_unique<VorbisDecoder>(&m_vbInfo);
-    m_vbBlock = std::make_unique<VorbisBlock>(m_vbDecoder->block());
+    m_vbDecoder = std::make_unique<ogg::VorbisDecoder>(&m_vbInfo);
+    m_vbBlock = std::make_unique<ogg::VorbisBlock>(m_vbDecoder->block());
     Log::debug("Audio: ", m_vbInfo.channels, " channels, ", m_vbInfo.rate, " Hz");
     if(m_vbInfo.rate != 22050 || m_vbInfo.channels != 1)
         Log::fatal("Audio expected in 22050 Hz, mono!");
@@ -116,7 +116,7 @@ void IntroScreen::fill_buffers() {
                 m_vbDecoder->read(ret.size());
             } else {
                 if(auto packet = m_vbStream->packetout()) {
-                    if(m_vbBlock->synthesis(&*packet) == 0)
+                    if(vorbis_synthesis(&*m_vbBlock, &*packet) == 0)
                         m_vbDecoder->blockin(&*m_vbBlock);
                 } else
                     break;

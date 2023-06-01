@@ -3,24 +3,24 @@
 
 #include "screen.h"
 #include "subsystem/audio.h"
-#include "theora-helpers.h"
+#include "api/ogg.h"
 
 using namespace std::string_view_literals; // TODO global
 
 class IntroScreen : public GameScreen {
     BaseInput m_input;
 
-    OggSync m_oggSync;
-    TheoraInfo m_thInfo;
-    TheoraComment m_thComment;
-    TheoraSetup m_thSetup;
-    TheoraDecoder m_thDecoder;
-    VorbisInfo m_vbInfo;
-    VorbisComment m_vbComment;
-    std::unique_ptr<OggStream> m_thStream;
-    std::unique_ptr<OggStream> m_vbStream;
-    std::unique_ptr<VorbisDecoder> m_vbDecoder;
-    std::unique_ptr<VorbisBlock> m_vbBlock;
+    ogg::OggSync m_oggSync;
+    ogg::TheoraInfo m_thInfo;
+    ogg::TheoraComment m_thComment;
+    ogg::TheoraSetup m_thSetup;
+    ogg::TheoraDecoder m_thDecoder;
+    ogg::VorbisInfo m_vbInfo;
+    ogg::VorbisComment m_vbComment;
+    std::unique_ptr<ogg::OggStream> m_thStream;
+    std::unique_ptr<ogg::OggStream> m_vbStream;
+    std::unique_ptr<ogg::VorbisDecoder> m_vbDecoder;
+    std::unique_ptr<ogg::VorbisBlock> m_vbBlock;
 
     struct Frame {
         std::array<unsigned char, 640 * 480> data_y;
