@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_AUDIO_SOURCE_H
 #define FISH_FILLETS_AUDIO_SOURCE_H
 
+#include <atomic> // TODO move to common.h
+
 class AudioSourceBase { // TODO rename
 protected:
     float m_volume = 1.0f;
@@ -45,12 +47,37 @@ public:
     using Ref = std::shared_ptr<AudioSource>;
     static Ref from(const AudioData::Ref&);
 
-    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
-
     const auto& filename() const { return m_data->filename(); }
     std::string_view name() const override { return filename(); }
     void mixin(float output[], std::size_t numSamples) override;
     bool done() const override;
+
+    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
+};
+
+class AudioSourceQueue : public AudioSourceBase {
+    struct Node {
+        std::vector<float> data;
+        std::unique_ptr<Node> next;
+    };
+
+    std::unique_ptr<Node> m_start;
+    std::atomic<Node*> m_last;
+    std::size_t m_curIndex;
+    std::size_t m_total;
+    std::string m_name;
+
+public:
+    AudioSourceQueue(std::string name);
+
+    using Ref = std::shared_ptr<AudioSourceQueue>;
+
+    void enqueue(std::vector<float>&& data);
+    std::string_view name() const override { return m_name; }
+    void mixin(float output[], std::size_t numSamples) override;
+    bool done() const override;
+
+    std::size_t total() const { return m_total; }
 };
 
 #endif //FISH_FILLETS_AUDIO_SOURCE_H

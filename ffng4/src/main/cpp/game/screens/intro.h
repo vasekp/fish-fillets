@@ -7,81 +7,6 @@
 
 using namespace std::string_view_literals; // TODO global
 
-class IntroAudioSource : public AudioSourceBase {
-    struct Node {
-        std::vector<float> data;
-        std::unique_ptr<Node> next;
-    };
-    //std::forward_list<std::vector<float>> m_queue;
-    //decltype(m_queue)::iterator m_curVector;
-    //std::atomic<decltype(m_queue)::iterator> m_end;
-    //decltype(m_queue)::iterator m_last;
-    std::unique_ptr<Node> m_start;
-    std::atomic<Node*> m_last;
-    std::size_t m_curIndex = 0;
-    std::size_t m_total = 0;
-    std::size_t m_played = 0;
-    bool m_done = false;
-
-public:
-    IntroAudioSource() : /*m_queue{}, m_curVector{m_queue.end()}, m_end{m_queue.end()}, m_last{m_queue.before_begin()},*/ m_start{}, m_last{} { }
-
-    using Ref = std::shared_ptr<IntroAudioSource>;
-
-    void push_back(std::vector<float>&& data) {
-        m_total += data.size();
-        //m_queue.insert_after(m_last, std::move(vector));
-        //m_last++;
-        //m_end = m_queue.end();
-        if(Node* last = m_last.load(); !last) {
-            m_start = std::make_unique<Node>(std::move(data));
-            m_last.store(m_start.get());
-        } else {
-            last->next = std::make_unique<Node>(std::move(data));
-            m_last.store(last->next.get());
-        }
-    }
-
-    /* Side-effect: frees no longer needed vectors, leaves empty queue at end */
-    void mixin(float output[], std::size_t numSamples) override {
-        //Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count(), " total ", m_played);
-        /*for(auto i = 0u; i < numSamples; i++) {
-            if((i + m_played) % 22050 > 20580) {
-                output[i] += 0.15 * (i & 2);
-                if((i + m_played) % 88200 < 22050)
-                    output[i] += 0.15 * (i & 2);
-            }
-        }*/
-        if(!m_start)
-            return;
-        const auto& data = m_start->data;
-        if(m_curIndex + numSamples < data.size()) {
-            for(auto i = 0u; i < numSamples; i++)
-                output[i] += m_volume * data[m_curIndex++];
-            m_played += numSamples;
-        } else {
-            auto countRead = data.size() - m_curIndex;
-            for(auto i = 0u; i < countRead; i++)
-                output[i] += m_volume * data[m_curIndex++];
-            m_start = std::move(m_start->next);
-            if(m_start) {
-                m_curIndex = 0;
-                m_played += countRead;
-                mixin(output + countRead, numSamples - countRead);
-            } else {
-                Log::info("Audio data ended.");
-                m_done = true;
-            }
-        }
-    }
-
-    bool done() const override { return m_done; }
-
-    std::size_t total() const { return m_total; }
-
-    std::string_view name() const override { return "intro audio"sv; }
-};
-
 class IntroScreen : public GameScreen {
     BaseInput m_input;
 
@@ -106,7 +31,7 @@ class IntroScreen : public GameScreen {
     };
     std::deque<Frame> m_vBuffer;
 
-    IntroAudioSource::Ref m_aBuffer;
+    AudioSourceQueue::Ref m_aBuffer;
 
     std::string m_data;
     std::size_t m_offset;

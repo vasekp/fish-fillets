@@ -6,7 +6,7 @@ IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
     m_oggSync(),
-    m_aBuffer(std::make_shared<IntroAudioSource>()),
+    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio")),
     m_data(instance.files().system("video/intro.ogv")->read()), // TODO
     m_offset(0)
 {
@@ -89,7 +89,6 @@ IntroScreen::IntroScreen(Instance& instance) :
         Log::fatal("Audio expected in 22050 Hz, mono!");
 
     fill_buffers();
-    //m_aBuffer->start();
 }
 
 void IntroScreen::more_data() { // TODO eof
@@ -125,7 +124,7 @@ void IntroScreen::fill_buffers() {
         }
         if(!adata.empty()) {
             Log::debug("audio data: ", adata.size(), " frames");
-            m_aBuffer->push_back(std::move(adata));
+            m_aBuffer->enqueue(std::move(adata));
         }
         while(m_vBuffer.size() < 2) {
             if(auto packet = m_thStream->packetout()) {
@@ -187,8 +186,10 @@ void IntroScreen::own_start() {
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
     while(!m_vBuffer.empty() && m_vBuffer.front().time < timeAlive()) // libtheora: This is the "end time" for the frame, or the latest time it should be displayed. It is not the presentation time.
         m_vBuffer.pop_front();
-    if(m_vBuffer.empty())
+    if(m_vBuffer.empty()) {
+        Log::info("Video ended.");
         return; // TODO quit screen
+    }
     Frame& frame = m_vBuffer.front();
     Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
     auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.data_y.data(), 1);
