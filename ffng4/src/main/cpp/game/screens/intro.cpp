@@ -20,11 +20,11 @@ IntroScreen::IntroScreen(Instance& instance) :
                     return;
                 }
                 std::unique_ptr<OggStream> stream = std::make_unique<OggStream>(page->serialno());
-                stream->pagein(*page);
+                stream->pagein(&*page);
                 auto packet = stream->packetout();
-                if(!m_thStream && th_decode_headerin(m_thInfo, m_thComment, &m_thSetup, &*packet) >= 0)
+                if(!m_thStream && th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &*packet) >= 0)
                     m_thStream = std::move(stream);
-                else if(!m_vbStream && vorbis_synthesis_headerin(m_vbInfo, m_vbComment, &*packet) >= 0)
+                else if(!m_vbStream && vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &*packet) >= 0)
                     m_vbStream = std::move(stream);
                 else
                     Log::warn("discarding ogg stream");
@@ -41,13 +41,13 @@ IntroScreen::IntroScreen(Instance& instance) :
     for(int vbPackets = 1, thPackets = 1; vbPackets < 3 || thPackets < 3; ) {
         std::optional<ogg_packet> packet;
         while(vbPackets < 3 && (packet = m_vbStream->packetout())) {
-            if(vorbis_synthesis_headerin(m_vbInfo, m_vbComment, &*packet) < 0)
+            if(vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &*packet) < 0)
                 Log::fatal("Error parsing Vorbis headers");
             else
                 vbPackets++;
         }
         while(thPackets < 3 && (packet = m_thStream->packetout())) {
-            if(th_decode_headerin(m_thInfo, m_thComment, &m_thSetup, &*packet) < 0)
+            if(th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &*packet) < 0)
                 Log::fatal("Error parsing Theora headers");
             else
                 thPackets++;
@@ -60,12 +60,12 @@ IntroScreen::IntroScreen(Instance& instance) :
     Log::debug("intro: packet parsing successful");
 
     /* Initialize decoders */
-    m_thDecoder = std::make_unique<TheoraDecoder>(th_decode_alloc(m_thInfo, m_thSetup));
-    Log::debug("Video: ", m_thInfo->pic_width, 'x', m_thInfo->pic_height,
-            ' ', (float)m_thInfo->fps_numerator / m_thInfo->fps_denominator, "fps");
-    if(m_thInfo->pic_width != 640 || m_thInfo->pic_height != 480)
+    m_thDecoder.set(th_decode_alloc(&m_thInfo, m_thSetup));
+    Log::debug("Video: ", m_thInfo.pic_width, 'x', m_thInfo.pic_height,
+            ' ', (float)m_thInfo.fps_numerator / m_thInfo.fps_denominator, "fps");
+    if(m_thInfo.pic_width != 640 || m_thInfo.pic_height != 480)
         Log::fatal("Video expected in 640x480!");
-    th_pixel_fmt fmt = m_thInfo->pixel_fmt;
+    th_pixel_fmt fmt = m_thInfo.pixel_fmt;
     switch(fmt) {
         case TH_PF_420:
             Log::debug("Video: 4:2:0");
@@ -82,10 +82,10 @@ IntroScreen::IntroScreen(Instance& instance) :
     if(fmt != TH_PF_420)
         Log::fatal("Video expected in 4:2:0 Y'CbCr!");
     // TODO postprocessing level?
-    m_vbDecoder = std::make_unique<VorbisDecoder>(m_vbInfo.native());
+    m_vbDecoder = std::make_unique<VorbisDecoder>(&m_vbInfo);
     m_vbBlock = std::make_unique<VorbisBlock>(m_vbDecoder->block());
-    Log::debug("Audio: ", m_vbInfo->channels, " channels, ", m_vbInfo->rate, " Hz");
-    if(m_vbInfo->rate != 22050 || m_vbInfo->channels != 1)
+    Log::debug("Audio: ", m_vbInfo.channels, " channels, ", m_vbInfo.rate, " Hz");
+    if(m_vbInfo.rate != 22050 || m_vbInfo.channels != 1)
         Log::fatal("Audio expected in 22050 Hz, mono!");
 
     fill_buffers();
@@ -96,12 +96,12 @@ void IntroScreen::more_data() { // TODO eof
     m_offset += 4096;
 }
 
-void IntroScreen::queue_page(OggPage& page) {
+void IntroScreen::queue_page(ogg_page& page) {
     if(m_vbStream)
-        if(m_vbStream->pagein(page) == 0)
-            Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(*m_vbDecoder, ogg_page_granulepos(page)) : 0);
+        if(m_vbStream->pagein(&page) == 0)
+            Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(&*m_vbDecoder, ogg_page_granulepos(&page)) : 0);
     if(m_thStream)
-        if(m_thStream->pagein(page) == 0)
+        if(m_thStream->pagein(&page) == 0)
             Log::debug("Theora page");
 }
 
@@ -117,7 +117,7 @@ void IntroScreen::fill_buffers() {
             } else {
                 if(auto packet = m_vbStream->packetout()) {
                     if(m_vbBlock->synthesis(&*packet) == 0)
-                        m_vbDecoder->blockin(*m_vbBlock);
+                        m_vbDecoder->blockin(&*m_vbBlock);
                 } else
                     break;
             }
@@ -129,13 +129,13 @@ void IntroScreen::fill_buffers() {
         while(m_vBuffer.size() < vBufSize) {
             if(auto packet = m_thStream->packetout()) {
                 if(packet->granulepos > 0)
-                    th_decode_ctl(*m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet->granulepos, sizeof(packet->granulepos));
+                    th_decode_ctl(m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet->granulepos, sizeof(packet->granulepos));
                 std::int64_t granulepos;
-                if(m_thDecoder->packetin(&*packet, &granulepos) == 0) {
-                    auto time = th_granule_time(*m_thDecoder, granulepos);
+                if(th_decode_packetin(m_thDecoder, &*packet, &granulepos) == 0) {
+                    auto time = th_granule_time(m_thDecoder, granulepos);
                     Log::debug("video packet in @ ", time);
                     th_ycbcr_buffer ycbcr;
-                    th_decode_ycbcr_out(*m_thDecoder, ycbcr);
+                    th_decode_ycbcr_out(m_thDecoder, ycbcr);
                     m_vBuffer.emplace_back();
                     Frame& frame = m_vBuffer.back();
                     frame.time = time;

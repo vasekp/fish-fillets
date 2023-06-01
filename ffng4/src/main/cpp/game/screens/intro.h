@@ -14,10 +14,10 @@ class IntroScreen : public GameScreen {
     TheoraInfo m_thInfo;
     TheoraComment m_thComment;
     TheoraSetup m_thSetup;
+    TheoraDecoder m_thDecoder;
     VorbisInfo m_vbInfo;
     VorbisComment m_vbComment;
     std::unique_ptr<OggStream> m_thStream;
-    std::unique_ptr<TheoraDecoder> m_thDecoder;
     std::unique_ptr<OggStream> m_vbStream;
     std::unique_ptr<VorbisDecoder> m_vbDecoder;
     std::unique_ptr<VorbisBlock> m_vbBlock;
@@ -48,7 +48,7 @@ protected:
 
 private:
     void more_data();
-    void queue_page(OggPage&);
+    void queue_page(ogg_page&);
     void fill_buffers();
 
     static constexpr std::size_t vBufSize = 5;
