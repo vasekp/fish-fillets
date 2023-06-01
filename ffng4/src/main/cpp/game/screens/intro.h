@@ -4,70 +4,78 @@
 #include "screen.h"
 #include "subsystem/audio.h"
 #include "theora-helpers.h"
-#include <forward_list>
 
 using namespace std::string_view_literals; // TODO global
 
 class IntroAudioSource : public AudioSourceBase {
-    std::forward_list<std::vector<float>> m_queue;
-    decltype(m_queue)::iterator m_curVector;
-    std::atomic<decltype(m_queue)::iterator> m_end;
-    decltype(m_queue)::iterator m_last;
-    std::size_t m_curIndex;
-    std::size_t m_total;
+    struct Node {
+        std::vector<float> data;
+        std::unique_ptr<Node> next;
+    };
+    //std::forward_list<std::vector<float>> m_queue;
+    //decltype(m_queue)::iterator m_curVector;
+    //std::atomic<decltype(m_queue)::iterator> m_end;
+    //decltype(m_queue)::iterator m_last;
+    std::unique_ptr<Node> m_start;
+    std::atomic<Node*> m_last;
+    std::size_t m_curIndex = 0;
+    std::size_t m_total = 0;
     std::size_t m_played = 0;
-
-    std::chrono::steady_clock::time_point m_relStartTime;
+    bool m_done = false;
 
 public:
-    IntroAudioSource() : m_queue{}, m_curVector{m_queue.end()}, m_end{m_queue.end()}, m_last{m_queue.before_begin()}, m_total{0} { }
+    IntroAudioSource() : /*m_queue{}, m_curVector{m_queue.end()}, m_end{m_queue.end()}, m_last{m_queue.before_begin()},*/ m_start{}, m_last{} { }
 
     using Ref = std::shared_ptr<IntroAudioSource>;
 
-    void push_back(std::vector<float>&& vector) {
-        m_total += vector.size();
-        m_queue.insert_after(m_last, std::move(vector));
-        m_last++;
-        m_end = m_queue.end();
-    }
-
-    void start() {
-        m_curVector = m_queue.begin();
-        m_curIndex = 0;
-        m_relStartTime = std::chrono::steady_clock::now();
+    void push_back(std::vector<float>&& data) {
+        m_total += data.size();
+        //m_queue.insert_after(m_last, std::move(vector));
+        //m_last++;
+        //m_end = m_queue.end();
+        if(Node* last = m_last.load(); !last) {
+            m_start = std::make_unique<Node>(std::move(data));
+            m_last.store(m_start.get());
+        } else {
+            last->next = std::make_unique<Node>(std::move(data));
+            m_last.store(last->next.get());
+        }
     }
 
     /* Side-effect: frees no longer needed vectors, leaves empty queue at end */
     void mixin(float output[], std::size_t numSamples) override {
-        Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count(), " total ", m_played);
-        for(auto i = 0u; i < numSamples; i++) {
+        //Log::debug("mixin ", numSamples, " @ ", std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count(), " total ", m_played);
+        /*for(auto i = 0u; i < numSamples; i++) {
             if((i + m_played) % 22050 > 20580) {
                 output[i] += 0.15 * (i & 2);
                 if((i + m_played) % 88200 < 22050)
                     output[i] += 0.15 * (i & 2);
             }
-        }
-        if(m_curIndex + numSamples < m_curVector->size()) {
+        }*/
+        if(!m_start)
+            return;
+        const auto& data = m_start->data;
+        if(m_curIndex + numSamples < data.size()) {
             for(auto i = 0u; i < numSamples; i++)
-                output[i] += m_volume * (*m_curVector)[m_curIndex++];
+                output[i] += m_volume * data[m_curIndex++];
             m_played += numSamples;
-        } else if(!done()) {
-            auto countRead = m_curVector->size() - m_curIndex;
+        } else {
+            auto countRead = data.size() - m_curIndex;
             for(auto i = 0u; i < countRead; i++)
-                output[i] += m_volume * (*m_curVector)[m_curIndex++];
-            if(std::next(m_curVector) != m_end.load()) {
-                m_curVector++;
-                m_queue.pop_front();
+                output[i] += m_volume * data[m_curIndex++];
+            m_start = std::move(m_start->next);
+            if(m_start) {
+                m_curIndex = 0;
+                m_played += countRead;
+                mixin(output + countRead, numSamples - countRead);
             } else {
-                Log::error("Audio data underflow!");
+                Log::info("Audio data ended.");
+                m_done = true;
             }
-            m_curIndex = 0;
-            m_played += countRead;
-            return mixin(output + countRead, numSamples - countRead);
         }
     }
 
-    bool done() const override { return m_curVector == m_end.load(); } // called from audio thread only
+    bool done() const override { return m_done; }
 
     std::size_t total() const { return m_total; }
 

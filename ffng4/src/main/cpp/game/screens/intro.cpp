@@ -89,7 +89,7 @@ IntroScreen::IntroScreen(Instance& instance) :
         Log::fatal("Audio expected in 22050 Hz, mono!");
 
     fill_buffers();
-    m_aBuffer->start();
+    //m_aBuffer->start();
 }
 
 void IntroScreen::more_data() { // TODO eof
