@@ -129,6 +129,8 @@ void IntroScreen::fill_buffers() {
         }
         while(m_vBuffer.size() < 2) {
             if(auto packet = m_thStream->packetout()) {
+                if(packet->granulepos > 0)
+                    th_decode_ctl(*m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet->granulepos, sizeof(packet->granulepos));
                 std::int64_t granulepos;
                 if(m_thDecoder->packetin(&*packet, &granulepos) == 0) {
                     auto time = th_granule_time(*m_thDecoder, granulepos);
