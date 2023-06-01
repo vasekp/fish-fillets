@@ -22,7 +22,6 @@ class IntroScreen : public GameScreen {
     std::unique_ptr<VorbisDecoder> m_vbDecoder;
     std::unique_ptr<VorbisBlock> m_vbBlock;
 
-    constexpr static int buffSize = 2;
     struct Frame {
         std::array<unsigned char, 640 * 480> data_y;
         std::array<unsigned char, 320 * 240> data_cb;
@@ -51,6 +50,8 @@ private:
     void more_data();
     void queue_page(OggPage&);
     void fill_buffers();
+
+    static constexpr std::size_t vBufSize = 5;
 };
 
 #endif //FISH_FILLETS_GAME_INTRO_H

@@ -126,7 +126,7 @@ void IntroScreen::fill_buffers() {
             Log::debug("audio data: ", adata.size(), " frames");
             m_aBuffer->enqueue(std::move(adata));
         }
-        while(m_vBuffer.size() < 2) {
+        while(m_vBuffer.size() < vBufSize) {
             if(auto packet = m_thStream->packetout()) {
                 if(packet->granulepos > 0)
                     th_decode_ctl(*m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet->granulepos, sizeof(packet->granulepos));
@@ -136,10 +136,6 @@ void IntroScreen::fill_buffers() {
                     Log::debug("video packet in @ ", time);
                     th_ycbcr_buffer ycbcr;
                     th_decode_ycbcr_out(*m_thDecoder, ycbcr);
-                    /*Log::debug("YUV ",
-                        ycbcr[0].width, 'x', ycbcr[0].height, '%', ycbcr[0].stride, ' ',
-                        ycbcr[1].width, 'x', ycbcr[1].height, '%', ycbcr[1].stride, ' ',
-                        ycbcr[2].width, 'x', ycbcr[2].height, '%', ycbcr[2].stride);*/
                     m_vBuffer.emplace_back();
                     Frame& frame = m_vBuffer.back();
                     frame.time = time;
@@ -159,11 +155,11 @@ void IntroScreen::fill_buffers() {
                     copy(ycbcr[0], frame.data_y, 640, 480);
                     copy(ycbcr[1], frame.data_cb, 320, 240);
                     copy(ycbcr[2], frame.data_cr, 320, 240);
-                    if(auto x = int(frame.time * 30 + 0.5) % 30; x == 0 || x == 29) {
+                    /*if(auto x = int(frame.time * 30 + 0.5) % 30; x == 0 || x == 29) {
                         frame.data_cb.fill(255);
                         if(auto y = int(frame.time * 30 + 1.5) / 30; y % 4 == 1)
                         frame.data_cr.fill(255);
-                    }
+                    }*/
                 }
             } else
                 break;
