@@ -15,6 +15,10 @@ namespace ogg::internal {
             std::memmove(this, &nativeObj, sizeof(C));
         }
 
+        OggStruct(const OggStruct&) = delete;
+
+        OggStruct& operator=(const OggStruct&) = delete;
+
         ~OggStruct() {
             if constexpr(clear != nullptr)
                 clear(this);
@@ -27,6 +31,10 @@ namespace ogg::internal {
 
     public:
         OggPointer() : m_native(nullptr) { }
+
+        OggPointer(const OggPointer&) = delete;
+
+        OggPointer& operator=(const OggPointer&) = delete;
 
         ~OggPointer() {
             if(m_native)
