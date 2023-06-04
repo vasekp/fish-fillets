@@ -34,6 +34,12 @@ namespace ogg {
 
         class OggStream : public OggStruct<ogg_stream_state, ogg_stream_init, ogg_stream_clear> {
         public:
+            using OggStruct::OggStruct;
+
+            OggStream(ogg_page& page) : OggStream(ogg_page_serialno(&page)) {
+                operator<<(page);
+            }
+
             bool operator<<(ogg_page& page) {
                 return ogg_stream_pagein(this, &page) == 0;
             }

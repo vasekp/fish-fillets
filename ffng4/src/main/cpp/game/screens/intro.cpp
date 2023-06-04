@@ -5,159 +5,38 @@
 IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
-    m_ogg(),
+    m_ogg(instance.files().system("video/intro.ogv")->read()),
+    m_vorbis(m_ogg),
+    m_theora(m_ogg),
     m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio"))
 {
-    ogg_page page;
-    m_ogg << instance.files().system("video/intro.ogv")->read(); // Load all data at once, 12 MB is not much
-
-    /* parse headers and find audio and video streams */
-    while(m_ogg >> page) {
-        if(!ogg_page_bos(&page))
-            break;
-        std::unique_ptr<ogg::OggStream> stream = std::make_unique<ogg::OggStream>(ogg_page_serialno(&page));
-        *stream << page;
-        ogg_packet packet;
-        *stream >> packet;
-        if(!m_thStream && th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &packet) >= 0)
-            m_thStream = std::move(stream);
-        else if(!m_vbStream && vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &packet) >= 0)
-            m_vbStream = std::move(stream);
-        else
-            Log::warn("discarding ogg stream");
-    }
-    if(!m_thStream)
-        Log::fatal("Theora stream not found in intro.ogv");
-    if(!m_vbStream)
-        Log::fatal("Vorbis stream not found in intro.ogv");
-    Log::debug("intro: audio & video streams found");
-    queue_page(page);
-
-    /* parse header packets */
-    for(int vbPackets = 1, thPackets = 1; vbPackets < 3 || thPackets < 3; ) {
-        ogg_packet packet;
-        while(vbPackets < 3 && *m_vbStream >> packet) {
-            if(vorbis_synthesis_headerin(&m_vbInfo, &m_vbComment, &packet) < 0)
-                Log::fatal("Error parsing Vorbis headers");
-            else
-                vbPackets++;
-        }
-        while(thPackets < 3 && *m_thStream >> packet) {
-            if(th_decode_headerin(&m_thInfo, &m_thComment, &m_thSetup, &packet) < 0)
-                Log::fatal("Error parsing Theora headers");
-            else
-                thPackets++;
-        }
-        if(m_ogg >> page)
-            queue_page(page);
-        else
-            Log::fatal("EOF while parsing stream headers");
-    }
-    Log::debug("intro: packet parsing successful");
-
-    /* Initialize decoders */
-    m_thDecoder.set(th_decode_alloc(&m_thInfo, m_thSetup));
-    Log::debug("Video: ", m_thInfo.pic_width, 'x', m_thInfo.pic_height,
-            ' ', (float)m_thInfo.fps_numerator / m_thInfo.fps_denominator, "fps");
-    if(m_thInfo.pic_width != 640 || m_thInfo.pic_height != 480)
+    auto& info = m_theora.info();
+    if(info.pic_width != 640 || info.pic_height != 480)
         Log::fatal("Video expected in 640x480!");
-    th_pixel_fmt fmt = m_thInfo.pixel_fmt;
-    switch(fmt) {
-        case TH_PF_420:
-            Log::debug("Video: 4:2:0");
-            break;
-        case TH_PF_422:
-            Log::debug("Video: 4:2:2");
-            break;
-        case TH_PF_444:
-            Log::debug("Video: 4:4:4");
-            break;
-        default:
-            Log::error("Video: unknown sampling");
-    }
-    if(fmt != TH_PF_420)
+    if(info.pixel_fmt != TH_PF_420)
         Log::fatal("Video expected in 4:2:0 Y'CbCr!");
-    // TODO postprocessing level?
-    m_vbDecoder = std::make_unique<ogg::VorbisDecoder>(&m_vbInfo);
-    Log::debug("Audio: ", m_vbInfo.channels, " channels, ", m_vbInfo.rate, " Hz");
-    if(m_vbInfo.rate != 22050 || m_vbInfo.channels != 1)
-        Log::fatal("Audio expected in 22050 Hz, mono!");
-
     fill_buffers();
 }
 
-void IntroScreen::queue_page(ogg_page& page) {
-    assert(m_vbStream && m_thStream);
-    if(*m_vbStream << page)
-        Log::debug("Vorbis page @ ", m_vbDecoder ? vorbis_granule_time(&*m_vbDecoder, ogg_page_granulepos(&page)) : 0);
-    if(*m_thStream << page)
-        Log::debug("Theora page");
-}
-
 void IntroScreen::fill_buffers() {
-    for(;;) {
-        std::vector<float> adata{};
-        for(;;) {
-            if(auto ret = *m_vbDecoder >> adata) {
-                Log::debug("audio packet: ", ret);
-            } else {
-                ogg_packet packet;
-                if(*m_vbStream >> packet)
-                    *m_vbDecoder << packet;
-                else
-                    break;
-            }
-        }
-        if(!adata.empty()) {
-            Log::debug("audio data: ", adata.size(), " frames");
-            m_aBuffer->enqueue(std::move(adata));
-        }
-        while(m_vBuffer.size() < vBufSize) {
-            ogg_packet packet;
-            if(*m_thStream >> packet) {
-                if(packet.granulepos > 0)
-                    th_decode_ctl(m_thDecoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
-                std::int64_t granulepos;
-                if(th_decode_packetin(m_thDecoder, &packet, &granulepos) == 0) {
-                    auto time = th_granule_time(m_thDecoder, granulepos);
-                    Log::debug("video packet in @ ", time);
-                    th_ycbcr_buffer ycbcr;
-                    th_decode_ycbcr_out(m_thDecoder, ycbcr);
-                    m_vBuffer.emplace_back();
-                    Frame& frame = m_vBuffer.back();
-                    frame.time = time;
-                    auto copy = [&](th_img_plane& src, auto& dst, int width, int height) {
-                        if(src.stride == width)
-                            std::memcpy(dst.data(), src.data, width * height);
-                        else {
-                            unsigned char* srcp = src.data;
-                            unsigned char* dstp = dst.data();
-                            for(int y = 0; y < height; y++) {
-                                std::memcpy(dstp, srcp, width);
-                                srcp += src.stride;
-                                dstp += width;
-                            }
-                        }
-                    };
-                    copy(ycbcr[0], frame.data_y, 640, 480);
-                    copy(ycbcr[1], frame.data_cb, 320, 240);
-                    copy(ycbcr[2], frame.data_cr, 320, 240);
-                    /*if(auto x = int(frame.time * 30 + 0.5) % 30; x == 0 || x == 29) {
-                        frame.data_cb.fill(255);
-                        if(auto y = int(frame.time * 30 + 1.5) / 30; y % 4 == 1)
-                        frame.data_cr.fill(255);
-                    }*/
-                }
-            } else
-                break;
-        }
-        if(m_vBuffer.size() < 2 || m_aBuffer->total() < (timeAlive() + 1) * 22050) {
-            if(ogg_page page; m_ogg >> page)
-                queue_page(page);
-            else
-                Log::fatal("EOF");
-        } else
+    while(m_aBuffer->total() < (timeAlive() + 1) * 22050) {
+        std::vector<float> aData;
+        if(!(m_vorbis >> aData)) {
+            Log::debug("Audio EOS");
             break;
+        }
+        Log::debug("Audio data: ", aData.size(), " frames");
+        m_aBuffer->enqueue(std::move(aData));
+    }
+
+    while(m_vBuffer.size() < vBufSize) {
+        m_vBuffer.emplace_back();
+        auto& frame = m_vBuffer.back();
+        if(!(m_theora >> frame)) {
+            Log::debug("Video EOS");
+            break;
+        }
+        Log::debug("Video frame @ ", frame.time);
     }
 }
 
@@ -168,17 +47,20 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
-    while(!m_vBuffer.empty() && m_vBuffer.front().time < timeAlive()) // libtheora: This is the "end time" for the frame, or the latest time it should be displayed. It is not the presentation time.
+    while(!m_vBuffer.empty() && m_vBuffer.front().time < timeAlive())
         m_vBuffer.pop_front();
     if(m_vBuffer.empty()) {
         Log::info("Video ended.");
-        return; // TODO quit screen
+        m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     }
-    Frame& frame = m_vBuffer.front();
+    auto& frame = m_vBuffer.front();
     Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
-    auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.data_y.data(), 1);
-    auto texCb = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.data_cb.data(), 1);
-    auto texCr = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.data_cr.data(), 1);
+    // TODO: upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
+    // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
+    // exist in the targeted OpenGL ES version.
+    auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.yData.data(), 1);
+    auto texCb = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.cbData.data(), 1);
+    auto texCr = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.crData.data(), 1);
     const auto& program = m_instance.graphics().shaders().ycbcr;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     glActiveTexture(Shaders::texCb_gl);
