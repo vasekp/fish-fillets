@@ -74,17 +74,17 @@ namespace ogg {
         }
     };
 
-        inline bool AutoStream::operator>>(ogg_packet& packet) {
-            if(int ret = ogg_stream_packetout(this, &packet); ret == 1)
-                return true;
-            else if(ret == 0) { // incomplete
-                if(m_source >> *this)
-                    return operator>>(packet);
-                else // end of stream
-                    return false;
-            } else
-                Log::fatal("Stream lost sync.");
-        }
+    inline bool AutoStream::operator>>(ogg_packet& packet) {
+        if(int ret = ogg_stream_packetout(this, &packet); ret == 1)
+            return true;
+        else if(ret == 0) { // incomplete
+            if(m_source >> *this)
+                return operator>>(packet);
+            else // end of stream
+                return false;
+        } else
+            Log::fatal("Stream lost sync.");
+    }
 
     class VorbisDecoder {
         AutoStream& m_stream;
@@ -169,10 +169,10 @@ namespace ogg {
             if(!(m_stream >> packet))
                 return false;
             //if(!started) {
-                th_decode_ctl(m_decoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
+            th_decode_ctl(m_decoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
             //    started = true;
             //}
-            std::int64_t granulepos;
+            ogg_int64_t granulepos;
             if(th_decode_packetin(m_decoder, &packet, &granulepos) == 0) {
                 auto time = th_granule_time(m_decoder, granulepos);
                 Log::debug("video packet in @ ", time);

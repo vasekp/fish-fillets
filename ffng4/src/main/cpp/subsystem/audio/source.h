@@ -9,6 +9,8 @@ protected:
     float m_dialog = false;
 
 public:
+    virtual ~AudioSourceBase() { }
+
     void setVolume(float volume) { m_volume = volume; }
     void setDialog(bool isDialog) { m_dialog = isDialog; }
     bool isDialog() const { return m_dialog; }
@@ -37,7 +39,6 @@ class AudioSource : public AudioSourceBase {
     bool m_loop;
     std::size_t m_loopStart;
     std::size_t m_loopEnd;
-    bool m_dialog;
 
     enum class Private { tag };
 

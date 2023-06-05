@@ -47,10 +47,12 @@ AudioSourceQueue::AudioSourceQueue(std::string name) :
 void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     m_total += data.size();
     if(Node* last = m_last.load(); !last) {
-        m_start = std::make_unique<Node>(std::move(data));
+        m_start = std::make_unique<Node>();
+        m_start->data = std::move(data);
         m_last.store(m_start.get());
     } else {
-        last->next = std::make_unique<Node>(std::move(data));
+        last->next = std::make_unique<Node>();
+        last->next->data = std::move(data);
         m_last.store(last->next.get());
     }
 }
