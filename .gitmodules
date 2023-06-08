@@ -7,3 +7,6 @@
 [submodule "ffng4/src/main/cpp/deps/theora"]
 	path = ffng4/src/main/cpp/deps/theora
 	url = https://github.com/xiph/theora
+[submodule "ffng4/src/main/cpp/deps/lua"]
+	path = ffng4/src/main/cpp/deps/lua
+	url = https://github.com/lua/lua

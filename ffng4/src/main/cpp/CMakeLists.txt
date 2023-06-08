@@ -44,12 +44,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 
     target_include_directories(fillets PRIVATE
             ${ANDROID_NDK}/sources/android/native_app_glue
+            deps/lua
             deps/ogg/include
             deps/vorbis/include
             deps/theora/include)
 
-    file(GLOB lua_sources "lua/*.c")
-    list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
+    file(GLOB lua_sources "deps/lua/*.c")
+    list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script|onelua).c")
 
     add_library(lua SHARED ${lua_sources})
 
