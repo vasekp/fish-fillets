@@ -65,11 +65,6 @@ public class MainActivity extends NativeActivity {
         }
     }
 
-    void playIntro() {
-        Intent intent = new Intent(this, VideoActivity.class);
-        startActivity(intent);
-    }
-
     Typeface typeface(String fontFile) {
         if (fontMap.containsKey(fontFile))
             return fontMap.get(fontFile);
