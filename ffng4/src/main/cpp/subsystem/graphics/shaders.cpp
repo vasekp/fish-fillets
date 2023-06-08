@@ -16,6 +16,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     reverse = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/reverse.frag")->read()});
     flat = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/flat.frag")->read()});
     zx = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/zx.frag")->read()});
+    ycbcr = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/ycbcr.frag")->read()});
 
     arrow = ogl::Program(ref, // TODO
             {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert")->read()},
@@ -26,11 +27,15 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
 
     for(const auto* program : {&copy, &maskCopy, &alpha, &blur, &wavyImage, &wavyText, &titleText, &disintegrate, &mirror, &zx, &button}) {
         glUseProgram(*program);
-        glUniform1i(program->uniform("uSrcTexture"), Shaders::texImage_shader);
+        glUniform1i(program->uniform("uSrcTexture"), texImage_shader);
     }
 
     for(const auto* program : {&maskCopy, &mirror}) {
         glUseProgram(*program);
-        glUniform1i(maskCopy.uniform("uMaskTexture"), Shaders::texMask_shader);
+        glUniform1i(maskCopy.uniform("uMaskTexture"), texMask_shader);
     }
+
+    glUseProgram(ycbcr);
+    glUniform1i(ycbcr.uniform("uCbTexture"), texCb_shader);
+    glUniform1i(ycbcr.uniform("uCrTexture"), texCr_shader);
 }

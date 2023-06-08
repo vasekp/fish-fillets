@@ -28,6 +28,10 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
     if(int err = snd_pcm_hw_params_set_rate(alsa, hw_params, 22050, 0); err < 0)
         Log::fatal("snd_pcm_hw_params_set_rate failed: ", snd_strerror(err));
 
+    unsigned int num, den;
+    snd_pcm_hw_params_get_rate_numden(hw_params, &num, &den);
+    Log::info("numden: ", num, " ", den);
+
     if(int err = snd_pcm_hw_params_set_channels(alsa, hw_params, 1); err < 0)
         Log::fatal("snd_pcm_hw_params_set_channels failed: ", snd_strerror(err));
 

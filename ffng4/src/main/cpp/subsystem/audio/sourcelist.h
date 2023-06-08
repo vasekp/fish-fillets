@@ -4,7 +4,7 @@
 #include <atomic>
 
 class AudioSourceList {
-    using Sources = std::vector<AudioSource::Ref>;
+    using Sources = std::vector<AudioSourceBase::Ref>;
     std::unique_ptr<Sources> m_sources_thread;
     std::unique_ptr<Sources> m_sources_local;
     std::atomic<bool> m_sources_lock;

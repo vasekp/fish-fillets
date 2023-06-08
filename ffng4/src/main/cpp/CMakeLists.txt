@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 project(Fillets)
 
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_FLAGS "-Wall -Werror -g")
-set(CMAKE_C_FLAGS -D_FORTIFY_SOURCE=0)
+set(CMAKE_CXX_FLAGS "-Wall -Werror -g -Wno-unused-variable")
+set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=0 -Wno-incompatible-library-redeclaration")
 
 file(GLOB fillets_sources
         "*.cpp"
@@ -43,7 +43,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
     target_include_directories(fillets PRIVATE
-            ${ANDROID_NDK}/sources/android/native_app_glue)
+            ${ANDROID_NDK}/sources/android/native_app_glue
+            deps/ogg/include
+            deps/vorbis/include
+            deps/theora/include)
 
     file(GLOB lua_sources "lua/*.c")
     list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script).c")
@@ -54,6 +57,32 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 
     find_package(oboe REQUIRED CONFIG)
 
+    add_subdirectory(deps/ogg)
+    add_subdirectory(deps/vorbis)
+
+    add_library(theoradec
+            deps/theora/lib/apiwrapper.c
+            deps/theora/lib/bitpack.c
+            deps/theora/lib/decapiwrapper.c
+            deps/theora/lib/decinfo.c
+            deps/theora/lib/decode.c
+            deps/theora/lib/dequant.c
+            deps/theora/lib/fragment.c
+            deps/theora/lib/huffdec.c
+            deps/theora/lib/idct.c
+            deps/theora/lib/info.c
+            deps/theora/lib/internal.c
+            deps/theora/lib/quant.c
+            deps/theora/lib/state.c)
+
+    target_include_directories(theoradec PRIVATE
+            deps/ogg/include
+            deps/theora/include
+            ${CMAKE_CURRENT_BINARY_DIR}/deps/ogg/include)
+
+    target_compile_options(theoradec PRIVATE -Wno-shift-negative-value
+            -Wno-shift-op-parentheses)
+
     target_link_libraries(fillets
             lua
             android
@@ -61,6 +90,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             jnigraphics
             mediandk
             oboe::oboe
+            ogg
+            vorbis
+            theoradec
             log)
 else()
     find_package(Lua REQUIRED)
@@ -75,6 +107,9 @@ else()
     target_link_libraries(fillets
             X11
             png
+            ogg
+            vorbis
+            theoradec
             vorbisfile
             lua
             asound

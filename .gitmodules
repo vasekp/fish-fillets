@@ -1,0 +1,9 @@
+[submodule "ffng4/src/main/cpp/deps/ogg"]
+	path = ffng4/src/main/cpp/deps/ogg
+	url = https://github.com/xiph/ogg
+[submodule "ffng4/src/main/cpp/deps/deps/vorbis"]
+	path = ffng4/src/main/cpp/deps/vorbis
+	url = https://github.com/xiph/vorbis
+[submodule "ffng4/src/main/cpp/deps/theora"]
+	path = ffng4/src/main/cpp/deps/theora
+	url = https://github.com/xiph/theora

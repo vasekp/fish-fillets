@@ -1,0 +1,35 @@
+#ifndef FISH_FILLETS_GAME_INTRO_H
+#define FISH_FILLETS_GAME_INTRO_H
+
+#include "screen.h"
+#include "subsystem/audio.h"
+#include "api/ogg.h"
+
+class IntroScreen : public GameScreen {
+    BaseInput m_input;
+
+    ogg::InterleavedStream m_ogg;
+    ogg::VorbisDecoder m_vorbis;
+    ogg::TheoraDecoder m_theora;
+
+    AudioSourceQueue::Ref m_aBuffer;
+    std::deque<ogg::TheoraDecoder::Frame> m_vBuffer;
+
+public:
+    IntroScreen(Instance&);
+
+    IInputSink& input() override { return m_input; }
+
+protected:
+    void own_start() override;
+    void own_draw(const DrawTarget& target, float dt) override;
+    bool own_key(Key key) override;
+    bool own_pointer(FCoords coords, bool longPress) override;
+
+private:
+    void fill_buffers();
+
+    static constexpr std::size_t vBufSize = 5;
+};
+
+#endif //FISH_FILLETS_GAME_INTRO_H

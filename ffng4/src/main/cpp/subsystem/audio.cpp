@@ -28,20 +28,20 @@ Audio::Audio(Instance& instance) : m_instance(instance) {
     AudioPreloader(*this, instance).load();
 }
 
-void Audio::addSource(const AudioSource::Ref& source) {
-    Log::debug("adding audio source ", source.get(), " (", source->filename(), ")");
+void Audio::addSource(const AudioSourceBase::Ref& source) {
+    Log::debug("adding audio source ", source.get(), " (", source->name(), ")");
     auto sources = m_sources.local();
     sources->push_back(source);
     sources.checkDialogs();
 }
 
-void Audio::removeSource(const AudioSource::Ref& source) {
+void Audio::removeSource(const AudioSourceBase::Ref& source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
         Log::debug("removeSource: did not match");
     else {
-        Log::debug("removing audio source ", source.get(), " (", source->filename(), ")");
+        Log::debug("removing audio source ", source.get(), " (", source->name(), ")");
         sources->erase(it);
     }
     sources.checkDialogs();
@@ -49,11 +49,12 @@ void Audio::removeSource(const AudioSource::Ref& source) {
 
 void Audio::clear() {
     auto sources = m_sources.local();
+    Log::debug("clear: ", sources->size(), " -> 0");
     sources->clear();
     sources.checkDialogs();
 }
 
-void Audio::clearExcept(const AudioSource::Ref& source) {
+void Audio::clearExcept(const AudioSourceBase::Ref& source) {
     auto sources = m_sources.local();
     std::erase_if(sources.vector(), [&source](const auto& other) { return other != source; });
     sources.checkDialogs();
@@ -68,6 +69,8 @@ bool Audio::isDialog() const {
 }
 
 void Audio::mix(float* output, std::size_t numSamples) {
+    if(numSamples == 0)
+        return;
     std::memset(output, 0, sizeof(float) * numSamples);
     auto& sources = m_sources.thread();
     unsigned dialogs = 0;
@@ -108,6 +111,6 @@ AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
         source->setLoop(start, end);
     } else
         source->setLoop();
-    source->setVolume(0.3f);
+    source->setVolume(0.3f); // TODO
     return source;
 }

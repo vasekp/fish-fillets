@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_COMMON_H
 #define FISH_FILLETS_COMMON_H
 
+#include <cstring>
 #include <cstddef>
 #include <cstdint>
 #include <cstdarg>

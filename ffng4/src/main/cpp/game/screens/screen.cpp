@@ -59,7 +59,9 @@ void GameScreen::resume() {
 }
 
 float GameScreen::timeAlive() {
-    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count();
+    return m_running
+        ? std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count()
+        : 0;
 }
 
 void GameScreen::draw(const DrawTarget& target) {
