@@ -29,12 +29,6 @@ else()
     add_executable(fillets ${fillets_sources} ${fillets_linux})
 endif()
 
-target_include_directories(fillets PRIVATE .)
-
-target_link_libraries(fillets
-        EGL
-        GLESv2)
-
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(native_app_glue STATIC
             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
@@ -85,15 +79,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             -Wno-shift-op-parentheses)
 
     target_link_libraries(fillets
-            lua
             android
             native_app_glue
             jnigraphics
             mediandk
             oboe::oboe
-            ogg
-            vorbis
-            theoradec
             log)
 else()
     find_package(Lua REQUIRED)
@@ -108,11 +98,17 @@ else()
     target_link_libraries(fillets
             X11
             png
-            ogg
-            vorbis
-            theoradec
             vorbisfile
-            lua
             asound
             Freetype::Freetype)
 endif()
+
+target_include_directories(fillets PRIVATE .)
+
+target_link_libraries(fillets
+        EGL
+        GLESv2
+        lua
+        ogg
+        vorbis
+        theoradec)
