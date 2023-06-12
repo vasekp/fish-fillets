@@ -37,7 +37,7 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
             target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
 
     for(const auto& bar : m_volbars)
-        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + m_instance.audio().getVolume(bar.type) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
+        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
 }
 
 void OptionsOverlay::show() {
@@ -61,7 +61,7 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
     for(const auto& bar : m_volbars)
         if(lcoords.within(bar.from, bar.to)) {
             m_sliding = &bar;
-            float volume = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+            float volume = exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
             m_instance.audio().setVolume(bar.type, volume);
             return false;
         }
@@ -78,7 +78,7 @@ bool OptionsOverlay::pointerMove(FCoords coords) {
         return false;
     auto& bar = *m_sliding;
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
-    float volume = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+    float volume =exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
     m_instance.audio().setVolume(bar.type, volume);
     return true;
 }
@@ -95,4 +95,12 @@ void OptionsOverlay::pointerCancel() {
 bool OptionsOverlay::keyDown(Key key) {
     hide();
     return true;
+}
+
+float OptionsOverlay::exp(float x) {
+    return (std::pow(volSpan + 1.f, x) - 1.f) / volSpan;
+}
+
+float OptionsOverlay::log(float v) {
+    return std::log(volSpan * v + 1.f) / std::log(volSpan + 1.f);
 }
