@@ -3,7 +3,6 @@
 
 #include "subsystem/audio.h"
 #include <thread>
-#include <atomic>
 
 class AlsaSink {
     Audio& m_audio;

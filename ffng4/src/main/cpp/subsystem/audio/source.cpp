@@ -17,14 +17,15 @@ AudioSource::Ref AudioSource::create(const AudioData::Ref& data, AudioType type)
     return std::make_shared<AudioSource>(data, type, Private::tag);
 }
 
-void AudioSource::mixin(float *output, std::size_t numSamples) {
+void AudioSource::mixin(float *output, std::size_t numSamples, float refVolume) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);
+    float volume = refVolume * m_volume;
     for (auto i = 0u; i < countRead; i++)
-        output[i] += m_volume * (*m_data)[m_sampleIndex++]; // TODO m_volume → volume()
+        output[i] += volume * (*m_data)[m_sampleIndex++];
     if(m_loop && m_sampleIndex >= m_loopEnd) {
         Log::debug("music loop");
         m_sampleIndex = m_loopStart;
-        mixin(output + countRead, numSamples - countRead);
+        mixin(output + countRead, numSamples - countRead, refVolume);
     }
 }
 
@@ -59,20 +60,21 @@ void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     }
 }
 
-void AudioSourceQueue::mixin(float *output, std::size_t numSamples) {
+void AudioSourceQueue::mixin(float *output, std::size_t numSamples, float refVolume) {
     // assert m_start
     const auto& data = m_start->data;
+    float volume = refVolume * m_volume;
     if(m_curIndex + numSamples < data.size()) {
         for(auto i = 0u; i < numSamples; i++)
-            output[i] += m_volume * data[m_curIndex++];
+            output[i] += volume * data[m_curIndex++];
     } else {
         auto countRead = data.size() - m_curIndex;
         for(auto i = 0u; i < countRead; i++)
-            output[i] += m_volume * data[m_curIndex++];
+            output[i] += volume * data[m_curIndex++];
         m_start = std::move(m_start->next);
         if(m_start) {
             m_curIndex = 0;
-            mixin(output + countRead, numSamples - countRead);
+            mixin(output + countRead, numSamples - countRead, refVolume);
         } else
             Log::info("Audio data ended.");
     }

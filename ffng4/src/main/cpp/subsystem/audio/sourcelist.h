@@ -1,8 +1,6 @@
 #ifndef FISH_FILLETS_AUDIO_SOURCELIST_H
 #define FISH_FILLETS_AUDIO_SOURCELIST_H
 
-#include <atomic>
-
 class AudioSourceList {
     using Sources = std::vector<AudioSourceBase::Ref>;
     std::unique_ptr<Sources> m_sources_thread;

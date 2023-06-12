@@ -3,7 +3,6 @@
 #include "subsystem/script.h"
 
 #include <sstream>
-#include <cstring> // memset
 
 class AudioPreloader : public ScriptReferrer {
     Audio& m_audio;
@@ -26,6 +25,9 @@ public:
 
 Audio::Audio(Instance& instance) : m_instance(instance) {
     AudioPreloader(*this, instance).load();
+    m_volumes[(int)AudioType::talk] = 1.f;
+    m_volumes[(int)AudioType::sound] = 1.f;
+    m_volumes[(int)AudioType::music] = 0.3f;
 }
 
 void Audio::addSource(const AudioSourceBase::Ref& source) {
@@ -64,6 +66,14 @@ void Audio::preload(const std::string& filename) {
     m_sounds_preload.insert({filename, loadSound(filename)});
 }
 
+float Audio::getVolume(AudioType type) {
+    return m_volumes[(int)type];
+}
+
+void Audio::setVolume(AudioType type, float volume) {
+    m_volumes[(int)type] = volume;
+}
+
 bool Audio::isDialog() const {
     return m_sources.hasDialogs();
 }
@@ -71,6 +81,9 @@ bool Audio::isDialog() const {
 void Audio::mix(float* output, std::size_t numSamples) {
     if(numSamples == 0)
         return;
+    std::array<float, 3> volumes;
+    for(int i = 0; i < 3; i++)
+        volumes[i] = m_volumes[i]; // cache atomics
     std::memset(output, 0, sizeof(float) * numSamples);
     auto& sources = m_sources.thread();
     unsigned dialogs = 0;
@@ -79,7 +92,7 @@ void Audio::mix(float* output, std::size_t numSamples) {
             continue;
         if(source->isDialog())
             dialogs++;
-        source->mixin(output, numSamples);
+        source->mixin(output, numSamples, volumes[(int)source->type()]);
     }
     m_sources.setDialogsThread(dialogs > 0);
     if(auto guard = m_sources.threadGuard()) {
@@ -111,6 +124,5 @@ AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
         source->setLoop(start, end);
     } else
         source->setLoop();
-    source->setVolume(0.3f); // TODO
     return source;
 }

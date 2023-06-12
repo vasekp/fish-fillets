@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include <thread>
-#include <atomic>
 
 class Timer {
     std::thread m_thread;

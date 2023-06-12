@@ -22,7 +22,6 @@ OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, FCoords origin_) :
     type(type_), origin(origin_)
 {
     static int i = 0;
-    value = (i++) / 2.f;
     from = origin - FCoords(volTolerance, volTolerance);
     to = origin + FCoords(volTolerance, volTolerance) + FCoords(volLength, 0.f);
 }
@@ -38,7 +37,7 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
             target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
 
     for(const auto& bar : m_volbars)
-        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + bar.value * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
+        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + m_instance.audio().getVolume(bar.type) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
 }
 
 void OptionsOverlay::show() {
@@ -59,10 +58,11 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
         hide();
         return true;
     }
-    for(auto& bar : m_volbars)
+    for(const auto& bar : m_volbars)
         if(lcoords.within(bar.from, bar.to)) {
             m_sliding = &bar;
-            bar.value = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+            float volume = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+            m_instance.audio().setVolume(bar.type, volume);
             return false;
         }
     for(const auto& button : m_buttons)
@@ -76,8 +76,10 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
 bool OptionsOverlay::pointerMove(FCoords coords) {
     if(!m_sliding)
         return false;
+    auto& bar = *m_sliding;
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
-    m_sliding->value = std::clamp((lcoords.fx() - m_sliding->origin.fx()) / volLength, 0.f, 1.f);
+    float volume = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+    m_instance.audio().setVolume(bar.type, volume);
     return true;
 }
 

@@ -25,6 +25,7 @@
 #include <optional>
 #include <filesystem>
 #include <functional>
+#include <atomic>
 
 #include "types.h"
 #include "utils.h"

@@ -23,15 +23,14 @@ class OptionsOverlay : public GameScreen, public IInputSink {
     struct VolumeBar {
         AudioType type;
         FCoords origin;
-        float value;
         FCoords from;
         FCoords to;
 
         VolumeBar(AudioType type_, FCoords origin_);
     };
 
-    VolumeBar m_volbars[3];
-    VolumeBar* m_sliding;
+    const VolumeBar m_volbars[3];
+    const VolumeBar* m_sliding;
 
     Subtitles m_subs;
 
