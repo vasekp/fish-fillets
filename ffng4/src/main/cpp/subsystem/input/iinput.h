@@ -16,6 +16,8 @@ public:
     static constexpr FCoords noHover{-1, -1};
 };
 
+inline IInputSource nullInputSource;
+
 class IInputSink {
 public:
     virtual bool keyDown(Key key) { return false; }

@@ -27,6 +27,10 @@ IInputSink& Instance::inputSink() {
     return screens().input();
 }
 
+IInputSource& Instance::inputSourceMasked() {
+    return screens().inputSourceMasked();
+}
+
 void Instance::quit() {
     running = false;
     audio().clear();

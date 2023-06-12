@@ -102,6 +102,10 @@ IInputSink& ScreenManager::input() {
     return m_options.visible() ? m_options.input() : curScreen().input();
 }
 
+IInputSource& ScreenManager::inputSourceMasked() {
+    return m_options.visible() ? nullInputSource : m_instance.inputSource();
+}
+
 void ScreenManager::resize() {
     curScreen().resize();
     m_title.resize();

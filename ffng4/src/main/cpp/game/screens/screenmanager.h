@@ -39,6 +39,7 @@ public:
 
     GameScreen& curScreen() { return *m_screen; }
     IInputSink& input();
+    IInputSource& inputSourceMasked();
 
 private:
     void useNext();

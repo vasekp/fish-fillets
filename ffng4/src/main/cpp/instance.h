@@ -40,6 +40,7 @@ public:
     auto& levels() { return *m_levels; }
 
     virtual IInputSource& inputSource() = 0;
+    IInputSource& inputSourceMasked();
     IInputSink& inputSink();
 
     bool running = false;

@@ -1,6 +1,7 @@
 #include "pedometer.h"
 #include "subsystem/files.h"
 #include "subsystem/input.h"
+#include "screenmanager.h"
 
 Pedometer::Pedometer(Instance& instance, LevelRecord& level):
         m_instance(instance),
@@ -33,7 +34,7 @@ void Pedometer::draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.blit(&m_pmImage, coords, copyProgram, pos.x, pos.y);
-    if(auto hover = m_instance.inputSource().hover(); hover != IInputSource::noHover) {
+    if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {
         auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
         for(const auto& button : m_buttons)
             if(hcoords.within(button.origin, button.origin + Button::size))

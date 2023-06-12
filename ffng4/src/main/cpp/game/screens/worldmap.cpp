@@ -68,7 +68,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
         }
     }
 
-    if(auto hover = m_instance.inputSource().hover(); hover != IInputSource::noHover) {
+    if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {
         auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
         for(const auto& area : areas) {
             if(hcoords.within(area.from, area.to))
