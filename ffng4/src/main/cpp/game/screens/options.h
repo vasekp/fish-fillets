@@ -1,8 +1,7 @@
 #ifndef FISH_FILLETS_SCREENS_OPTIONS_H
 #define FISH_FILLETS_SCREENS_OPTIONS_H
 
-class OptionsOverlay : public GameScreen {
-    BaseInput m_input;
+class OptionsOverlay : public GameScreen, public IInputSink {
     PNGImage m_options;
     PNGImage m_slider;
     FCoords m_origin;
@@ -15,7 +14,7 @@ class OptionsOverlay : public GameScreen {
     };
 
     struct Button {
-        Subtitles type;
+        Subtitles value;
         PNGImage image;
         FCoords origin;
         static constexpr FCoords size{47, 33};
@@ -30,7 +29,17 @@ class OptionsOverlay : public GameScreen {
     struct VolumeBar {
         Volumes type;
         FCoords origin;
-    } m_volbars[3];
+        float value;
+        FCoords from;
+        FCoords to;
+
+        VolumeBar(Volumes type_, FCoords origin_);
+    };
+
+    VolumeBar m_volbars[3];
+    VolumeBar* m_sliding;
+
+    Subtitles m_subs;
 
 public:
     OptionsOverlay(Instance& instance);
@@ -39,14 +48,20 @@ public:
     void hide();
     bool visible() const { return m_visible; }
 
-    IInputSink & input() override { return m_input; }
+    IInputSink& input() override { return *this; }
 
     void own_draw(const DrawTarget &target, float dt) override;
-    bool own_pointer(FCoords coords, bool longPress) override;
+    bool pointerDown(FCoords coords) override;
+    bool pointerMove(FCoords coords) override;
+    bool pointerUp(bool empty) override;
+    void pointerCancel() override;
+    bool keyDown(Key key) override;
 
 private:
     constexpr static FCoords imgSize{195, 332};
-    constexpr static float volLength = 120;
+    constexpr static float volLength = 120.f;
+    constexpr static float volSliderOffset = 8.f;
+    constexpr static float volTolerance = 10.f;
 };
 
 #endif //FISH_FILLETS_SCREENS_OPTIONS_H

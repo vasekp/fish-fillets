@@ -2,7 +2,6 @@
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :
     GameScreen(instance),
-    m_input(instance, *this),
     m_options(instance, "images/menu/options.png"),
     m_slider(instance, "images/menu/cudlik.png"),
     m_origin((Graphics::baseDim - imgSize) / 2),
@@ -12,22 +11,34 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
         {Subtitles::en, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
         {Subtitles::none, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
     m_volbars{
-        {Volumes::sound, {29, 97}},
-        {Volumes::music, {29, 146}},
-        {Volumes::talk, {29, 195}}}
+        {Volumes::sound, {37, 105}},
+        {Volumes::music, {37, 154}},
+        {Volumes::talk, {37, 203}}},
+    m_sliding(nullptr),
+    m_subs(Subtitles::cz)
 { }
+
+OptionsOverlay::VolumeBar::VolumeBar(OptionsOverlay::Volumes type_, FCoords origin_) :
+    type(type_), origin(origin_)
+{
+    static int i = 0;
+    value = (i++) / 2.f;
+    from = origin - FCoords(volTolerance, volTolerance);
+    to = origin + FCoords(volTolerance, volTolerance) + FCoords(volLength, 0.f);
+}
 
 void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
-    auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    coords.origin += m_origin;
+    auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base).shifted(m_origin);
 
     target.blit(&m_options, coords, copyProgram, 0, 0);
-    const auto& button = m_buttons[0];
-    target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
+
+    for(const auto& button : m_buttons)
+        if(button.value == m_subs)
+            target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
 
     for(const auto& bar : m_volbars)
-        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + ((int)bar.type)/2.f * volLength, bar.origin.fy());
+        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + bar.value * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
 }
 
 void OptionsOverlay::show() {
@@ -37,10 +48,49 @@ void OptionsOverlay::show() {
 
 void OptionsOverlay::hide() {
     m_visible = false;
+    pointerCancel();
     m_instance.inputSource().reset();
 }
 
-bool OptionsOverlay::own_pointer(FCoords coords, bool longPress) {
+bool OptionsOverlay::pointerDown(FCoords coords) {
+    auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
+    m_sliding = nullptr;
+    if(!lcoords.within({0, 0}, imgSize)) {
+        hide();
+        return true;
+    }
+    for(auto& bar : m_volbars)
+        if(lcoords.within(bar.from, bar.to)) {
+            m_sliding = &bar;
+            bar.value = std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f);
+            return false;
+        }
+    for(const auto& button : m_buttons)
+        if(lcoords.within(button.origin, button.origin + Button::size)) {
+            m_subs = button.value;
+            return true;
+        }
+    return false;
+}
+
+bool OptionsOverlay::pointerMove(FCoords coords) {
+    if(!m_sliding)
+        return false;
+    auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
+    m_sliding->value = std::clamp((lcoords.fx() - m_sliding->origin.fx()) / volLength, 0.f, 1.f);
+    return true;
+}
+
+bool OptionsOverlay::pointerUp(bool empty) {
+    m_sliding = nullptr;
+    return false;
+}
+
+void OptionsOverlay::pointerCancel() {
+    m_sliding = nullptr;
+}
+
+bool OptionsOverlay::keyDown(Key key) {
     hide();
     return true;
 }
