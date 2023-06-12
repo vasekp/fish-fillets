@@ -26,7 +26,7 @@ private:
         Buttons type;
         PNGImage image;
         FCoords origin;
-        inline static constexpr FCoords size{43, 44};
+        static constexpr FCoords size{43, 44};
     } m_buttons[3];
 
 public:
