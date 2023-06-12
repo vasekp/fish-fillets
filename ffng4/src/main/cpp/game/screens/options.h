@@ -20,20 +20,14 @@ class OptionsOverlay : public GameScreen, public IInputSink {
         static constexpr FCoords size{47, 33};
     } m_buttons[3];
 
-    enum class Volumes {
-        sound,
-        music,
-        talk
-    };
-
     struct VolumeBar {
-        Volumes type;
+        AudioType type;
         FCoords origin;
         float value;
         FCoords from;
         FCoords to;
 
-        VolumeBar(Volumes type_, FCoords origin_);
+        VolumeBar(AudioType type_, FCoords origin_);
     };
 
     VolumeBar m_volbars[3];

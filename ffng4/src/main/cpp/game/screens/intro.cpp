@@ -8,7 +8,7 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_ogg(instance.files().system("video/intro.ogv")->read()),
     m_vorbis(m_ogg),
     m_theora(m_ogg),
-    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio"))
+    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music))
 {
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)

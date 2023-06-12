@@ -101,7 +101,7 @@ AudioData::Ref Audio::loadSound(const std::string& filename) const {
 
 AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
     auto data = loadSound(filename);
-    auto source = AudioSource::from(data);
+    auto source = AudioSource::create(data, AudioType::music);
     auto meta = m_instance.files().system(filename + ".meta");
     if(meta->exists()) {
         auto contents = meta->read();

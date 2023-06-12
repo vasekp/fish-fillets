@@ -195,7 +195,7 @@ void LevelScreen::playSound(const std::string& name, float volume) {
     auto it = m_sounds.lower_bound(name);
     std::advance(it, (int)(m_instance.rng().randomIndex(size)));
     auto& data = it->second;
-    auto source = AudioSource::from(data);
+    auto source = AudioSource::create(data, AudioType::sound);
     source->setVolume(volume);
     m_instance.audio().addSource(source);
 }

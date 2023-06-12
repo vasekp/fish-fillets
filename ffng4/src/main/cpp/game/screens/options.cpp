@@ -11,14 +11,14 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
         {Subtitles::en, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
         {Subtitles::none, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
     m_volbars{
-        {Volumes::sound, {37, 105}},
-        {Volumes::music, {37, 154}},
-        {Volumes::talk, {37, 203}}},
+        {AudioType::sound, {37, 105}},
+        {AudioType::talk, {37, 154}},
+        {AudioType::music,  {37, 203}}},
     m_sliding(nullptr),
     m_subs(Subtitles::cz)
 { }
 
-OptionsOverlay::VolumeBar::VolumeBar(OptionsOverlay::Volumes type_, FCoords origin_) :
+OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, FCoords origin_) :
     type(type_), origin(origin_)
 {
     static int i = 0;

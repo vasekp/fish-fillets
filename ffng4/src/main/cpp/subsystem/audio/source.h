@@ -3,12 +3,20 @@
 
 #include <atomic> // TODO move to common.h
 
+enum class AudioType {
+    sound,
+    music,
+    talk
+};
+
 class AudioSourceBase { // TODO rename
 protected:
+    AudioType m_type;
     float m_volume = 1.0f;
     float m_dialog = false;
 
 public:
+    AudioSourceBase(AudioType type) : m_type(type) { }
     virtual ~AudioSourceBase() { }
 
     void setVolume(float volume) { m_volume = volume; }
@@ -43,10 +51,10 @@ class AudioSource : public AudioSourceBase {
     enum class Private { tag };
 
 public:
-    AudioSource(AudioData::Ref data, Private);
+    AudioSource(AudioData::Ref data, AudioType type, Private);
 
     using Ref = std::shared_ptr<AudioSource>;
-    static Ref from(const AudioData::Ref&);
+    static Ref create(const AudioData::Ref&, AudioType type);
 
     const auto& filename() const { return m_data->filename(); }
     std::string_view name() const override { return filename(); }
@@ -69,7 +77,7 @@ class AudioSourceQueue : public AudioSourceBase {
     std::string m_name;
 
 public:
-    AudioSourceQueue(std::string name);
+    AudioSourceQueue(std::string name, AudioType type);
 
     using Ref = std::shared_ptr<AudioSourceQueue>;
 

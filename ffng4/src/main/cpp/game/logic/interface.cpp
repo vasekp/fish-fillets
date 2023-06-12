@@ -322,7 +322,7 @@ void Level::model_talk(int index, std::string name, std::optional<int> volume, s
     }
     auto& dialog = m_dialogs.at(name);
     auto data = m_screen.addSound(name, dialog.soundFile, true);
-    auto source = AudioSource::from(data);
+    auto source = AudioSource::create(data, AudioType::talk);
     source->setVolume((float)volume.value_or(75) / 100.f);
     if(loops.value_or(0) != 0) {
         assert(loops.value() == -1);
