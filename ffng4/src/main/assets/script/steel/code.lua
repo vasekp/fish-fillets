@@ -31,12 +31,12 @@ local function prog_init()
             else
                 switch(room.houk % 10){
                     [2] = function()
-                        room:talk("steel-x-redalert", VOLUME_FULL)
+                        room:talk("steel-x-redalert", CLASS_SOUND)
                         bgfaze = 1
                         pom1 = 1
                     end,
                     [4] = function()
-                        room:talk("steel-x-redalert", VOLUME_FULL)
+                        room:talk("steel-x-redalert", CLASS_SOUND)
                     end,
                     [9] = function()
                         bgfaze = 2

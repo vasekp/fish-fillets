@@ -112,10 +112,10 @@ local function prog_init()
             end
             switch(pom2){
                 [1] = function()
-                    knight1:talk("war-k-ready"..random(3), VOLUME_FULL)
+                    knight1:talk("war-k-ready"..random(3), CLASS_SOUND)
                 end,
                 [2] = function()
-                    knight1:talk("war-k-move" ..random(3), VOLUME_FULL)
+                    knight1:talk("war-k-move" ..random(3), CLASS_SOUND)
                 end,
             }
         end
@@ -159,10 +159,10 @@ local function prog_init()
             end
             switch(pom2){
                 [1] = function()
-                    knight2:talk("war-k-ready"..random(3), VOLUME_FULL)
+                    knight2:talk("war-k-ready"..random(3), CLASS_SOUND)
                 end,
                 [2] = function()
-                    knight2:talk("war-k-move"..random(3), VOLUME_FULL)
+                    knight2:talk("war-k-move"..random(3), CLASS_SOUND)
                 end,
             }
         end
@@ -206,10 +206,10 @@ local function prog_init()
             end
             switch(pom2){
                 [1] = function()
-                    archer1:talk("war-a-ready"..random(2), VOLUME_FULL)
+                    archer1:talk("war-a-ready"..random(2), CLASS_SOUND)
                 end,
                 [2] = function()
-                    archer1:talk("war-a-move"..random(2), VOLUME_FULL)
+                    archer1:talk("war-a-move"..random(2), CLASS_SOUND)
                 end,
             }
         end
@@ -253,10 +253,10 @@ local function prog_init()
             end
             switch(pom2){
                 [1] = function()
-                    archer2:talk("war-a-ready"..random(2), VOLUME_FULL)
+                    archer2:talk("war-a-ready"..random(2), CLASS_SOUND)
                 end,
                 [2] = function()
-                    archer2:talk("war-a-move"..random(2), VOLUME_FULL)
+                    archer2:talk("war-a-move"..random(2), CLASS_SOUND)
                 end,
             }
         end

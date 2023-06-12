@@ -334,17 +334,17 @@ local function prog_init()
             if chobot.dir ~= chobot.lastdir then
                 if not chobot:isTalking() then
                     if chobot.dir == dir_down then
-                        chobot:talk("k1-chob-p", VOLUME_FULL)
+                        chobot:talk("k1-chob-p", CLASS_SOUND)
                     elseif chobot.dir ~= dir_no then
                         switch(random(3)){
                             [0] = function()
-                                chobot:talk("k1-chob-1", VOLUME_FULL)
+                                chobot:talk("k1-chob-1", CLASS_SOUND)
                             end,
                             [1] = function()
-                                chobot:talk("k1-chob-2", VOLUME_FULL)
+                                chobot:talk("k1-chob-2", CLASS_SOUND)
                             end,
                             [2] = function()
-                                chobot:talk("k1-chob-3", VOLUME_FULL)
+                                chobot:talk("k1-chob-3", CLASS_SOUND)
                             end,
                         }
                     end

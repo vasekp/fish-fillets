@@ -83,7 +83,7 @@ local function prog_init()
                     default = function()
                         if model.pada then
                             model.pada = false
-                            tyc:talk("rea-x-reakttyc", VOLUME_FULL)
+                            tyc:talk("rea-x-reakttyc", CLASS_SOUND)
                             tyc.padlo = tyc.padlo + 1
                         end
                     end,

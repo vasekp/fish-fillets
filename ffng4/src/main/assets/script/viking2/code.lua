@@ -439,7 +439,7 @@ local function prog_init()
                     else
                         viking7.afaze = 1
                         if random(100) < 10 then
-                            viking7:talk("dr-7-sm"..(random(8) + 1), VOLUME_FULL)
+                            viking7:talk("dr-7-sm"..(random(8) + 1), CLASS_TALK)
                         end
                     end
                 end,
@@ -477,7 +477,7 @@ local function prog_init()
                         if viking7.otrne == 0 then
                             viking7.dostal = 0
                         elseif random(100) < 3 then
-                            model_talk(271, "dr-7-brble"..(random(5) + 1), VOLUME_FULL)
+                            model_talk(271, "dr-7-brble"..(random(5) + 1), CLASS_TALK)
                         end
                     end
                 end,
@@ -581,7 +581,7 @@ local function prog_init()
                 end,
                 [24] = function()
                     viking8.afaze = 2
-                    model_talk(281, "dr-x-buch", VOLUME_FULL)
+                    model_talk(281, "dr-x-buch", CLASS_SOUND)
                     viking7.dostal = 1
                     viking8.nervozita = 0
                     viking8.cinnost = viking8.cinnost + 1
@@ -631,7 +631,7 @@ local function prog_init()
                     end
                 end,
                 [2] = function()
-                    pesos:talk("dr-x-pes", VOLUME_FULL, -1)
+                    pesos:talk("dr-x-pes", CLASS_SOUND, -1)
                     pesos.delay = random(100) + 20
                     pesos.cinnost = pesos.cinnost + 1
                 end,

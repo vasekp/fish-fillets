@@ -59,13 +59,13 @@ local function prog_init()
 
         return function()
             if amp1.stav == 1 and updateCycles == 2 and not amp1:isTalking() then
-                amp1:talk("ves-ampliony", VOLUME_LOW, -1)
+                amp1:talk("ves-ampliony", CLASS_MUSIC, -1)
             end
             switch(amp1.stav){
                 [0] = function()
                     if updateCycles == hlava.zac2 then
                         amp1.faze = 0
-                        amp1:talk("ves-ampliony", VOLUME_LOW, -1)
+                        amp1:talk("ves-ampliony", CLASS_MUSIC, -1)
                         amp1.stav = amp1.stav + 1
                     end
                 end,
@@ -109,7 +109,7 @@ local function prog_init()
                 [2] = function()
                     if amp1.dir ~= dir_down then
                         amp1:killSound()
-                        room:talk("sp-smrt", VOLUME_FULL)
+                        room:talk("sp-smrt", CLASS_SOUND)
                         amp1.afaze = 9
                         amp1.stav = amp1.stav + 1
                         room.rozbito = room.rozbito + 1
@@ -132,13 +132,13 @@ local function prog_init()
 
         return function()
             if amp2.stav == 1 and updateCycles == 2 + 3 and not amp2:isTalking() then
-                amp2:talk("ves-ampliony", VOLUME_LOW, -1)
+                amp2:talk("ves-ampliony", CLASS_MUSIC, -1)
             end
             switch(amp2.stav){
                 [0] = function()
                     if updateCycles == hlava.zac2 + 3 then
                         amp2.faze = 4
-                        amp2:talk("ves-ampliony", VOLUME_LOW, -1)
+                        amp2:talk("ves-ampliony", CLASS_MUSIC, -1)
                         amp2.stav = amp2.stav + 1
                     end
                 end,
@@ -182,7 +182,7 @@ local function prog_init()
                 [2] = function()
                     if amp2.dir ~= dir_down then
                         amp2:killSound()
-                        room:talk("sp-smrt", VOLUME_FULL)
+                        room:talk("sp-smrt", CLASS_SOUND)
                         amp2.afaze = 9
                         amp2.stav = amp2.stav + 1
                         room.rozbito = room.rozbito + 1
@@ -205,13 +205,13 @@ local function prog_init()
 
         return function()
             if amp3.stav == 1 and updateCycles == 2 + 5 and not amp3:isTalking() then
-                amp3:talk("ves-ampliony", VOLUME_LOW, -1)
+                amp3:talk("ves-ampliony", CLASS_MUSIC, -1)
             end
             switch(amp3.stav){
                 [0] = function()
                     if updateCycles == hlava.zac2 + 5 then
                         amp3.faze = 6
-                        amp3:talk("ves-ampliony", VOLUME_LOW, -1)
+                        amp3:talk("ves-ampliony", CLASS_MUSIC, -1)
                         amp3.stav = amp3.stav + 1
                     end
                 end,
@@ -255,7 +255,7 @@ local function prog_init()
                 [2] = function()
                     if amp3.dir ~= dir_down then
                         amp3:killSound()
-                        room:talk("sp-smrt", VOLUME_FULL)
+                        room:talk("sp-smrt", CLASS_SOUND)
                         amp3.afaze = 9
                         amp3.stav = amp3.stav + 1
                         room.rozbito = room.rozbito + 1
@@ -282,7 +282,7 @@ local function prog_init()
                 [0] = function()
                     if updateCycles == hlava.zac1 then
                         hlava.stav = hlava.stav + 1
-                        hlava:talk("ves-hs-hrajeme", VOLUME_FULL)
+                        hlava:talk("ves-hs-hrajeme")
                     end
                 end,
                 [1] = function()

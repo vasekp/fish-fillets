@@ -232,15 +232,15 @@ local function prog_init()
                     switch(cycle){
                         [0] = function()
                             if balalajka.tcatcat == 0 then
-                                balalajka:talk("kor-chob-tca", VOLUME_FULL)
+                                balalajka:talk("kor-chob-tca", CLASS_SOUND)
                                 balalajka.tcatcat = random(15) + 10
                             else
-                                balalajka:talk("kor-chob-psi", VOLUME_FULL)
+                                balalajka:talk("kor-chob-psi", CLASS_SOUND)
                                 balalajka.tcatcat = balalajka.tcatcat - 1
                             end
                         end,
                         [11] = function()
-                            balalajka:talk("kor-chob-chro", VOLUME_FULL)
+                            balalajka:talk("kor-chob-chro", CLASS_SOUND)
                         end,
                         default = function()
                             if 1 <= cycle and cycle <= 10 then
@@ -273,7 +273,7 @@ local function prog_init()
                     balalajka.afaze = 5
                 end,
                 [19] = function()
-                    room:talk("kor-room-music", VOLUME_LOW)
+                    room:talk("kor-room-music", CLASS_MUSIC)
                 end,
                 [83] = function()
                     balalajka.afaze = 5

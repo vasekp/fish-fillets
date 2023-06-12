@@ -52,7 +52,7 @@ local function prog_init()
                 end
                 roompole[1] = 1
                 if not klicek:isTalking() then
-                    klicek:talk("mot-x-motor", VOLUME_FULL, -1)
+                    klicek:talk("mot-x-motor", CLASS_SOUND, -1)
                 end
                 if game_getCycles() % 3 == 0 then
                     if radius < 30 then

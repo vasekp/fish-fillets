@@ -158,7 +158,7 @@ local function prog_init()
             if odd(game_getCycles()) then
                 goanim(whirlpool)
             elseif whirlpool.tvor == 1 and whirlpool.afaze > 5 and not whirlpool:isTalking() and random(20) == 1 then
-                whirlpool:talk("br-x-pracka", VOLUME_FULL)
+                whirlpool:talk("br-x-pracka", CLASS_SOUND)
             end
 
             whirlpool:updateAnim()

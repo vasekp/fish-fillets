@@ -102,7 +102,7 @@ local function prog_init()
                             sasanka.kvet = (sasanka.fazec % 2) + 1
                             sasanka.akcnost = 2
                             if sasanka.kvet == 2 then
-                                sasanka:talk("ncp-x-tup", VOLUME_FULL)
+                                sasanka:talk("ncp-x-tup", CLASS_SOUND)
                             end
                         else
                             sasanka.kvet = (sasanka.fazec % 2) * 2 + 1
@@ -293,7 +293,7 @@ local function prog_init()
 
         return function()
             if konik.stav ~= 2 and konik.dir == dir_down then
-                konik:talk("ncp-x-ihaha", VOLUME_FULL)
+                konik:talk("ncp-x-ihaha", CLASS_SOUND)
             end
             if konik.dir == dir_down or elko.dir == dir_down then
                 konik.stav = 2
@@ -360,7 +360,7 @@ local function prog_init()
                             end,
                             [1] = function()
                                 konik.afaze = 1
-                                konik:talk("ncp-x-tik", VOLUME_FULL)
+                                konik:talk("ncp-x-tik", CLASS_SOUND)
                             end,
                             [2] = function()
                                 konik.afaze = 2

@@ -201,7 +201,7 @@ local function prog_init()
                 end
             else
                 if not kachnicka:isTalking() then
-                    kachnicka:talk("bar-x-kchkch", VOLUME_LOW, -1)
+                    kachnicka:talk("bar-x-kchkch", CLASS_SOUND, -1)
                 end
                 kachnicka.afaze = ((kachnicka.afaze - 5 + 1) % 4) + 5
                 kachnicka.cinnost = kachnicka.cinnost + 1
@@ -410,7 +410,7 @@ local function prog_init()
             else
                 if random(100) < 2 then
                     killer.usmev = random(30) + 10
-                    killer:talk("bar-x-gr" ..random(3), VOLUME_LOW)
+                    killer:talk("bar-x-gr" ..random(3), CLASS_SOUND)
                 end
                 killer.afaze = 2 * killer.ocas + 2
                 if random(100) < 7 then
@@ -446,7 +446,7 @@ local function prog_init()
             elseif random(1000) < 15 then
                 hlubinna.afaze=hlubinna.afaze + 6
                 hlubinna.zzzeni = 5
-                hlubinna:talk("bar-x-zzz", VOLUME_LOW)
+                hlubinna:talk("bar-x-zzz", CLASS_SOUND)
             end
             hlubinna:updateAnim()
         end
@@ -505,7 +505,7 @@ local function prog_init()
                 if game_getCycles() % 3 == 0 then
                     nozka.dup = 1 - nozka.dup
                     if nozka.dup == 0 then
-                        nozka:talk("bar-x-tup", VOLUME_LOW)
+                        nozka:talk("bar-x-tup", CLASS_SOUND)
                     end
                 end
                 if nozka.cinnost < -1 or nozka.dup == 0 then
@@ -588,7 +588,7 @@ local function prog_init()
             if pldik.suckani > 0 then
                 if (pldik.suckfaze == 0) then
                         if pldik.cinnost < 200 then
-                            pldik:talk("bar-x-suck" ..random(4), VOLUME_LOW)
+                            pldik:talk("bar-x-suck" ..random(4), CLASS_SOUND)
                         end
                 elseif isRange(pldik.suckfaze, 1, 3) then
                         pldik.afaze = pldik.afaze + 1

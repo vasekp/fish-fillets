@@ -230,7 +230,7 @@ local function prog_init()
                 switch(pldik.suckfaze){
                     [0] = function()
                         if pldik.cinnost < 200 then
-                            model_talk(ACTOR_SUCK, "bar-x-suck"..random(4), VOLUME_FULL)
+                            model_talk(ACTOR_SUCK, "bar-x-suck"..random(4), CLASS_SOUND)
                         end
                     end,
                     [1] = function()

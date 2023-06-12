@@ -138,7 +138,7 @@ private:
     std::pair<int, int> model_getViewShift(int index);
     void model_setBusy(int index, bool busy);
     bool model_isTalking(int index);
-    void model_talk(int index, std::string name, std::optional<int> volume, std::optional<int> loops, bool dialogFlag);
+    void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
     bool model_equals(int index, int x, int y);
     void sound_addSound(const std::string& name, const std::string& filename);

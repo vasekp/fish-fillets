@@ -3,9 +3,9 @@
 LOOK_LEFT = 0
 LOOK_RIGHT = 1
 
-VOLUME_LOW = 50
-VOLUME_LOWER = 75
-VOLUME_FULL = 100
+CLASS_TALK = 0
+CLASS_SOUND = 1
+CLASS_MUSIC = 2
 
 TALK_INDEX_BOTH = -1
 
@@ -103,8 +103,8 @@ function createObject(model_index)
     object.isTalking = function(self)
         return model_isTalking(self.index)
     end
-    object.talk = function(self, dialog, volume, loops)
-        model_talk(self.index, dialog, volume, loops)
+    object.talk = function(self, dialog, class, loops)
+        model_talk(self.index, dialog, class, loops)
     end
     object.killSound = function(self)
         model_killSound(self.index)

@@ -113,7 +113,7 @@ local function prog_init()
                 end,
                 [10] = function()
                     setanim(sklebak, "a2a3a4R")
-                    sklebak:talk("bot-x-smich", VOLUME_FULL)
+                    sklebak:talk("bot-x-smich", CLASS_SOUND)
                     sklebak.cinnost = sklebak.cinnost + 1
                 end,
                 [11] = function()
@@ -124,7 +124,7 @@ local function prog_init()
                 end,
                 [20] = function()
                     sklebak.afaze = 5
-                    sklebak:talk("bot-x-gr"..random(2), VOLUME_FULL)
+                    sklebak:talk("bot-x-gr"..random(2), CLASS_SOUND)
                     sklebak.cinnost = sklebak.cinnost + 1
                 end,
                 [21] = function()
