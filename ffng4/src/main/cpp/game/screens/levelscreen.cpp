@@ -275,6 +275,9 @@ bool LevelScreen::own_key(Key key) {
         case Key::restart:
             m_level.restart();
             return true;
+        case Key::options:
+            m_instance.screens().options().show();
+            return true;
         default:
             return false;
     }

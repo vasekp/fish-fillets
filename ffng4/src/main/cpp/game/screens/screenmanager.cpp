@@ -73,7 +73,7 @@ void ScreenManager::drawFrame() {
     curScreen().drawOverlays(offscreen);
     m_title.draw(offscreen);
 
-    if(options()) {
+    if(m_options.visible()) {
         const auto& [blur1, blur2] = graphics.blurTargets();
         const auto& blurProgram = graphics.shaders().blur;
 
@@ -88,12 +88,18 @@ void ScreenManager::drawFrame() {
         graphics.fullscreenTarget().bind();
         glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
         graphics.fullscreenTarget().blit(blur2.texture(), coords, blurProgram);
+
+        m_options.draw(graphics.fullscreenTarget());
     } else {
         graphics.fullscreenTarget().bind();
         graphics.fullscreenTarget().blit(offscreen.texture(), coords, copyProgram);
     }
 
     graphics.system().display().swap();
+}
+
+IInputSink& ScreenManager::input() {
+    return m_options.visible() ? m_options.input() : curScreen().input();
 }
 
 void ScreenManager::resize() {

@@ -24,7 +24,7 @@ void Instance::init() {
 }
 
 IInputSink& Instance::inputSink() {
-    return screens().curScreen().input();
+    return screens().input();
 }
 
 void Instance::quit() {

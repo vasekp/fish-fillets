@@ -5,13 +5,14 @@
 #include "screen.h"
 #include "game/logic/level.h"
 #include "game/graphics/leveltitle.h"
+#include "options.h"
 
 class ScreenManager {
     Instance& m_instance;
     std::unique_ptr<GameScreen> m_screen;
     std::unique_ptr<GameScreen> m_next;
     LevelTitle m_title;
-    bool m_options;
+    OptionsOverlay m_options;
 
 public:
     enum class Mode {
@@ -20,7 +21,7 @@ public:
         Credits
     };
 
-    ScreenManager(Instance& instance) : m_instance(instance), m_title(instance), m_options(false) { };
+    ScreenManager(Instance& instance) : m_instance(instance), m_title(instance), m_options(instance) { };
 
     void resize();
     void pause();
@@ -34,8 +35,10 @@ public:
     template<class ScreenType, typename... Ts>
     ScreenType& open(Ts&&... ts);
 
+    OptionsOverlay& options() { return m_options; }
+
     GameScreen& curScreen() { return *m_screen; }
-    bool& options() { return m_options; }
+    IInputSink& input();
 
 private:
     void useNext();

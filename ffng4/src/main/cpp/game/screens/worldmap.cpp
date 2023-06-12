@@ -76,7 +76,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
         }
     }
 
-    if(m_instance.screens().options())
+    if(m_instance.screens().options().visible())
         drawMasked(target, m_maskColors.at(Frames::options));
 
     if(m_pm && m_staticFrame != Frames::loading)
@@ -105,7 +105,7 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
                     m_instance.quit();
                     return true;
                 case Frames::options:
-                    m_instance.screens().options() = !m_instance.screens().options();
+                    m_instance.screens().options().show();
                     return true;
                 case Frames::intro:
                     staticFrame(WorldMap::Frames::intro);
