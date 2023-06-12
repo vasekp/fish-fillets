@@ -31,6 +31,16 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
     }*/
 }
 
+void OptionsOverlay::show() {
+    m_visible = true;
+    m_instance.inputSource().reset();
+}
+
+void OptionsOverlay::hide() {
+    m_visible = false;
+    m_instance.inputSource().reset();
+}
+
 bool OptionsOverlay::own_pointer(FCoords coords, bool longPress) {
     hide();
     return true;

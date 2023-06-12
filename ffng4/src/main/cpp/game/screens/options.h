@@ -11,8 +11,8 @@ class OptionsOverlay : public GameScreen {
 public:
     OptionsOverlay(Instance& instance);
 
-    void show() { m_visible = true; }
-    void hide() { m_visible = false; }
+    void show();
+    void hide();
     bool visible() const { return m_visible; }
 
     IInputSink & input() override { return m_input; }
