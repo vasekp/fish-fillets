@@ -20,7 +20,10 @@ public:
     bool ticked();
     int tickCount() const;
 
-    friend void timer_thread(Timer&);
+private:
+    void worker();
+
+    constexpr static std::chrono::duration interval = 100ms;
 };
 
 #endif //FISH_FILLETS_TIMER_H

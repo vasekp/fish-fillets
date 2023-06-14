@@ -1,18 +1,10 @@
 #include "timer.h"
-#include <chrono>
 
-void timer_thread(Timer& timer) {
-    Log::debug("timer thread started");
-    while(!timer.m_stop.load(std::memory_order::relaxed)) {
-        timer.m_tick.store(true, std::memory_order::relaxed);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-    timer.m_stop.store(false, std::memory_order::release);
-    Log::debug("timer thread exited");
-}
-
-Timer::Timer() : m_thread(), m_tick(false), m_stop(false), m_tickCount(0) {
-}
+Timer::Timer() :
+    m_tick(false),
+    m_stop(false),
+    m_tickCount(0)
+{ }
 
 Timer::~Timer() {
     stop();
@@ -20,7 +12,7 @@ Timer::~Timer() {
 
 void Timer::start() {
     if(!m_thread.joinable())
-        m_thread = std::thread([&]() { timer_thread(*this); });
+        m_thread = std::thread([this]() { worker(); });
 }
 
 void Timer::stop() {
@@ -40,4 +32,14 @@ bool Timer::ticked() {
 
 int Timer::tickCount() const {
     return m_tickCount;
+}
+
+void Timer::worker() {
+    Log::debug("timer thread started");
+    while(!m_stop.load(std::memory_order::relaxed)) {
+        m_tick.store(true, std::memory_order::relaxed);
+        std::this_thread::sleep_for(interval);
+    }
+    m_stop.store(false, std::memory_order::release);
+    Log::debug("timer thread exited");
 }
