@@ -1,6 +1,7 @@
 #include "subsystem/audio.h"
 #include "subsystem/files.h"
 #include "subsystem/script.h"
+#include "subsystem/persist.h"
 
 #include <sstream>
 
@@ -25,9 +26,9 @@ public:
 
 Audio::Audio(Instance& instance) : m_instance(instance) {
     AudioPreloader(*this, instance).load();
-    m_volumes[(int)AudioType::talk] = 1.f;
-    m_volumes[(int)AudioType::sound] = 1.f;
-    m_volumes[(int)AudioType::music] = 0.3f;
+    m_volumes[(int)AudioType::talk] = (float)instance.persist().get("volume_talk", 100) / 100.f;
+    m_volumes[(int)AudioType::sound] = (float)instance.persist().get("volume_sound", 100) / 100.f;
+    m_volumes[(int)AudioType::music] = (float)instance.persist().get("volume_music", 30) / 100.f;
 }
 
 void Audio::addSource(const AudioSourceBase::Ref& source) {

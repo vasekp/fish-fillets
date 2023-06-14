@@ -22,11 +22,12 @@ class OptionsOverlay : public GameScreen, public IInputSink {
 
     struct VolumeBar {
         AudioType type;
+        const char* typeString;
         FCoords origin;
         FCoords from;
         FCoords to;
 
-        VolumeBar(AudioType type_, FCoords origin_);
+        VolumeBar(AudioType type_, const char* typeString_, FCoords origin_);
     };
 
     const VolumeBar m_volbars[3];

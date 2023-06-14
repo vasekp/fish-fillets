@@ -12,15 +12,15 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
         {Subtitles::en, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
         {Subtitles::none, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
     m_volbars{
-        {AudioType::sound, {37, 105}},
-        {AudioType::talk, {37, 154}},
-        {AudioType::music,  {37, 203}}},
+        {AudioType::sound, "sound", {37, 105}},
+        {AudioType::talk, "talk", {37, 154}},
+        {AudioType::music, "music", {37, 203}}},
     m_sliding(nullptr),
     m_subs(Subtitles::cz)
 { }
 
-OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, FCoords origin_) :
-    type(type_), origin(origin_)
+OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, FCoords origin_) :
+    type(type_), typeString(typeString_), origin(origin_)
 {
     static int i = 0;
     from = origin - FCoords(volTolerance, volTolerance);
@@ -44,10 +44,6 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
 void OptionsOverlay::show() {
     m_visible = true;
     m_instance.inputSource().reset();
-    int x = m_instance.persist().get<int>("pokus", 3);
-    Log::info("pokus = ", x);
-    x++;
-    m_instance.persist().set("pokus", x);
 }
 
 void OptionsOverlay::hide() {
@@ -66,9 +62,7 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
     for(const auto& bar : m_volbars)
         if(lcoords.within(bar.from, bar.to)) {
             m_sliding = &bar;
-            float volume = exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
-            m_instance.audio().setVolume(bar.type, volume);
-            return false;
+            return pointerMove(coords);
         }
     for(const auto& button : m_buttons)
         if(lcoords.within(button.origin, button.origin + Button::size)) {
@@ -81,10 +75,11 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
 bool OptionsOverlay::pointerMove(FCoords coords) {
     if(!m_sliding)
         return false;
-    auto& bar = *m_sliding;
+    const auto& bar = *m_sliding;
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
-    float volume =exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
+    float volume = exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
     m_instance.audio().setVolume(bar.type, volume);
+    m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100));
     return true;
 }
 
