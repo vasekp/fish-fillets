@@ -14,6 +14,7 @@ class GameTree;
 class AudioSource;
 class IInputSource;
 class IInputSink;
+class Persist;
 class RNG;
 
 class Instance {
@@ -23,6 +24,7 @@ class Instance {
     std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
+    std::unique_ptr<Persist> m_persist;
     std::unique_ptr<RNG> m_rng;
 
 protected:
@@ -38,6 +40,7 @@ public:
     auto& screens() { return *m_screens; }
     auto& script() { return *m_script; }
     auto& levels() { return *m_levels; }
+    auto& persist() { return *m_persist; }
 
     virtual IInputSource& inputSource() = 0;
     IInputSource& inputSourceMasked();

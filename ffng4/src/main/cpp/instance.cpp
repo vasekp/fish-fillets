@@ -11,6 +11,7 @@
 #include "subsystem/rng.h"
 #include "game/screens/screenmanager.h"
 #include "game/structure/gametree.h"
+#include "subsystem/persist.h"
 
 Instance::Instance() = default;
 Instance::~Instance() = default;
@@ -20,6 +21,7 @@ void Instance::init() {
     m_audio = std::make_unique<Audio>(*this);
     m_levels = std::make_unique<GameTree>(*this);
     m_screens = std::make_unique<ScreenManager>(*this);
+    m_persist = std::make_unique<Persist>(*this);
     m_rng = std::make_unique<RNG>();
 }
 

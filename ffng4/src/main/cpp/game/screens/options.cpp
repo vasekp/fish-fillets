@@ -1,4 +1,5 @@
 #include "screenmanager.h"
+#include "subsystem/persist.h"
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :
     GameScreen(instance),
@@ -43,6 +44,10 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
 void OptionsOverlay::show() {
     m_visible = true;
     m_instance.inputSource().reset();
+    int x = m_instance.persist().get<int>("pokus", 3);
+    Log::info("pokus = ", x);
+    x++;
+    m_instance.persist().set("pokus", x);
 }
 
 void OptionsOverlay::hide() {
