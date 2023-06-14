@@ -36,4 +36,5 @@ IInputSource& Instance::inputSourceMasked() {
 void Instance::quit() {
     running = false;
     audio().clear();
+    persist().quit();
 }

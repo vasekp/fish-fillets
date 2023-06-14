@@ -32,6 +32,7 @@
 #include "log.h"
 
 using namespace std::string_literals;
+using namespace std::chrono_literals;
 
 #ifndef __cpp_lib_unreachable
 namespace std {
