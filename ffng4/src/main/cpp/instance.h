@@ -9,7 +9,6 @@ class Image;
 class Audio;
 class GameScreen;
 class ScreenManager;
-class Script;
 class GameTree;
 class AudioSource;
 class IInputSource;
@@ -22,7 +21,6 @@ class Instance {
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
     std::unique_ptr<ScreenManager> m_screens;
-    std::unique_ptr<Script> m_script;
     std::unique_ptr<GameTree> m_levels;
     std::unique_ptr<Persist> m_persist;
     std::unique_ptr<RNG> m_rng;
@@ -38,7 +36,6 @@ public:
     auto& audio() { return *m_audio; }
     auto& rng() { return *m_rng; }
     auto& screens() { return *m_screens; }
-    auto& script() { return *m_script; }
     auto& levels() { return *m_levels; }
     auto& persist() { return *m_persist; }
 
