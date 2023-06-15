@@ -70,7 +70,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_killPlan", lua::wrap<&Level::game_killPlan>);
 
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
-    m_script.registerFn("dialog_addFont", lua::wrap<&Level::dialog_addFont>);
+    m_script.registerFn("dialog_defineColor", lua::wrap<&Level::dialog_defineColor>);
     m_script.registerFn("dialog_add", lua::wrap<&Level::dialog_add>);
 
     m_script.registerFn("options_getParam", lua::wrap<&Level::options_getParam>);
@@ -430,11 +430,11 @@ bool Level::dialog_isDialog() {
     return m_instance.audio().isDialog();
 }
 
-void Level::dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2) {
+void Level::dialog_defineColor(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2) {
     m_screen.subs().defineColors(name, {r1, g1, b1}, {r2.value_or(r1), g2.value_or(g1), b2.value_or(b1)});
 }
 
-void Level::dialog_add(const std::string& name, const std::string& fontname, const std::map<std::string, std::string>& subtitles) {
+void Level::dialog_add(const std::string& name, const std::string& color, const std::map<std::string, std::string>& subtitles) {
     std::string soundFile;
     if(std::string fnLevel = "sound/"s + m_record.codename + "/" + name + ".ogg"; m_instance.files().system(fnLevel)->exists())
         soundFile = std::move(fnLevel);
@@ -443,7 +443,7 @@ void Level::dialog_add(const std::string& name, const std::string& fontname, con
     else
         Log::error("Sound for dialog ID ", name, " not found (", fnLevel, ", ", fnShared, ")");
     Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
-    m_dialogs.insert({name, {subtitles.contains("cs"s) ? subtitles.at("cs"s) : ""s, fontname, soundFile}});
+    m_dialogs.insert({name, {subtitles.contains("cs"s) ? subtitles.at("cs"s) : ""s, color, soundFile}});
 }
 
 std::string Level::options_getParam(const std::string& name) {

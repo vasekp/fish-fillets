@@ -1,44 +1,44 @@
-dialog_add("z-v-doma", "font_big", {
+dialog_add("z-v-doma", "big", {
   cs="Jsem rád, že jsme zase doma.",
   en="I am glad to be home again."})
 
-dialog_add("z-m-pocit", "font_small", {
+dialog_add("z-m-pocit", "small", {
   cs="Mám takový pěkný pocit dobře odvedené práce.",
   en="I have such a good feeling of the work well done."})
 
-dialog_add("z-v-sef", "font_big", {
+dialog_add("z-v-sef", "big", {
   cs="Před chvílí volal šéf. Byl s námi moc spokojen.",
   en="The boss called a moment ago. He was very satisfied with our performance."})
 
-dialog_add("z-m-nemluv", "font_small", {
+dialog_add("z-m-nemluv", "small", {
   cs="O šéfovi mi ani nemluv. On si sedí někde v teploučku, zatím co my jsme se dřely.",
   en="Don’t mention the boss to me. He sits somewhere in his cozy office and we have to do all the dirty work."})
 
-dialog_add("z-v-slyset", "font_big", {
+dialog_add("z-v-slyset", "big", {
   cs="Pssst, může nás slyšet.",
   en="Shhh, he could hear us."})
 
-dialog_add("z-m-netusi", "font_small", {
+dialog_add("z-m-netusi", "small", {
   cs="Jak by nás mohl slyšet. Určitě ani netuší, jak dlouho nám to trvalo.",
   en="How could he? He surely doesn’t even know how long it took us."})
 
-dialog_add("z-m-dlouho", "font_small", {
+dialog_add("z-m-dlouho", "small", {
   cs="Jé, tak dlouho mi to ani nepřipadlo.",
   en="Really? It didn’t seem that long to me."})
 
-dialog_add("z-v-pozdrav", "font_big", {
+dialog_add("z-v-pozdrav", "big", {
   cs="Hráči, máme ti vyřídit pozdrav a uznání od autorů hry. Jestli jsi to neřešil nějakým podvodem, tak jsi opravdu dobrej. Nebo dokonce dobrá? My tě tady odsud moc nevidíme.",
   en="Dear player. We would like to communicate to you the high regards of the authors of this game. If you didn’t solve it by some cheat, you are really very, very good. It’s a pity we cannot see you from here, but..."})
 
-dialog_add("z-m-oblicej", "font_small", {
+dialog_add("z-m-oblicej", "small", {
   cs="Mohl bys dát obličej před kontrolku harddisku? Možná to nevíš, ale to je takové oko počítače, kterým tě...",
   en="Could you please put your face in front of the hard disk LED? You might not know it but it is a kind of computer’s eye through which..."})
 
-dialog_add("z-v-forky", "font_big", {
+dialog_add("z-v-forky", "big", {
   cs="Nech už těch fórků. Teď je slavnostní chvíle. Takže:",
   en="Stop this jokes of yours. This is a very special moment. So:"})
 
-dialog_add("z-o-blahoprejeme", "font_both", {
+dialog_add("z-o-blahoprejeme", "both", {
   cs="BLAHOPŘEJEME!!!",
   en="CONGRATULATIONS!!!"})
 
@@ -108,7 +108,7 @@ dialog_add("z-c-tisic", "", {})
 
 dialog_add("z-c-tisice", "", {})
 
-dialog_add("z-c-hodin", "font_white", {
+dialog_add("z-c-hodin", "white", {
   cs="Konkrétně %1 hodin!",
   en="To be specific, it took you %1 hours!"})
 

@@ -1,4 +1,4 @@
-dialog_add("kan-v-proc", "font_big", {
+dialog_add("kan-v-proc", "big", {
   cs="Proč nehraje?",
   en="Why isn’t he playing?"})
 

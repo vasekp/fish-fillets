@@ -12,7 +12,7 @@ function planTalk(dialogName)
     end)
 end
 
-dialog_add("dlg-x-SPACE", "font_poster", {})
+dialog_add("dlg-x-SPACE", "poster", {})
 function planSpace()
     planTalk("dlg-x-SPACE")
 end
@@ -25,6 +25,6 @@ function planStop()
     end)
 end
 
-dialog_addFont("font_poster", 255, 255, 255)
-dialog_addFont("font_orange", 255, 204, 00)
+dialog_defineColor("poster", 255, 255, 255)
+dialog_defineColor("orange", 255, 204, 00)
 
