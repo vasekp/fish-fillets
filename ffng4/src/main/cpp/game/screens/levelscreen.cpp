@@ -10,7 +10,6 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_waves(),
         m_winSize(),
         m_subs(instance),
-        m_quit(false),
         m_flashAlpha(0)
 { }
 
@@ -20,10 +19,6 @@ void LevelScreen::restore() {
 }
 
 void LevelScreen::exit() {
-    m_quit = true;
-}
-
-void LevelScreen::leave() {
     m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
 
@@ -56,11 +51,6 @@ std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model)
 
 void LevelScreen::own_draw(const DrawTarget& target, float dt) {
     m_level.update(dt);
-
-    if(m_quit) {
-        leave();
-        return;
-    }
 
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
@@ -267,7 +257,7 @@ bool LevelScreen::own_key(Key key) {
             m_level.skipBusy();
             return true;
         case Key::exit:
-            leave();
+            exit();
             return true;
         case Key::save:
             m_level.save();

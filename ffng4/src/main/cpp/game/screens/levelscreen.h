@@ -18,7 +18,6 @@ class LevelScreen : public GameScreen {
     FCoords m_winSize;
     Subtitles m_subs;
     std::optional<PNGImage> m_display;
-    bool m_quit;
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
@@ -60,8 +59,6 @@ private:
     void own_draw(const DrawTarget& target, float dt) override;
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
     bool own_key(Key key) override;
-
-    void leave();
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 
