@@ -24,7 +24,7 @@ void CreditsScreen::own_draw(const DrawTarget& target, float) {
     target.blit(getImage("header"), m_instance.graphics().coords(Graphics::CoordSystems::base), program);
 }
 
-bool CreditsScreen::own_pointer(FCoords, bool) {
+bool CreditsScreen::own_pointer(FCoords) {
     quit();
     return true;
 }

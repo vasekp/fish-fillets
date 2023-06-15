@@ -35,6 +35,9 @@ public:
     void restore();
     void exit();
 
+    bool longPress(FCoords coords);
+    bool doubleTap(FCoords coords);
+
     void setWaves(float amplitude, float period, float speed);
     AudioData::Ref addSound(const std::string& name, const std::string& filename, bool single = false);
     using GameScreen::addImage;
@@ -56,7 +59,6 @@ private:
     void own_resume() override;
     void own_draw(const DrawTarget& target, float dt) override;
     void own_drawOverlays(const DrawTarget &target, float dTime, float absTime) override;
-    bool own_pointer(FCoords coords, bool longPress) override;
     bool own_key(Key key) override;
 
     void leave();

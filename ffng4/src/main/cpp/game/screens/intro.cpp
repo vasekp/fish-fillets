@@ -72,7 +72,7 @@ void IntroScreen::own_draw(const DrawTarget& target, float dt) {
     fill_buffers();
 }
 
-bool IntroScreen::own_pointer(FCoords coords, bool longPress) {
+bool IntroScreen::own_pointer(FCoords coords) {
     m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     return true;
 }

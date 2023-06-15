@@ -24,7 +24,7 @@ protected:
     void own_start() override;
     void own_draw(const DrawTarget& target, float dt) override;
     bool own_key(Key key) override;
-    bool own_pointer(FCoords coords, bool longPress) override;
+    bool own_pointer(FCoords coords) override;
 
 private:
     void fill_buffers();

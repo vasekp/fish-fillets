@@ -29,7 +29,7 @@ public:
     void resume();
     void draw(const DrawTarget& target);
     void drawOverlays(const DrawTarget& target);
-    bool pointer(FCoords coords, bool longPress = false) { return own_pointer(coords, longPress); }
+    bool pointer(FCoords coords) { return own_pointer(coords); }
     bool keypress(Key key) { return own_key(key); }
 
     float timeAlive();
@@ -47,7 +47,7 @@ protected:
     virtual void own_resize();
     virtual void own_draw(const DrawTarget& target, float dt) = 0;
     virtual void own_drawOverlays(const DrawTarget& target, float dTime, float absTime) { }
-    virtual bool own_pointer(FCoords coords, bool longPress) { return false; }
+    virtual bool own_pointer(FCoords coords) { return false; }
     virtual bool own_key(Key key) { return false; }
 };
 

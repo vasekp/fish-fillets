@@ -216,23 +216,26 @@ void LevelScreen::own_resume() {
     m_level.timer().start();
 }
 
-bool LevelScreen::own_pointer(FCoords coords, bool longPress) {
+bool LevelScreen::longPress(FCoords coords) { // TODO rename semantically
     if(!m_level.accepting())
         return false;
     ICoords iCoords = round(coords / size_unit);
-    if(longPress) {
-        m_level.skipGoTo(false);
-        return m_level.scheduleGoTo(iCoords);
-    } else {
-        // Activate fish under pointer. Actually only called after a double tap (from
-        // LevelInput::doubleTap rather than LevelInput::pointerDown), based on UX feedback.
-        for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
-            auto* model = m_level.layout().modelAt(iCoords + ICoords{0, dy});
-            if(model && model->alive())
-                return m_level.rules().switchFish(model);
-        }
+    m_level.skipGoTo(false);
+    return m_level.scheduleGoTo(iCoords);
+}
+
+bool LevelScreen::doubleTap(FCoords coords) { // TODO rename semantically
+    if(!m_level.accepting())
         return false;
+    // Try find and activate fish under pointer.
+    ICoords iCoords = round(coords / size_unit);
+    for(int dy : {0, 1, -1}) { // allow little vertical jitter but test direct hit first
+        auto* model = m_level.layout().modelAt(iCoords + ICoords{0, dy});
+        if(model && model->alive())
+            return m_level.rules().switchFish(model);
     }
+    // If not found, leave to LevelInput.
+    return false;
 }
 
 bool LevelScreen::own_key(Key key) {

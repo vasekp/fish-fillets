@@ -97,7 +97,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
     }
 }
 
-bool WorldMap::own_pointer(FCoords coords, bool longPress) {
+bool WorldMap::own_pointer(FCoords coords) {
     for(const auto& area : areas)
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {

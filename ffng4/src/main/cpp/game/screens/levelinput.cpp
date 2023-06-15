@@ -136,7 +136,7 @@ void LevelInput::pointerCancel() {
 
 bool LevelInput::doubleTap(FCoords coords) {
     auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-    if(!m_screen.pointer(windowCoords))
+    if(!m_screen.doubleTap(windowCoords))
         m_screen.keypress(Key::space);
     m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.history.clear();
@@ -153,7 +153,7 @@ bool LevelInput::twoPointTap() {
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-        bool ret = m_screen.pointer(windowCoords, true);
+        bool ret = m_screen.longPress(windowCoords);
         if(ret)
             m_dirpad.inside = true;
         return ret;
