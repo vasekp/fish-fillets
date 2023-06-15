@@ -2,8 +2,7 @@
 #include <sstream>
 
 Persist::Persist(Instance& instance) :
-    m_instance(instance),
-    m_quit(false)
+    m_instance(instance)
 {
     auto file = instance.files().user(filename);
     if(file->exists()) {
@@ -13,13 +12,16 @@ Persist::Persist(Instance& instance) :
         script.loadFile(file.get());
     }
     m_changed = false; // don't save values that we just loaded from the file
+    m_startstop = true;
+    std::unique_lock lock(m_mutex);
     m_thread = std::thread([this] { worker(); });
+    m_cond.wait(lock, [this] { return !m_startstop; });
 }
 
 /* This CAN NOT be left to the destructor. Instead, Persist::quit() is called from Instance::quit().
  * At the time of ~Persist, Instance::files() (called by save()) is pure virtual. */
 void Persist::quit() {
-    m_quit = true;
+    m_startstop = true;
     m_cond.notify_one();
     m_thread.join();
 }
@@ -59,13 +61,16 @@ void Persist::save() {
 }
 
 void Persist::worker() {
+    assert(m_startstop == true);
+    m_startstop = false;
+    m_cond.notify_one();
     Log::debug("settings thread started");
     std::unique_lock lock(m_mutex);
     while(true) {
         m_cond.wait_for(lock, interval);
         if(m_changed)
             save();
-        if(m_quit)
+        if(m_startstop)
             break;
     }
     Log::debug("settings thread exiting");

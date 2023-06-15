@@ -16,7 +16,7 @@ class Persist : public ScriptReferrer {
     std::mutex m_mutex;
     std::condition_variable m_cond;
     bool m_changed;
-    bool m_quit;
+    bool m_startstop;
 
 public:
     Persist(Instance& instance);
