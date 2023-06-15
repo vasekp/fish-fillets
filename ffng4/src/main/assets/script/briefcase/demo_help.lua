@@ -40,6 +40,11 @@ local function planDelay(delay)
         return count >= delay
     end)
 end
+local function waitDialogs()
+    level_planShow(function(count)
+        return no_dialog()
+    end)
+end
 
 local function showMove(move)
     level_planShow(function(count)
@@ -50,22 +55,19 @@ end
 --TODO: F1 for How to Play manual
 -- ---------------------------------------------------------------
 level_planShow(function(count)
-    addm(0, "help1")
+    addm(0, "help1") -- Teď na nic nesahej
     return true
 end)
 planDelay(3)
--- line 9
 level_planShow(function(count)
     return smallMoveXY(17, 25)
 end)
-planDelay(3)
-planDelay(3)
--- line 49
 showMove('L')
 showMove('L')
 showMove('L')
+
 level_planShow(function(count)
-    addv(0, "help2")
+    addv(0, "help2") -- Než vstoupíme do dílny
     return true
 end)
 level_planShow(function(count)
@@ -74,25 +76,19 @@ end)
 showMove('D')
 showMove('L')
 showMove('D')
--- line 63
-planDelay(1)
-planDelay(27)
--- line 136
-planDelay(18)
--- line 171
+waitDialogs() -- help1, help2
 level_planShow(function(count)
     return level_action_save()
 end)
 planDelay(6)
--- line 185
 level_planShow(function(count)
     return smallMoveXY(9, 25)
 end)
+
 level_planShow(function(count)
-    addm(0, "help3")
+    addm(0, "help3") -- co nám ubližuje
     return true
 end)
-planDelay(1)
 showMove('u')
 showMove('u')
 showMove('l')
@@ -101,47 +97,36 @@ level_planShow(function(count)
     return smallMoveXY(7, 17)
 end)
 planDelay(3)
--- line 231
 showMove('r')
-planDelay(5)
--- line 231
+
 level_planShow(function(count)
-    addv(0, "help4")
+    addv(0, "help4") -- Já budu dělat figuranta.
     return true
 end)
-planDelay(7)
-planDelay(3)
--- line 265
 showMove('L')
 showMove('L')
 showMove('L')
 showMove('L')
-planDelay(13)
--- line 301
+waitDialogs() -- help3, help4
+
 level_planShow(function(count)
-    addm(0, "help5")
+    addm(0, "help5") -- neměli házet předměty
     return true
 end)
-planDelay(7)
-planDelay(10)
--- line 337
-showMove('r')
-planDelay(13)
+waitDialogs() -- help5
 showMove('r')
 planDelay(3)
-showMove('r')
+showMove('r') -- big dies here
 planDelay(13)
--- line 401
 showMove('l')
 showMove('l')
-showMove('l')
+
 level_planShow(function(count)
-    addm(0, "help6")
+    addm(0, "help6") -- nesmíme podklesnout
     return true
 end)
 showMove('d')
 showMove('d')
-showMove('r')
 showMove('r')
 level_planShow(function(count)
     return smallMoveXY(9, 25)
@@ -151,37 +136,38 @@ level_planShow(function(count)
     return smallMoveXY(7, 25)
 end)
 planDelay(6)
--- line 453
 showMove('u')
 showMove('u')
 showMove('u')
 showMove('u')
+waitDialogs() -- help6
 planDelay(19)
--- line 499
-showMove('d')
+showMove('d') -- small dies
 planDelay(39)
--- line 579
+
 level_planShow(function(count)
     return level_action_restart()
 end)
 planDelay(11)
+
 level_planShow(function(count)
-    addv(0, "help7")
+    addv(0, "help7") -- Nyní začínáme znovu
     return true
 end)
-planDelay(66)
--- line 729
+waitDialogs() -- help7
 level_planShow(function(count)
     return level_action_load()
 end)
 planDelay(8)
 level_planShow(function(count)
-    addv(0, "help8")
+    addv(0, "help8") -- jsme na místě, kde jsme hru ukládali
     return true
 end)
-planDelay(7)
-planDelay(29)
--- line 781
+waitDialogs() -- help8
+level_planShow(function(count)
+    addm(0, "help9") -- posunovat si předmět po hřbetě
+    return true
+end)
 level_planShow(function(count)
     return bigMoveXY(9, 23)
 end)
@@ -196,29 +182,22 @@ showMove('R')
 showMove('R')
 showMove('R')
 planDelay(3)
--- line 831
 showMove('U')
 planDelay(3)
-level_planShow(function(count)
-    addm(0, "help9")
-    return true
-end)
-planDelay(3)
 showMove('U')
-planDelay(5)
 planDelay(10)
--- line 881
+waitDialogs() -- help9
 showMove('l')
 planDelay(26)
 showMove('l')
 planDelay(3)
--- line 943
 level_planShow(function(count)
     return smallMoveXY(7, 25)
 end)
 planDelay(3)
+
 level_planShow(function(count)
-    addm(0, "help10")
+    addm(0, "help10") -- Některé předměty mají takový tvar
     return true
 end)
 planDelay(5)
@@ -229,28 +208,25 @@ showMove('u')
 showMove('u')
 showMove('u')
 showMove('u')
-planDelay(16)
--- line 1009
+waitDialogs() -- help10
 showMove('l')
-planDelay(25)
-showMove('l')
+planDelay(5)
+showMove('l') -- small dies
 planDelay(44)
--- line 1151
 level_planShow(function(count)
     return level_action_restart()
 end)
 planDelay(12)
+
 level_planShow(function(count)
-    addv(0, "help11")
+    addv(0, "help11") -- Znovu nahrajeme
     return true
 end)
-planDelay(39)
+waitDialogs() -- help11
 level_planShow(function(count)
     return level_action_load()
 end)
-planDelay(4)
-planDelay(5)
--- line 1277
+planDelay(8)
 level_planShow(function(count)
     return bigMoveXY(9, 23)
 end)
@@ -265,18 +241,16 @@ showMove('R')
 showMove('R')
 showMove('R')
 planDelay(2)
--- line 1325
 showMove('U')
 planDelay(1)
 showMove('U')
 planDelay(6)
-planDelay(3)
+
 level_planShow(function(count)
-    addm(0, "help12")
+    addm(0, "help12") -- Nesmíme ani přihazovat
     return true
 end)
 planDelay(4)
--- line 1359
 showMove('l')
 showMove('u')
 showMove('l')
@@ -292,10 +266,10 @@ end)
 planDelay(7)
 showMove('r')
 planDelay(8)
+waitDialogs() -- help12
 showMove('r')
 planDelay(3)
-showMove('r')
--- line 1436
+showMove('r') -- big dies
 showMove('r')
 showMove('r')
 showMove('r')
@@ -308,34 +282,30 @@ showMove('d')
 planDelay(1)
 showMove('r')
 showMove('r')
-showMove('r')
 level_planShow(function(count)
     return smallMoveXY(17, 25)
 end)
--- line 1469
+
 level_planShow(function(count)
-    addm(0, "help13")
+    addm(0, "help13") -- nepohnu s ocelí
     return true
 end)
 planDelay(7)
 showMove('d')
-planDelay(22)
--- line 1531
+showMove('l')
+waitDialogs() -- help13
 showMove('l')
 showMove('l')
-showMove('l')
-planDelay(11)
-showMove('r')
+planDelay(40)
 showMove('r')
 showMove('d')
 planDelay(2)
--- line 1569
 showMove('l')
 showMove('l')
 showMove('l')
-showMove('l')
+showMove('l') -- small dies
 planDelay(45)
--- line 1667
+
 level_planShow(function(count)
     return level_action_restart()
 end)
@@ -344,28 +314,25 @@ level_planShow(function(count)
     return level_action_load()
 end)
 planDelay(4)
+
 level_planShow(function(count)
-    addv(0, "help14")
+    addv(0, "help14") -- teď ti ukážeme, co dělat umíme
     return true
 end)
 planDelay(10)
--- line 1717
+waitDialogs() -- help14
 level_planShow(function(count)
     return smallMoveXY(7, 25)
 end)
-planDelay(5)
-showMove('l')
-planDelay(13)
 level_planShow(function(count)
-    addm(0, "help15")
+    addm(0, "help15") -- můžeme zvedat a pouštět
     return true
 end)
 showMove('u')
 showMove('u')
 showMove('u')
 planDelay(7)
--- line 1815
-showMove('r')
+waitDialogs() -- help15
 showMove('r')
 showMove('r')
 showMove('r')
@@ -375,14 +342,12 @@ showMove('L')
 showMove('D')
 showMove('D')
 planDelay(2)
--- line 1847
 showMove('L')
 showMove('L')
 showMove('L')
 showMove('L')
 showMove('L')
 planDelay(1)
--- line 1857
 showMove('L')
 showMove('L')
 showMove('L')
@@ -395,30 +360,27 @@ showMove('D')
 showMove('R')
 showMove('R')
 showMove('R')
--- line 1895
 showMove('U')
 planDelay(2)
+
 level_planShow(function(count)
-    addm(0, "help16")
+    addm(0, "help16") -- pokud se těsně předtím zachytí
     return true
 end)
-planDelay(6)
-planDelay(4)
--- line 1923
+planDelay(10)
 showMove('d')
 showMove('d')
 showMove('d')
 showMove('l')
 showMove('l')
+showMove('l')
 showMove('d')
 showMove('d')
-planDelay(7)
--- line 1955
 showMove('r')
-planDelay(29)
+planDelay(7)
+waitDialogs() -- help16
 showMove('r')
 planDelay(3)
--- line 2023
 level_planShow(function(count)
     return smallMoveXY(4, 27)
 end)
@@ -430,33 +392,29 @@ planDelay(3)
 showMove('U')
 planDelay(2)
 showMove('U')
-planDelay(6)
-planDelay(4)
--- line 2083
+planDelay(10)
 level_planShow(function(count)
     return smallMoveXY(10, 30)
 end)
 showMove('u')
 showMove('r')
 level_planShow(function(count)
-    addm(0, "help17")
+    addm(0, "help17") -- a dokonce ho na sebe pouštět
     return true
 end)
-planDelay(11)
-planDelay(8)
+waitDialogs() -- help17
 showMove('L')
 showMove('L')
 showMove('L')
 planDelay(8)
--- line 2163
 showMove('D')
 level_planShow(function(count)
     return bigMoveXY(3, 28)
 end)
-planDelay(5)
-planDelay(6)
+planDelay(11)
+
 level_planShow(function(count)
-    addm(0, "help18")
+    addm(0, "help18") -- podklesnu pod ním a nebo jej nasunu na támhletu polici
     return true
 end)
 planDelay(4)
@@ -471,8 +429,9 @@ showMove('l')
 planDelay(3)
 showMove('u')
 planDelay(6)
+waitDialogs() -- help18
 showMove('d')
-planDelay(6)
+planDelay(16)
 showMove('u')
 showMove('u')
 showMove('u')
@@ -483,8 +442,7 @@ showMove('u')
 planDelay(4)
 showMove('l')
 planDelay(5)
--- line 2301
-showMove('r')
+
 showMove('r')
 showMove('r')
 showMove('r')
@@ -493,9 +451,7 @@ showMove('u')
 planDelay(5)
 showMove('r')
 showMove('r')
-planDelay(4)
-planDelay(3)
--- line 2343
+planDelay(7)
 level_planShow(function(count)
     return bigMoveXY(8, 28)
 end)
@@ -506,15 +462,13 @@ showMove('U')
 planDelay(1)
 showMove('U')
 showMove('U')
-planDelay(11)
-planDelay(3)
+planDelay(14)
+
 level_planShow(function(count)
-    addm(0, "help19")
+    addm(0, "help19") -- také můžeme posouvat předmět po jiném předmětu
     return true
 end)
 planDelay(4)
--- line 2421
-showMove('l')
 showMove('l')
 showMove('l')
 showMove('d')
@@ -522,12 +476,10 @@ showMove('d')
 planDelay(1)
 showMove('r')
 showMove('r')
-showMove('r')
 showMove('d')
 showMove('d')
 showMove('d')
 planDelay(8)
--- line 2461
 showMove('r')
 planDelay(2)
 showMove('r')
@@ -549,40 +501,33 @@ level_planShow(function(count)
     return smallMoveXY(17, 22)
 end)
 planDelay(2)
--- line 2539
-showMove('l')
 showMove('l')
 planDelay(1)
 showMove('l')
 planDelay(9)
+
+waitDialogs() -- help19
 level_planShow(function(count)
-    addv(0, "help20")
+    addv(0, "help20") -- pod předmětem volně proplouvat a předávat si jej
     return true
 end)
--- line 2571
 showMove('r')
 showMove('r')
-showMove('r')
-planDelay(3)
-planDelay(3)
+planDelay(6)
 showMove('R')
 showMove('R')
 showMove('R')
 planDelay(3)
 showMove('L')
 showMove('L')
-showMove('L')
-planDelay(2)
-planDelay(3)
--- line 2617
+planDelay(5)
 level_planShow(function(count)
     return smallMoveXY(17, 26)
 end)
 showMove('l')
 showMove('l')
 showMove('l')
-planDelay(3)
-planDelay(3)
+planDelay(6)
 showMove('L')
 showMove('L')
 showMove('L')
@@ -590,9 +535,7 @@ planDelay(4)
 level_planShow(function(count)
     return bigMoveXY(10, 26)
 end)
-planDelay(4)
-planDelay(3)
--- line 2683
+planDelay(7)
 level_planShow(function(count)
     return smallMoveXY(18, 26)
 end)
@@ -601,37 +544,28 @@ showMove('u')
 planDelay(2)
 showMove('l')
 planDelay(1)
+
+waitDialogs() -- help20
 level_planShow(function(count)
-    addm(0, "help21")
+    addm(0, "help21") -- můžeme ho jedna z druhé shodit
     return true
 end)
-planDelay(5)
-planDelay(4)
--- line 2751
+planDelay(9)
 level_planShow(function(count)
     return bigMoveXY(15, 26)
 end)
 planDelay(4)
 showMove('R')
+planDelay(12)
 planDelay(5)
-planDelay(7)
--- line 2795
-showMove('l')
-planDelay(5)
+waitDialogs() -- help21
 showMove('l')
 planDelay(8)
 showMove('r')
-planDelay(2)
-showMove('r')
 planDelay(3)
+
 level_planShow(function(count)
-    addv(0, "help22")
+    addv(0, "help22") -- to by bylo z pravidel asi všechno
+    addm(0, "help23") -- já bych to ještě shrnula
     return true
 end)
-planDelay(70)
--- line 2981
-level_planShow(function(count)
-    addm(0, "help23")
-    return true
-end)
-planDelay(114)

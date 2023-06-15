@@ -20,7 +20,6 @@ public:
 
 private:
     bool exists(const std::filesystem::path& path) const;
-    std::filesystem::path localize(const std::filesystem::path& base);
 };
 
 #endif //FISH_FILLETS_FILES_SYSTEM_H

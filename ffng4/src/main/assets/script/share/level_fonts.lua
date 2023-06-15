@@ -23,28 +23,16 @@ function loadFonts()
     dialog_defineColor("green", 20, 245, 50)
     dialog_defineColor("magenta", 200, 80, 210)
 
-    dialog_defineColor("both", 255, 197, 102)
+    dialog_defineColor("both", 255, 197, 102, 162, 244, 255)
 
-    dialog_defineColor("viking1", 128, 128, 255)
-    dialog_defineColor("viking2", 255, 180, 100)
-    dialog_defineColor("viking3", 255, 96, 96)
-    dialog_defineColor("viking4", 255, 180, 100)
-    dialog_defineColor("viking5", 255, 192, 128)
-    dialog_defineColor("viking6", 128, 255, 255)
+    dialog_defineColor("viking1", 128, 128, 255, 255, 255, 128)
+    dialog_defineColor("viking2", 255, 180, 100, 255, 255, 128)
+    dialog_defineColor("viking3", 255, 96, 96, 255, 180, 100)
+    dialog_defineColor("viking4", 255, 180, 100, 128, 255, 255)
+    dialog_defineColor("viking5", 255, 192, 128, 255, 255, 0)
+    dialog_defineColor("viking6", 128, 255, 255, 255, 255, 255)
 
-    dialog_defineColor("viking8", 255, 255, 128)
-
-    --FIXME: vikings?
-    --[[
-    0   255 197 102   162 244 255
-    1   128 128 255   255 255 128
-    2   255 180 100   255 255 128
-    3   255  96  96   255 180 100
-    4   255 180 100   128 255 255
-    5   255 192 128   255 255 0
-    6   128 255 255   255 255 255
-    8   255 255 128   255  96  96
-    ]]
+    dialog_defineColor("viking8", 255, 255, 128, 255, 96, 96)
 end
 
 

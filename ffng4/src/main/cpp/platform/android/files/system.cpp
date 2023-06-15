@@ -2,7 +2,7 @@
 
 SystemFile::SystemFile(const std::string& path, AAssetManager* assets) :
         m_assets(assets),
-        m_path(localize(path))
+        m_path(path)
 { }
 
 bool SystemFile::exists() const {
@@ -29,13 +29,4 @@ bool SystemFile::write(const std::string& data) const {
 
 ndk::Asset SystemFile::asset(int mode) const {
     return ndk::Asset{m_assets, m_path.c_str(), mode};
-}
-
-std::filesystem::path SystemFile::localize(const std::filesystem::path& base) {
-    auto override = "override" / base;
-    if (exists(override)) {
-        Log::debug("override ", base, " -> ", override);
-        return override;
-    } else
-        return base;
 }
