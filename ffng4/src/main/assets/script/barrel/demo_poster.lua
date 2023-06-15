@@ -1,6 +1,6 @@
 
 codename = "barrel"
-file_include("script/"..codename.."/demo-dialogs.lua")
+file_include("script/"..codename.."/demo_dialogs.lua")
 
 -- -----------------------------------------------------------------
 file_include("script/share/prog_demo.lua")
