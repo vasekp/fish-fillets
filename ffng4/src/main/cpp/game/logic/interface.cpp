@@ -74,6 +74,13 @@ void Level::registerCallbacks() {
     m_script.registerFn("dialog_addDialog", lua::wrap<&Level::dialog_addDialog>);
 
     m_script.registerFn("options_getParam", lua::wrap<&Level::options_getParam>);
+
+    m_script.registerFn("test", lua::wrap<&Level::test>);
+}
+
+void Level::test(const std::map<std::string, std::string>& map) {
+    for(const auto& [key, value] : map)
+        Log::debug(key, " => ", value);
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {

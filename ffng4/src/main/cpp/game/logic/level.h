@@ -156,6 +156,7 @@ private:
     void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
                                  const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     std::string options_getParam(const std::string& name);
+    void test(const std::map<std::string, std::string>& map);
 
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;

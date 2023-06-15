@@ -43,6 +43,21 @@ namespace lua {
             return lua_isnoneornil(L, index) ? std::optional<int>{} : (int)luaL_checkinteger(L, index);
         }
 
+        template<>
+        inline std::map<std::string, std::string> read(lua_State *L, std::size_t index) {
+            lua_pushvalue(L, index);
+            lua_pushnil(L);
+            std::map<std::string, std::string> ret;
+            while(lua_next(L, -2)) {
+                lua_pushvalue(L, -2);
+                const char* key = lua_tostring(L, -1);
+                const char* value = lua_tostring(L, -2);
+                ret[key] = value;
+                lua_pop(L, 2);
+            }
+            lua_pop(L, 1);
+            return ret;
+        }
 
         template<typename T>
         inline int write(lua_State *L, T value);
