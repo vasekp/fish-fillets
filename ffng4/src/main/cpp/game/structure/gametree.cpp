@@ -8,7 +8,6 @@ GameTree::GameTree(Instance& instance) :
     m_script.registerFn("branch_addNode", lua::wrap<&GameTree::branch_addNode>);
     m_script.registerFn("branch_setEnding", lua::wrap<&GameTree::branch_setEnding>);
     m_script.registerFn("worldmap_addDesc", lua::wrap<&GameTree::worldmap_addDesc>);
-    m_script.registerFn("node_bestSolution", lua::wrap<&GameTree::node_bestSolution>);
     m_script.loadFile(instance.files().system("script/worldmap.lua").get());
 }
 
@@ -30,9 +29,4 @@ void GameTree::branch_setEnding(const std::string& codename, const std::string& 
 void GameTree::worldmap_addDesc(const std::string& codename, const std::string& lang, const std::string& levelname, const std::string& branch) {
     if(m_levels.contains(codename))
         m_levels.at(codename).description[lang] = levelname;
-}
-
-void GameTree::node_bestSolution(const std::string& codename, int moves, const std::string& name) {
-    if(m_levels.contains(codename))
-        m_levels.at(codename).best = {name, moves};
 }
