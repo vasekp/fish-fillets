@@ -28,10 +28,6 @@ bool LevelInput::keyDown(Key key) {
     return m_screen.keypress(key);
 }
 
-bool LevelInput::keyUp(Key) {
-    return false;
-}
-
 Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;

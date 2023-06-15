@@ -21,7 +21,6 @@ inline IInputSource nullInputSource;
 class IInputSink {
 public:
     virtual bool keyDown(Key key) { return false; }
-    virtual bool keyUp(Key key) { return false; }
     virtual bool pointerDown(FCoords coords) { return false; }
     virtual bool pointerMove(FCoords coords) { return false; }
     virtual bool pointerUp(bool empty) { return false; }

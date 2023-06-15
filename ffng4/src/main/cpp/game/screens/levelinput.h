@@ -59,7 +59,6 @@ public:
     void setLoadPossible(bool possible);
 
     bool keyDown(Key key) override;
-    bool keyUp(Key key) override;
     bool pointerDown(FCoords coords) override;
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;

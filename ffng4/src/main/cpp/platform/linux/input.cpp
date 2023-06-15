@@ -76,7 +76,6 @@ void XInput::keyEvent(XKeyEvent& event) {
         return;
     } else {
         m_lastKey = Key::none;
-        // TODO remove input.keyUp
     }
 }
 

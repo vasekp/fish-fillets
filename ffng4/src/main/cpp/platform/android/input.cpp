@@ -139,7 +139,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             if(key != m_lastKey)
                 return false;
             m_lastKey = Key::none;
-            return m_keyHandled | inputSink.keyUp(key);
+            return m_keyHandled;
         } else
             return false;
     }
