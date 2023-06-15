@@ -131,6 +131,11 @@ void LevelInput::pointerCancel() {
 }
 
 bool LevelInput::doubleTap(FCoords coords) {
+    if(auto button = findButton(coords); button != noButton && m_buttons[button].enabled) {
+        m_dirpad.state = DirpadState::button;
+        m_activeButton = button;
+        return true;
+    }
     auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
     if(!m_screen.doubleTap(windowCoords))
         m_screen.keypress(Key::space);

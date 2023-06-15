@@ -43,6 +43,7 @@ public:
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;
     void pointerCancel() override;
+    bool doubleTap(FCoords coords) override;
     bool keyDown(Key key) override;
 
 private:

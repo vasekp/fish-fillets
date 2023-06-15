@@ -14,6 +14,7 @@ public:
 
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;
+    bool doubleTap(FCoords coords) override;
 };
 
 #endif //FISH_FILLETS_BASEINPUT_H
