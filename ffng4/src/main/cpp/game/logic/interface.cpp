@@ -14,7 +14,6 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_changeBg", lua::wrap<&Level::game_changeBg>);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
 //    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
-//    m_script.registerFn("game_getBg", script_game_getBg); // UNDO
 
     m_script.registerFn("model_addAnim", lua::wrap<&Level::model_addAnim>);
     m_script.registerFn("model_runAnim", lua::wrap<&Level::model_runAnim>);
@@ -40,9 +39,6 @@ void Level::registerCallbacks() {
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
     m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
     m_script.registerFn("model_equals", lua::wrap<&Level::model_equals>);
-//    m_script.registerFn("model_change_setLocation", script_model_change_setLocation); // UNDO
-//    m_script.registerFn("model_getExtraParams", script_model_getExtraParams); // UNDO
-//    m_script.registerFn("model_change_setExtraParams", script_model_change_setExtraParams); // UNDO
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
     m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);

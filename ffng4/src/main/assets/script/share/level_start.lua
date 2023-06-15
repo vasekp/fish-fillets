@@ -49,7 +49,7 @@ local function updateModels()
     end
     wasRestart = false
 
-    -- update .X, .Y for all models (used also to save old state for undo)
+    -- update .X, .Y for all models
     local models = getModelsTable()
     for key, model in pairs(models) do
         model.X, model.Y = model:getLoc()
