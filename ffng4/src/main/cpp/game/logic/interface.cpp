@@ -448,10 +448,10 @@ void Level::dialog_add(const std::string& name, const std::string& fontname, con
     std::string soundFile;
     if(std::string fnLevel = "sound/"s + m_record.codename + "/" + name + ".ogg"; m_instance.files().system(fnLevel)->exists())
         soundFile = std::move(fnLevel);
-    else if(std::string fnShared = "sound/shared/" + name + ".ogg"; m_instance.files().system(fnShared)->exists())
+    else if(std::string fnShared = "sound/share/" + name + ".ogg"; m_instance.files().system(fnShared)->exists())
         soundFile = std::move(fnShared);
     else
-        Log::error("Sound for dialog ID ", name, " not found.");
+        Log::error("Sound for dialog ID ", name, " not found (", fnLevel, ", ", fnShared, ")");
     Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
     m_dialogs.insert({name, {subtitles.contains("cs"s) ? subtitles.at("cs"s) : ""s, fontname, soundFile}});
 }

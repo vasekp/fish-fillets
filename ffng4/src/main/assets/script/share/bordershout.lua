@@ -35,6 +35,6 @@ end
 
 -- -----------------------------------------------------------------
 function borderShoutLoad()
-    dialogLoad("script/share/shout_", "sound/share/border/")
+    file_include("script/share/shout_dialogs.lua")
 end
 
