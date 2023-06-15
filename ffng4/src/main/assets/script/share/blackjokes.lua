@@ -1,6 +1,6 @@
 
 function stdBlackJokeLoad()
-    dialogLoad("script/share/black_", "sound/share/blackjokes/")
+    file_include("script/share/black_dialogs.lua")
 end
 
 -- -----------------------------------------------------------------
