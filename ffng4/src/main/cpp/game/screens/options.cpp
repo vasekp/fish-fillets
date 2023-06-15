@@ -8,15 +8,15 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
     m_origin((Graphics::baseDim - imgSize) / 2),
     m_visible(false),
     m_buttons{
-        {Subtitles::cz, {instance, "images/menu/options-subs-cz.png"}, {25, 270}},
-        {Subtitles::en, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
-        {Subtitles::none, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
+        {"cs"s, {instance, "images/menu/options-subs-cs.png"}, {25, 270}},
+        {"en"s, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
+        {""s, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
     m_volbars{
         {AudioType::sound, "sound", {37, 105}},
         {AudioType::talk, "talk", {37, 154}},
         {AudioType::music, "music", {37, 203}}},
     m_sliding(nullptr),
-    m_subs(Subtitles::cz)
+    m_currSubs(instance.persist().get("subtitles", "cs"s))
 { }
 
 OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, FCoords origin_) :
@@ -34,7 +34,7 @@ void OptionsOverlay::own_draw(const DrawTarget& target, float dt) {
     target.blit(&m_options, coords, copyProgram, 0, 0);
 
     for(const auto& button : m_buttons)
-        if(button.value == m_subs)
+        if(button.value == m_currSubs)
             target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
 
     for(const auto& bar : m_volbars)
@@ -66,7 +66,8 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
         }
     for(const auto& button : m_buttons)
         if(lcoords.within(button.origin, button.origin + Button::size)) {
-            m_subs = button.value;
+            m_currSubs = button.value;
+            m_instance.persist().set("subtitles", m_currSubs);
             return true;
         }
     return false;

@@ -1,6 +1,7 @@
 #include "level.h"
 #include "game/screens/levelscreen.h"
 #include "subsystem/rng.h"
+#include "subsystem/persist.h"
 
 #include <sstream>
 
@@ -339,16 +340,17 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         big->talk() = source;
     }
     m_instance.audio().addSource(source);
-    if(!dialog.text.empty()) {
+    auto lang = m_instance.persist().get("subtitles", "cs"s);
+    if(dialog.texts.contains(lang)) {
         if(!param.empty()) {
-            auto string = dialog.text;
+            auto string = dialog.texts.at(lang);
             auto ix = string.find("%1");
             if(ix == std::string::npos)
                 throw std::runtime_error("replacement required but dialog text does not contain '%1'");
             string.replace(ix, 2, param);
             m_screen.addSubtitle(string, dialog.colors);
         } else
-            m_screen.addSubtitle(dialog.text, dialog.colors);
+            m_screen.addSubtitle(dialog.texts.at(lang), dialog.colors);
     }
 }
 
@@ -434,7 +436,7 @@ void Level::dialog_defineColor(const std::string& name, int r1, int g1, int b1, 
     m_screen.subs().defineColors(name, {r1, g1, b1}, {r2.value_or(r1), g2.value_or(g1), b2.value_or(b1)});
 }
 
-void Level::dialog_add(const std::string& name, const std::string& color, const std::map<std::string, std::string>& subtitles) {
+void Level::dialog_add(const std::string& name, const std::string& color, std::map<std::string, std::string>&& subtitles) {
     std::string soundFile;
     if(std::string fnLevel = "sound/"s + m_record.codename + "/" + name + ".ogg"; m_instance.files().system(fnLevel)->exists())
         soundFile = std::move(fnLevel);
@@ -443,7 +445,7 @@ void Level::dialog_add(const std::string& name, const std::string& color, const 
     else
         Log::error("Sound for dialog ID ", name, " not found (", fnLevel, ", ", fnShared, ")");
     Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
-    m_dialogs.insert({name, {subtitles.contains("cs"s) ? subtitles.at("cs"s) : ""s, color, soundFile}});
+    m_dialogs.insert({name, {soundFile, color, std::move(subtitles)}});
 }
 
 std::string Level::options_getParam(const std::string& name) {

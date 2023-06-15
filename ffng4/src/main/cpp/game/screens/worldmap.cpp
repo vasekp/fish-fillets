@@ -1,5 +1,6 @@
 #include "worldmap.h"
 #include "screenmanager.h"
+#include "subsystem/persist.h"
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
@@ -144,7 +145,10 @@ bool WorldMap::own_pointer(FCoords coords, bool longPress) {
         const auto& record = it->second;
         if(record.state() == LevelState::locked)
             return false;
-        m_instance.screens().announceLevel(it->second.description.at("cs")); // TODO
+        auto lang = m_instance.persist().get("subtitles", "cs"s);
+        if(lang.empty())
+            lang = "cs"s;
+        m_instance.screens().announceLevel(it->second.description.at(lang));
         if(record.state() == LevelState::solved)
             m_pm.emplace(m_instance, it->second);
         else {

@@ -7,14 +7,8 @@ class OptionsOverlay : public GameScreen, public IInputSink {
     FCoords m_origin;
     bool m_visible;
 
-    enum class Subtitles {
-        cz,
-        en,
-        none
-    };
-
     struct Button {
-        Subtitles value;
+        std::string value;
         PNGImage image;
         FCoords origin;
         static constexpr FCoords size{47, 33};
@@ -33,7 +27,7 @@ class OptionsOverlay : public GameScreen, public IInputSink {
     const VolumeBar m_volbars[3];
     const VolumeBar* m_sliding;
 
-    Subtitles m_subs;
+    std::string m_currSubs;
 
 public:
     OptionsOverlay(Instance& instance);

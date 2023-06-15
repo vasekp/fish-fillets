@@ -34,9 +34,9 @@ class Level : public ScriptReferrer {
     std::vector<Delayed> m_transitions;
 
     struct Dialog {
-        std::string text;
-        std::string colors;
         std::string soundFile;
+        std::string colors;
+        std::map<std::string, std::string> texts;
     };
     std::map<std::string, Dialog> m_dialogs;
 
@@ -153,7 +153,7 @@ private:
     void game_changeBg(const std::string& filename);
     bool dialog_isDialog();
     void dialog_defineColor(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
-    void dialog_add(const std::string& name, const std::string& color, const std::map<std::string, std::string>& subtitles);
+    void dialog_add(const std::string& name, const std::string& color, std::map<std::string, std::string>&& subtitles);
     std::string options_getParam(const std::string& name);
 
     void setBusy(BusyReason reason, bool busy = true);
