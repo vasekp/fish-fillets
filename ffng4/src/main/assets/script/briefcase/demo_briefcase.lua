@@ -1,6 +1,5 @@
 
 codename = "briefcase"
-file_include("script/share/level_dialog.lua")
 file_include("script/briefcase/brief_dialogs.lua")
 
 local function planDelay(delay)
