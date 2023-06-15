@@ -45,6 +45,7 @@ class Level : public ScriptReferrer {
         schedule,
         demo,
         replay,
+        poster,
         SIZE
     };
     EnumBitset<BusyReason> m_busy;
@@ -56,6 +57,7 @@ public:
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
     const LevelRules& rules() const { return *m_rules; }
+    const LevelRecord& record() { return m_record; }
     LevelScreen& screen() { return m_screen; }
     Timer& timer() { return m_timer; }
     LevelInput& input();

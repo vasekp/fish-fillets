@@ -67,7 +67,9 @@ bool Level::isBusy(BusyReason reason) const {
 }
 
 void Level::skipBusy() {
-    if(m_busy[BusyReason::demo])
+    if(m_busy[BusyReason::poster])
+        m_screen.exit();
+    else if(m_busy[BusyReason::demo])
         quitDemo();
     else if(m_busy[BusyReason::loading])
         runScheduledAll();
@@ -207,7 +209,10 @@ void Level::success() {
                 m_record.solved = true;
                 solveFile()->write("saved_moves = '"s + m_replay + "'\n");
             }
-            m_screen.exit();
+            if(!record().script_ending.empty()) {
+                m_script.loadFile(m_instance.files().system(record().script_ending).get());
+                setBusy(BusyReason::poster);
+            }
         }
         else
             m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
@@ -256,13 +261,14 @@ void Level::reinit(bool keepSchedule) {
     m_replay.clear();
     setBusy(BusyReason::demo, false);
     setBusy(BusyReason::loading, false);
+    setBusy(BusyReason::poster, false);
     m_goto = false;
     if(!keepSchedule)
         clearSchedule();
 }
 
 bool Level::savePossible() const {
-    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && !isBusy(BusyReason::replay) && rules().solvable();
+    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && !isBusy(BusyReason::replay) && !isBusy(BusyReason::poster) && rules().solvable();
 }
 
 bool Level::loadPossible() const {
