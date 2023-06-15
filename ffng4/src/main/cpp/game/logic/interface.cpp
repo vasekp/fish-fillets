@@ -72,15 +72,9 @@ void Level::registerCallbacks() {
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_addFont", lua::wrap<&Level::dialog_addFont>);
     m_script.registerFn("dialog_addDialog", lua::wrap<&Level::dialog_addDialog>);
+    m_script.registerFn("dialog_add", lua::wrap<&Level::dialog_add>);
 
     m_script.registerFn("options_getParam", lua::wrap<&Level::options_getParam>);
-
-    m_script.registerFn("test", lua::wrap<&Level::test>);
-}
-
-void Level::test(const std::map<std::string, std::string>& map) {
-    for(const auto& [key, value] : map)
-        Log::debug(key, " => ", value);
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -444,8 +438,22 @@ void Level::dialog_addFont(const std::string& name, int r1, int g1, int b1, std:
 void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
         const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
     // TODO
+    if(soundfile.empty())
+        Log::error("Dialog ID ", name, " has no associated sound file.");
     if(!soundfile.empty() && (lang == "cs" || lang == "en"))
         m_dialogs.insert({name, {subtitle.value_or(""s), fontname.value_or(""), soundfile}});
+}
+
+void Level::dialog_add(const std::string& name, const std::string& fontname, const std::map<std::string, std::string>& subtitles) {
+    std::string soundFile;
+    if(std::string fnLevel = "sound/"s + m_record.codename + "/" + name + ".ogg"; m_instance.files().system(fnLevel)->exists())
+        soundFile = std::move(fnLevel);
+    else if(std::string fnShared = "sound/shared/" + name + ".ogg"; m_instance.files().system(fnShared)->exists())
+        soundFile = std::move(fnShared);
+    else
+        Log::error("Sound for dialog ID ", name, " not found.");
+    Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
+    m_dialogs.insert({name, {subtitles.contains("cs"s) ? subtitles.at("cs"s) : ""s, fontname, soundFile}});
 }
 
 std::string Level::options_getParam(const std::string& name) {
