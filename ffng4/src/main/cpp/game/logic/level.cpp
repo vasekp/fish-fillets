@@ -20,7 +20,7 @@ LevelInput& Level::input() {
 void Level::init() {
     m_attempt++;
     Log::info("Level ", m_record.codename, ", attempt ", m_attempt);
-    m_script.loadFile(m_instance.files().system(m_record.script_filename).get());
+    m_script.loadFile(m_record.script_filename);
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
     input().setLoadPossible(loadPossible());
@@ -210,7 +210,7 @@ void Level::success() {
                 solveFile()->write("saved_moves = '"s + m_replay + "'\n");
             }
             if(!record().script_ending.empty()) {
-                m_script.loadFile(m_instance.files().system(record().script_ending).get());
+                m_script.loadFile(record().script_ending);
                 setBusy(BusyReason::poster);
             }
         }

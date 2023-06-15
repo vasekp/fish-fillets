@@ -26,9 +26,8 @@ public:
 
     void registerFn(const std::string& name, lua_CFunction function);
     void doString(const std::string& string);
-    void loadFile(const IFile* file);
+    void loadFile(const std::string& filename);
 
-    void file_include(const std::string& filename);
     bool file_exists(const std::string& filename);
     void sendMsg(const std::string& target, const std::string& text);
 };

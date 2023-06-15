@@ -9,7 +9,7 @@ Persist::Persist(Instance& instance) :
         Script script(instance, *this);
         script.registerFn("options_setInt", lua::wrap<&Persist::set<int>>);
         script.registerFn("options_setString", lua::wrap<&Persist::set<const std::string&>>);
-        script.loadFile(file.get());
+        script.doString(file->read());
     }
     m_changed = false; // don't save values that we just loaded from the file
     m_startstop = true;

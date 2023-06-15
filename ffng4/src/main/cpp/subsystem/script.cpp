@@ -8,7 +8,7 @@ Script::Script(Instance &instance, ScriptReferrer& ref) :
     lua_pushlightuserdata(m_env, this);
     lua_rawset(m_env, LUA_REGISTRYINDEX);
 
-    registerFn("file_include", lua::wrap<&Script::file_include>);
+    registerFn("file_include", lua::wrap<&Script::loadFile>);
     registerFn("file_exists", lua::wrap<&Script::file_exists>);
     registerFn("sendMsg", lua::wrap<&Script::sendMsg>);
 }
@@ -31,12 +31,9 @@ void Script::doString(const std::string& string) {
         Log::error("Lua error: ", lua_tostring(m_env, -1));
 }
 
-void Script::loadFile(const IFile* file) {
+void Script::loadFile(const std::string& filename) {
+    auto file = m_instance.files().system(filename);
     doString(file->read());
-}
-
-void Script::file_include(const std::string& filename) {
-    loadFile(m_instance.files().system(filename).get());
 }
 
 bool Script::file_exists(const std::string& filename) {

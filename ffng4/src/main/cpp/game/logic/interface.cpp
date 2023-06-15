@@ -148,7 +148,7 @@ bool Level::level_load(const std::string& text_moves) {
 void Level::level_newDemo(const std::string& filename) {
     if(!isBusy(BusyReason::loading)) {
         setBusy(BusyReason::demo);
-        m_script.file_include(filename);
+        m_script.loadFile(filename);
     }
 }
 
