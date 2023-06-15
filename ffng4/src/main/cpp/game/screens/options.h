@@ -51,6 +51,7 @@ private:
     static float log(float v);
 
     constexpr static FCoords imgSize{195, 332};
+    constexpr static int shadowBorder = 20;
     constexpr static float volLength = 120.f;
     constexpr static float volSliderOffset = 8.f;
     constexpr static float volTolerance = 10.f;

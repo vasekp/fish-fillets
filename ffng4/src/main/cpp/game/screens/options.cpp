@@ -55,7 +55,9 @@ void OptionsOverlay::hide() {
 bool OptionsOverlay::pointerDown(FCoords coords) {
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
     m_sliding = nullptr;
-    if(!lcoords.within({0, 0}, imgSize)) {
+    constexpr FCoords from = {shadowBorder, shadowBorder};
+    constexpr FCoords to = imgSize - FCoords{shadowBorder, shadowBorder};
+    if(!lcoords.within(from, to)) {
         hide();
         return true;
     }
