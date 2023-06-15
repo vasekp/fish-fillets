@@ -18,7 +18,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     zx = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/zx.frag")->read()});
     ycbcr = ogl::Program(ref, vertCommon, {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/ycbcr.frag")->read()});
 
-    arrow = ogl::Program(ref, // TODO
+    arrow = ogl::Program(ref,
             {ref, GL_VERTEX_SHADER, instance.files().system("shader/arrow.vert")->read()},
             {ref, GL_FRAGMENT_SHADER, instance.files().system("shader/arrow.frag")->read()});
     button = ogl::Program(ref,

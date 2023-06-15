@@ -55,7 +55,7 @@ void IntroScreen::own_draw(const DrawTarget& target, float dt) {
     }
     auto& frame = m_vBuffer.front();
     Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
-    // TODO: upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
+    // Condiser upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
     // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
     // exist in the targeted OpenGL ES version.
     auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.yData.data(), 1);

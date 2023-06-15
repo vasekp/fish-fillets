@@ -290,7 +290,7 @@ void LevelRules::death(Model* unit) {
     unit->die();
     updateDepGraph(unit);
     m_keyQueue.clear();
-    m_level.killModelSound(unit); // TODO kill subtitles
+    m_level.killModelSound(unit);
     m_level.killDialogs();
     unit->anim().removeExtra();
     m_level.setModelEffect(unit, "disintegrate");

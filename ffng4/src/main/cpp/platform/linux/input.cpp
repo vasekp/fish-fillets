@@ -55,7 +55,7 @@ Key XKeyMap(KeySym keysym) {
             return Key::space;
         case XK_Escape:
         case XK_q:
-            return Key::exit; // TODO rename to quit
+            return Key::exit;
         case XK_F2:
             return Key::save;
         case XK_F3:
@@ -94,7 +94,7 @@ void XInput::buttonEvent(const XButtonEvent& event) {
             else
                 m_pointerHandled = inputSink.pointerDown(coords);
         } else if(event.button == Button3) {
-            m_pointerHandled |= inputSink.twoPointTap(); // TODO rename
+            m_pointerHandled |= inputSink.twoPointTap();
         }
         break;
     case ButtonRelease:

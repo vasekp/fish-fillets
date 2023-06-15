@@ -32,7 +32,6 @@ ndk::Asset SystemFile::asset(int mode) const {
 }
 
 std::filesystem::path SystemFile::localize(const std::filesystem::path& base) {
-    // TODO
     auto override = "override" / base;
     if (exists(override)) {
         Log::debug("override ", base, " -> ", override);
