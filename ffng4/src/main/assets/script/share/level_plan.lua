@@ -98,17 +98,3 @@ function planDialog(actor_index, delay, dialog, action)
         end)
 end
 
--- -----------------------------------------------------------------
--- Options
--- -----------------------------------------------------------------
-function optionsGetParam(paramName)
-    return options_getParam(paramName)
-end
-function optionsGetAsInt(paramName)
-    local value = tonumber(options_getParam(paramName))
-    if nil == value then
-        value = 0
-    end
-    return value
-end
-

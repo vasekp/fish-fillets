@@ -77,7 +77,7 @@ local function prog_init()
             end
             if room.hlaska == 1 then
                 room.cas = math.floor(0.5 +
-                        optionsGetAsInt("playtime") / 3600)
+                        options_getInt("playtime") / 3600)
             end
             if room.hlaska >= 1 and not room:isTalking() then
                 pom1 = room.hlaska

@@ -14,8 +14,7 @@ local function prog_init()
 
         room.hlaskam = 0
         room.hlaskav = 0
-        --TODO: allow to ask for music_volume
-        local startVolume = optionsGetAsInt("volume_sound")
+        local startVolume = options_getInt("volume_music")
         room.rozbito = 0
 
         return function()
@@ -35,7 +34,7 @@ local function prog_init()
                                 addv(10, "ves-v-vyp")
                             end,
                         }
-                    elseif startVolume > optionsGetAsInt("volume_sound") and optionsGetAsInt("volume_sound") < 16 then
+                    elseif startVolume > options_getInt("volume_music") and options_getInt("volume_music") < 16 then
                         startVolume = 0
                         addm(15, "ves-m-dik")
                         addv(random(20) + 10, "ves-v-stejne")

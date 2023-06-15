@@ -154,7 +154,7 @@ private:
     bool dialog_isDialog();
     void dialog_defineColor(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_add(const std::string& name, const std::string& color, std::map<std::string, std::string>&& subtitles);
-    std::string options_getParam(const std::string& name);
+    int options_getInt(const std::string& name);
 
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;

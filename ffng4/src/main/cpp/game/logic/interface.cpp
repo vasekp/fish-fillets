@@ -74,7 +74,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("dialog_defineColor", lua::wrap<&Level::dialog_defineColor>);
     m_script.registerFn("dialog_add", lua::wrap<&Level::dialog_add>);
 
-    m_script.registerFn("options_getParam", lua::wrap<&Level::options_getParam>);
+    m_script.registerFn("options_getInt", lua::wrap<&Level::options_getInt>);
 }
 
 void Level::level_createRoom(int width, int height, const std::string& bg) {
@@ -448,7 +448,9 @@ void Level::dialog_add(const std::string& name, const std::string& color, std::m
     m_dialogs.insert({name, {soundFile, color, std::move(subtitles)}});
 }
 
-std::string Level::options_getParam(const std::string& name) {
-    // TODO
-    return "cs";
+int Level::options_getInt(const std::string& name) {
+    if(name == "volume_music")
+        return int(m_instance.audio().getVolume(AudioType::music) * 100);
+    else
+        return m_instance.persist().get(name, 0);
 }
