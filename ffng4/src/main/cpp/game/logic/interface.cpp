@@ -71,7 +71,6 @@ void Level::registerCallbacks() {
 
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_addFont", lua::wrap<&Level::dialog_addFont>);
-    m_script.registerFn("dialog_addDialog", lua::wrap<&Level::dialog_addDialog>);
     m_script.registerFn("dialog_add", lua::wrap<&Level::dialog_add>);
 
     m_script.registerFn("options_getParam", lua::wrap<&Level::options_getParam>);
@@ -433,15 +432,6 @@ bool Level::dialog_isDialog() {
 
 void Level::dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2) {
     m_screen.subs().defineColors(name, {r1, g1, b1}, {r2.value_or(r1), g2.value_or(g1), b2.value_or(b1)});
-}
-
-void Level::dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
-        const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle) {
-    // TODO
-    if(soundfile.empty())
-        Log::error("Dialog ID ", name, " has no associated sound file.");
-    if(!soundfile.empty() && (lang == "cs" || lang == "en"))
-        m_dialogs.insert({name, {subtitle.value_or(""s), fontname.value_or(""), soundfile}});
 }
 
 void Level::dialog_add(const std::string& name, const std::string& fontname, const std::map<std::string, std::string>& subtitles) {

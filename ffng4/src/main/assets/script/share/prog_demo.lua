@@ -12,7 +12,7 @@ function planTalk(dialogName)
     end)
 end
 
-dialog_addDialog("dlg-x-SPACE", "en", "", "font_poster", " ")
+dialog_add("dlg-x-SPACE", "font_poster", {})
 function planSpace()
     planTalk("dlg-x-SPACE")
 end

@@ -153,8 +153,6 @@ private:
     void game_changeBg(const std::string& filename);
     bool dialog_isDialog();
     void dialog_addFont(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
-    void dialog_addDialog(const std::string& name, const std::string& lang, const std::string& soundfile,
-                                 const std::optional<std::string>& fontname, const std::optional<std::string>& subtitle);
     void dialog_add(const std::string& name, const std::string& fontname, const std::map<std::string, std::string>& subtitles);
     std::string options_getParam(const std::string& name);
 
