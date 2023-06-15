@@ -213,7 +213,7 @@ local function prog_init()
             budik:updateAnim()
 
             if not budik:isTalking() then
-                budik:planDialog(0, "sm-x-tiktak")
+                budik:talk("sm-x-tiktak", CLASS_SOUND, -1)
             end
         end
     end

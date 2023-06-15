@@ -7,11 +7,10 @@
 
 class AudioPreloader : public ScriptReferrer {
     Audio& m_audio;
-    Instance& m_instance;
     Script m_script;
 
 public:
-    explicit AudioPreloader(Audio& audio, Instance& instance) : m_audio(audio), m_instance(instance), m_script(instance, *this) {
+    explicit AudioPreloader(Audio& audio, Instance& instance) : m_audio(audio), m_script(instance, *this) {
         m_script.registerFn("preload_sound", lua::wrap<&AudioPreloader::preload_sound>);
     }
 

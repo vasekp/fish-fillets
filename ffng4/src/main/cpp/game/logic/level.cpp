@@ -209,7 +209,9 @@ void Level::success() {
                 m_record.solved = true;
                 solveFile()->write("saved_moves = '"s + m_replay + "'\n");
             }
-            if(!record().script_ending.empty()) {
+            if(record().script_ending.empty())
+                m_screen.exit();
+            else {
                 m_script.loadFile(record().script_ending);
                 setBusy(BusyReason::poster);
             }
