@@ -1,5 +1,5 @@
 
-function loadFonts()
+function loadColors()
     dialog_defineColor("small", 255, 197, 102)
     dialog_defineColor("big", 162, 244, 255)
 

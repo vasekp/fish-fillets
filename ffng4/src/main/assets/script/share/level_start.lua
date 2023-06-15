@@ -35,7 +35,7 @@ function initModels()
     stdBoreJokeLoad()
     stdBlackJokeLoad()
     stdBublesLoad()
-    loadFonts()
+    loadColors()
 end
 
 
