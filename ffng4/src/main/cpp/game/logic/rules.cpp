@@ -216,7 +216,7 @@ void LevelRules::evalFalls() {
             falling.push_back(model);
         }
     }
-    for(bool stable = false; stable;) {
+    for(bool stable = false; !stable; ) {
         stable = true;
         for(auto* model: falling)
             for(auto* other: falling)
