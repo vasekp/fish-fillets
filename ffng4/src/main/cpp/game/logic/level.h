@@ -43,6 +43,7 @@ class Level : public ScriptReferrer {
     enum class BusyReason {
         loading,
         schedule,
+        slideshow,
         demo,
         replay,
         poster,
@@ -66,7 +67,7 @@ public:
     void reinit(bool keepSchedule = false);
     void update(float dt);
     void tick();
-    void save();
+    void save(bool force = false);
     void success();
     void load(bool keepSchedule = false);
     void restart(bool keepSchedule = false);
@@ -84,6 +85,7 @@ public:
     void recordMove(char key);
     bool accepting() const;
     void skipBusy();
+    bool inDemo() const;
     bool inGoTo() const;
     void skipGoTo(bool finish);
 
@@ -113,8 +115,11 @@ private:
     bool level_action_restart();
     bool level_save(const std::string& text_models);
     bool level_load(const std::string& text_moves);
-    void level_newDemo(const std::string& filename);
-    void demo_display(const std::string& filename);
+    void demo_enter();
+    void demo_exit();
+    void slideshow_enter();
+    void slideshow_exit();
+    void slide_display(const std::string& filename);
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();
@@ -161,7 +166,7 @@ private:
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
     void clearSchedule();
-    bool quitDemo();
+    bool quitSlideshow();
 
     bool savePossible() const;
     bool loadPossible() const;

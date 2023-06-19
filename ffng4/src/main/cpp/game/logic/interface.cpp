@@ -59,8 +59,12 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_save", lua::wrap<&Level::level_save>);
     m_script.registerFn("level_load", lua::wrap<&Level::level_load>);
 
-    m_script.registerFn("level_newDemo", lua::wrap<&Level::level_newDemo>);
-    m_script.registerFn("demo_display", lua::wrap<&Level::demo_display>);
+    m_script.registerFn("slideshow_enter", lua::wrap<&Level::slideshow_enter>);
+    m_script.registerFn("slideshow_exit", lua::wrap<&Level::slideshow_exit>);
+    m_script.registerFn("slide_display", lua::wrap<&Level::slide_display>);
+
+    m_script.registerFn("demo_enter", lua::wrap<&Level::demo_enter>);
+    m_script.registerFn("demo_exit", lua::wrap<&Level::demo_exit>);
 
     m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
     m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
@@ -114,7 +118,7 @@ bool Level::level_action_restart() {
 }
 
 bool Level::level_action_save() {
-    save();
+    save(true);
     return true;
 }
 
@@ -145,19 +149,30 @@ bool Level::level_load(const std::string& text_moves) {
     return true;
 }
 
-void Level::level_newDemo(const std::string& filename) {
-    if(!isBusy(BusyReason::loading)) {
-        setBusy(BusyReason::demo);
-        m_script.loadFile(filename);
-    }
+void Level::slideshow_enter() {
+    setBusy(BusyReason::slideshow);
 }
 
-void Level::demo_display(const std::string& filename) {
+void Level::slideshow_exit() {
+    m_screen.display("");
+    m_screen.subs().clear();
+    setBusy(BusyReason::slideshow, false);
+}
+
+void Level::slide_display(const std::string& filename) {
     /* NOTE: Lua also passes int x, int y, expecting us to compose the images.
      * These were replaced by pre-composed graphics so everything is drawn at (0,0).
      * The original assets are 10 times smaller, but they would require either storing the intermediate textures
      * (and rewriting all code relying on images loadable from filename) or drawing all previous frames on each draw(). */
     m_screen.display(filename);
+}
+
+void Level::demo_enter() {
+    setBusy(BusyReason::demo);
+}
+
+void Level::demo_exit() {
+    setBusy(BusyReason::demo, false);
 }
 
 void Level::game_setRoomWaves(float amplitude, float period, float speed) {

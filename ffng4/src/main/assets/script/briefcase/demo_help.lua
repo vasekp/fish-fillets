@@ -58,6 +58,8 @@ level_planShow(function(count)
     addm(0, "help1") -- Teď na nic nesahej
     return true
 end)
+
+demo_enter()
 planDelay(3)
 level_planShow(function(count)
     return smallMoveXY(17, 25)
@@ -567,5 +569,10 @@ planDelay(3)
 level_planShow(function(count)
     addv(0, "help22") -- to by bylo z pravidel asi všechno
     addm(0, "help23") -- já bych to ještě shrnula
+    return true
+end)
+
+level_planShow(function(count)
+    demo_exit()
     return true
 end)

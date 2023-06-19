@@ -21,7 +21,7 @@ local function nextPicture()
                 number = "0"..number
             end
         end
-        demo_display("images/demo_briefcase/demo_"..number..".png", 135, 25)
+        slide_display("images/demo_briefcase/demo_"..number..".png", 135, 25)
 
         picture_counter = picture_counter + 1
         return true
@@ -47,14 +47,12 @@ local function planAnim(count)
     end
 end
 
+slideshow_enter();
 
 -- -----------------------------------------------------------------
 -- start
-game_planAction(function(count)
-    sound_playMusic("music/kufrik.ogg")
-    demo_display("images/demo_briefcase/kufr256.png", 0, 0)
-    return true
-end)
+sound_playMusic("music/kufrik.ogg")
+slide_display("images/demo_briefcase/kufr256.png", 0, 0)
 
 planDelay(7)
 -- rotating logo
@@ -250,3 +248,8 @@ waitForTalker()
 
 talk("kd-znici")
 planDelay(27)
+
+game_planAction(function(count)
+    slideshow_exit()
+    return true
+end)

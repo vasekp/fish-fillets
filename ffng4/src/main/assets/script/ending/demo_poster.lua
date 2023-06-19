@@ -4,7 +4,7 @@ file_include("script/"..codename.."/demo_dialogs.lua")
 
 -- -----------------------------------------------------------------
 file_include("script/share/prog_demo.lua")
-demo_display("images/"..codename.."/poster.png", 0, 0)
+slide_display("images/"..codename.."/poster.png", 0, 0)
 
 planTalk("dlg-x-poster1")
 planSpace()

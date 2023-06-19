@@ -41,14 +41,12 @@ void Level::tick() {
             transition.callback();
     }
     m_transitions.erase(std::remove_if(m_transitions.begin(), m_transitions.end(), [](const auto& transition) { return transition.countdown == 0; }), m_transitions.end());
-    if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::demo))
+    if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::slideshow))
         m_script.doString("script_update()");
     if(!m_tickSchedule.empty()) {
         if(m_tickSchedule.front()())
             m_tickSchedule.pop_front();
     }
-    if(isBusy(BusyReason::demo) && m_tickSchedule.empty())
-        quitDemo();
     m_roundFlag = false;
 }
 
@@ -66,11 +64,15 @@ bool Level::isBusy(BusyReason reason) const {
     return m_busy[reason];
 }
 
+bool Level::inDemo() const {
+    return isBusy(BusyReason::demo);
+}
+
 void Level::skipBusy() {
     if(m_busy[BusyReason::poster])
         m_screen.exit();
-    else if(m_busy[BusyReason::demo])
-        quitDemo();
+    else if(m_busy[BusyReason::slideshow])
+        quitSlideshow();
     else if(m_busy[BusyReason::loading])
         runScheduledAll();
 }
@@ -168,20 +170,17 @@ void Level::notifyEscape(Model* model) {
     m_script.doString("notify_escape(" + std::to_string(model->index()) + ")");
 }
 
-bool Level::quitDemo() {
-    if(isBusy(BusyReason::demo)) {
-        model_killSound(1); /* actor_index used in demo_briefcase.lua */
-        m_tickSchedule.clear();
-        m_screen.display("");
-        m_screen.subs().clear();
-        setBusy(BusyReason::demo, false);
-        return true;
-    } else
+bool Level::quitSlideshow() {
+    if(!isBusy(BusyReason::slideshow))
         return false;
+    model_killSound(1); /* actor_index used in demo_briefcase.lua */
+    m_tickSchedule.clear();
+    slideshow_exit();
+    return true;
 }
 
-void Level::save() {
-    if(savePossible()) {
+void Level::save(bool force) {
+    if(savePossible() || force) {
         m_script.doString("script_save()");
         if(m_busy.none())
             input().setLoadPossible(true);
@@ -261,16 +260,18 @@ void Level::reinit(bool keepSchedule) {
     init();
     m_transitions.clear();
     m_replay.clear();
-    setBusy(BusyReason::demo, false);
+    setBusy(BusyReason::slideshow, false);
     setBusy(BusyReason::loading, false);
     setBusy(BusyReason::poster, false);
     m_goto = false;
-    if(!keepSchedule)
+    if(!keepSchedule) {
+        setBusy(BusyReason::demo, false);
         clearSchedule();
+    }
 }
 
 bool Level::savePossible() const {
-    return !isBusy(BusyReason::loading) && !isBusy(BusyReason::demo) && !isBusy(BusyReason::schedule) && !isBusy(BusyReason::replay) && !isBusy(BusyReason::poster) && rules().solvable();
+    return m_busy.none() && rules().solvable();
 }
 
 bool Level::loadPossible() const {

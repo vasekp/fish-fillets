@@ -302,7 +302,8 @@ void LevelRules::death(Model* unit) {
     m_level.notifyDeath();
     if(unit == m_curFish && !switchFish()) {
         setFish(Model::Fish::none);
-        m_level.transition(framesRestart, [&]() { m_level.restartWhenEmpty(); });
+        if(!m_level.inDemo())
+            m_level.transition(framesRestart, [&]() { m_level.restartWhenEmpty(); });
     }
 }
 
