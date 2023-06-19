@@ -137,8 +137,13 @@ bool LevelInput::doubleTap(FCoords coords) {
         return true;
     }
     auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
+    bool ret = false;
     if(!m_screen.doubleTap(windowCoords))
-        m_screen.keypress(Key::space);
+        ret = m_screen.keypress(Key::space);
+    if(m_activeFish == Model::Fish::none) {
+        m_dirpad.state = DirpadState::ignore;
+        return ret;
+    }
     m_dirpad.touchTime = std::chrono::steady_clock::now();
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);

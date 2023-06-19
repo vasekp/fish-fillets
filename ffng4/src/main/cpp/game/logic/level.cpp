@@ -73,7 +73,7 @@ void Level::skipBusy() {
         m_screen.exit();
     else if(m_busy[BusyReason::slideshow])
         quitSlideshow();
-    else if(m_busy[BusyReason::loading])
+    else if(m_busy[BusyReason::loading] && !inDemo())
         runScheduledAll();
 }
 
