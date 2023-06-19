@@ -267,7 +267,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         if(depth.first >= 0 && depth.second < 0) {
             model->driven() = true;
             m_keyQueue.clear();
-            m_level.schedule([d, model]() {
+            m_level.scheduleBlocking([d, model]() {
                 model->displace(d);
                 return true;
             }, true);

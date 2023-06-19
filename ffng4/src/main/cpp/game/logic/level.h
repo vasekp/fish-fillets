@@ -78,7 +78,7 @@ public:
     bool transitioning() const;
     bool loading() const;
     void schedule(Callback&& action, bool front = false);
-    void scheduleBlocking(Callback&& action);
+    void scheduleBlocking(Callback&& action, bool front = false);
     bool scheduleGoTo(ICoords coords);
     bool runScheduled();
     void runScheduledAll();

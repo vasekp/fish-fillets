@@ -115,8 +115,8 @@ void Level::schedule(Callback&& action, bool front) {
         m_moveSchedule.push_back(std::move(action));
 }
 
-void Level::scheduleBlocking(Callback&& action) {
-    schedule(std::move(action));
+void Level::scheduleBlocking(Callback&& action, bool front) {
+    schedule(std::move(action), front);
     setBusy(BusyReason::schedule);
 }
 
