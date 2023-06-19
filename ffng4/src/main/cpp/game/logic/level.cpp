@@ -163,6 +163,8 @@ void Level::notifyFish(Model::Fish fish) {
 }
 
 void Level::notifyDeath() {
+    if(!inDemo())
+        clearSchedule();
     input().setSavePossible(false);
 }
 

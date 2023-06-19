@@ -52,6 +52,11 @@ Model* LevelRules::activeFish_model() const {
 }
 
 void LevelRules::keyInput(Key key) {
+    if(key == Key::space) {
+        m_keyQueue.clear();
+        if(m_level.inGoTo())
+            m_level.skipGoTo(false);
+    }
     m_keyQueue.push_back(key);
 }
 
