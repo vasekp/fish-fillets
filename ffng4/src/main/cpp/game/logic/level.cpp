@@ -290,6 +290,8 @@ std::unique_ptr<IFile> Level::solveFile() const {
 
 bool Level::scheduleGoTo(ICoords coords) {
     auto* unit = rules().activeFish_model();
+    if(!m_rules->isFree(unit))
+        return false;
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
         m_goto = true;

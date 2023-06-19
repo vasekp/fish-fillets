@@ -37,6 +37,7 @@ public:
     std::pair<Model*, Model*> bothFish() const;
     bool solvable() const;
     bool solved() const;
+    bool isFree(Model*) const;
 
 private:
     void processKey(Key key);

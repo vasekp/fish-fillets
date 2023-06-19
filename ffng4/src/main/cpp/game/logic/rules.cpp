@@ -386,6 +386,20 @@ EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
     return ret;
 }
 
+bool LevelRules::isFree(Model* model) const {
+    //assert(model == m_small || model == m_big);
+    auto [tThis, tOther] = model == m_small
+        ? std::pair{Model::SupportType::small, Model::SupportType::big}
+        : std::pair{Model::SupportType::big, Model::SupportType::small};
+    for(auto *other : m_layout.intersections(model, Direction::up))
+        if(auto support = m_support.at(other); other->movable()
+                && !support.test(Model::SupportType::wall)
+                && support.test(tThis)
+                && !support.test(tOther))
+            return false;
+    return true;
+}
+
 std::pair<Model*, Model*> LevelRules::bothFish() const {
     return {m_small, m_big};
 }
