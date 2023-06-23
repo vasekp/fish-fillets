@@ -130,7 +130,7 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
             if(FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, &vector, 1) != 0)
                 Log::error("FT_Glyph_To_Bitmap");
             auto bmpGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-            Log::debug("glyph ", converter.to_bytes(c),
+            Log::verbose("glyph ", converter.to_bytes(c),
                     " at ", pen, " ", bmpGlyph->left, " ", bmpGlyph->top,
                     " ", bmpGlyph->bitmap.width, "x", bmpGlyph->bitmap.rows,
                     " advance ", from266(slot->advance.x), ", ", from266(slot->advance.y));
@@ -149,8 +149,6 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
                 continue;
             }
             auto slot = m_face->glyph;
-            Log::verbose("glyph ", converter.to_bytes(c),
-                    " at ", pen, " ", slot->bitmap_left, " ", slot->bitmap_top);
             blend(slot->bitmap, pen.x() + slot->bitmap_left, pen.y() - slot->bitmap_top, true);
             pen += FCoords{from266(slot->advance.x), from266(slot->advance.y)};
         }
