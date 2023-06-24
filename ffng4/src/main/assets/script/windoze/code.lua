@@ -52,7 +52,7 @@ local function prog_init()
                 lastBonus = bonus
             end
 
-            if room.resit == 0 then
+            if room.resit == 0 and small:isAlive() and big:isAlive() then
                 if big:getTouchDir() ~= dir_no and bonuslevel:getTouchDir() ~= dir_no then
                     room.resit = 1
                     roompole[1] = 1
