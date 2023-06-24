@@ -196,7 +196,7 @@ local function prog_init()
                     if (vypinac.dir == dir_left or vypinac.dir == dir_right) and level_isNewRound() then
                         vypinac.stav = vypinac.stav + 1
                         vypinac.afaze = 1
-                        vypinac:talk("ch-x-click1")
+                        vypinac:talk("ch-x-click1", CLASS_SOUND)
                     end
                 end,
                 [1] = function()
@@ -213,7 +213,7 @@ local function prog_init()
                         vypinac.stav = 0
                         vypinac.afaze = 0
                         room.dark = false
-                        vypinac:talk("ch-x-click2")
+                        vypinac:talk("ch-x-click2", CLASS_SOUND)
                         room.bliknul = room.bliknul + 1
                         if room.nerusit == 0 then
                             game_killPlan()

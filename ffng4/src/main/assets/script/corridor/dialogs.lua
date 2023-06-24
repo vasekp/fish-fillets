@@ -126,14 +126,6 @@ dialog_add("ch-m-vubec", "small", {
   cs="A taky smysl života, vesmíru a vůbec.",
   en="And also the meaning of life, the universe and everything."})
 
-dialog_add("ch-x-click1", "darkgrey", {
-  cs="CVAK",
-  en="CLICK"})
-
-dialog_add("ch-x-click2", "lightgrey", {
-  cs="CVAK",
-  en="CLICK"})
-
 dialog_add("ch-r-nevsimej0", "robodog", {
   cs="Nevšímej si jich, hráči, dělají si z tebe legraci.",
   en="Don’t listen to them, player. They are kidding you."})

@@ -255,6 +255,7 @@ local function prog_init()
         papzivy.cinnost = 0
         papzivy.pocet = 0
         papzivy.afaze = 9
+        papzivy:updateAnim()
 
         return function()
             if papzivy.cinnost > 0 and papzivy.cinnost < 20 and small:getAction() == "turn" then
