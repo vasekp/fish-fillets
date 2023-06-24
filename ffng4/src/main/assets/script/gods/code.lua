@@ -312,7 +312,7 @@ local function prog_init()
                     if buh2.cekat > 0 then
                         buh2.cekat = buh2.cekat - 1
                     else
-                        buh2:talk("b2-"..buh2.px, 201)
+                        buh2:talk("b2-"..buh2.px)
                         buh2.cinnost = 0
                     end
                 end,
@@ -479,7 +479,7 @@ local function prog_init()
                     if buh1.cekat > 0 then
                         buh1.cekat = buh1.cekat - 1
                     else
-                        buh1:talk("b1-"..buh1.px, 101)
+                        buh1:talk("b1-"..buh1.px)
                         buh1.cinnost = 0
                     end
                 end,
