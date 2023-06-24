@@ -253,8 +253,10 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         } else if(fullSupport.any()) {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
-                    if(supp->alive())
+                    if(supp->alive()) {
+                        Log::debug("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
                         death(supp);
+                    }
             } else {
                 auto dirSupport = directSupport(model);
                 if(fullSupport == dirSupport)
@@ -303,6 +305,7 @@ void LevelRules::death(Model* unit) {
         unit->disappear();
         updateDepGraph(unit);
     });
+    evalMotion(unit, Direction::down); // see this line's commit's comment
     m_doomed = true;
     m_level.notifyDeath();
     if(unit == m_curFish && !switchFish()) {

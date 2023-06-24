@@ -65,7 +65,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
             if(ret.contains(other) || other == root)
                 continue;
             ret.insert(other);
-            if(other->movable())
+            if(other->movable() && other->supportType() != Model::SupportType::weak)
                 queue.push_back(other);
         }
         queue.pop_front();
