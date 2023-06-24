@@ -68,11 +68,13 @@ public:
     void update(float dt);
     void tick();
     void save(bool force = false);
-    void success();
     void load(bool keepSchedule = false);
+    bool savePossible() const;
+    bool loadPossible() const;
     void restart(bool keepSchedule = false);
     void restartWhenEmpty();
     void replay();
+    void success();
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
@@ -87,6 +89,7 @@ public:
     void skipBusy();
     bool inDemo() const;
     bool inGoTo() const;
+    bool inReplay() const;
     void skipGoTo(bool finish);
 
     void killModelSound(Model* model);
@@ -169,8 +172,6 @@ private:
     void clearSchedule();
     bool quitSlideshow();
 
-    bool savePossible() const;
-    bool loadPossible() const;
     std::unique_ptr<IFile> saveFile() const;
     std::unique_ptr<IFile> solveFile() const;
 

@@ -57,6 +57,7 @@ public:
     void setFish(Model::Fish fish);
     void setSavePossible(bool possible);
     void setLoadPossible(bool possible);
+    void setRestartPossible(bool possible);
 
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;

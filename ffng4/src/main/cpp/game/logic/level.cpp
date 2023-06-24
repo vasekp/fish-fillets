@@ -228,6 +228,7 @@ void Level::success() {
 }
 
 void Level::replay() {
+    input().setRestartPossible(false);
     setBusy(BusyReason::replay);
     m_tickSchedule.emplace_back([&, contents = solveFile()->read()]() {
         m_script.doString(contents);
@@ -235,6 +236,10 @@ void Level::replay() {
         m_script.doString("script_load()");
         return true;
     });
+}
+
+bool Level::inReplay() const {
+    return isBusy(BusyReason::replay);
 }
 
 void Level::restart(bool keepSchedule) {

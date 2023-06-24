@@ -190,6 +190,10 @@ void LevelInput::setLoadPossible(bool possible) {
     m_buttons[Buttons::bLoad].enabled = possible;
 }
 
+void LevelInput::setRestartPossible(bool possible) {
+    m_buttons[Buttons::bRestart].enabled = possible;
+}
+
 void LevelInput::draw(const DrawTarget& target) {
     drawButtons(target);
     drawDirpad(target);

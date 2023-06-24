@@ -262,14 +262,21 @@ bool LevelScreen::own_key(Key key) {
             exit();
             return true;
         case Key::save:
-            m_level.save();
-            return true;
+            if(m_level.savePossible()) {
+                m_level.save();
+                return true;
+            } else
+                return false;
         case Key::load:
-            m_level.load();
-            return true;
+            if(m_level.loadPossible()) {
+                m_level.load();
+                return true;
+            } else return false;
         case Key::restart:
-            m_level.restart();
-            return true;
+            if(!m_level.inReplay()) {
+                m_level.restart();
+                return true;
+            } else return false;
         case Key::options:
             m_instance.screens().options().show();
             return true;
