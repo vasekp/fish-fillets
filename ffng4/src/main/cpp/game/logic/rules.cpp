@@ -286,7 +286,7 @@ void LevelRules::update() {
 void LevelRules::evalFalls() {
     std::vector<Model*> falling;
     for(auto* model : m_layout.models()) {
-        if (model->isVirtual())
+        if (model->hidden())
             continue;
         if (model->movable() && m_support[model].none()) {
             m_keyQueue.clear();
@@ -307,7 +307,7 @@ void LevelRules::evalFalls() {
 
 void LevelRules::evalSteel() {
     for(const auto* model : m_layout.models()) {
-        if(model->isVirtual())
+        if(model->hidden())
             continue;
         if(auto support = m_support[model]; model->movable() && model->weight() == Model::Weight::heavy
                 && support.test(Model::SupportType::small)
@@ -395,7 +395,7 @@ void LevelRules::death(Model* unit) {
 
 void LevelRules::buildDepGraph() {
     for(const auto* model : m_layout.models()) {
-        if (!model->movable() || model->isVirtual())
+        if (!model->movable() || model->hidden())
             continue;
         for (auto *other : m_layout.intersections(model, Direction::down))
             m_dependencyGraph.emplace(model, other);
@@ -418,7 +418,7 @@ void LevelRules::buildSupportMap() {
     m_support.clear();
 
     for(const auto* model : m_layout.models()) {
-        if (!model->movable() || model->isVirtual())
+        if (!model->movable() || model->hidden())
             continue;
         calcSupport(model);
     }
@@ -438,7 +438,7 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
     while(!queue.empty()) {
         const auto* other = queue.front();
         queue.pop_front();
-        if(supportModels.contains(other) || other->isVirtual() || other == model)
+        if(supportModels.contains(other) || other->hidden() || other == model)
             continue;
         supportModels.insert(other);
         if(other->supportType() != Model::SupportType::weak) {

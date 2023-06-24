@@ -120,7 +120,6 @@ public:
 
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk->done(); }
-    bool isVirtual() const { return m_type == Type::virt || m_hidden; }
     bool hidden() const { return m_type == Type::virt || m_hidden; }
     bool movable() const { return m_supportType == SupportType::none && !m_driven; }
     bool moving() const { return (bool)m_move; }

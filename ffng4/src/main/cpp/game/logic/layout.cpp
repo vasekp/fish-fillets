@@ -42,11 +42,11 @@ void LevelLayout::addRope(const Model *m1, const Model *m2, ICoords d1, ICoords 
 }
 
 std::set<Model*> LevelLayout::intersections(const Model* model, ICoords d) {
-    if(model->isVirtual())
+    if(model->hidden())
         return {};
     std::set<Model*> ret;
     for(auto* other : m_models_adapted) {
-        if(*other == *model || ret.contains(other) || other->isVirtual())
+        if(*other == *model || ret.contains(other) || other->hidden())
             continue;
         if(model->intersects(other, d))
             ret.insert(other);
@@ -120,7 +120,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
-        if(model == unit || model->isVirtual() || borderDepth(model).first > 0)
+        if(model == unit || model->hidden() || borderDepth(model).first > 0)
             continue;
         auto [x, y] = model->xy();
         for(auto dx = 0u; dx < model->shape().width(); dx++)
