@@ -362,8 +362,8 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
         queue.pop_front();
         if(supportModels.contains(other) || other->isVirtual() || other == model)
             continue;
+        supportModels.insert(other);
         if(other->supportType() != Model::SupportType::weak) {
-            supportModels.insert(other);
             ret.set(other->supportType());
             if(other->movable()) {
                 for(auto[above, below] : m_dependencyGraph)
@@ -371,10 +371,7 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
                         queue.push_back(below);
             }
         } else {
-            if(other != model && calcSupport(other).any()) {
-                supportModels.insert(other);
-                ret.set(other->supportType());
-            }
+            ret.set(other->supportType());
         }
     }
     ret.reset(Model::SupportType::none);
