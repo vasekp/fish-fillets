@@ -28,7 +28,6 @@ enum class Key {
 };
 
 namespace Input {
-    Key CharKeymap(char code);
     Key toKey(Direction dir);
 }
 

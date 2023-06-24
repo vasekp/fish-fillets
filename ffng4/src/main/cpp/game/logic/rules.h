@@ -15,6 +15,7 @@ class LevelRules {
     Model* m_big;
     Model* m_curFish;
     bool m_doomed;
+    bool m_vintage;
 
     std::vector<Model*> m_goals;
 
@@ -29,6 +30,7 @@ public:
     void registerMotion(Model* model, Direction d);
 
     void keyInput(Key key);
+    void keyInput_load(char c);
     void update();
 
     bool switchFish(Model* which = nullptr);
@@ -39,7 +41,7 @@ public:
     bool solved() const;
     bool isFree(Model*) const;
 
-    void bonusSwitch(bool value);
+    void bonusSwitch(bool value, bool keepQueue = false);
 
 private:
     void processKey(Key key);

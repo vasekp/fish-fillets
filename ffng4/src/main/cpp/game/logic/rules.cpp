@@ -3,11 +3,15 @@
 #include "game/screens/levelinput.h"
 #include "game/screens/levelscreen.h"
 
-LevelRules::LevelRules(Level &level, LevelLayout &layout) : m_level(level), m_layout(layout) {
+LevelRules::LevelRules(Level &level, LevelLayout &layout) :
+    m_level(level),
+    m_layout(layout),
+    m_curFish(nullptr),
+    m_doomed(false),
+    m_vintage(false)
+{
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
-    m_curFish = nullptr;
-    m_doomed = false;
     setFish(Model::Fish::small);
     for(auto* model : m_layout.models())
         if(model->goal() != Model::Goal::none)
@@ -118,14 +122,16 @@ bool LevelRules::switchFish(Model* which) {
     return true;
 }
 
-void LevelRules::bonusSwitch(bool value) {
+void LevelRules::bonusSwitch(bool value, bool keepQueue) {
     auto* plug = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::bonus_exit; });
     plug->bonusSwitch(value);
     updateDepGraph(plug);
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model->type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model->type() == type; });
     setFish(Model::Fish::small);
-    m_keyQueue.clear();
+    if(!keepQueue)
+        m_keyQueue.clear();
+    m_vintage = value;
 }
 
 void LevelRules::moveFish(Model::Fish which, Direction d) {
@@ -174,18 +180,60 @@ void LevelRules::moveFish(Direction d) {
     m_level.notifyRound();
 }
 
+constexpr static std::array<std::tuple<Direction, char, char>, 4> charDirs_normal{{
+    {Direction::up, 'u', 'U'},
+    {Direction::down, 'd', 'D'},
+    {Direction::left, 'l', 'L'},
+    {Direction::right, 'r', 'R'}
+}};
+
+constexpr static std::array<std::tuple<Direction, char, char>, 4> charDirs_vintage{{
+    {Direction::up, 'n', 'N'},
+    {Direction::down, 's', 'S'},
+    {Direction::left, 'w', 'W'},
+    {Direction::right, 'e', 'E'}
+}};
+
+constexpr static std::array<std::pair<char, Key>, 8> dirChars_normal{{
+    {'u', Key::smallUp},
+    {'d', Key::smallDown},
+    {'l', Key::smallLeft},
+    {'r', Key::smallRight},
+    {'U', Key::bigUp},
+    {'D', Key::bigDown},
+    {'L', Key::bigLeft},
+    {'R', Key::bigRight}
+}};
+
+constexpr static std::array<std::pair<char, Key>, 8> dirChars_vintage{{
+    {'n', Key::smallUp},
+    {'s', Key::smallDown},
+    {'w', Key::smallLeft},
+    {'e', Key::smallRight},
+    {'N', Key::bigUp},
+    {'S', Key::bigDown},
+    {'W', Key::bigLeft},
+    {'E', Key::bigRight}
+}};
+
 char LevelRules::dirToChar(Direction d) {
     bool small = m_curFish == m_small;
-    if(d == Direction::up)
-        return small ? 'u' : 'U';
-    else if(d == Direction::down)
-        return small ? 'd' : 'D';
-    else if(d == Direction::left)
-        return small ? 'l' : 'L';
-    else if(d == Direction::right)
-        return small ? 'r' : 'R';
-    else
-        Log::fatal("Invalid direction passed to dirToChar");
+    for(const auto& [dir, cS, cB] : m_vintage ? charDirs_vintage : charDirs_normal)
+        if(d == dir)
+            return small ? cS : cB;
+    Log::fatal("Invalid direction passed to dirToChar");
+}
+
+void LevelRules::keyInput_load(char c) {
+    for(const auto& entry : m_vintage ? dirChars_normal : dirChars_vintage)
+        if(c == entry.first)
+            bonusSwitch(!m_vintage, true);
+    for(const auto& [ch, key] : m_vintage ? dirChars_vintage : dirChars_normal)
+        if(c == ch) {
+            keyInput(key);
+            return;
+        }
+    Log::fatal("Invalid direction passed to dirToChar");
 }
 
 void LevelRules::registerMotion(Model *model, Direction d) {
