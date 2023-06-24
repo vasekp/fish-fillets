@@ -8,7 +8,8 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) :
     m_layout(layout),
     m_curFish(nullptr),
     m_doomed(false),
-    m_vintage(false)
+    m_vintage(false),
+    m_bonusExit(nullptr)
 {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
@@ -112,7 +113,7 @@ void LevelRules::processKey(Key key) {
 
 bool LevelRules::switchFish(Model* which) {
     Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
-    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0)
+    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0 || target->hidden())
         return false;
     setFish(target);
     if(!m_vintage) {
@@ -125,9 +126,14 @@ bool LevelRules::switchFish(Model* which) {
 }
 
 void LevelRules::bonusSwitch(bool value, bool keepQueue) {
-    auto* plug = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::bonus_exit; });
-    plug->bonusSwitch(value);
-    updateDepGraph(plug);
+    std::for_each(m_layout.models().begin(), m_layout.models().end(), [&, value](auto* model) {
+            if(auto type = model->type(); type == Model::Type::bonus_box || type == Model::Type::bonus_exit) {
+                model->bonusSwitch(value);
+                updateDepGraph(model);
+                if(type == Model::Type::bonus_exit)
+                    m_bonusExit = model;
+            }
+    });
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model->type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model->type() == type; });
     setFish(Model::Fish::small);
@@ -144,6 +150,7 @@ void LevelRules::moveFish(Model::Fish which, Direction d) {
 void LevelRules::moveFish(Direction d) {
     if(!m_curFish->alive() || m_curFish->action() == Model::Action::busy || m_curFish->driven())
         return;
+
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
         if(!m_vintage) {
@@ -158,6 +165,9 @@ void LevelRules::moveFish(Direction d) {
             moveFish(d);
         }
         return;
+    }
+
+    if(m_vintage) {
     }
 
     const auto obs = m_layout.obstacles(m_curFish, d);
@@ -344,13 +354,15 @@ void LevelRules::evalMotion(Model* model, Direction d) {
                 return true;
             }, true);
         }
-        if(depth.second >= 0) {
+        if(depth.second >= 0 || (m_bonusExit && model->intersects(m_bonusExit))) {
             std::erase(m_goals, model);
             if(model == m_curFish)
                 if(!switchFish()) {
                     setFish(Model::Fish::none);
-                    m_level.success();
+                    if(!m_vintage)
+                        m_level.success();
                 }
+            model->disappear();
         }
     }
 }

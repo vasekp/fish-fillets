@@ -16,6 +16,7 @@ class LevelRules {
     Model* m_curFish;
     bool m_doomed;
     bool m_vintage;
+    Model* m_bonusExit;
 
     std::vector<Model*> m_goals;
 

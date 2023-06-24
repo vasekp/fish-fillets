@@ -21,6 +21,7 @@ public:
         item_heavy,
         fish_old_small,
         fish_old_big,
+        bonus_box,
         bonus_exit,
         wall,
         virt
@@ -83,6 +84,7 @@ private:
     bool m_alive;
     bool m_pushing;
     bool m_driven;
+    bool m_hidden;
     Action m_action;
     Orientation m_orientation;
     ModelAnim m_anim;
@@ -118,8 +120,9 @@ public:
 
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk->done(); }
-    bool isVirtual() const { return m_type == Type::virt; }
-    bool movable() const { return (m_type == Type::item_light || m_type == Type::item_heavy) && !m_driven; }
+    bool isVirtual() const { return m_type == Type::virt || m_hidden; }
+    bool hidden() const { return m_type == Type::virt || m_hidden; }
+    bool movable() const { return m_supportType == SupportType::none && !m_driven; }
     bool moving() const { return (bool)m_move; }
     bool pushing() const { return m_move && m_pushing; }
     bool falling() const { return !alive() && m_move == Direction::down; }
@@ -133,7 +136,7 @@ public:
     auto& driven() { return m_driven; }
     auto driven() const { return m_driven; }
 
-    bool intersects(Model* other, ICoords d) const;
+    bool intersects(Model* other, Direction d = Direction::none) const;
 
     void turn();
     void displace(ICoords d, bool pushing = false);
@@ -143,7 +146,7 @@ public:
     void deltaStop();
     void die();
     void bonusSwitch(bool value);
-    void disappear() { m_type = Type::virt; }
+    void disappear() { m_hidden = true; }
     AudioSource::Ref& talk() { return m_talk; }
     void setEffect(const std::string& name, float startTime);
     auto effect() const { return m_effect; }

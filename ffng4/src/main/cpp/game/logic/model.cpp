@@ -1,27 +1,17 @@
 #include "model.h"
 
-std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const std::string& type) {
-    if(type == "item_light")
-        return {Model::Type::item_light, false, Model::SupportType::none, Model::Weight::light};
-    else if(type == "item_heavy")
-        return {Model::Type::item_heavy, false, Model::SupportType::none, Model::Weight::heavy};
-    else if(type == "item_fixed")
-        return {Model::Type::wall, false, Model::SupportType::wall, Model::Weight::none};
-    else if(type == "fish_small")
-        return {Model::Type::fish_small, true, Model::SupportType::small, Model::Weight::none};
-    else if(type == "fish_big")
-        return {Model::Type::fish_big, true, Model::SupportType::big, Model::Weight::none};
-    else if(type == "fish_old_small")
-        return {Model::Type::fish_old_small, true, Model::SupportType::small, Model::Weight::none};
-    else if(type == "fish_old_big")
-        return {Model::Type::fish_old_big, true, Model::SupportType::big, Model::Weight::none};
-    else if(type == "bonus_exit")
-        return {Model::Type::bonus_exit, false, Model::SupportType::none, Model::Weight::none};
-    else if(type == "virtual")
-        return {Model::Type::virt, false, Model::SupportType::none, Model::Weight::none};
-    else
-        Log::fatal("Type not implemented: ", type);
-}
+static const std::map<std::string, std::tuple<Model::Type, bool, Model::SupportType, Model::Weight>> modelTypes{{
+    {"item_light", {Model::Type::item_light, false, Model::SupportType::none, Model::Weight::light}},
+    {"item_heavy", {Model::Type::item_heavy, false, Model::SupportType::none, Model::Weight::heavy}},
+    {"item_fixed", {Model::Type::wall, false, Model::SupportType::wall, Model::Weight::none}},
+    {"fish_small", {Model::Type::fish_small, true, Model::SupportType::small, Model::Weight::none}},
+    {"fish_big", {Model::Type::fish_big, true, Model::SupportType::big, Model::Weight::none}},
+    {"fish_old_small", {Model::Type::fish_old_small, true, Model::SupportType::small, Model::Weight::none}},
+    {"fish_old_big", {Model::Type::fish_old_big, true, Model::SupportType::big, Model::Weight::none}},
+    {"bonus_box", {Model::Type::bonus_box, false, Model::SupportType::none, Model::Weight::light}},
+    {"bonus_exit", {Model::Type::bonus_exit, false, Model::SupportType::none, Model::Weight::light}},
+    {"virtual", {Model::Type::virt, false, Model::SupportType::none, Model::Weight::none}},
+}};
 
 Model::Model(int index, const std::string& type, int x, int y, const std::string& shape) :
         m_index(index),
@@ -32,13 +22,14 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_shape(shape),
         m_pushing(false),
         m_driven(false),
+        m_hidden(false),
         m_action(Action::base),
         m_orientation(Orientation::left),
         m_touchDir(),
         m_warp(1.f),
         m_effect{Effect::none, 0}
 {
-    std::tie(m_type, m_alive, m_supportType, m_weight) = decode(type);
+    std::tie(m_type, m_alive, m_supportType, m_weight) = modelTypes.at(type);
 }
 
 void Model::turn() {
@@ -93,7 +84,10 @@ void Model::die() {
 }
 
 void Model::bonusSwitch(bool value) {
-    m_supportType = value ? SupportType::wall : SupportType::none;
+    if(m_type == Type::bonus_box)
+        m_supportType = value ? SupportType::wall : SupportType::none;
+    if(m_type == Type::bonus_exit)
+        m_hidden = value;
 }
 
 void Model::deltaStop() {
@@ -108,7 +102,7 @@ FCoords Model::fxy() const {
         return m_position + m_viewShift;
 }
 
-bool Model::intersects(Model* other, ICoords d) const {
+bool Model::intersects(Model* other, Direction d) const {
     return shape().intersects(other->shape(), other->xy() - (xy() + d));
 }
 

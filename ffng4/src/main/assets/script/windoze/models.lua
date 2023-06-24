@@ -68,7 +68,7 @@ XX
 ]])
 addItemAnim(item_light, "images/"..codename.."/icon1.png")
 
-bonuslevel = addModel("item_light", 23, 9,
+bonuslevel = addModel("bonus_box", 23, 9,
 [[
 XXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXX
