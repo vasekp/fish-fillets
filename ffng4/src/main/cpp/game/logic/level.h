@@ -158,6 +158,7 @@ private:
     void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
     void game_setScreenShift(float dx, float dy);
     void game_changeBg(const std::string& filename);
+    void game_setBonusLevel(bool value);
     bool dialog_isDialog();
     void dialog_defineColor(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_add(const std::string& name, const std::string& color, std::map<std::string, std::string>&& subtitles);

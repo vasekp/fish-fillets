@@ -93,15 +93,17 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         const auto& model = *uModel;
         if(model.isVirtual())
             continue;
-        const auto images = model.anim().get(model.orientation());
         auto [effect, effectTime] = model.effect();
+        if(effect == Model::Effect::invisible)
+            continue;
+        const auto images = model.anim().get(model.orientation());
         switch(effect) {
             case Model::Effect::none:
                 for(const auto* image : images)
                     target.blit(image, coords, copyProgram, model.fx() * size_unit, model.fy() * size_unit);
                 break;
             case Model::Effect::invisible:
-                break;
+                std::unreachable();
             case Model::Effect::mirror:
                 mirror = &model;
                 break;

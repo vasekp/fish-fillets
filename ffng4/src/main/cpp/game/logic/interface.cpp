@@ -13,7 +13,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_setScreenShift", lua::wrap<&Level::game_setScreenShift>);
     m_script.registerFn("game_changeBg", lua::wrap<&Level::game_changeBg>);
 //    m_script.registerFn("game_checkActive", script_game_checkActive);
-//    m_script.registerFn("game_setFastFalling", script_game_setFastFalling);
+    m_script.registerFn("game_setBonusLevel", lua::wrap<&Level::game_setBonusLevel>);
 
     m_script.registerFn("model_addAnim", lua::wrap<&Level::model_addAnim>);
     m_script.registerFn("model_runAnim", lua::wrap<&Level::model_runAnim>);
@@ -185,6 +185,11 @@ int Level::game_addModel(const std::string& type, int x, int y, const std::strin
 
 int Level::game_getCycles() {
     return timer().tickCount();
+}
+
+void Level::game_setBonusLevel(bool value) {
+    Log::info("setBonusLevel ", value);
+    m_rules->bonusSwitch(value);
 }
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {

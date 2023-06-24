@@ -19,6 +19,9 @@ public:
         fish_big,
         item_light,
         item_heavy,
+        fish_old_small,
+        fish_old_big,
+        bonus_exit,
         wall,
         virt
     };
@@ -116,7 +119,7 @@ public:
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk->done(); }
     bool isVirtual() const { return m_type == Type::virt; }
-    bool movable() const { return !(m_type == Type::fish_small || m_type == Type::fish_big || m_type == Type::wall || m_driven); }
+    bool movable() const { return (m_type == Type::item_light || m_type == Type::item_heavy) && !m_driven; }
     bool moving() const { return (bool)m_move; }
     bool pushing() const { return m_move && m_pushing; }
     bool falling() const { return !alive() && m_move == Direction::down; }
@@ -139,6 +142,7 @@ public:
     void instaMove();
     void deltaStop();
     void die();
+    void bonusSwitch(bool value);
     void disappear() { m_type = Type::virt; }
     AudioSource::Ref& talk() { return m_talk; }
     void setEffect(const std::string& name, float startTime);

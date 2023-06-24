@@ -17,7 +17,7 @@ public:
 
     template<typename... Ts>
     static void verbose(const Ts& ... ts) {
-        log(Level::verbose, format(ts...));
+        //log(Level::verbose, format(ts...));
     }
 
     template<typename... Ts>

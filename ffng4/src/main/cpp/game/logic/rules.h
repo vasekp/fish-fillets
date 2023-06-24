@@ -39,6 +39,8 @@ public:
     bool solved() const;
     bool isFree(Model*) const;
 
+    void bonusSwitch(bool value);
+
 private:
     void processKey(Key key);
     void moveFish(Model::Fish which, Direction d);

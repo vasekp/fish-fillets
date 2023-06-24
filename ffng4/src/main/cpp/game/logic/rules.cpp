@@ -118,6 +118,16 @@ bool LevelRules::switchFish(Model* which) {
     return true;
 }
 
+void LevelRules::bonusSwitch(bool value) {
+    auto* plug = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::bonus_exit; });
+    plug->bonusSwitch(value);
+    updateDepGraph(plug);
+    m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model->type() == type; });
+    m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model->type() == type; });
+    setFish(Model::Fish::small);
+    m_keyQueue.clear();
+}
+
 void LevelRules::moveFish(Model::Fish which, Direction d) {
     setFish(which);
     moveFish(d);

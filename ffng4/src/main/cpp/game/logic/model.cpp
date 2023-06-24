@@ -11,6 +11,12 @@ std::tuple<Model::Type, bool, Model::SupportType, Model::Weight> decode(const st
         return {Model::Type::fish_small, true, Model::SupportType::small, Model::Weight::none};
     else if(type == "fish_big")
         return {Model::Type::fish_big, true, Model::SupportType::big, Model::Weight::none};
+    else if(type == "fish_old_small")
+        return {Model::Type::fish_old_small, true, Model::SupportType::small, Model::Weight::none};
+    else if(type == "fish_old_big")
+        return {Model::Type::fish_old_big, true, Model::SupportType::big, Model::Weight::none};
+    else if(type == "bonus_exit")
+        return {Model::Type::bonus_exit, false, Model::SupportType::none, Model::Weight::none};
     else if(type == "virtual")
         return {Model::Type::virt, false, Model::SupportType::none, Model::Weight::none};
     else
@@ -84,6 +90,10 @@ void Model::die() {
     m_type = Type::item_light;
     m_supportType = SupportType::weak;
     m_weight = Weight::light;
+}
+
+void Model::bonusSwitch(bool value) {
+    m_supportType = value ? SupportType::wall : SupportType::none;
 }
 
 void Model::deltaStop() {

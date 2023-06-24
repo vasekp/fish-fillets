@@ -288,18 +288,18 @@ XX
 ]])
 addItemAnim(item_light, "images/"..codename.."/icon2.png")
 
-staravelka = addModel("fish_EXTRA-WXYZ", 24, 13,
+staravelka = addModel("fish_old_big", 24, 13,
 [[
 XXXX
 XXXX
 ]])
-addFishAnim(staravelka, LOOK_RIGHT, "images/fishes/ex_big")
+addFishAnim(staravelka, LOOK_RIGHT, "images/fishes/old_big")
 
-staramala = addModel("fish_extra-wxyz", 24, 11,
+staramala = addModel("fish_old_small", 24, 11,
 [[
 XXX
 ]])
-addFishAnim(staramala, LOOK_RIGHT, "images/fishes/ex_small")
+addFishAnim(staramala, LOOK_RIGHT, "images/fishes/old_small")
 
 item_heavy = addModel("item_heavy", 29, 19,
 [[
@@ -336,7 +336,7 @@ X
 ]])
 addItemAnim(budik, "images/"..codename.."/old-budik.png")
 
-spuntik = addModel("output_left", 23, 17,
+spuntik = addModel("bonus_exit", 23, 17,
 [[
 .X
 X
