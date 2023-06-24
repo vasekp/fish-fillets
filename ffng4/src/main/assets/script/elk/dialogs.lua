@@ -24,7 +24,7 @@ dialog_add("deu-v-slysel", "big", {
 
 dialog_add("deu-l-los", "elk", {
   cs="Ja ruskij los.",
-  en="Ya rusky los."})
+  en="Ya ruskiy los."})
 
 dialog_add("deu-v-radsi", "big", {
   cs="Toho losa bych měl mnohem radši, kdyby tu tolik nepřekážel.",
@@ -32,7 +32,7 @@ dialog_add("deu-v-radsi", "big", {
 
 dialog_add("deu-l-pozalsta", "elk", {
   cs="Požalsta, izvinitě.",
-  en="Pozhalsta, izvinitye."})
+  en="Pozhaluysta, izvinite."})
 
 dialog_add("deu-p-schnell", "parrot", {
   cs="Schnell, schnell.",
@@ -44,7 +44,7 @@ dialog_add("deu-p-los", "parrot", {
 
 dialog_add("deu-l-los0", "elk", {
   cs="Ja los!",
-  en="Ja los!"})
+  en="Ya los!"})
 
 dialog_add("deu-l-los1", "elk", {
   cs="Čto slučilos?",
@@ -83,20 +83,20 @@ dialog_add("deu-p-trinken1", "parrot", {
   en="Guten Tag, mein Herr! Wollen Sie etwas zu trinken?"})
 
 dialog_add("deu-l-neznaju", "elk", {
-  cs="Ja ničevo neznaju.",
-  en="Ya nichevo nyeznayu."})
+  cs="Ja ničevo něznaju.",
+  en="Ya nichevo ne znayu."})
 
 dialog_add("deu-l-nesmotrel", "elk", {
-  cs="Ja ničevo nesmotrel.",
-  en="Ya nichevo nyesmotrel."})
+  cs="Ja ničevo něsmotrel.",
+  en="Ya nichevo ne smotrel."})
 
 dialog_add("deu-l-zivjot", "elk", {
   cs="Pusť živjot mogučij Sovětskij Sojuz!",
-  en="Pustye zhivyot moguchy Sovietsky Soyuz!"})
+  en="Pust zhivyot moguchiy Sovetskiy Soyuz!"})
 
 dialog_add("deu-l-necital", "elk", {
   cs="Ja ničevo nečital.",
-  en="Ja nichevo nechital."})
+  en="Ya nichevo nechital."})
 
 dialog_add("deu-l-tovarisci", "elk", {
   cs="Tovarišči, braťja i sestri, dorogije druzja...",

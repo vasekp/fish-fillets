@@ -23,8 +23,8 @@ dialog_add("sl-m-sedi", "small", {
   en="Who is sitting on that chair?"})
 
 dialog_add("sl-v-feidios", "big", {
-  cs="To je kopie Feidiova Dia. Jeden ze sedmi divů světa.",
-  en="It’s a copy of Feidios’ Zeus. One of the seven wonders of the world."})
+  cs="To je kopie Feidiova Dia.",
+  en="It’s a copy of Feidios’ Zeus."})
 
 dialog_add("sl-m-tehdy", "small", {
   cs="No. Tehdy byla jiná doba.",
