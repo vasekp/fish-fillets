@@ -20,6 +20,7 @@ class Persist : public ScriptReferrer {
 
 public:
     Persist(Instance& instance);
+    ~Persist();
 
     void quit();
 

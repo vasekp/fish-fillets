@@ -26,6 +26,16 @@ void Persist::quit() {
     m_thread.join();
 }
 
+/* In the case of an exception, we need to kill the thread anyway, otherwise destructing m_cond may result in a deadlock. */
+Persist::~Persist() {
+    if(m_thread.joinable()) {
+        if(m_changed)
+            Log::warn("Settings changes dropped");
+        m_changed = false;
+        quit();
+    }
+}
+
 template<typename T>
 void Persist::set(const std::string& name, T value) {
     std::lock_guard lock(m_mutex);
