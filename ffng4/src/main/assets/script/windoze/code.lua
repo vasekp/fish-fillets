@@ -41,33 +41,16 @@ local function prog_init()
                     bonus = false
                 else
                     bonus = true
-                    -- game_setBonusLevel(true)
                     big:setBusy(true)
                     small:setBusy(true)
                 end
             else
-                -- game_setBonusLevel(false)
-                -- staramala:setBusy(true)
-                -- staravelka:setBusy(true)
                 bonus = false
             end
             if bonus ~= lastBonus then
                 game_setBonusLevel(bonus)
                 lastBonus = bonus
             end
-            -- if autoRestart == 0 and (
-            --     (not staramala:isAlive() and (not staravelka:isAlive() or staravelka:isOut())) or
-            --     (not staravelka:isAlive() and (not staramala:isAlive() or staramala:isOut())) or
-            --     (not small:isAlive() and not big:isAlive())) then
-            --     autoRestart = 1
-            --     level_planShow(function(count)
-            --         if count == 60 then
-            --             return level_action_restart()
-            --         else
-            --             return false
-            --         end
-            --     end)
-            -- end
 
             if room.resit == 0 then
                 if big:getTouchDir() ~= dir_no and bonuslevel:getTouchDir() ~= dir_no then
@@ -76,9 +59,6 @@ local function prog_init()
                     room.obonusu = 0
                     big:setBusy(true)
                     small:setBusy(true)
-                    -- staramala:setBusy(false)
-                    -- staravelka:setBusy(false)
-                    -- game_checkActive()
                     if pokus == 1 then
                         addv(0, "win-v-pockej")
                         addm(2, "win-m-zavrene")
