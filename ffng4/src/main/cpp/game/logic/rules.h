@@ -40,6 +40,7 @@ public:
     bool solvable() const;
     bool solved() const;
     bool isFree(Model*) const;
+    bool isVintage() const { return m_vintage; }
 
     void bonusSwitch(bool value, bool keepQueue = false);
 

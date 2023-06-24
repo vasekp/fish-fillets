@@ -27,7 +27,11 @@ void Level::init() {
 }
 
 void Level::update(float dt) {
-    layout().animate(dt, isBusy(BusyReason::loading) ? LevelLayout::speed_loading : LevelLayout::speed_normal);
+    layout().animate(dt, isBusy(BusyReason::loading)
+            ? LevelLayout::speed_loading
+            : rules().isVintage()
+            ? LevelLayout::speed_instant
+            : LevelLayout::speed_normal);
     rules().update();
     if(m_timer.ticked())
         tick();

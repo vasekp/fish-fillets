@@ -32,7 +32,7 @@ Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
-        Log::verbose("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
+        Log::verbose("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
         return Key::none;

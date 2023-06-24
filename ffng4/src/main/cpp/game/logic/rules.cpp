@@ -115,10 +115,12 @@ bool LevelRules::switchFish(Model* which) {
     if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0)
         return false;
     setFish(target);
-    m_curFish->action() = Model::Action::activate;
-    m_level.transition(framesActivate, [unit = m_curFish]() {
-        unit->action() = Model::Action::base;
-    });
+    if(!m_vintage) {
+        m_curFish->action() = Model::Action::activate;
+        m_level.transition(framesActivate, [unit = m_curFish]() {
+            unit->action() = Model::Action::base;
+        });
+    }
     return true;
 }
 
@@ -144,12 +146,17 @@ void LevelRules::moveFish(Direction d) {
         return;
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
-        m_curFish->action() = Model::Action::turning;
-        m_level.transition(framesTurn, [&, d]() {
-            m_curFish->action() = Model::Action::base;
+        if(!m_vintage) {
+            m_curFish->action() = Model::Action::turning;
+            m_level.transition(framesTurn, [&, d]() {
+                m_curFish->action() = Model::Action::base;
+                m_curFish->turn();
+                moveFish(d);
+            });
+        } else {
             m_curFish->turn();
             moveFish(d);
-        });
+        }
         return;
     }
 
@@ -257,7 +264,7 @@ void LevelRules::update() {
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
-        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting())
+        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting() && !m_vintage)
             processKey(key);
     }
 
@@ -358,7 +365,8 @@ void LevelRules::death(Model* unit) {
     m_level.killModelSound(unit);
     m_level.killDialogs();
     unit->anim().removeExtra();
-    m_level.setModelEffect(unit, "disintegrate");
+    if(!m_vintage)
+        m_level.setModelEffect(unit, "disintegrate");
     m_level.transition(framesDeath, [&, unit]() {
         unit->disappear();
         updateDepGraph(unit);
