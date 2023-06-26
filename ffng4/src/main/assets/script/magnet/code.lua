@@ -168,7 +168,7 @@ local function prog_init()
                     setanim(magnetek, "a1d?0-2a2a1a0S[kolik],0")
                 end,
                 [5] = function()
-                    --TODO: was typo here? S11 or S1?
+                    --FIXME: S11 or S1?
                     setanim(magnetek, "a1d?0-2a2a3a2a1a0S[kolik],0")
                 end,
                 [7] = function()

@@ -2,7 +2,6 @@
 -- -----------------------------------------------------------------
 -- NOTE: uses 'small' and 'big' names for fishes
 local function canReport()
-    --TODO: don't talk when room is solved
     return no_dialog() and small:isAlive() and big:isAlive()
 end
 -- -----------------------------------------------------------------

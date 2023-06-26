@@ -147,9 +147,7 @@ local function prog_init()
                     addm(0, "1st-m-backspace")
                     addv(0, "1st-v-jedno")
                 end
-                --[[ TODO: control panel
-                addv(5, "1st-v-najit")
-                ]]
+                -- addv(5, "1st-v-najit") -- refers to control panel
                 planBusy(big, false)
                 room.restrt = 1
             end
