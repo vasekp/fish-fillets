@@ -19,6 +19,7 @@ public:
 
     bool ticked();
     int tickCount() const;
+    void reset();
 
 private:
     void worker();

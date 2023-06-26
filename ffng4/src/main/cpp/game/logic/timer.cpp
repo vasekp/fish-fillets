@@ -34,6 +34,10 @@ int Timer::tickCount() const {
     return m_tickCount;
 }
 
+void Timer::reset() {
+    m_tickCount = 0;
+}
+
 void Timer::worker() {
     Log::debug("timer thread started");
     while(!m_stop.load(std::memory_order::relaxed)) {

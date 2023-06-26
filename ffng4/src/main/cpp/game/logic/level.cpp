@@ -271,6 +271,7 @@ void Level::reinit(bool keepSchedule) {
     init();
     m_transitions.clear();
     m_replay.clear();
+    m_timer.reset();
     setBusy(BusyReason::slideshow, false);
     setBusy(BusyReason::loading, false);
     setBusy(BusyReason::poster, false);
