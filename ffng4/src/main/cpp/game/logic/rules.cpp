@@ -167,9 +167,6 @@ void LevelRules::moveFish(Direction d) {
         return;
     }
 
-    if(m_vintage) {
-    }
-
     const auto obs = m_layout.obstacles(m_curFish, d);
 
     if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)

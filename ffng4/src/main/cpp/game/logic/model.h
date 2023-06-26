@@ -121,7 +121,7 @@ public:
     bool alive() const { return m_alive; }
     bool talking() const { return m_talk && !m_talk->done(); }
     bool hidden() const { return m_type == Type::virt || m_hidden; }
-    bool movable() const { return m_supportType == SupportType::none && !m_driven; }
+    bool movable() const { return (m_supportType == SupportType::none || m_supportType == SupportType::weak) && !m_driven; }
     bool moving() const { return (bool)m_move; }
     bool pushing() const { return m_move && m_pushing; }
     bool falling() const { return !alive() && m_move == Direction::down; }
