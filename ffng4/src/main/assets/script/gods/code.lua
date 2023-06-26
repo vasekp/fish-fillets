@@ -17,14 +17,13 @@ local function xor2(value)
     end
 end
 
-local function shinkShip(ship)
+local function sinkShip(ship)
     if objekty.afaze == -1 then
         objekty:setEffect("none")
         objekty.shiftY = 0
         objekty.shiftX = randint(10, 30)
-        --TODO: lower speed
-        objekty.speedY = 1
-        objekty.speedX = randint(-1, 1)
+        objekty.speedY = randint(4, 10) / 10
+        objekty.speedX = randint(-1, 1) / 10
         objekty.afaze = ship
         objekty:updateAnim()
     end
@@ -215,7 +214,7 @@ local function prog_init()
                 end,
             }
             if room.shodit >= 0 then
-                shinkShip(room.shodit)
+                sinkShip(room.shodit)
                 room.shodit = -1
             end
         end
