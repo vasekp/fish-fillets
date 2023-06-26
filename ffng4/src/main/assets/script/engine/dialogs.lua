@@ -102,4 +102,8 @@ dialog_add("mot-v-znovu0", "big", {
   cs="Bojím se, že to budeme muset zapnout znovu.",
   en="I am only afraid we’ll have to turn it on again."})
 
+dialog_add("mot-v-znovu1", "big", {
+  cs="Myslím, že to musíme ještě jednou zapnout.",
+  en="I think we have to turn it on once more."})
+
 dialog_add("mot-x-motor", "", {})
