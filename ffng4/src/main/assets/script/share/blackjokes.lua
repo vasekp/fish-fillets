@@ -22,10 +22,6 @@ end
 
 -- -----------------------------------------------------------------
 local alive_time = 0
---TODO: remember values to the next restart
-local PoslSmrtMale = -1
-local PoslSmrtVelke = -1
-local PoslSmrtObou = 0
 
 -- NOTE: uses 'small' and 'big' names for fishes
 function stdBlackJoke()

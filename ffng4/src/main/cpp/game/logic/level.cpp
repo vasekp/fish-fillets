@@ -11,7 +11,7 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_goto(false)
 {
     registerCallbacks();
-    m_script.doString("roompole = {[0]=0, [1]=0, [2]=0, [3]=0}");
+    m_script.loadFile("script/globals.lua");
 }
 
 LevelInput& Level::input() {
