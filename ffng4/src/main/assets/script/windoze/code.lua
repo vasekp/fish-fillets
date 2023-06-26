@@ -110,7 +110,7 @@ local function prog_init()
                     end
                     switch(pom1){
                         [0] = function()
-                            if room.obonusu == 0 then
+                            if room.obonusu == 0 and room.resit == 0 then
                                 room.obonusu = 1
                                 addm(10, "win-m-okno")
                                 addv(8, "win-v-hra")

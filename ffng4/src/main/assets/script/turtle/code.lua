@@ -122,15 +122,14 @@ local function prog_init()
                     room.kolikrat = room.kolikrat + 1
                     if roompole[0] <= 1 then
                         pom1 = random(3)
-                        if pom1 == 0 or pom1 == 2 then
+                        room.cosedelo = room.tvrdaryba + pom1 * 2 -- 6 combinations
+                        -- these two are said right away...
+                        if pom1 == 0 then
                             if room.tvrdaryba == HYB_SMALL then
                                 addv(random(10), "zel-v-coto"..pom1)
                             else
                                 addm(random(10), "zel-m-coto"..pom1)
                             end
-                            room.cosedelo = room.tvrdaryba + 2
-                        else
-                            room.cosedelo = room.tvrdaryba
                         end
                     elseif random(100) < 60 then
                         if room.tvrdaryba == HYB_SMALL then
@@ -145,33 +144,36 @@ local function prog_init()
                     if random(100) < room.kolikrat * 10 - 50 then
                         if roompole[0] == 1 then
                             roompole[0] = roompole[0] + 1
-                            room.cosedelo = room.tvrdaryba + 4
+                            room.cosedelo = room.tvrdaryba + 6
                         end
                     end
                 elseif room.cosedelo > 0 then
-                    if room.cosedelo <= 2 then
-                        if room.cosedelo == 1 then
-                            addv(random(10), "zel-v-coto1")
-                        else
-                            addm(random(10), "zel-m-coto1")
+                    -- ...these four after finishing motion (past tense)
+                    if room.cosedelo <= 6 then
+                        pom1 = math.floor((room.cosedelo - 1) / 2)
+                        if pom1 ~= 0 then
+                            if room.tvrdaryba == HYB_SMALL then
+                                addv(random(10), "zel-v-coto"..pom1)
+                            else
+                                addm(random(10), "zel-m-coto"..pom1)
+                            end
                         end
-                        room.cosedelo = room.cosedelo + 2
                     end
-                    if room.cosedelo > 4 or random(100) < 50 or room.kolikrat <= 2 then
+                    if room.cosedelo > 6 or random(100) < 50 or room.kolikrat <= 2 then
                         if odd(room.cosedelo) then
                             addm(random(3) + 3, "zel-m-nevim"..random(2))
                         else
                             addv(random(3) + 3, "zel-v-nevim"..random(2))
                         end
                     end
-                    if room.cosedelo > 4 or random(100) < 40 and room.kolikrat >= 3 then
+                    if room.cosedelo > 6 or random(100) < 40 and room.kolikrat >= 3 then
                         if odd(room.cosedelo) then
                             addv(random(30) + 10, "zel-v-cosedeje")
                         else
                             addm(random(30) + 10, "zel-m-cimtoje")
                         end
                     end
-                    if room.cosedelo > 4 then
+                    if room.cosedelo > 6 then
                         adddel(random(30) + 10)
                         big:planDialog(0, "zel-v-tazelva",
                                 function() small:talk("zel-m-tazelva") end)
