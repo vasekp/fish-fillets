@@ -7,7 +7,6 @@ local function prog_init()
     initModels()
     sound_playMusic("music/rybky13.ogg")
     local pokus = getRestartCount()
-    local roompole = createArray(2)
 
 
     -- -------------------------------------------------------------
@@ -105,7 +104,7 @@ local function prog_init()
                     pom1 = random(5)
                     room.nhlasek = room.nhlasek + 1
                     room.hlasky = random(300) + 300
-                    if roompole[0] == 0 and room.nhlasek == 2 then
+                    if room.nhlasek == 2 then
                         pom1 = 0
                     end
                     switch(pom1){

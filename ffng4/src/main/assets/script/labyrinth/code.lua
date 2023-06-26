@@ -11,7 +11,6 @@ local function prog_init()
     -- -------------------------------------------------------------
     local function prog_init_room()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
-        local roompole = createArray(1)
 
         if roompole[0] == 0 then
             roompole[0] = random(2) + 1

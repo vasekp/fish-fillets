@@ -6,7 +6,6 @@ local function prog_init()
     initModels()
     sound_playMusic("music/rybky01.ogg")
     local pokus = getRestartCount()
-    local roompole = createArray(1)
 
 
     -- -------------------------------------------------------------
@@ -21,6 +20,9 @@ local function prog_init()
                 roompole[0] = 1
             end
             if isReady(small) and isReady(big) and no_dialog() then
+                if room.uvod > 2 then
+                    room.uvod = room.uvod - 1
+                end
                 if room.uvod == 0 then
                     addm(random(40) + 10, "kos-m-uklid" ..random(3))
                     addv(random(20), "kos-v-poradek"..random(3))

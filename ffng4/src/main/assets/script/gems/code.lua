@@ -6,7 +6,6 @@ local function prog_init()
     initModels()
     sound_playMusic("music/rybky03.ogg")
     local pokus = getRestartCount()
-    local roompole = createArray(2)
 
 
     -- -------------------------------------------------------------
@@ -21,9 +20,6 @@ local function prog_init()
         room.uz = 30 + random(20)
 
         return function()
-            if room.dir ~= dir_no then
-                roompole[1] = 0
-            end
             if game_getCycles() == room.uz and isReady(small) and isReady(big) then
                 if roompole[1] > 4 then
                     roompole[1] = -1

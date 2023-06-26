@@ -22,7 +22,6 @@ local function prog_init()
         room.kresilko = 0
         room.ss = 0
         room.osam = 0
-        local roompole = createArray(4)
         if roompole[3] == 2 then
             roompole[3] = 1
         end

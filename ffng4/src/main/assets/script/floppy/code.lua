@@ -17,7 +17,6 @@ local function prog_init()
     -- -------------------------------------------------------------
     local function prog_init_room()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
-        local roompole = 0
 
         if pokus > 7 and odd(pokus) then
             room.uvod = 1
@@ -37,8 +36,8 @@ local function prog_init()
                     pom2 = 1
                 elseif room.zv == 0 and dist(small, disketa) < 3 and random(30) == 1 then
                     room.zv = 1
-                    roompole = roompole + 1
-                    if odd(roompole) or roompole == 2 then
+                    roompole[0] = roompole[0] + 1
+                    if odd(roompole[0]) or roompole[0] == 2 then
                         pom2 = 2
                     end
                 elseif room.kr == 0 and dist(big, ocelkriz) < 2 and random(60) == 1 then

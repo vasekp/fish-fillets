@@ -66,7 +66,6 @@ local function prog_init()
     local function prog_init_room()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
         local boring = 0
-        local roompole = createArray(1)
 
         room.natvrdo = 0
         room.tvrdaryba = 0
@@ -139,11 +138,11 @@ local function prog_init()
                         end
                     end
                     if roompole[0] == 0 then
-                        roompole[0] = roompole[0] + 1
+                        roompole[0] = 1
                     end
                     if random(100) < room.kolikrat * 10 - 50 then
                         if roompole[0] == 1 then
-                            roompole[0] = roompole[0] + 1
+                            roompole[0] = 2
                             room.cosedelo = room.tvrdaryba + 6
                         end
                     end

@@ -5,7 +5,6 @@
 local function prog_init()
     initModels()
     local pokus = getRestartCount()
-    local roompole = createArray(3)
 
 
     -- -------------------------------------------------------------
