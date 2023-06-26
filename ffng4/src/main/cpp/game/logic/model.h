@@ -79,7 +79,7 @@ private:
     ICoords m_position;
     ICoords m_move;
     FCoords m_delta;
-    ICoords m_viewShift;
+    FCoords m_viewShift;
     Shape m_shape;
     bool m_alive;
     bool m_pushing;

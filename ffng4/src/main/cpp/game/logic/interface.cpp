@@ -12,7 +12,6 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_addDecor", lua::wrap<&Level::game_addDecor>);
     m_script.registerFn("game_setScreenShift", lua::wrap<&Level::game_setScreenShift>);
     m_script.registerFn("game_changeBg", lua::wrap<&Level::game_changeBg>);
-//    m_script.registerFn("game_checkActive", script_game_checkActive);
     m_script.registerFn("game_setBonusLevel", lua::wrap<&Level::game_setBonusLevel>);
 
     m_script.registerFn("model_addAnim", lua::wrap<&Level::model_addAnim>);
@@ -309,11 +308,11 @@ void Level::model_change_turnSide(int index) {
     layout().getModel(index)->turn();
 }
 
-void Level::model_setViewShift(int index, int dx, int dy) {
+void Level::model_setViewShift(int index, float dx, float dy) {
     layout().getModel(index)->viewShift() = {dx, dy};
 }
 
-std::pair<int, int> Level::model_getViewShift(int index) {
+std::pair<float, float> Level::model_getViewShift(int index) {
     return layout().getModel(index)->viewShift();
 }
 

@@ -81,6 +81,12 @@ namespace lua {
         }
 
         template<>
+        inline int write(lua_State *L, float value) {
+            lua_pushnumber(L, value);
+            return 1;
+        }
+
+        template<>
         inline int write(lua_State *L, bool value) {
             lua_pushboolean(L, value);
             return 1;

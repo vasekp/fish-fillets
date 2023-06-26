@@ -104,6 +104,8 @@ public:
     constexpr int y() const { return m_y; }
     constexpr float fx() const { return m_fx; }
     constexpr float fy() const { return m_fy; }
+    operator std::pair<float, float>() const { return {m_fx, m_fy}; }
+
     constexpr float norm2() const { return m_fx * m_fx + m_fy * m_fy; }
     constexpr float length() const { return std::sqrt(norm2()); }
     constexpr friend float length(FCoords coords) { return coords.length(); }

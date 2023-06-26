@@ -144,8 +144,8 @@ private:
     unsigned model_getH(int index);
     void model_setGoal(int index, const std::string& goal);
     void model_change_turnSide(int index);
-    void model_setViewShift(int index, int dx, int dy);
-    std::pair<int, int> model_getViewShift(int index);
+    void model_setViewShift(int index, float dx, float dy);
+    std::pair<float, float> model_getViewShift(int index);
     void model_setBusy(int index, bool busy);
     bool model_isTalking(int index);
     void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
