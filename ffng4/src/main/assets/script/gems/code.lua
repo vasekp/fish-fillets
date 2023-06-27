@@ -30,9 +30,10 @@ local function prog_init()
                     if roompole[1] > 0 then
                         roompole[1] = roompole[1] - 1
                     end
-                    pom1 = random(pokus + 1)
-                    if pom1 > 4 or roompole[1] == -1 then
+                    if roompole[1] == -1 then
                         pom1 = random(3)
+                    else
+                        pom1 = random(math.max(pokus + 1, 5))
                     end
                     switch(pom1){
                         [0] = function()
@@ -72,24 +73,28 @@ local function prog_init()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
 
         local gems = {}
+        local colors = {}
         for pom1 = 3, 111 do
             local gem = getModelsTable()[pom1]
             gems[pom1 - 3] = gem
+            colors[pom1 - 3] = random(6)
             gem.glob = -random(100)
-            gem.afaze = random(6) * 4
+            gem.afaze = colors[pom1 - 3] * 4
             gem:updateAnim()
         end
 
         return function()
             for key, gem in pairs(gems) do
                 gem.glob = gem.glob + 1
+                local afaze = colors[key] * 4
                 if isIn(gem.glob, {1, 2, 3}) then
-                    gem.afaze = gem.afaze + 1
+                    afaze = afaze + gem.glob
                 elseif isIn(gem.glob, {4, 5, 6}) then
-                    gem.afaze = gem.afaze - 1
+                    afaze = afaze + 7 - gem.glob
                 elseif gem.glob == 7 then
                     gem.glob = -random(100) - 10
                 end
+                gem.afaze = afaze
                 gem:updateAnim()
             end
         end
