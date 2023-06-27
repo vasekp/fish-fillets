@@ -75,7 +75,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
 }
 
 void LevelLayout::animate(float dt, float speed) {
-    for (auto* model: m_models_adapted)
+    for (auto* model: m_models_adapted) {
         if (model->moving()) {
             auto d = model->movingDir();
             if(speed == speed_instant)
@@ -85,6 +85,9 @@ void LevelLayout::animate(float dt, float speed) {
             if (!model->moving())
                 m_level.rules().registerMotion(model, d);
         }
+        if(auto [shift, speed] = model->viewShift(); speed)
+            shift += dt * speed;
+    }
 }
 
 std::pair<int, int> LevelLayout::borderDepth(const Model* model, ICoords delta) const {

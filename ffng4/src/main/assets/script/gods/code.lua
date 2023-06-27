@@ -20,10 +20,9 @@ end
 local function sinkShip(ship)
     if objekty.afaze == -1 then
         objekty:setEffect("none")
-        objekty.shiftY = 0
-        objekty.shiftX = randint(10, 30)
-        objekty.speedY = randint(4, 10) / 10
-        objekty.speedX = randint(-1, 1) / 10
+        local shiftX, shiftY = randint(10, 30), 0
+        local speedX, speedY = randint(-1, 1), randint(4, 10)
+        model_setViewShift(objekty.index, shiftX, shiftY, speedX, speedY)
         objekty.afaze = ship
         objekty:updateAnim()
     end
@@ -587,12 +586,8 @@ local function prog_init()
 
         return function()
             if objekty.afaze >= 0 then
-                model_setViewShift(objekty.index,
-                        objekty.shiftX, objekty.shiftY)
-                objekty.shiftY = objekty.shiftY + objekty.speedY
-                objekty.shiftX = objekty.shiftX + objekty.speedX
-
-                if objekty.shiftY >= room:getH() then
+                local shiftX, shiftY = model_getViewShift(objekty.index)
+                if shiftY >= room:getH() then
                     objekty.afaze = -1
                     objekty:setEffect("invisible")
                 end

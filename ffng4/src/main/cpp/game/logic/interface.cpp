@@ -308,12 +308,15 @@ void Level::model_change_turnSide(int index) {
     layout().getModel(index)->turn();
 }
 
-void Level::model_setViewShift(int index, float dx, float dy) {
-    layout().getModel(index)->viewShift() = {dx, dy};
+void Level::model_setViewShift(int index, float dx, float dy, std::optional<float> speedX, std::optional<float> speedY) {
+    auto [shift, speed] = layout().getModel(index)->viewShift();
+    shift = {dx, dy};
+    speed = {speedX.value_or(0.f), speedY.value_or(0.f)};
 }
 
 std::pair<float, float> Level::model_getViewShift(int index) {
-    return layout().getModel(index)->viewShift();
+    auto [shift, speed] = layout().getModel(index)->viewShift();
+    return shift;
 }
 
 void Level::model_setBusy(int index, bool busy) {

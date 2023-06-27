@@ -19,6 +19,7 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
         m_position{x, y},
         m_move(),
         m_viewShift(),
+        m_viewShiftSpeed(),
         m_shape(shape),
         m_pushing(false),
         m_driven(false),

@@ -80,6 +80,7 @@ private:
     ICoords m_move;
     FCoords m_delta;
     FCoords m_viewShift;
+    FCoords m_viewShiftSpeed;
     Shape m_shape;
     bool m_alive;
     bool m_pushing;
@@ -129,7 +130,7 @@ public:
     auto& action() { return m_action; }
     auto action() const { return m_action; }
     auto& touchDir() { return m_touchDir; }
-    auto& viewShift() { return m_viewShift; }
+    auto viewShift() { return std::tie(m_viewShift, m_viewShiftSpeed); }
     auto& goal() { return m_goal; }
     auto goal() const { return m_goal; }
     auto& driven() { return m_driven; }
