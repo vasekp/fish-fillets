@@ -22,10 +22,16 @@ WorldMap::WorldMap(Instance& instance) :
     m_maskColors.insert({Frames::intro, MaskColors::intro});
     m_maskColors.insert({Frames::credits, MaskColors::credits});
 
+    m_showEnding = std::all_of(m_instance.levels().begin(), m_instance.levels().end(),
+        [](const auto& element) -> bool {
+            const auto& record = element.second;
+            return !record.final() || record.solved;
+        });
+
     for(const auto& [name, record] : m_instance.levels()) {
         if(record.maskColor != LevelRecord::noColor)
             m_forks.push_back(&record);
-        if(record.state() == LevelState::open)
+        if((!record.ending() || m_showEnding) && record.state() == LevelState::open)
             m_open.push_back(&record);
     }
 }
@@ -48,12 +54,13 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
     m_instance.graphics().setMask(getImage("mask"));
     target.blit(getImage("background"), coords, copyProgram);
     if(m_staticFrame != Frames::loading && !m_pm) {
-        drawMasked(target, MaskColors::mainBranch);
         for(const auto& record : m_forks)
-            if(record->solved)
+            if(record->depth == 1 || (record->parent && record->parent->solved))
                 drawMasked(target, record->maskColor);
+        if(m_showEnding)
+            drawMasked(target, MaskColors::ending);
         for(const auto& [name, record] : m_instance.levels())
-            if(record.visible() && record.solved)
+            if(record.solved)
                 target.blit(m_nodeImages[0], coords, copyProgram, record.coords.fx() - nodeRadius, record.coords.fy() - nodeRadius);
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::pow(std::sin((float)M_PI * phase), 2.f);
@@ -62,8 +69,6 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            if(!record->visible())
-                continue;
             target.blit(m_nodeImages[base + 1], coords, copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
             target.blit(m_nodeImages[base + 2], coords, alphaProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
         }
@@ -143,12 +148,12 @@ bool WorldMap::own_pointer(FCoords coords) {
     });
     if(it != m_instance.levels().end()) {
         const auto& record = it->second;
-        if(record.state() == LevelState::locked)
+        if(record.state() == LevelState::locked || (record.ending() && !m_showEnding))
             return false;
         auto lang = m_instance.persist().get("subtitles", "cs"s);
         if(lang.empty())
             lang = "cs"s;
-        m_instance.screens().announceLevel(it->second.description.at(lang));
+        m_instance.screens().announceLevel(it->second.title.at(lang));
         if(record.state() == LevelState::solved)
             m_pm.emplace(m_instance, it->second);
         else {

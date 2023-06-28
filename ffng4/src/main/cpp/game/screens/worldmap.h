@@ -24,6 +24,7 @@ class WorldMap : public GameScreen {
     std::vector<const LevelRecord*> m_forks;
     Frames m_staticFrame;
     std::optional<Pedometer> m_pm;
+    bool m_showEnding;
 
     static constexpr int nodeRadius = 9;
     static constexpr int nodeTolerance = 15;
@@ -33,7 +34,7 @@ class WorldMap : public GameScreen {
         static constexpr Color options = 0x008000;
         static constexpr Color intro = 0x000080;
         static constexpr Color credits = 0x808000;
-        static constexpr Color mainBranch = 0xFFFFFF;
+        static constexpr Color ending = 0x808080;
     };
 
     struct ActiveAreas {

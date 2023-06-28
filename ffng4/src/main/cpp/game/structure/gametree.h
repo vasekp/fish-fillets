@@ -17,10 +17,16 @@ public:
     auto end() { return m_levels.end(); }
 
 private:
-    void branch_addNode(const std::string &parent, const std::string &codename, const std::string &filename,
-            int x, int y, std::optional<int> color, const std::optional<std::string> &ending);
-    void branch_setEnding(const std::string &codename, const std::string &filename, const std::string &ending);
-    void worldmap_addDesc(const std::string &codename, const std::string &lang, const std::string &levelname, const std::string &branch);
+    void map_node(const std::string& codename, const std::string& parent, const std::string& filename,
+            int x, int y, std::map<std::string, std::string>&& title, const std::optional<std::string>& ending);
+    void map_branch(const std::string& codename, const std::string& parent, const std::string& filename,
+            int x, int y, int maskColor, std::map<std::string, std::string>&& title);
+    void map_ending(const std::string& codename, const std::string& filename,
+            int x, int y, int maskColor, std::map<std::string, std::string>&& title, const std::string& ending);
+
+    void addNode(const std::string& codename, const std::string& parent, const std::string& filename,
+        int x, int y, int depth, int maskColor, std::map<std::string, std::string>&& title,
+        const std::optional<std::string>& ending);
 };
 
 #endif //FISH_FILLETS_GAMETREE_H
