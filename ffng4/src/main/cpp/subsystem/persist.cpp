@@ -18,22 +18,10 @@ Persist::Persist(Instance& instance) :
     m_cond.wait(lock, [this] { return !m_startstop; });
 }
 
-/* This CAN NOT be left to the destructor. Instead, Persist::quit() is called from Instance::quit().
- * At the time of ~Persist, Instance::files() (called by save()) is pure virtual. */
-void Persist::quit() {
+Persist::~Persist() {
     m_startstop = true;
     m_cond.notify_one();
     m_thread.join();
-}
-
-/* In the case of an exception, we need to kill the thread anyway, otherwise destructing m_cond may result in a deadlock. */
-Persist::~Persist() {
-    if(m_thread.joinable()) {
-        if(m_changed)
-            Log::warn("Settings changes dropped");
-        m_changed = false;
-        quit();
-    }
 }
 
 template<typename T>

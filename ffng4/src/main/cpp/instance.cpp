@@ -13,7 +13,10 @@
 #include "game/structure/gametree.h"
 #include "subsystem/persist.h"
 
-Instance::Instance() = default;
+Instance::Instance(std::unique_ptr<IFiles>&& files)
+    : m_files(std::move(files))
+{ }
+
 Instance::~Instance() = default;
 
 void Instance::init() {
@@ -36,5 +39,4 @@ IInputSource& Instance::inputSourceMasked() {
 void Instance::quit() {
     running = false;
     audio().clear();
-    persist().quit();
 }

@@ -22,8 +22,6 @@ public:
     Persist(Instance& instance);
     ~Persist();
 
-    void quit();
-
     template<typename T>
     void set(const std::string& name, T value);
     template<typename T>

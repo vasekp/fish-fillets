@@ -10,7 +10,6 @@
 struct android_app;
 
 class AndroidInstance : public Instance {
-    AndroidFiles m_files;
     AndroidInput m_input;
     OboeSink m_sink;
 
@@ -26,7 +25,6 @@ public:
     void quit() override;
     void* window() override { return app->window; }
     OboeSink& oboe() { return m_sink; }
-    AndroidFiles& files() override { return m_files; }
     AndroidInput& inputSource() override { return m_input; }
 
     void startstop();

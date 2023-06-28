@@ -2,7 +2,7 @@
 #include "game/screens/screenmanager.h"
 
 AndroidInstance::AndroidInstance(android_app* androidApp):
-        m_files(androidApp),
+        Instance(std::make_unique<AndroidFiles>(androidApp)),
         m_input(*this),
         m_sink(*this),
         app(androidApp),

@@ -26,12 +26,12 @@ class Instance {
     std::unique_ptr<RNG> m_rng;
 
 protected:
-    Instance();
+    Instance(std::unique_ptr<IFiles>&& files);
     void init();
     ~Instance();
 
 public:
-    virtual IFiles& files() = 0;
+    auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
     auto& audio() { return *m_audio; }
     auto& rng() { return *m_rng; }
