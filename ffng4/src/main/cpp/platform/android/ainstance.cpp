@@ -10,7 +10,6 @@ AndroidInstance::AndroidInstance(android_app* androidApp):
         live(false)
 {
     app->userData = this;
-    init();
 }
 
 AndroidInstance& AndroidInstance::get(android_app* app) {

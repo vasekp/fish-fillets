@@ -17,9 +17,7 @@ public:
         Instance(std::make_unique<LinuxFiles>()),
         m_input(*this),
         m_window(window)
-    {
-        init();
-    }
+    { }
 
     void* window() override { return reinterpret_cast<void*>(m_window); }
 

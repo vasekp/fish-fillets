@@ -13,20 +13,17 @@
 #include "game/structure/gametree.h"
 #include "subsystem/persist.h"
 
-Instance::Instance(std::unique_ptr<IFiles>&& files)
-    : m_files(std::move(files))
+Instance::Instance(std::unique_ptr<IFiles>&& files) :
+    m_files(std::move(files)),
+    m_persist(std::make_unique<Persist>(*this)), // uses Files in destructor
+    m_graphics(std::make_unique<Graphics>(*this)),
+    m_audio(std::make_unique<Audio>(*this)), // uses Persist in constructor for volume settings
+    m_levels(std::make_unique<GameTree>(*this)),
+    m_screens(std::make_unique<ScreenManager>(*this)), // uses Persist in destructor for playtime
+    m_rng(std::make_unique<RNG>())
 { }
 
 Instance::~Instance() = default;
-
-void Instance::init() {
-    m_persist = std::make_unique<Persist>(*this);
-    m_graphics = std::make_unique<Graphics>(*this);
-    m_audio = std::make_unique<Audio>(*this); // uses Persist in constructor for volume settings
-    m_levels = std::make_unique<GameTree>(*this);
-    m_screens = std::make_unique<ScreenManager>(*this); // uses Persist in destructor for playtime
-    m_rng = std::make_unique<RNG>();
-}
 
 IInputSink& Instance::inputSink() {
     return screens().input();

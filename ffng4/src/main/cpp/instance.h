@@ -27,7 +27,6 @@ class Instance {
 
 protected:
     Instance(std::unique_ptr<IFiles>&& files);
-    void init();
     ~Instance();
 
 public:
