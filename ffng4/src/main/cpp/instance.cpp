@@ -21,7 +21,7 @@ void Instance::init() {
     m_graphics = std::make_unique<Graphics>(*this);
     m_audio = std::make_unique<Audio>(*this); // uses Persist in constructor for volume settings
     m_levels = std::make_unique<GameTree>(*this);
-    m_screens = std::make_unique<ScreenManager>(*this);
+    m_screens = std::make_unique<ScreenManager>(*this); // uses Persist in destructor for playtime
     m_rng = std::make_unique<RNG>();
 }
 

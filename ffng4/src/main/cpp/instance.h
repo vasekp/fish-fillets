@@ -18,11 +18,11 @@ class RNG;
 
 class Instance {
     std::unique_ptr<IFiles> m_files;
+    std::unique_ptr<Persist> m_persist;
     std::unique_ptr<Graphics> m_graphics;
     std::unique_ptr<Audio> m_audio;
-    std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<GameTree> m_levels;
-    std::unique_ptr<Persist> m_persist;
+    std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<RNG> m_rng;
 
 protected:

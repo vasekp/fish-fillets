@@ -66,7 +66,7 @@ void Persist::save() {
             oss << "options_setInt(\"" << key << "\", " << std::get<int>(value) << ")\n";
     }
     m_instance.files().user(filename)->write(oss.str());
-    Log::debug("settings saved");
+    Log::info("settings saved");
     m_changed = false;
 }
 

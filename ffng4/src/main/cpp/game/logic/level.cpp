@@ -1,5 +1,6 @@
 #include "level.h"
 #include "game/screens/levelscreen.h"
+#include "subsystem/persist.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_instance(instance),
@@ -12,6 +13,15 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
 {
     registerCallbacks();
     m_script.loadFile("script/globals.lua");
+}
+
+Level::~Level() {
+    if(!inReplay()) {
+        auto time = m_instance.persist().get("playtime", 0);
+        time += (int)m_screen.timeAlive();
+        Log::info("playtime ", time);
+        m_instance.persist().set("playtime", time);
+    }
 }
 
 LevelInput& Level::input() {

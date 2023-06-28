@@ -54,6 +54,7 @@ class Level : public ScriptReferrer {
 
 public:
     Level(Instance& instance, LevelScreen& screen, LevelRecord& record);
+    ~Level();
 
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
