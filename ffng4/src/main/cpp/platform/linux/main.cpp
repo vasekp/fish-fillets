@@ -1,6 +1,7 @@
 #include "common.h"
 #include "xinstance.h"
 #include "subsystem/graphics.h"
+#include "subsystem/persist.h"
 #include "game/screens/screenmanager.h"
 #include "alsasink.h"
 
@@ -48,7 +49,9 @@ int main(int argc, char **argv) {
     AlsaSink sink{instance.audio()};
 
     instance.graphics().activate();
-    instance.screens().startMode(ScreenManager::Mode::WorldMap);
+    bool intro = !instance.persist().get<int>("intro", 0);
+    instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
+    instance.persist().set("intro", 1);
     instance.screens().drawFrame();
 
     XMapWindow(dpy, win);
