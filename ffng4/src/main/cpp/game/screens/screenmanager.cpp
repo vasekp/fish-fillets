@@ -39,10 +39,11 @@ void ScreenManager::announceLevel(const std::string& title) {
         m_title.hide();
 }
 
-Level& ScreenManager::startLevel(LevelRecord& record) {
+void ScreenManager::startLevel(LevelRecord& record, bool replay) {
     auto& level = open<LevelScreen>(record).level();
+    if(replay)
+        level.replay();
     m_title.fadeout();
-    return level;
 }
 
 void ScreenManager::useNext() {

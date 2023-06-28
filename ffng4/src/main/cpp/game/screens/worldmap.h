@@ -23,6 +23,7 @@ class WorldMap : public GameScreen {
     std::vector<const LevelRecord*> m_open;
     std::vector<const LevelRecord*> m_forks;
     Frames m_staticFrame;
+    std::function<void()> m_nextAction;
     std::optional<Pedometer> m_pm;
     bool m_showEnding;
 
@@ -53,11 +54,10 @@ class WorldMap : public GameScreen {
 
 public:
     WorldMap(Instance&);
-    void staticFrame(Frames frame);
-
-    IInputSink& input() override { return m_input; }
 
 protected:
+    IInputSink& input() override { return m_input; }
+
     void own_start() override;
     void own_resume() override;
     void own_draw(const DrawTarget& target, float dt) override;
@@ -66,6 +66,7 @@ protected:
 
 private:
     void drawMasked(const DrawTarget& target, Color maskColor);
+    void staticFrame(Frames frame, std::function<void()>&& action);
 };
 
 #endif //FISH_FILLETS_GAME_WORLDMAP_H

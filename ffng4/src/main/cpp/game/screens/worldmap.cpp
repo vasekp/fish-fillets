@@ -36,9 +36,9 @@ WorldMap::WorldMap(Instance& instance) :
     }
 }
 
-void WorldMap::staticFrame(Frames frame) {
+void WorldMap::staticFrame(Frames frame, std::function<void()>&& action) {
     m_staticFrame = frame;
-    m_instance.screens().drawFrame();
+    m_nextAction = std::move(action);
 }
 
 void WorldMap::own_start() {
@@ -100,6 +100,11 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
         default:
             break;
     }
+
+    if(m_nextAction) {
+        m_nextAction();
+        m_nextAction = nullptr;
+    }
 }
 
 bool WorldMap::own_pointer(FCoords coords) {
@@ -107,19 +112,20 @@ bool WorldMap::own_pointer(FCoords coords) {
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {
                 case Frames::exit:
-                    staticFrame(WorldMap::Frames::exit);
-                    m_instance.quit();
+                    staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
                     return true;
                 case Frames::options:
                     m_instance.screens().options().show();
                     return true;
                 case Frames::intro:
-                    staticFrame(WorldMap::Frames::intro);
-                    m_instance.screens().startMode(ScreenManager::Mode::Intro);
+                    staticFrame(WorldMap::Frames::intro, [this]() {
+                        m_instance.screens().startMode(ScreenManager::Mode::Intro);
+                    });
                     return true;
                 case Frames::credits:
-                    staticFrame(WorldMap::Frames::credits);
-                    m_instance.screens().startMode(ScreenManager::Mode::Credits);
+                    staticFrame(WorldMap::Frames::credits, [this]() {
+                        m_instance.screens().startMode(ScreenManager::Mode::Credits);
+                    });
                     return true;
                 default:;
             }
@@ -128,10 +134,9 @@ bool WorldMap::own_pointer(FCoords coords) {
         switch(auto button = m_pm->findButton(coords)) {
             case Pedometer::Buttons::retry:
             case Pedometer::Buttons::replay: {
-                staticFrame(WorldMap::Frames::loading);
-                auto& level = m_instance.screens().startLevel(m_pm->record());
-                if(button == Pedometer::Buttons::replay)
-                    level.replay();
+                staticFrame(WorldMap::Frames::loading, [this, button]() {
+                    m_instance.screens().startLevel(m_pm->record(), button == Pedometer::Buttons::replay);
+                });
                 return true;
             }
             case Pedometer::Buttons::close:
@@ -157,8 +162,9 @@ bool WorldMap::own_pointer(FCoords coords) {
         if(record.state() == LevelState::solved)
             m_pm.emplace(m_instance, it->second);
         else {
-            staticFrame(WorldMap::Frames::loading);
-            m_instance.screens().startLevel(it->second);
+            staticFrame(WorldMap::Frames::loading, [this, it]() {
+                m_instance.screens().startLevel(it->second);
+            });
         }
         return true;
     } else
@@ -171,8 +177,7 @@ bool WorldMap::own_key(Key key) {
             m_pm.reset();
             m_instance.screens().announceLevel("");
         } else {
-            staticFrame(WorldMap::Frames::exit);
-            m_instance.quit();
+            staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
         }
         return true;
     } else

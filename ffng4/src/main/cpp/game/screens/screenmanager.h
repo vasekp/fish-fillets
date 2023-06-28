@@ -30,7 +30,7 @@ public:
 
     void startMode(Mode mode);
     void announceLevel(const std::string& title);
-    Level& startLevel(LevelRecord& record);
+    void startLevel(LevelRecord& record, bool replay = false);
 
     template<class ScreenType, typename... Ts>
     ScreenType& open(Ts&&... ts);
