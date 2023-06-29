@@ -1,5 +1,5 @@
-#ifndef FFNG_LEVEL_TITLE_H
-#define FFNG_LEVEL_TITLE_H
+#ifndef FISH_FILLETS_LEVEL_TITLE_H
+#define FISH_FILLETS_LEVEL_TITLE_H
 
 #include "subsystem/graphics.h"
 
@@ -31,4 +31,4 @@ private:
     constexpr static float fadeoutTime = 300; //milliseconds
 };
 
-#endif //FFNG_LEVEL_TITLE_H
+#endif //FISH_FILLETS_LEVEL_TITLE_H

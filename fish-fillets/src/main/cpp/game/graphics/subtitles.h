@@ -1,5 +1,5 @@
-#ifndef FFNG_GAME_SUBTITLES_H
-#define FFNG_GAME_SUBTITLES_H
+#ifndef FISH_FILLETS_GAME_SUBTITLES_H
+#define FISH_FILLETS_GAME_SUBTITLES_H
 
 #include "subsystem/graphics.h"
 
@@ -37,4 +37,4 @@ public:
     constexpr static float speed = 1.f;
 };
 
-#endif //FFNG_GAME_SUBTITLES_H
+#endif //FISH_FILLETS_GAME_SUBTITLES_H

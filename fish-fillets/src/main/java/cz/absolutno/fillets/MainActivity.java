@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends NativeActivity {
-    private static final String TAG = "FFNG4";
+    private static final String TAG = "Fillets";
 
     private final Map<String, Typeface> fontMap = new HashMap<>();
     private Handler uiHandler;

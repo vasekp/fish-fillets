@@ -1,12 +1,12 @@
 [submodule "ffng4/src/main/cpp/deps/ogg"]
-	path = ffng4/src/main/cpp/deps/ogg
+	path = fish-fillets/src/main/cpp/deps/ogg
 	url = https://github.com/xiph/ogg
 [submodule "ffng4/src/main/cpp/deps/deps/vorbis"]
-	path = ffng4/src/main/cpp/deps/vorbis
+	path = fish-fillets/src/main/cpp/deps/vorbis
 	url = https://github.com/xiph/vorbis
 [submodule "ffng4/src/main/cpp/deps/theora"]
-	path = ffng4/src/main/cpp/deps/theora
+	path = fish-fillets/src/main/cpp/deps/theora
 	url = https://github.com/xiph/theora
 [submodule "ffng4/src/main/cpp/deps/lua"]
-	path = ffng4/src/main/cpp/deps/lua
+	path = fish-fillets/src/main/cpp/deps/lua
 	url = https://github.com/lua/lua

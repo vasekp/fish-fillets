@@ -1,5 +1,5 @@
-#ifndef FFNG_GAME_IINPUT_H
-#define FFNG_GAME_IINPUT_H
+#ifndef FISH_FILLETS_GAME_IINPUT_H
+#define FISH_FILLETS_GAME_IINPUT_H
 
 #include "common.h"
 #include "key.h"
@@ -31,4 +31,4 @@ public:
     virtual ~IInputSink() { }
 };
 
-#endif //FFNG_GAME_IINPUT_H
+#endif //FISH_FILLETS_GAME_IINPUT_H

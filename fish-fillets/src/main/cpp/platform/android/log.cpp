@@ -1,7 +1,7 @@
 #include "log.h"
 #include <android/log.h>
 
-constexpr const char* tag = "FFNG4";
+constexpr const char* tag = "Fillets";
 
 static auto android_loglevel(Log::Level level) {
     switch(level) {
