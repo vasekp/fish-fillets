@@ -91,11 +91,13 @@ namespace ogg {
         ll::VorbisInfo m_info;
         ll::VorbisComment m_comment;
         ll::VorbisDecoder m_decoder;
+        bool m_done;
 
     public:
         VorbisDecoder(InterleavedStream& source) :
             m_stream(source.vorbis()),
-            m_decoder(init())
+            m_decoder(init()),
+            m_done(false)
         {
             Log::debug("Audio: ", m_info.channels, " channels, ", m_info.rate, " Hz");
         }
@@ -106,11 +108,17 @@ namespace ogg {
 
         bool operator>>(std::vector<float>& buffer) {
             ogg_packet packet;
-            if(!(m_stream >> packet))
+            if(!(m_stream >> packet)) {
+                m_done = true;
                 return false;
+            }
             m_decoder << packet;
             m_decoder >> buffer;
             return true;
+        }
+
+        bool done() const {
+            return m_done;
         }
 
     private:
@@ -131,7 +139,7 @@ namespace ogg {
         ll::TheoraComment m_comment;
         ll::TheoraSetup m_setup;
         ll::TheoraDecoder m_decoder;
-        //bool started;
+        bool m_done;
 
     public:
         struct Frame {
@@ -142,8 +150,8 @@ namespace ogg {
         };
 
         TheoraDecoder(InterleavedStream& source) :
-            m_stream(source.theora())
-            //started(false)
+            m_stream(source.theora()),
+            m_done(false)
         {
             ogg_packet packet;
             for(int i = 0; i < 3; i++) {
@@ -166,12 +174,11 @@ namespace ogg {
 
         bool operator>>(Frame& frame) {
             ogg_packet packet;
-            if(!(m_stream >> packet))
+            if(!(m_stream >> packet)) {
+                m_done = true;
                 return false;
-            //if(!started) {
+            }
             th_decode_ctl(m_decoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
-            //    started = true;
-            //}
             ogg_int64_t granulepos;
             if(th_decode_packetin(m_decoder, &packet, &granulepos) == 0) {
                 auto time = th_granule_time(m_decoder, granulepos);
@@ -184,6 +191,10 @@ namespace ogg {
                 copy(frame.crData, ycbcr[2], 320, 240);
             }
             return true;
+        }
+
+        bool done() const {
+            return m_done;
         }
 
     private:

@@ -19,7 +19,7 @@ IntroScreen::IntroScreen(Instance& instance) :
 }
 
 void IntroScreen::fill_buffers() {
-    while(m_aBuffer->total() < (timeAlive() + 1) * 22050) {
+    while(m_aBuffer->total() < (size_t)((timeAlive() + 1) * 22050)) {
         std::vector<float> aData;
         if(!(m_vorbis >> aData)) {
             Log::debug("Audio EOS");
@@ -47,15 +47,15 @@ void IntroScreen::own_start() {
 }
 
 void IntroScreen::own_draw(const DrawTarget& target, float dt) {
-    while(!m_vBuffer.empty() && m_vBuffer.front().time < timeAlive())
+    while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeAlive())
         m_vBuffer.pop_front();
-    if(m_vBuffer.empty()) {
-        Log::info("Video ended.");
+    if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeAlive() && m_theora.done()) {
+        Log::info("Intro ended.");
         m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     }
     auto& frame = m_vBuffer.front();
     Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
-    // Condiser upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
+    // FIXME: Condiser upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
     // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
     // exist in the targeted OpenGL ES version.
     auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.yData.data(), 1);
