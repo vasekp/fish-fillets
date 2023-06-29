@@ -70,8 +70,11 @@ Key XKeyMap(KeySym keysym) {
 void XInput::keyEvent(XKeyEvent& event) {
     if(event.type == KeyPress) {
         if(m_lastKey == Key::none) {
-            m_lastKey = XKeyMap(XLookupKeysym(&event, 0));
-            m_instance.inputSink().keyDown(m_lastKey);
+            auto key = XKeyMap(XLookupKeysym(&event, 0));
+            if(key != Key::none) {
+              m_instance.inputSink().keyDown(key);
+              m_lastKey = key;
+            }
         }
         return;
     } else {
