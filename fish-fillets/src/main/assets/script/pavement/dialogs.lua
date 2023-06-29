@@ -79,7 +79,7 @@ dialog_add("dir-hs-konec4", "statue", {
   en="saw off some of that hooked steel."})
 
 dialog_add("dir-hs-konec5", "statue", {
-  cs="nějak ty předměty přeskládat, abyste mohly odjet z místnosti.",
+  cs="nějak ty předměty přeskládat, abyste mohli odjet z místnosti.",
   en="rearrange the objects so that you can swim out."})
 
 dialog_add("dir-hs-konec6", "statue", {

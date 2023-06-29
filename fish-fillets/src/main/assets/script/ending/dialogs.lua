@@ -11,7 +11,7 @@ dialog_add("z-v-sef", "big", {
   en="The boss called a moment ago. He was very satisfied with our performance."})
 
 dialog_add("z-m-nemluv", "small", {
-  cs="O šéfovi mi ani nemluv. On si sedí někde v teploučku, zatím co my jsme se dřely.",
+  cs="O šéfovi mi ani nemluv. On si sedí někde v teploučku, zatím co my jsme se dřeli.",
   en="Don’t mention the boss to me. He sits somewhere in his cozy office and we have to do all the dirty work."})
 
 dialog_add("z-v-slyset", "big", {

@@ -19,7 +19,7 @@ dialog_add("zav-v-venku", "big", {
   en="It’ll be much nicer when we get out."})
 
 dialog_add("zav-v-zaval", "big", {
-  cs="To je ale nebezpečný zával. Máme štěstí, že jsme zůstaly naživu.",
+  cs="To je ale nebezpečný zával. Máme štěstí, že jsme zůstali naživu.",
   en="This is very dangerous cave-in. We are lucky to be alive."})
 
 dialog_add("zav-m-hopskok", "small", {
