@@ -79,6 +79,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     else
                         m_pointerHandled = inputSink.pointerDown(coords);
                     jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
+                    return m_pointerHandled;
                 }
                 case AMOTION_EVENT_ACTION_MOVE: {
                     if(!m_pointerFollow || pointerId != m_pointerId)
@@ -129,6 +130,8 @@ bool AndroidInput::processEvent(AInputEvent* event) {
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
+        if(key == Key::none)
+            return false;
         auto action = AKeyEvent_getAction(event);
         if(action == AKEY_EVENT_ACTION_DOWN) {
             if(m_lastKey != Key::none)
