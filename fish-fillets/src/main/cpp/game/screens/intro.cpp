@@ -29,11 +29,19 @@ void IntroScreen::fill_buffers() {
         m_aBuffer->enqueue(std::move(aData));
     }
 
+    if(!m_vBuffer.empty() && !m_theora.done() && m_vBuffer.back().time < timeAlive()) {
+        Log::warn("Video lagging by ", timeAlive() - m_vBuffer.back().time, "s, skipping to next keyframe, ",
+            "dropping ", m_vBuffer.size(), " decoded frames");
+        m_vBuffer.clear();
+        m_theora.skipToKey();
+    }
+
     while(m_vBuffer.size() < vBufSize) {
         m_vBuffer.emplace_back();
         auto& frame = m_vBuffer.back();
         if(!(m_theora >> frame)) {
             Log::debug("Video EOS");
+            m_vBuffer.pop_back();
             break;
         }
         Log::debug("Video frame @ ", frame.time);

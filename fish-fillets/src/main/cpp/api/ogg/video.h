@@ -140,6 +140,7 @@ namespace ogg {
         ll::TheoraSetup m_setup;
         ll::TheoraDecoder m_decoder;
         bool m_done;
+        bool m_skipping;
 
     public:
         struct Frame {
@@ -151,7 +152,8 @@ namespace ogg {
 
         TheoraDecoder(InterleavedStream& source) :
             m_stream(source.theora()),
-            m_done(false)
+            m_done(false),
+            m_skipping(false)
         {
             ogg_packet packet;
             for(int i = 0; i < 3; i++) {
@@ -172,17 +174,31 @@ namespace ogg {
             return m_info;
         }
 
+        void skipToKey() {
+            m_skipping = true;
+        }
+
         bool operator>>(Frame& frame) {
             ogg_packet packet;
-            if(!(m_stream >> packet)) {
-                m_done = true;
-                return false;
-            }
+            int skipped = 0;
+            do {
+                if(!(m_stream >> packet)) {
+                    m_done = true;
+                    return false;
+                }
+                if(m_skipping) {
+                    if(packet.granulepos >= 0 && (packet.granulepos & 63) == 0)
+                        m_skipping = false;
+                    else
+                        skipped++;
+                }
+            } while(m_skipping);
+            if(skipped)
+                Log::warn("Skipped ", skipped, " frames!");
             th_decode_ctl(m_decoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
-            ogg_int64_t granulepos;
-            if(th_decode_packetin(m_decoder, &packet, &granulepos) == 0) {
+            if(ogg_int64_t granulepos; th_decode_packetin(m_decoder, &packet, &granulepos) == 0) {
                 auto time = th_granule_time(m_decoder, granulepos);
-                Log::debug("video packet in @ ", time);
+                Log::debug("video packet in @ ", time, " granulepos ", granulepos >> 6, "+", granulepos & 63);
                 th_ycbcr_buffer ycbcr;
                 th_decode_ycbcr_out(m_decoder, ycbcr);
                 frame.time = time;
