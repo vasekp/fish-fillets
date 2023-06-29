@@ -13,7 +13,8 @@ local function prog_init()
 
         room.houk = -1
         room.citac = random(40) + 40
-        local bgfaze
+        local bgfaze = 0
+        game_changeBg("images/"..codename.."/steel-pozadi"..bgfaze..".png")
 
         return function()
             pom1 = 0
