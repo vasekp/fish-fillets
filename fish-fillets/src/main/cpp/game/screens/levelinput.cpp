@@ -9,12 +9,14 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
+        m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
+        m_fishBig(instance, "images/fishes/big/right/body_rest_00.png"),
         m_activeButton(noButton)
 {
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit, true });
 }
@@ -214,6 +216,19 @@ void LevelInput::drawButtons(const DrawTarget& target) {
         glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].image.width(), (float)m_buttons[i].image.height());
         m_buttons[i].image.texture().bind();
         target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
+    }
+    if(m_activeFish != Model::Fish::none) {
+        auto& copyProgram = m_instance.graphics().shaders().copy;
+        auto& button = keyButton(Key::space);
+        auto& image = m_activeFish == Model::Fish::small ? m_fishSmall : m_fishBig;
+        FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
+        FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
+        FCoords imgExtent(image.width(), image.height());
+        float scale = std::min(extent.fx() / imgExtent.fx(), extent.fy() / imgExtent.fy());
+        FCoords from = center - scale / 2.f * imgExtent;
+        FCoords to = center + scale / 2.f * imgExtent;
+        image.texture().bind();
+        target.fill(coords, copyProgram, from.fx(), from.fy(), to.fx(), to.fy());
     }
 }
 

@@ -41,6 +41,9 @@ class LevelInput : public IInputSink {
     std::unique_ptr<IFont> m_buttonsFont;
     std::vector<Button> m_buttons;
 
+    PNGImage m_fishSmall;
+    PNGImage m_fishBig;
+
     int m_activeButton;
 
 public:
@@ -73,7 +76,7 @@ private:
 
     constexpr static const char* fontFilename = "font/FFArrows.ttf";
     constexpr static float minDistance = 40.f; // all dimension in "base pixels"
-    constexpr static float buttonDistance = 40.f;
+    constexpr static float buttonDistance = 35.f;
     constexpr static float arrowSize = 64.f;
     constexpr static float buttonSize = 48.f;
     constexpr static float buttonFontSize = 40.f;

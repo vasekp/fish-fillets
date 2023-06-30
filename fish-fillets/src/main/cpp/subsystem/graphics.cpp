@@ -46,7 +46,7 @@ void Graphics::recalc() {
     bool vert = scale1 > scale2;
     FCoords center = vert ? FCoords{stripSize / 2.f, displayDim.fy() / 2.f} : FCoords{displayDim.fx() / 2.f, stripSize / 2.f};
     FCoords principal = vert ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
-    m_coords[buttons] = { center, scale0, principal};
+    m_coords[buttons] = {center, scale0, principal};
     FCoords reduceBase = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
     FCoords reduceDim = displayDim - reduceBase;
     float scale3 = std::min(reduceDim.fx() / baseDim.fx(), reduceDim.fy() / baseDim.fy());
