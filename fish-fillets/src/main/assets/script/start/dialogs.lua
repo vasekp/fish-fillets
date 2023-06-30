@@ -130,3 +130,8 @@ dialog_add("1st-x-hint1", "", {
   cs="Dotyková obrazovka: tah v žádaném směru\nZměna: ťukni dvakrát",
   en="Touch screen: tap and move\nDouble tap to switch"
 });
+
+dialog_add("1st-x-hint2", "", {
+  cs="Dotyková obrazovka: ťuknout a podržet",
+  en="Touch screen: tap and hold"
+});

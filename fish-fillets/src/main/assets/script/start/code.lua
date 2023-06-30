@@ -1,3 +1,6 @@
+local function planHint(delay, dialog)
+    planTimeAction(delay, function() game_hint(dialog) end)
+end
 
 -- -----------------------------------------------------------------
 -- Init
@@ -57,22 +60,20 @@ local function prog_init()
                     room.qnavod1 = 600
                     room.qnavod2 = -1
                     planBusy(big, true, 4)
-                    planTimeAction(5, function()
-                            game_hint("1st-x-hint1")
-                        end)
+                    planHint(5, "1st-x-hint1")
                     addv(0, "1st-v-navod1")
-                    planTimeAction(0, function()
-                            game_hint("")
-                        end)
+                    planHint(0, "");
                     planBusy(small, false, 3)
                     planBusy(big, false, 1)
-                    --planBusy(small, true, 100)
-                    --planBusy(big, true, 2)
-                    -- addm(3, "1st-m-navod4")
-                    -- addv(0, "1st-v-navod5")
-                    -- addm(2, "1st-m-navod6")
-                    --planBusy(big, false, 3)
-                    --planBusy(small, false, 2)
+                    planBusy(small, true, 100)
+                    planBusy(big, true, 2)
+                    planHint(3, "1st-x-hint2")
+                    addm(0, "1st-m-navod4")
+                    addv(0, "1st-v-navod5")
+                    addm(2, "1st-m-navod6")
+                    planHint(0, "");
+                    planBusy(big, false, 3)
+                    planBusy(small, false, 2)
                     -- addv(20, "1st-v-navod7")
                     addm(20, "1st-m-navod8")
                     if room.uzreklnavod == 0 then
