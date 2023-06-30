@@ -33,6 +33,8 @@ function loadColors()
     dialog_defineColor("viking6", 128, 255, 255, 255, 255, 255)
 
     dialog_defineColor("viking8", 255, 255, 128, 255, 96, 96)
+
+    dialog_defineColor("poster", 255, 255, 255)
 end
 
 
