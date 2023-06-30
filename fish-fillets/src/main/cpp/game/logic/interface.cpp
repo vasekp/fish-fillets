@@ -344,6 +344,22 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         name = name.substr(0, at);
     }
     auto& dialog = m_dialogs.at(name);
+    auto lang = m_instance.persist().get("subtitles", "cs"s);
+    if(dialog.texts.contains(lang)) {
+        if(!param.empty()) {
+            auto string = dialog.texts.at(lang);
+            auto ix = string.find("%1");
+            if(ix == std::string::npos)
+                throw std::runtime_error("replacement required but dialog text does not contain '%1'");
+            string.replace(ix, 2, param);
+            m_screen.addSubtitle(string, dialog.colors);
+        } else
+            m_screen.addSubtitle(dialog.texts.at(lang), dialog.colors);
+    }
+    if(dialog.soundFile.empty()) {
+        Log::error("Sound for dialog ID ", name, " not found!");
+        return;
+    }
     auto data = m_screen.addSound(name, dialog.soundFile, true);
     Log::debug("Audio type ", type.value_or(0));
     auto source = AudioSource::create(data, types[type.value_or(0)]);
@@ -361,18 +377,6 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         big->talk() = source;
     }
     m_instance.audio().addSource(source);
-    auto lang = m_instance.persist().get("subtitles", "cs"s);
-    if(dialog.texts.contains(lang)) {
-        if(!param.empty()) {
-            auto string = dialog.texts.at(lang);
-            auto ix = string.find("%1");
-            if(ix == std::string::npos)
-                throw std::runtime_error("replacement required but dialog text does not contain '%1'");
-            string.replace(ix, 2, param);
-            m_screen.addSubtitle(string, dialog.colors);
-        } else
-            m_screen.addSubtitle(dialog.texts.at(lang), dialog.colors);
-    }
 }
 
 void Level::model_killSound(int index) {
@@ -463,9 +467,10 @@ void Level::dialog_add(const std::string& name, const std::string& color, std::m
         soundFile = std::move(fnLevel);
     else if(std::string fnShared = "sound/share/" + name + ".ogg"; m_instance.files().system(fnShared)->exists())
         soundFile = std::move(fnShared);
+    if(!soundFile.empty())
+        Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
     else
-        Log::error("Sound for dialog ID ", name, " not found (", fnLevel, ", ", fnShared, ")");
-    Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
+        Log::debug("Sound for dialog ID ", name, " not found");
     m_dialogs.insert({name, {soundFile, color, std::move(subtitles)}});
 }
 
@@ -476,6 +481,12 @@ int Level::options_getInt(const std::string& name) {
         return m_instance.persist().get(name, 0);
 }
 
-void Level::game_hint(const std::string& text) {
-    m_screen.showHint(text);
+void Level::game_hint(const std::string& dialogName) {
+    if(!dialogName.empty()) {
+        auto& dialog = m_dialogs.at(dialogName);
+        auto lang = m_instance.persist().get("subtitles", "cs"s);
+        if(dialog.texts.contains(lang))
+            m_screen.showHint(dialog.texts.at(lang));
+    } else
+        m_screen.hideHint();
 }

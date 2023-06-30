@@ -51,6 +51,7 @@ public:
     void saveEffect();
     void setShift(FCoords shift);
     void showHint(const std::string& text);
+    void hideHint();
 
     constexpr static int size_unit = 15;
 

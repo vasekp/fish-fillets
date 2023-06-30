@@ -126,3 +126,7 @@ dialog_add("1st-x-ocel", "darkgrey", {
   cs="Jsem těžký ocelový válec. Pohnout se mnou není nic jednoduchého. Taková malá rybka, jako je támhleta oranžová, vůbec nemá šanci. Rozmáčknul bych ji jedna dvě.",
   en="I’m a heavy steel cylinder. It’s not easy to move me around. Such a tiny fish, like the orange one over there, simply has no chance. I could smash her without any problem."})
 
+dialog_add("1st-x-hint1", "", {
+  cs="Dotyková obrazovka: tah v žádaném směru\nZměna: ťukni dvakrát",
+  en="Touch screen: tap and move\nDouble tap to switch"
+});

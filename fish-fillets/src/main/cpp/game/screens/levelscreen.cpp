@@ -166,10 +166,11 @@ void LevelScreen::addSubtitle(const std::string &text, const std::string& colors
 }
 
 void LevelScreen::showHint(const std::string &text) {
-    if(!text.empty())
-        m_hint.emplace(m_instance, text);
-    else
-        m_hint.reset();
+    m_hint.emplace(m_instance, text);
+}
+
+void LevelScreen::hideHint() {
+    m_hint.reset();
 }
 
 void LevelScreen::setWaves(float amplitude, float period, float speed) {
