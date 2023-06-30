@@ -51,11 +51,11 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
         }
         auto slot = m_face->glyph;
         fwidth += from266(slot->advance.x);
-        if(c == L' ') {
+        if(c == L' ' || c == '\n') {
             lastBreak = i;
             lastBreakX = fwidth;
         }
-        if(fwidth > width) {
+        if(c == '\n' || fwidth > width) {
             breaks.push_back(lastBreak);
             fwidth -= lastBreakX;
         }

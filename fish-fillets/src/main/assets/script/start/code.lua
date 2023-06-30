@@ -58,7 +58,7 @@ local function prog_init()
                     room.qnavod2 = -1
                     planBusy(big, true, 4)
                     planTimeAction(5, function()
-                            game_hint("Dotyková obrazovka: tah v žádaném směru, změna: ťukni dvakrát")
+                            game_hint("Dotyková obrazovka: tah v žádaném směru\nZměna: ťukni dvakrát")
                         end)
                     addv(0, "1st-v-navod1")
                     planTimeAction(0, function()
