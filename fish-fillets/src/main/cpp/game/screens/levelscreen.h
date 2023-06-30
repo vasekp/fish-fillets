@@ -7,6 +7,7 @@
 #include "game/logic/level.h"
 #include "subsystem/audio.h"
 #include "game/graphics/subtitles.h"
+#include "game/graphics/hint.h"
 #include "game/graphics/zxeffect.h"
 
 class LevelScreen : public GameScreen {
@@ -17,6 +18,7 @@ class LevelScreen : public GameScreen {
     std::array<float, 3> m_waves;
     FCoords m_winSize;
     Subtitles m_subs;
+    std::optional<Hint> m_hint;
     std::optional<PNGImage> m_display;
 
     std::unique_ptr<TextureTarget> m_mirrorTarget;
@@ -48,6 +50,7 @@ public:
     void killSounds();
     void saveEffect();
     void setShift(FCoords shift);
+    void showHint(const std::string& text);
 
     constexpr static int size_unit = 15;
 

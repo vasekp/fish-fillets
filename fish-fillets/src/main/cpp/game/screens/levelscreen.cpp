@@ -32,6 +32,8 @@ void LevelScreen::own_resize() {
     m_instance.graphics().setWindowSize(m_winSize.x(), m_winSize.y());
     m_input.resize();
     m_subs.resize();
+    if(m_hint)
+        m_hint->resize();
 
     const auto& models = m_level.layout().models();
     auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
@@ -163,6 +165,13 @@ void LevelScreen::addSubtitle(const std::string &text, const std::string& colors
     m_subs.add(text, colors);
 }
 
+void LevelScreen::showHint(const std::string &text) {
+    if(!text.empty())
+        m_hint.emplace(m_instance, text);
+    else
+        m_hint.reset();
+}
+
 void LevelScreen::setWaves(float amplitude, float period, float speed) {
     m_waves = {amplitude, period, speed};
 }
@@ -287,6 +296,8 @@ bool LevelScreen::own_key(Key key) {
 
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
+    if(m_hint)
+        m_hint->draw(target);
     m_input.draw(target, absTime);
 }
 

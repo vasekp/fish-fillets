@@ -127,6 +127,7 @@ private:
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();
+    void game_hint(const std::string& text);
     void model_addAnim(int index, const std::string& name, const std::string& filename,
                              std::optional<int> orientation);
     void model_runAnim(int index, const std::string& name, std::optional<int> phase);

@@ -68,6 +68,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
     m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
     m_script.registerFn("game_killPlan", lua::wrap<&Level::game_killPlan>);
+    m_script.registerFn("game_hint", lua::wrap<&Level::game_hint>);
 
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_defineColor", lua::wrap<&Level::dialog_defineColor>);
@@ -473,4 +474,8 @@ int Level::options_getInt(const std::string& name) {
         return int(m_instance.audio().getVolume(AudioType::music) * 100);
     else
         return m_instance.persist().get(name, 0);
+}
+
+void Level::game_hint(const std::string& text) {
+    m_screen.showHint(text);
 }

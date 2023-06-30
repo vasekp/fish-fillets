@@ -4,6 +4,7 @@
 struct Coords {
     FCoords origin = {};
     float scale = 1.f;
+    FCoords size = {};
     FCoords principal = {};
 
     auto in2out(FCoords in) const { return scale * in + origin; }
