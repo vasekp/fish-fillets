@@ -143,8 +143,8 @@ dialog_add("help21", "small", {
   en="And we can push objects off of each other’s back, as long as the object falls down immediately."})
 
 dialog_add("help22", "big", {
-  cs="Tak, to by asi bylo z pravidel všechno. Chceš-li vědět více, stiskni F1 a přečti si návod.",
-  en="That’s about it for the rules. If you want to know more, press F1 and read the help section."})
+  cs="Tak, to by asi bylo z pravidel všechno.",
+  en="That’s about it for the rules."})
 
 dialog_add("help23", "small", {
   cs="Já bych to ještě shrnula. Předměty můžeme beztrestně pouze zvedat, pouštět, posouvat po pevné podložce, na něco je nasouvat nebo je ze sebe shazovat.",

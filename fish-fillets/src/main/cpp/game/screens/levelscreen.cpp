@@ -287,7 +287,7 @@ bool LevelScreen::own_key(Key key) {
 
 void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
     m_subs.draw(target, dTime, absTime);
-    m_input.draw(target);
+    m_input.draw(target, absTime);
 }
 
 void LevelScreen::display(const std::string& filename) {

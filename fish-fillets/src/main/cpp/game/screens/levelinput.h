@@ -36,7 +36,9 @@ class LevelInput : public IInputSink {
         FCoords coordsFrom;
         FCoords coordsTo;
         Key key;
-        bool enabled;
+        bool enabled = true;
+        bool flashing = false;
+        float flashTime = 0.f;
     };
     std::unique_ptr<IFont> m_buttonsFont;
     std::vector<Button> m_buttons;
@@ -53,6 +55,7 @@ public:
     void setSavePossible(bool possible);
     void setLoadPossible(bool possible);
     void setRestartPossible(bool possible);
+    void flashButton(Key which);
 
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;
@@ -64,14 +67,14 @@ public:
     bool twoPointTap() override;
 
     void resize();
-    void draw(const DrawTarget& target);
+    void draw(const DrawTarget& target, float time);
     Key pool();
 
 private:
     int findButton(FCoords pos);
     Button& keyButton(Key key);
 
-    void drawButtons(const DrawTarget& target);
+    void drawButtons(const DrawTarget& target, float time);
     void drawDirpad(const DrawTarget& target);
 
     constexpr static const char* fontFilename = "font/FFArrows.ttf";
@@ -88,6 +91,8 @@ private:
     constexpr static Color colorSmall{255, 197, 102};
     constexpr static Color colorBig{162, 244, 255};
     constexpr static Color colorButtons{128, 128, 128};
+    constexpr static float flashDuration = 0.5f;
+    constexpr static float flashBrightness = 1.5f;
 };
 
 #endif //FISH_FILLETS_LEVELINPUT_H

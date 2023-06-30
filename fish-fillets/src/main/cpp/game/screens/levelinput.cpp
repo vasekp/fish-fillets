@@ -13,12 +13,12 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_fishBig(instance, "images/fishes/big/right/body_rest_00.png"),
         m_activeButton(noButton)
 {
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options, true });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit });
 }
 
 void LevelInput::setFish(Model::Fish fish) {
@@ -198,24 +198,41 @@ void LevelInput::setRestartPossible(bool possible) {
     keyButton(Key::restart).enabled = possible;
 }
 
-void LevelInput::draw(const DrawTarget& target) {
-    drawButtons(target);
+void LevelInput::flashButton(Key which) {
+    assert(which == Key::save || which == Key::load);
+    keyButton(which).flashing = true;
+}
+
+void LevelInput::draw(const DrawTarget& target, float time) {
+    drawButtons(target, time);
     drawDirpad(target);
 }
 
-void LevelInput::drawButtons(const DrawTarget& target) {
+void LevelInput::drawButtons(const DrawTarget& target, float time) {
     auto& program = m_instance.graphics().shaders().button;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     glUseProgram(program);
     for(auto i = 0u; i < m_buttons.size(); i++) {
-        float alpha = !m_buttons[i].enabled ? .25f
-                : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
-                    ? 1.0f
-                    : 0.5f;
+        auto& button = m_buttons[i];
+        if(button.flashing) {
+            if(!button.flashTime)
+                button.flashTime = time;
+            else if(button.flashTime + flashDuration < time) {
+                button.flashing = false;
+                button.flashTime = 0.f;
+            }
+        }
+        float alpha = button.flashing && std::fmod(time - button.flashTime, flashDuration * 2 / 5) < flashDuration / 5
+                ? flashBrightness
+                : !button.enabled
+                    ? 0.25f
+                    : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
+                        ? 1.0f
+                        : 0.5f;
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
-        glUniform2f(program.uniform("uTexSize"), (float)m_buttons[i].image.width(), (float)m_buttons[i].image.height());
-        m_buttons[i].image.texture().bind();
-        target.fill(coords, program, m_buttons[i].coordsFrom.fx(), m_buttons[i].coordsFrom.fy(), m_buttons[i].coordsTo.fx(), m_buttons[i].coordsTo.fy());
+        glUniform2f(program.uniform("uTexSize"), (float)button.image.width(), (float)button.image.height());
+        button.image.texture().bind();
+        target.fill(coords, program, button.coordsFrom.fx(), button.coordsFrom.fy(), button.coordsTo.fx(), button.coordsTo.fy());
     }
     if(m_activeFish != Model::Fish::none) {
         auto& copyProgram = m_instance.graphics().shaders().copy;

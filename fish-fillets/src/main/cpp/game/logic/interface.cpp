@@ -117,11 +117,13 @@ bool Level::level_action_restart() {
 }
 
 bool Level::level_action_save() {
+    input().flashButton(Key::save);
     save(true);
     return true;
 }
 
 bool Level::level_action_load() {
+    input().flashButton(Key::load);
     load(true);
     return true;
 }
