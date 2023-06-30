@@ -13,5 +13,8 @@ void main(void) {
     vec2 rel = vec2(frac.x, radius - frac.y) / radius;
     vec2 polar = vec2(atan(rel.x, rel.y), length(rel));
     vec2 texCoords = vec2(polar.x * radius / uSrcSizeScaled.x + 0.5, 1.0 - (1.0 - polar.y) * radius / uSrcSizeScaled.y);
-    gl_FragColor = uColor * texture2D(uSrcTexture, texCoords);
+    if(clamp(texCoords, vec2(0.0, 0.0), vec2(1.0, 1.0)) != texCoords)
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    else
+        gl_FragColor = uColor * texture2D(uSrcTexture, texCoords);
 }
