@@ -206,7 +206,7 @@ void Level::save(bool force) {
 }
 
 void Level::load(bool keepSchedule) {
-    if(loadPossible()) {
+    if(loadPossible() || keepSchedule) {
         killDialogsHard();
         m_tickSchedule.clear();
         m_tickSchedule.emplace_back([&, contents = saveFile()->read(), keepSchedule]() {
@@ -298,7 +298,7 @@ bool Level::savePossible() const {
 }
 
 bool Level::loadPossible() const {
-    return saveFile()->exists();
+    return saveFile()->exists() && !inDemo();
 }
 
 std::unique_ptr<IFile> Level::saveFile() const {
