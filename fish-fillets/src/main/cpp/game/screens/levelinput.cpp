@@ -14,6 +14,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart, true });
+    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options, true });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit, true });
 }
@@ -22,6 +23,7 @@ void LevelInput::setFish(Model::Fish fish) {
     m_activeFish = fish;
     if(fish == Model::Fish::none)
         m_dirpad.state = DirpadState::ignore;
+    keyButton(Key::space).enabled = fish != Model::Fish::none;
 }
 
 bool LevelInput::keyDown(Key key) {
@@ -183,15 +185,15 @@ void LevelInput::resize() {
 }
 
 void LevelInput::setSavePossible(bool possible) {
-    m_buttons[Buttons::bSave].enabled = possible;
+    keyButton(Key::save).enabled = possible;
 }
 
 void LevelInput::setLoadPossible(bool possible) {
-    m_buttons[Buttons::bLoad].enabled = possible;
+    keyButton(Key::load).enabled = possible;
 }
 
 void LevelInput::setRestartPossible(bool possible) {
-    m_buttons[Buttons::bRestart].enabled = possible;
+    keyButton(Key::restart).enabled = possible;
 }
 
 void LevelInput::draw(const DrawTarget& target) {
@@ -262,4 +264,8 @@ int LevelInput::findButton(FCoords pos) {
             return (int)i;
     }
     return noButton;
+}
+
+LevelInput::Button& LevelInput::keyButton(Key key) {
+    return *std::find_if(m_buttons.begin(), m_buttons.end(), [key](const Button& b) -> bool { return b.key == key; });
 }

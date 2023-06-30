@@ -31,14 +31,6 @@ class LevelInput : public IInputSink {
         bool inside;
     } m_dirpad;
 
-    enum Buttons {
-        bSave,
-        bLoad,
-        bRestart,
-        bExit,
-        bOptions
-    };
-
     struct Button {
         TextImage image;
         FCoords coordsFrom;
@@ -74,6 +66,7 @@ public:
 
 private:
     int findButton(FCoords pos);
+    Button& keyButton(Key key);
 
     void drawButtons(const DrawTarget& target);
     void drawDirpad(const DrawTarget& target);
