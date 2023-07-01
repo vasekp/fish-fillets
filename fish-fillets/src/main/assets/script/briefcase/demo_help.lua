@@ -80,6 +80,11 @@ showMove('L')
 showMove('D')
 waitDialogs() -- help1, help2
 level_planShow(function(count)
+    game_flashButton("save")
+    return true
+end)
+planDelay(5)
+level_planShow(function(count)
     return level_action_save()
 end)
 planDelay(6)
@@ -158,6 +163,10 @@ level_planShow(function(count)
 end)
 waitDialogs() -- help7
 level_planShow(function(count)
+    game_flashButton("load")
+    return true
+end)
+level_planShow(function(count)
     return level_action_load()
 end)
 planDelay(8)
@@ -225,6 +234,10 @@ level_planShow(function(count)
     return true
 end)
 waitDialogs() -- help11
+level_planShow(function(count)
+    game_flashButton("load")
+    return true
+end)
 level_planShow(function(count)
     return level_action_load()
 end)

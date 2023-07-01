@@ -127,7 +127,15 @@ private:
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();
+    bool game_isPlanning();
+    void game_planAction(LuaCallback function);
+    void game_killPlan();
+    void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
+    void game_setScreenShift(float dx, float dy);
+    void game_changeBg(const std::string& filename);
+    void game_setBonusLevel(bool value);
     void game_hint(const std::string& dialogName);
+    void game_flashButton(const std::string& which);
     void model_addAnim(int index, const std::string& name, const std::string& filename,
                              std::optional<int> orientation);
     void model_runAnim(int index, const std::string& name, std::optional<int> phase);
@@ -157,13 +165,6 @@ private:
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);
     void sound_stopMusic();
-    bool game_isPlanning();
-    void game_planAction(LuaCallback function);
-    void game_killPlan();
-    void game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2);
-    void game_setScreenShift(float dx, float dy);
-    void game_changeBg(const std::string& filename);
-    void game_setBonusLevel(bool value);
     bool dialog_isDialog();
     void dialog_defineColor(const std::string& name, int r1, int g1, int b1, std::optional<int> r2, std::optional<int> g2, std::optional<int> b2);
     void dialog_add(const std::string& name, const std::string& color, std::map<std::string, std::string>&& subtitles);

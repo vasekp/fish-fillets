@@ -13,6 +13,11 @@ void Level::registerCallbacks() {
     m_script.registerFn("game_setScreenShift", lua::wrap<&Level::game_setScreenShift>);
     m_script.registerFn("game_changeBg", lua::wrap<&Level::game_changeBg>);
     m_script.registerFn("game_setBonusLevel", lua::wrap<&Level::game_setBonusLevel>);
+    m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
+    m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
+    m_script.registerFn("game_killPlan", lua::wrap<&Level::game_killPlan>);
+    m_script.registerFn("game_hint", lua::wrap<&Level::game_hint>);
+    m_script.registerFn("game_flashButton", lua::wrap<&Level::game_flashButton>);
 
     m_script.registerFn("model_addAnim", lua::wrap<&Level::model_addAnim>);
     m_script.registerFn("model_runAnim", lua::wrap<&Level::model_runAnim>);
@@ -65,11 +70,6 @@ void Level::registerCallbacks() {
     m_script.registerFn("demo_enter", lua::wrap<&Level::demo_enter>);
     m_script.registerFn("demo_exit", lua::wrap<&Level::demo_exit>);
 
-    m_script.registerFn("game_planAction", lua::wrap<&Level::game_planAction>);
-    m_script.registerFn("game_isPlanning", lua::wrap<&Level::game_isPlanning>);
-    m_script.registerFn("game_killPlan", lua::wrap<&Level::game_killPlan>);
-    m_script.registerFn("game_hint", lua::wrap<&Level::game_hint>);
-
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_defineColor", lua::wrap<&Level::dialog_defineColor>);
     m_script.registerFn("dialog_add", lua::wrap<&Level::dialog_add>);
@@ -118,13 +118,11 @@ bool Level::level_action_restart() {
 }
 
 bool Level::level_action_save() {
-    input().flashButton(Key::save);
     save(true);
     return true;
 }
 
 bool Level::level_action_load() {
-    input().flashButton(Key::load);
     load(true);
     return true;
 }
@@ -489,4 +487,15 @@ void Level::game_hint(const std::string& dialogName) {
             m_screen.showHint(dialog.texts.at(lang));
     } else
         m_screen.hideHint();
+}
+
+void Level::game_flashButton(const std::string& which) {
+    if(which == "save")
+        input().flashButton(Key::save);
+    else if(which == "load")
+        input().flashButton(Key::load);
+    else if(which == "restart")
+        input().flashButton(Key::restart);
+    else
+        Log::error("game_flashButton unknown button: ", which);
 }

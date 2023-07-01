@@ -199,7 +199,6 @@ void LevelInput::setRestartPossible(bool possible) {
 }
 
 void LevelInput::flashButton(Key which) {
-    assert(which == Key::save || which == Key::load);
     keyButton(which).flashing = true;
 }
 
@@ -299,5 +298,7 @@ int LevelInput::findButton(FCoords pos) {
 }
 
 LevelInput::Button& LevelInput::keyButton(Key key) {
-    return *std::find_if(m_buttons.begin(), m_buttons.end(), [key](const Button& b) -> bool { return b.key == key; });
+    auto it = std::find_if(m_buttons.begin(), m_buttons.end(), [key](const Button& b) -> bool { return b.key == key; });
+    assert(it != m_buttons.end());
+    return *it;
 }
