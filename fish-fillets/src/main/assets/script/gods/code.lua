@@ -506,13 +506,11 @@ local function prog_init()
                     if room.posl ~= buh1.mluveni then
                         buh1.oci = 0
                     end
-                    room.posl = buh1.mluveni
                 end,
                 [106] = function()
                     if room.posl ~= buh1.mluveni then
                         buh1.oci = 2
                     end
-                    room.posl = buh1.mluveni
                 end,
                 default = function()
                     if isIn(buh1.mluveni, {101, 102}) then
@@ -521,17 +519,16 @@ local function prog_init()
                         elseif random(100) < 3 then
                             buh1.oci = 1 - buh1.oci
                         end
-                        room.posl = buh1.mluveni
                     elseif isIn(buh1.mluveni, {103, 104}) then
                         if room.posl ~= buh1.mluveni then
                             buh1.oci = 2 - math.floor(random(3) / 2)
                         elseif random(100) < 3 then
                             buh1.oci = 3 - buh1.oci
                         end
-                        room.posl = buh1.mluveni
                     end
                 end,
             }
+            room.posl = buh1.mluveni
             if buh1.cinruky == 0 then
                 if random(100) < 4 then
                     buh1.ruka = random(4)
