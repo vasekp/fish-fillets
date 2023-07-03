@@ -51,7 +51,8 @@ int main(int argc, char **argv) {
     instance.graphics().activate();
     bool intro = !instance.persist().get<int>("intro", 0);
     instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
-    instance.persist().set("intro", 1);
+    if(intro)
+        instance.persist().set("intro", 1);
     instance.screens().drawFrame();
 
     XMapWindow(dpy, win);

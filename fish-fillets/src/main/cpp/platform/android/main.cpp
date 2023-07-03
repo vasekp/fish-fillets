@@ -88,7 +88,8 @@ void android_main(struct android_app* app) {
         instance.state = *(struct saved_state*)app->savedState;*/
     bool intro = !instance.persist().get<int>("intro", 0);
     instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
-    instance.persist().set("intro", 1);
+    if(intro)
+        instance.persist().set("intro", 1);
 
     while(true) {
         try {
