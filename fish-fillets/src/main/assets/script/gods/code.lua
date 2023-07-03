@@ -20,7 +20,7 @@ end
 local function sinkShip(ship)
     if objekty.afaze == -1 then
         objekty:setEffect("none")
-        local shiftX, shiftY = randint(10, 30), 0
+        local shiftX, shiftY = randint(10, 30), -7
         local speedX, speedY = randint(-1, 1), randint(4, 10)
         model_setViewShift(objekty.index, shiftX, shiftY, speedX, speedY)
         objekty.afaze = ship
