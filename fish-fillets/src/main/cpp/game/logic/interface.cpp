@@ -231,6 +231,7 @@ std::string Level::model_getAction(int index) {
         case Model::Action::activate:
             return "activate";
         case Model::Action::base:
+        case Model::Action::willBusy:
             break;
     }
     auto dir = model->movingDir();
@@ -322,10 +323,9 @@ std::pair<float, float> Level::model_getViewShift(int index) {
 
 void Level::model_setBusy(int index, bool busy) {
     auto* model = layout().getModel(index);
-    schedule([model, busy]() {
-        model->action() = busy ? Model::Action::busy : Model::Action::base;
-        return true;
-    });
+    model->action() = busy
+        ? model->moving() ? Model::Action::willBusy : Model::Action::busy
+        : Model::Action::base;
 }
 
 bool Level::model_isTalking(int index) {

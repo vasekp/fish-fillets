@@ -113,7 +113,7 @@ void LevelRules::processKey(Key key) {
 
 bool LevelRules::switchFish(Model* which) {
     Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
-    if(target->action() == Model::Action::busy || !target->alive() || m_layout.borderDepth(target).first > 0 || target->hidden())
+    if(target->action() != Model::Action::base || !target->alive() || m_layout.borderDepth(target).first > 0 || target->hidden())
         return false;
     setFish(target);
     if(!m_vintage) {
@@ -148,7 +148,7 @@ void LevelRules::moveFish(Model::Fish which, Direction d) {
 }
 
 void LevelRules::moveFish(Direction d) {
-    if(!m_curFish || !m_curFish->alive() || m_curFish->action() == Model::Action::busy || m_curFish->driven())
+    if(!m_curFish || !m_curFish->alive() || m_curFish->action() != Model::Action::base || m_curFish->driven())
         return;
 
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
@@ -316,6 +316,8 @@ void LevelRules::evalSteel() {
 
 void LevelRules::evalMotion(Model* model, Direction d) {
     Log::verbose("stopped ", model->index(), " ", d);
+    if(model->action() == Model::Action::willBusy)
+        model->action() = Model::Action::busy;
     m_level.notifyRound();
     if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
         const auto& fullSupport = m_support[model];

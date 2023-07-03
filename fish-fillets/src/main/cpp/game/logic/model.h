@@ -51,6 +51,7 @@ public:
     enum class Action {
         base,
         busy,
+        willBusy,
         turning,
         activate
     };
