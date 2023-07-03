@@ -30,8 +30,8 @@ local function prog_init()
                     small:setBusy(true)
                     addm(4, "war-m-hodiny")
                 end
-                planBusy(big, false)
                 planBusy(small, false)
+                planBusy(big, false)
             end
             if no_dialog() and isReady(small) and isReady(big) then
                 for pom1 = 1, 10 do

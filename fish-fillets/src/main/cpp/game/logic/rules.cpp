@@ -148,7 +148,7 @@ void LevelRules::moveFish(Model::Fish which, Direction d) {
 }
 
 void LevelRules::moveFish(Direction d) {
-    if(!m_curFish->alive() || m_curFish->action() == Model::Action::busy || m_curFish->driven())
+    if(!m_curFish || !m_curFish->alive() || m_curFish->action() == Model::Action::busy || m_curFish->driven())
         return;
 
     if((m_curFish->orientation() == Model::Orientation::right && d.x < 0) ||
