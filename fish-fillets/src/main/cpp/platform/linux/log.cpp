@@ -1,6 +1,8 @@
 #include "log.h"
 #include <iostream>
 
+constexpr inline Log::Level minLevel = Log::Level::info; // TODO
+
 static auto prefix(Log::Level level) {
     switch(level) {
         case Log::Level::verbose:
@@ -19,5 +21,9 @@ static auto prefix(Log::Level level) {
 }
 
 void Log::log(Level level, const std::string& message) {
-    std::cerr << prefix(level) << ": " << message << '\n';
+    if((int)level < (int)minLevel)
+        return;
+    std::ostringstream oss;
+    oss << prefix(level) << ": " << message << '\n';
+    std::cerr << oss.str();
 }
