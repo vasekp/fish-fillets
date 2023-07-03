@@ -30,7 +30,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
 
     unsigned int num, den;
     snd_pcm_hw_params_get_rate_numden(hw_params, &num, &den);
-    Log::info("numden: ", num, " ", den);
+    Log::debug("numden: ", num, " ", den);
 
     if(int err = snd_pcm_hw_params_set_channels(alsa, hw_params, 1); err < 0)
         Log::fatal("snd_pcm_hw_params_set_channels failed: ", snd_strerror(err));
@@ -66,7 +66,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
         Log::fatal("snd_pcm_sw_params failed: ", snd_strerror(err));
 
     m_thread = std::thread([=, this]() {
-        Log::info("Audio thread started.");
+        Log::debug("Audio thread started.");
         auto buffer = std::make_unique<float[]>(bufSize);
 
         if(int err = snd_pcm_prepare(alsa); err < 0)
@@ -91,7 +91,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
                 Log::error("snd_pcm_writei failed: ", snd_strerror(err));
         }
 
-        Log::info("Audio thread exiting.");
+        Log::debug("Audio thread exiting.");
         snd_pcm_close(alsa);
     });
 }

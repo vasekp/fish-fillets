@@ -188,7 +188,7 @@ int Level::game_getCycles() {
 }
 
 void Level::game_setBonusLevel(bool value) {
-    Log::info("setBonusLevel ", value);
+    Log::debug("setBonusLevel ", value);
     m_rules->bonusSwitch(value);
 }
 

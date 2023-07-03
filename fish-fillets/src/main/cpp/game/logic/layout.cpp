@@ -119,7 +119,7 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
     if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
         return {};
-    Log::debug("path from ", unit->xy(), " to ", target, ":");
+    Log::verbose("path from ", unit->xy(), " to ", target, ":");
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
@@ -201,6 +201,6 @@ Found:
         ret.push_back(dirs[coords]);
     std::reverse(ret.begin(),  ret.end());
     for(auto dir : ret)
-        Log::debug(dir);
+        Log::verbose(dir);
     return ret;
 }

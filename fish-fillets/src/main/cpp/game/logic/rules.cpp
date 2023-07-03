@@ -326,7 +326,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
                     if(supp->alive()) {
-                        Log::debug("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
+                        Log::verbose("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
                         death(supp);
                     }
             } else {

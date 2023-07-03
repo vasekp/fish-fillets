@@ -172,7 +172,7 @@ void Level::notifyRound() {
 }
 
 void Level::notifyFish(Model::Fish fish) {
-    Log::info("Active fish: ", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
+    Log::debug("Active fish: ", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
     if(accepting())
         input().setFish(fish);
 }
