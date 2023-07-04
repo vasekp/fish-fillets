@@ -32,8 +32,8 @@ public:
     void registerMotion(Model* model, Direction d);
 
     void keyInput(Key key);
-    void enqueue(std::vector<Key>&& keys, bool fixed);
     void enqueue(const std::string& chars, bool fixed);
+    void enqueue(const std::vector<Direction>& chars, bool fixed);
     void enqueue(char c);
     void clearQueue();
     void update();

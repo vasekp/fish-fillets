@@ -265,6 +265,12 @@ void LevelRules::enqueue(const std::string& chars, bool fixed) {
         enqueue(c);
 }
 
+void LevelRules::enqueue(const std::vector<Direction>& dirs, bool fixed) {
+    m_queueFixed = fixed;
+    for(auto dir : dirs)
+        keyInput(Input::toKey(dir));
+}
+
 void LevelRules::registerMotion(Model *model, Direction d) {
     m_motions.emplace_back(model, d);
     updateDepGraph(model);

@@ -316,13 +316,10 @@ bool Level::scheduleGoTo(ICoords coords) {
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
         m_goto = true;
-        for(auto dir : path) {
-            schedule([&, dir]() {
-                m_rules->keyInput(Input::toKey(dir));
-                return true;
-            });
-        }
-        schedule([&]() {
+        m_rules->enqueue(path, false);
+        m_tickSchedule.emplace_back([&]() {
+            if(!m_rules->ready())
+                return false;
             m_goto = false;
             return true;
         });
