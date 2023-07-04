@@ -43,6 +43,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("model_talk", lua::wrap<&Level::model_talk>);
     m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
     m_script.registerFn("model_equals", lua::wrap<&Level::model_equals>);
+    m_script.registerFn("model_goto", lua::wrap<&Level::model_goto>);
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
     m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);
@@ -60,6 +61,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
     m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
+    m_script.registerFn("level_action_showMoves", lua::wrap<&Level::level_action_showMoves>);
     m_script.registerFn("level_save", lua::wrap<&Level::level_save>);
     m_script.registerFn("level_load", lua::wrap<&Level::level_load>);
 
@@ -99,11 +101,11 @@ bool Level::level_isSolved() {
 }
 
 void Level::level_planShow(LuaCallback function) {
-    Log::warn("level_planShow");
+    //Log::warn("level_planShow");
 }
 
 bool Level::level_isShowing() {
-    return false;
+    return inDemo();
 }
 
 bool Level::level_action_move(const std::string& move) {
@@ -115,6 +117,12 @@ bool Level::level_action_move(const std::string& move) {
 bool Level::level_action_restart() {
     restart(true);
     return true;
+}
+
+void Level::level_action_showMoves(std::string moves) {
+    Log::debug("showMoves");
+    m_tickSchedule.emplace_back([&, moves] { m_rules->enqueue(moves, true); return true; });
+    m_tickSchedule.emplace_back([&] { Log::debug("ready: ", m_rules->ready()); return m_rules->ready(); });
 }
 
 bool Level::level_action_save() {
@@ -391,6 +399,11 @@ bool Level::model_equals(int index, int x, int y) {
         return model->shape().covers(ICoords{x, y} - model->xy());
     } else
         return layout().modelAt({x, y}) == nullptr;
+}
+
+void Level::model_goto(int index, int x, int y) {
+    Log::debug("model_goto");
+    scheduleGoTo(layout().getModel(index), ICoords{x, y});
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {

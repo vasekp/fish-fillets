@@ -276,9 +276,14 @@ std::unique_ptr<IFile> Level::solveFile() const {
 }
 
 bool Level::scheduleGoTo(ICoords coords) {
-    auto* unit = rules().activeFish_model();
-    if(!m_rules->isFree(unit))
+    return scheduleGoTo(rules().activeFish_model(), coords);
+}
+
+bool Level::scheduleGoTo(Model* unit, ICoords coords) {
+    if(!m_rules->isFree(unit)) {
+        Log::debug("GoTo rejected, model not free.");
         return false;
+    }
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
         m_goto = true;

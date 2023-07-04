@@ -1,7 +1,7 @@
 #include "log.h"
 #include <iostream>
 
-constexpr inline Log::Level minLevel = Log::Level::info; // TODO
+constexpr inline Log::Level minLevel = Log::Level::debug; // TODO
 
 static auto prefix(Log::Level level) {
     switch(level) {

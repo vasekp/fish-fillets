@@ -57,20 +57,20 @@ XXXXXXXX
 addItemAnim(kufr, "images/"..codename.."/kufr_00.png")
 -- extsize=10; first="kufr0.BMP"
 
-small = addModel("fish_small", 2, 4,
+small = addModel("fish_small", 27, 23,
 [[
 XXX
 ]])
-addFishAnim(small, LOOK_RIGHT, "images/fishes/small")
+addFishAnim(small, LOOK_LEFT, "images/fishes/small")
 
-big = addModel("fish_big", 3, 6,
+big = addModel("fish_big", 27, 21,
 [[
 XXXX
 XXXX
 ]])
-addFishAnim(big, LOOK_RIGHT, "images/fishes/big")
+addFishAnim(big, LOOK_LEFT, "images/fishes/big")
 
-ocel = addModel("item_heavy", 28, 18,
+ocel = addModel("item_heavy", 28, 15,
 [[
 X.
 X.
