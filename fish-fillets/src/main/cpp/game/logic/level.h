@@ -25,7 +25,6 @@ class Level : public ScriptReferrer {
     bool m_roundFlag;
 
     std::deque<Callback> m_tickSchedule;
-    std::deque<Callback> m_moveSchedule;
 
     struct Delayed {
         int countdown;
@@ -42,7 +41,6 @@ class Level : public ScriptReferrer {
 
     enum class BusyReason {
         loading,
-        schedule,
         slideshow,
         demo,
         replay,
@@ -65,7 +63,7 @@ public:
     LevelInput& input();
 
     void init();
-    void reinit(bool keepSchedule = false);
+    void reinit(bool keepSchedule = false); // TODO rename parameter
     void update(float dt);
     void tick();
     void save(bool force = false);
@@ -80,11 +78,8 @@ public:
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     bool loading() const;
-    void schedule(Callback&& action, bool front = false); // TODO remove
-    void scheduleBlocking(Callback&& action, bool front = false); // TODO remove
     bool scheduleGoTo(ICoords coords);
-    bool runScheduled(); // TODO
-    void runScheduledAll(); // TODO
+    void runScheduledAll(); // TODO rename
     void recordMove(char key);
     bool accepting() const;
     void skipBusy();
@@ -172,7 +167,6 @@ private:
 
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
-    void clearSchedule(); // TODO
     bool quitSlideshow();
 
     std::unique_ptr<IFile> saveFile() const;

@@ -99,11 +99,11 @@ bool Level::level_isSolved() {
 }
 
 void Level::level_planShow(LuaCallback function) {
-    scheduleBlocking(std::move(function));
+    Log::warn("level_planShow");
 }
 
 bool Level::level_isShowing() {
-    return isBusy(BusyReason::schedule);
+    return false;
 }
 
 bool Level::level_action_move(const std::string& move) {

@@ -293,7 +293,6 @@ void LevelRules::update() {
     m_motions.clear();
 
     if(steady()) {
-        m_level.runScheduled();
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();

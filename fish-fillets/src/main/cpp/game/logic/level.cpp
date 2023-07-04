@@ -119,33 +119,8 @@ void Level::skipGoTo(bool finish) {
     if(finish)
         runScheduledAll();
     else
-        clearSchedule();
+        m_rules->clearQueue();
     m_goto = false;
-}
-
-void Level::schedule(Callback&& action, bool front) {
-    if(front)
-        m_moveSchedule.push_front(std::move(action));
-    else
-        m_moveSchedule.push_back(std::move(action));
-}
-
-void Level::scheduleBlocking(Callback&& action, bool front) {
-    schedule(std::move(action), front);
-    setBusy(BusyReason::schedule);
-}
-
-bool Level::runScheduled() {
-    if(!m_moveSchedule.empty()) {
-        bool ret = m_moveSchedule.front()();
-        if(ret) {
-            m_moveSchedule.pop_front();
-            if(m_moveSchedule.empty())
-                setBusy(BusyReason::schedule, false);
-        }
-        return ret;
-    } else
-        return false;
 }
 
 void Level::runScheduledAll() {
@@ -156,11 +131,6 @@ void Level::runScheduledAll() {
         layout().animate(0.f, LevelLayout::speed_instant);
         rules().update();
     }
-}
-
-void Level::clearSchedule() {
-    m_moveSchedule.clear();
-    setBusy(BusyReason::schedule, false);
 }
 
 void Level::recordMove(char key) {
@@ -178,8 +148,6 @@ void Level::notifyFish(Model::Fish fish) {
 }
 
 void Level::notifyDeath() {
-    if(!inDemo())
-        clearSchedule();
     input().setSavePossible(false);
 }
 
@@ -287,10 +255,8 @@ void Level::reinit(bool keepSchedule) {
     setBusy(BusyReason::loading, false);
     setBusy(BusyReason::poster, false);
     m_goto = false;
-    if(!keepSchedule) {
+    if(!keepSchedule)
         setBusy(BusyReason::demo, false);
-        clearSchedule();
-    }
 }
 
 bool Level::savePossible() const {
