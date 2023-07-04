@@ -80,11 +80,11 @@ public:
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     bool loading() const;
-    void schedule(Callback&& action, bool front = false);
-    void scheduleBlocking(Callback&& action, bool front = false);
+    void schedule(Callback&& action, bool front = false); // TODO remove
+    void scheduleBlocking(Callback&& action, bool front = false); // TODO remove
     bool scheduleGoTo(ICoords coords);
-    bool runScheduled();
-    void runScheduledAll();
+    bool runScheduled(); // TODO
+    void runScheduledAll(); // TODO
     void recordMove(char key);
     bool accepting() const;
     void skipBusy();
@@ -111,9 +111,9 @@ private:
     int level_getDepth() const;
     bool level_isNewRound() const;
     bool level_isSolved();
-    void level_planShow(LuaCallback function);
-    bool level_isShowing();
-    bool level_action_move(const std::string& move);
+    void level_planShow(LuaCallback function); // TODO remove
+    bool level_isShowing(); // TODO remove
+    bool level_action_move(const std::string& move); // TODO model:goto
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
@@ -160,7 +160,7 @@ private:
     bool model_isTalking(int index);
     void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
-    bool model_equals(int index, int x, int y);
+    bool model_equals(int index, int x, int y); // TODO remove
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);
@@ -172,7 +172,7 @@ private:
 
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
-    void clearSchedule();
+    void clearSchedule(); // TODO
     bool quitSlideshow();
 
     std::unique_ptr<IFile> saveFile() const;

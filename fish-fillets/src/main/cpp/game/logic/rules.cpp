@@ -348,10 +348,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         if(depth.first >= 0 && depth.second < 0) {
             model->driven() = true;
             m_keyQueue.clear();
-            m_level.scheduleBlocking([d, model]() {
-                model->displace(d);
-                return true;
-            }, true);
+            model->displace(d);
         }
         if(depth.second >= 0 || (m_bonusExit && model->intersects(m_bonusExit))) {
             std::erase(m_goals, model);
