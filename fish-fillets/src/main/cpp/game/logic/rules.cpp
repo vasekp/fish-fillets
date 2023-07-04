@@ -271,7 +271,11 @@ void LevelRules::registerMotion(Model *model, Direction d) {
 }
 
 bool LevelRules::steady() {
-    return std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); });
+    return std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); }) && !m_level.transitioning();
+}
+
+bool LevelRules::ready() {
+    return steady() && m_keyQueue.empty();
 }
 
 void LevelRules::update() {
@@ -282,8 +286,7 @@ void LevelRules::update() {
             evalMotion(model, d);
     m_motions.clear();
 
-    bool ready = steady() && !m_level.transitioning();
-    if(ready) {
+    if(steady()) {
         m_level.runScheduled();
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());

@@ -37,7 +37,7 @@ public:
     void enqueue(char c);
     void clearQueue();
     void update();
-    bool steady();
+    bool ready();
 
     bool switchFish(Model* which = nullptr);
     Model::Fish activeFish() const;
@@ -67,6 +67,7 @@ private:
     void setFish(Model::Fish fish);
     void setFish(Model* which);
     char dirToChar(Direction d);
+    bool steady();
 
     constexpr static int framesTurn = 3; // bound to the animation
     constexpr static int framesActivate = 4;

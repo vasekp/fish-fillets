@@ -149,7 +149,7 @@ bool Level::runScheduled() {
 }
 
 void Level::runScheduledAll() {
-    while(!m_moveSchedule.empty()) {
+    while(!m_rules->ready()) {
         for(auto& transition : m_transitions)
             transition.callback();
         m_transitions.clear();

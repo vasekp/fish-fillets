@@ -136,7 +136,7 @@ bool Level::level_load(const std::string& text_moves) {
     setBusy(BusyReason::loading);
     m_rules->enqueue(text_moves, true);
     m_tickSchedule.emplace_back([&] {
-        if(!m_rules->steady())
+        if(!m_rules->ready())
             return false;
         m_script.doString("script_loadState()");
         setBusy(BusyReason::loading, false);
