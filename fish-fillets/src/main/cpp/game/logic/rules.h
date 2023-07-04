@@ -21,6 +21,7 @@ class LevelRules {
     std::vector<Model*> m_goals;
 
     std::deque<Key> m_keyQueue;
+    bool m_queueFixed;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
     std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
@@ -31,8 +32,12 @@ public:
     void registerMotion(Model* model, Direction d);
 
     void keyInput(Key key);
-    void keyInput_load(char c);
+    void enqueue(std::vector<Key>&& keys, bool fixed);
+    void enqueue(const std::string& chars, bool fixed);
+    void enqueue(char c);
+    void clearQueue();
     void update();
+    bool steady();
 
     bool switchFish(Model* which = nullptr);
     Model::Fish activeFish() const;
@@ -43,7 +48,7 @@ public:
     bool isFree(Model*) const;
     bool isVintage() const { return m_vintage; }
 
-    void bonusSwitch(bool value, bool keepQueue = false);
+    void bonusSwitch(bool value);
 
 private:
     void processKey(Key key);

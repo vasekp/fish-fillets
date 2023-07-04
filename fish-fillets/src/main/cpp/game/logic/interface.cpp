@@ -108,7 +108,7 @@ bool Level::level_isShowing() {
 
 bool Level::level_action_move(const std::string& move) {
     assert(move.length() == 1);
-    rules().keyInput_load(move[0]);
+    rules().enqueue(move[0]);
     return true;
 }
 
@@ -134,18 +134,13 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     setBusy(BusyReason::loading);
-    std::vector<Callback> loadMoves;
-    for(const auto c : text_moves)
-        loadMoves.emplace_back([&,c]() {
-            m_rules->keyInput_load(c);
-            return true;
-        });
-    loadMoves.emplace_back([&] {
+    m_rules->enqueue(text_moves, true);
+    m_tickSchedule.emplace_back([&] {
+        if(!m_rules->steady())
+            return false;
         m_script.doString("script_loadState()");
         setBusy(BusyReason::loading, false);
         return true; });
-    m_moveSchedule.insert(m_moveSchedule.begin(), std::make_move_iterator(loadMoves.begin()), std::make_move_iterator(loadMoves.end()));
-    setBusy(BusyReason::schedule);
     return true;
 }
 

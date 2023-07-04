@@ -9,7 +9,8 @@ LevelRules::LevelRules(Level &level, LevelLayout &layout) :
     m_curFish(nullptr),
     m_doomed(false),
     m_vintage(false),
-    m_bonusExit(nullptr)
+    m_bonusExit(nullptr),
+    m_queueFixed(false)
 {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
@@ -58,11 +59,20 @@ Model* LevelRules::activeFish_model() const {
 
 void LevelRules::keyInput(Key key) {
     if(key == Key::space) {
+        if(m_queueFixed) {
+            Log::error("ignoring space in fixed input queue");
+            return;
+        }
         m_keyQueue.clear();
         if(m_level.inGoTo())
             m_level.skipGoTo(false);
     }
     m_keyQueue.push_back(key);
+}
+
+void LevelRules::clearQueue() {
+    if(!m_queueFixed)
+        m_keyQueue.clear();
 }
 
 void LevelRules::processKey(Key key) {
@@ -125,7 +135,7 @@ bool LevelRules::switchFish(Model* which) {
     return true;
 }
 
-void LevelRules::bonusSwitch(bool value, bool keepQueue) {
+void LevelRules::bonusSwitch(bool value) {
     std::for_each(m_layout.models().begin(), m_layout.models().end(), [&, value](auto* model) {
             if(auto type = model->type(); type == Model::Type::bonus_box || type == Model::Type::bonus_exit) {
                 model->bonusSwitch(value);
@@ -137,8 +147,7 @@ void LevelRules::bonusSwitch(bool value, bool keepQueue) {
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model->type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model->type() == type; });
     setFish(Model::Fish::small);
-    if(!keepQueue)
-        m_keyQueue.clear();
+    clearQueue();
     m_vintage = value;
 }
 
@@ -238,10 +247,10 @@ char LevelRules::dirToChar(Direction d) {
     Log::fatal("Invalid direction passed to dirToChar");
 }
 
-void LevelRules::keyInput_load(char c) {
+void LevelRules::enqueue(char c) {
     for(const auto& entry : m_vintage ? dirChars_normal : dirChars_vintage)
         if(c == entry.first)
-            bonusSwitch(!m_vintage, true);
+            bonusSwitch(!m_vintage);
     for(const auto& [ch, key] : m_vintage ? dirChars_vintage : dirChars_normal)
         if(c == ch) {
             keyInput(key);
@@ -250,9 +259,19 @@ void LevelRules::keyInput_load(char c) {
     Log::fatal("Invalid direction passed to dirToChar");
 }
 
+void LevelRules::enqueue(const std::string& chars, bool fixed) {
+    m_queueFixed = fixed;
+    for(char c : chars)
+        enqueue(c);
+}
+
 void LevelRules::registerMotion(Model *model, Direction d) {
     m_motions.emplace_back(model, d);
     updateDepGraph(model);
+}
+
+bool LevelRules::steady() {
+    return std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); });
 }
 
 void LevelRules::update() {
@@ -263,14 +282,14 @@ void LevelRules::update() {
             evalMotion(model, d);
     m_motions.clear();
 
-    bool ready = std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); })
-            && !m_level.transitioning();
-
+    bool ready = steady() && !m_level.transitioning();
     if(ready) {
         m_level.runScheduled();
         if(!m_keyQueue.empty()) {
             processKey(m_keyQueue.front());
             m_keyQueue.pop_front();
+            if(m_keyQueue.empty())
+                m_queueFixed = false;
         } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting() && !m_vintage)
             processKey(key);
     }
@@ -286,7 +305,7 @@ void LevelRules::evalFalls() {
         if (model->hidden())
             continue;
         if (model->movable() && m_support[model].none()) {
-            m_keyQueue.clear();
+            clearQueue();
             if(model->movingDir() != Direction::down)
                 m_level.notifyRound();
             model->displace(Direction::down);
@@ -346,8 +365,8 @@ void LevelRules::evalMotion(Model* model, Direction d) {
         if((model->alive() && depth.first == 0) || (!model->alive() && depth.second == 0))
             m_level.notifyEscape(model);
         if(depth.first >= 0 && depth.second < 0) {
+            clearQueue();
             model->driven() = true;
-            m_keyQueue.clear();
             model->displace(d);
         }
         if(depth.second >= 0 || (m_bonusExit && model->intersects(m_bonusExit))) {
@@ -369,6 +388,7 @@ void LevelRules::death(Model* unit) {
     m_level.screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     unit->die();
     updateDepGraph(unit);
+    // assert !m_queueFixed
     m_keyQueue.clear();
     m_level.killModelSound(unit);
     m_level.killDialogs();
