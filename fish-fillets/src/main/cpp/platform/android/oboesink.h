@@ -34,7 +34,7 @@ public:
 private:
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override {
         if(error == oboe::Result::ErrorDisconnected) {
-            Log::info("restarting Oboe stream");
+            Log::info<Log::audio>("restarting Oboe stream");
             open();
             if(m_running)
                 start();

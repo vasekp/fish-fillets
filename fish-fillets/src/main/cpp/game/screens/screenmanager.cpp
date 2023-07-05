@@ -28,7 +28,7 @@ ScreenType& ScreenManager::open(Ts&&... ts) {
         useNext();
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
-    Log::debug("ScreenManager::open duration = ", diff.count(), " s");
+    Log::debug<Log::lifecycle>("ScreenManager::open duration = ", diff.count(), " s");
     return screen;
 }
 

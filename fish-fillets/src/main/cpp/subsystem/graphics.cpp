@@ -3,14 +3,14 @@
 #include "game/screens/screenmanager.h"
 
 void Graphics::activate() {
-    Log::debug("graphics: activate");
+    Log::debug<Log::graphics>("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance);
     for(auto* image : m_images)
         image->render();
 }
 
 void Graphics::shutdown() {
-    Log::debug("graphics: shutdown");
+    Log::debug<Log::graphics>("graphics: shutdown");
     m_system.reset();
 }
 
@@ -28,7 +28,7 @@ void Graphics::setWindowShift(FCoords shift) {
 }
 
 void Graphics::setViewport(FCoords origin, FCoords size) {
-    Log::debug("viewport origin ", origin, " size ", size);
+    Log::debug<Log::graphics>("viewport origin ", origin, " size ", size);
     m_system->display().setViewport(origin, size);
     recalc();
     m_system->resizeBuffers();

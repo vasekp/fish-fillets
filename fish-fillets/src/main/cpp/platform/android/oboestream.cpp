@@ -1,7 +1,7 @@
 #include "oboestream.h"
 
 OboeStream::OboeStream(Audio& iface, oboe::AudioStreamErrorCallback* callback) : m_audio(iface), m_stream() {
-    Log::debug("Oboe stream: construct");
+    Log::debug<Log::audio>("Oboe stream: construct");
     oboe::AudioStreamBuilder builder;
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setFormatConversionAllowed(true);
@@ -19,7 +19,7 @@ OboeStream::OboeStream(Audio& iface, oboe::AudioStreamErrorCallback* callback) :
 }
 
 OboeStream::~OboeStream() {
-    Log::debug("Oboe stream: destruct");
+    Log::debug<Log::audio>("Oboe stream: destruct");
     m_stream->stop();
     m_stream->close();
 }

@@ -22,10 +22,10 @@ void IntroScreen::fill_buffers() {
     while(m_aBuffer->total() < (size_t)((timeAlive() + 1) * 22050)) {
         std::vector<float> aData;
         if(!(m_vorbis >> aData)) {
-            Log::debug("Audio EOS");
+            Log::debug<Log::video>("Audio EOS");
             break;
         }
-        Log::debug("Audio data: ", aData.size(), " frames");
+        Log::verbose<Log::video>("Audio data: ", aData.size(), " frames");
         m_aBuffer->enqueue(std::move(aData));
     }
 
@@ -40,11 +40,11 @@ void IntroScreen::fill_buffers() {
         m_vBuffer.emplace_back();
         auto& frame = m_vBuffer.back();
         if(!(m_theora >> frame)) {
-            Log::debug("Video EOS");
+            Log::debug<Log::video>("Video EOS");
             m_vBuffer.pop_back();
             break;
         }
-        Log::debug("Video frame @ ", frame.time);
+        Log::verbose<Log::video>("Video frame @ ", frame.time);
     }
 }
 
@@ -58,11 +58,11 @@ void IntroScreen::own_draw(const DrawTarget& target, float dt) {
     while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeAlive())
         m_vBuffer.pop_front();
     if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeAlive() && m_theora.done()) {
-        Log::info("Intro ended.");
+        Log::debug<Log::video>("Intro ended.");
         m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     }
     auto& frame = m_vBuffer.front();
-    Log::debug("drawing frame ", frame.time, " @ ", timeAlive());
+    Log::verbose<Log::video>("drawing frame ", frame.time, " @ ", timeAlive());
     // FIXME: Condiser upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
     // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
     // exist in the targeted OpenGL ES version.

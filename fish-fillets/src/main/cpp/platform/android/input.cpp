@@ -114,7 +114,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     return false;
             }
         } else if(pointerCount == 2 && action == AMOTION_EVENT_ACTION_POINTER_DOWN) {
-            Log::debug("secondary: ", AMotionEvent_getPointerId(event, 1));
+            Log::debug<Log::input>("secondary: ", AMotionEvent_getPointerId(event, 1));
             if(!m_pointerFollow)
                 return false;
             auto id0 = AMotionEvent_getPointerId(event, 0);

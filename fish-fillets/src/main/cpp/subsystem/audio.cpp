@@ -31,7 +31,7 @@ Audio::Audio(Instance& instance) : m_instance(instance) {
 }
 
 void Audio::addSource(const AudioSourceBase::Ref& source) {
-    Log::debug("adding audio source ", source.get(), " (", source->name(), ")");
+    Log::debug<Log::audio>("adding audio source ", source.get(), " (", source->name(), ")");
     auto sources = m_sources.local();
     sources->push_back(source);
     sources.checkDialogs();
@@ -41,9 +41,9 @@ void Audio::removeSource(const AudioSourceBase::Ref& source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
-        Log::debug("removeSource: did not match");
+        Log::debug<Log::audio>("removeSource: did not match");
     else {
-        Log::debug("removing audio source ", source.get(), " (", source->name(), ")");
+        Log::debug<Log::audio>("removing audio source ", source.get(), " (", source->name(), ")");
         sources->erase(it);
     }
     sources.checkDialogs();
@@ -51,7 +51,8 @@ void Audio::removeSource(const AudioSourceBase::Ref& source) {
 
 void Audio::clear() {
     auto sources = m_sources.local();
-    Log::debug("clear: ", sources->size(), " -> 0");
+    if(sources->size() > 0)
+        Log::debug<Log::audio>("clear: ", sources->size(), " -> 0");
     sources->clear();
     sources.checkDialogs();
 }
@@ -99,7 +100,7 @@ void Audio::mix(float* output, std::size_t numSamples) {
         auto newEnd = std::remove_if(sources.begin(), sources.end(),
                 [](auto& source) { return source->done(); });
         if(newEnd != sources.end()) {
-            Log::debug("AudioSink: removing ", std::distance(newEnd, sources.end()), " sources");
+            Log::debug<Log::audio>("AudioSink: removing ", std::distance(newEnd, sources.end()), " sources");
             sources.erase(newEnd, sources.end());
         }
     }

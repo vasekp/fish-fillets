@@ -120,9 +120,9 @@ bool Level::level_action_restart() {
 }
 
 void Level::level_action_showMoves(std::string moves) {
-    Log::debug("showMoves");
+    Log::verbose<Log::lua>("showMoves");
     m_tickSchedule.emplace_back([&, moves] { m_rules->enqueue(moves, true); return true; });
-    m_tickSchedule.emplace_back([&] { Log::debug("ready: ", m_rules->ready()); return m_rules->ready(); });
+    m_tickSchedule.emplace_back([&] { Log::verbose<Log::lua>("ready: ", m_rules->ready()); return m_rules->ready(); });
 }
 
 bool Level::level_action_save() {
@@ -191,7 +191,7 @@ int Level::game_getCycles() {
 }
 
 void Level::game_setBonusLevel(bool value) {
-    Log::debug("setBonusLevel ", value);
+    Log::verbose<Log::lua>("setBonusLevel ", value);
     m_rules->bonusSwitch(value);
 }
 
@@ -362,7 +362,7 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         return;
     }
     auto data = m_screen.addSound(name, dialog.soundFile, true);
-    Log::debug("Audio type ", type.value_or(0));
+    Log::verbose<Log::audio>("Audio type ", type.value_or(0));
     auto source = AudioSource::create(data, types[type.value_or(0)]);
     if(loops.value_or(0) != 0) {
         assert(loops.value() == -1);
@@ -402,7 +402,7 @@ bool Level::model_equals(int index, int x, int y) {
 }
 
 void Level::model_goto(int index, int x, int y) {
-    Log::debug("model_goto");
+    Log::verbose<Log::lua>("model_goto");
     scheduleGoTo(layout().getModel(index), ICoords{x, y});
 }
 
@@ -474,9 +474,9 @@ void Level::dialog_add(const std::string& name, const std::string& color, std::m
     else if(std::string fnShared = "sound/share/" + name + ".ogg"; m_instance.files().system(fnShared)->exists())
         soundFile = std::move(fnShared);
     if(!soundFile.empty())
-        Log::debug("Using sound file ", soundFile, " for dialog ID ", name);
+        Log::verbose<Log::audio>("Using sound file ", soundFile, " for dialog ID ", name);
     else
-        Log::debug("Sound for dialog ID ", name, " not found");
+        Log::verbose<Log::audio>("Sound for dialog ID ", name, " not found");
     m_dialogs.insert({name, {soundFile, color, std::move(subtitles)}});
 }
 

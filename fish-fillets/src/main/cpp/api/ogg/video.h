@@ -99,7 +99,7 @@ namespace ogg {
             m_decoder(init()),
             m_done(false)
         {
-            Log::debug("Audio: ", m_info.channels, " channels, ", m_info.rate, " Hz");
+            Log::debug<Log::video>("Audio: ", m_info.channels, " channels, ", m_info.rate, " Hz");
         }
 
         const vorbis_info& info() {
@@ -165,7 +165,7 @@ namespace ogg {
                 return fmt == TH_PF_420 ? "4:2:0" : fmt == TH_PF_422 ? "4:2:2" : fmt == TH_PF_444 ? "4:4:4" : "unknown sampling";
             };
             m_decoder.set(th_decode_alloc(&m_info, m_setup));
-            Log::debug("Video: ", m_info.pic_width, 'x', m_info.pic_height, ' ',
+            Log::debug<Log::video>("Video: ", m_info.pic_width, 'x', m_info.pic_height, ' ',
                     (float)m_info.fps_numerator / m_info.fps_denominator, "fps, ",
                     fmtString(m_info.pixel_fmt));
         }
@@ -198,7 +198,7 @@ namespace ogg {
             th_decode_ctl(m_decoder, TH_DECCTL_SET_GRANPOS, &packet.granulepos, sizeof(packet.granulepos));
             if(ogg_int64_t granulepos; th_decode_packetin(m_decoder, &packet, &granulepos) == 0) {
                 auto time = th_granule_time(m_decoder, granulepos);
-                Log::debug("video packet in @ ", time, " granulepos ", granulepos >> 6, "+", granulepos & 63);
+                Log::verbose<Log::video>("video packet in @ ", time, " granulepos ", granulepos >> 6, "+", granulepos & 63);
                 th_ycbcr_buffer ycbcr;
                 th_decode_ycbcr_out(m_decoder, ycbcr);
                 frame.time = time;

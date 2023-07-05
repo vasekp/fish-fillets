@@ -19,7 +19,7 @@ Level::~Level() {
     if(!inReplay()) {
         auto time = m_instance.persist().get("playtime", 0);
         time += (int)m_screen.timeAlive();
-        Log::info("playtime ", time);
+        Log::info<Log::lifecycle>("playtime ", time);
         m_instance.persist().set("playtime", time);
     }
 }
@@ -30,7 +30,7 @@ LevelInput& Level::input() {
 
 void Level::init() {
     m_attempt++;
-    Log::info("Level ", m_record.codename, ", attempt ", m_attempt);
+    Log::info<Log::lifecycle>("Level ", m_record.codename, ", attempt ", m_attempt);
     m_script.loadFile(m_record.script_filename);
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
@@ -142,7 +142,7 @@ void Level::notifyRound() {
 }
 
 void Level::notifyFish(Model::Fish fish) {
-    Log::debug("Active fish: ", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
+    Log::debug<Log::motion>("Active fish: ", fish == Model::Fish::small ? "small" : fish == Model::Fish::big ? "big" : "none");
     if(accepting())
         input().setFish(fish);
 }
@@ -232,7 +232,7 @@ void Level::restart(bool keepSchedule) {
 
 void Level::restartWhenEmpty() {
     m_tickSchedule.emplace_back([&]() {
-        Log::debug("size: ", m_tickSchedule.size());
+        Log::debug<Log::lua>("restartWhenEmpty waiting callbacks: ", m_tickSchedule.size());
         if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
             m_screen.subs().clear();
             m_screen.killSounds();
@@ -281,7 +281,7 @@ bool Level::scheduleGoTo(ICoords coords) {
 
 bool Level::scheduleGoTo(Model* unit, ICoords coords) {
     if(!m_rules->isFree(unit)) {
-        Log::debug("GoTo rejected, model not free.");
+        Log::debug<Log::gotos>("GoTo rejected, model not free.");
         return false;
     }
     auto path = layout().findPath(unit, coords);

@@ -60,7 +60,7 @@ namespace ogl {
             eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
             eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
 
-            Log::debug("display: opened ", (void*)m_display, " ", ICoords{width, height});
+            Log::debug<Log::graphics>("display: opened ", (void*)m_display, " ", ICoords{width, height});
         }
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
@@ -84,7 +84,7 @@ namespace ogl {
         eglDestroySurface(m_display, m_surface);
         eglTerminate(m_display);
 
-        Log::debug("display: closed ", (void*)m_display);
+        Log::debug<Log::graphics>("display: closed ", (void*)m_display);
     }
 
     void Display::setViewport(FCoords origin, FCoords size) {

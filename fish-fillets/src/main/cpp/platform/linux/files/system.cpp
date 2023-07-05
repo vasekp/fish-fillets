@@ -9,7 +9,7 @@ SystemFile::SystemFile(std::string path, const std::filesystem::path& basePath) 
     auto overrideRel = "override" / m_relPath;
     auto overrideFull = basePath / overrideRel;
     if(std::filesystem::exists(overrideFull)) {
-        Log::debug("override ", m_relPath, " -> ", overrideRel);
+        Log::debug<Log::platform>("override ", m_relPath, " -> ", overrideRel);
         m_fullPath = overrideFull;
     } else
         m_fullPath = basePath / m_relPath;

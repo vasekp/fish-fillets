@@ -20,7 +20,7 @@ Model* LevelLayout::getModel(int index) const {
     if(m_virtModels.contains(index))
         return m_virtModels.at(index).get();
     m_virtModels.emplace(index, std::make_unique<Model>(index, "virtual", 0, 0, ""));
-    Log::debug("virtual model ", index);
+    Log::verbose<Log::lua>("virtual model ", index);
     return m_virtModels.at(index).get();
 }
 
@@ -161,7 +161,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
                 Log::verbose<Log::gotos>(target - ICoords{dx, dy}, " occupied");
             else
                 goto Found;
-    Log::debug("no suitable final position found");
+    Log::verbose<Log::gotos>("no suitable final position found");
     return {};
 Found:
     /* Now's the time to start our breadth-first search. */
@@ -192,7 +192,7 @@ Found:
             queue.emplace_back(coords + nextDir, nextDir);
     }
     if(!dirs.contains(end)) {
-        Log::debug("path not found");
+        Log::verbose<Log::gotos>("path not found");
         return {};
     }
     /* Reconstruct path */

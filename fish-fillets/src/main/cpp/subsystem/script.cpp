@@ -41,5 +41,5 @@ bool Script::file_exists(const std::string& filename) {
 }
 
 void Script::sendMsg(const std::string& target, const std::string& text) {
-    Log::debug("sendMsg ", target, " -> ", text, " IGNORED");
+    Log::debug<Log::lua>("sendMsg ", target, " -> ", text, " IGNORED");
 }

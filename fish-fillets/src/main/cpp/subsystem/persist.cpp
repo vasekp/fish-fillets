@@ -54,7 +54,7 @@ void Persist::save() {
             oss << "options_setInt(\"" << key << "\", " << std::get<int>(value) << ")\n";
     }
     m_instance.files().user(filename)->write(oss.str());
-    Log::info("settings saved");
+    Log::info<Log::persist>("settings saved");
     m_changed = false;
 }
 
@@ -62,7 +62,7 @@ void Persist::worker() {
     assert(m_startstop == true);
     m_startstop = false;
     m_cond.notify_one();
-    Log::debug("settings thread started");
+    Log::debug<Log::persist>("settings thread started");
     std::unique_lock lock(m_mutex);
     while(true) {
         m_cond.wait_for(lock, interval);
@@ -71,5 +71,5 @@ void Persist::worker() {
         if(m_startstop)
             break;
     }
-    Log::debug("settings thread exiting");
+    Log::debug<Log::persist>("settings thread exiting");
 }

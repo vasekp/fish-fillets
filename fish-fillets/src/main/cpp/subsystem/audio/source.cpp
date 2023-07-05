@@ -23,7 +23,7 @@ void AudioSource::mixin(float *output, std::size_t numSamples, float refVolume) 
     for (auto i = 0u; i < countRead; i++)
         output[i] += volume * (*m_data)[m_sampleIndex++];
     if(m_loop && m_sampleIndex >= m_loopEnd) {
-        Log::debug("music loop");
+        Log::verbose<Log::audio>("music loop");
         m_sampleIndex = m_loopStart;
         mixin(output + countRead, numSamples - countRead, refVolume);
     }
@@ -75,7 +75,7 @@ void AudioSourceQueue::mixin(float *output, std::size_t numSamples, float refVol
             m_curIndex = 0;
             mixin(output + countRead, numSamples - countRead, refVolume);
         } else
-            Log::info("Audio data ended.");
+            Log::debug<Log::audio>("Audio data ended.");
     }
 }
 

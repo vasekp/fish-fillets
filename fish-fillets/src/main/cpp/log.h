@@ -21,14 +21,16 @@ public:
             log(Level::verbose, format(ts...));
     }
 
-    template<typename... Ts>
-    static void debug(const Ts& ... ts) {
-        log(Level::debug, format(ts...));
+    template<Level minLevel, typename... Ts>
+    static void debug([[maybe_unused]] const Ts& ... ts) {
+        if constexpr((int)minLevel <= (int)Level::debug)
+            log(Level::debug, format(ts...));
     }
 
-    template<typename... Ts>
-    static void info(const Ts& ... ts) {
-        log(Level::info, format(ts...));
+    template<Level minLevel, typename... Ts>
+    static void info([[maybe_unused]] const Ts& ... ts) {
+        if constexpr((int)minLevel <= (int)Level::info)
+            log(Level::info, format(ts...));
     }
 
     template<typename... Ts>
@@ -59,7 +61,7 @@ private:
     static void log(Level level, const std::string& message);
 
 public:
-    //static constexpr inline bool video_timing = true;
+    static constexpr inline Level video = Level::debug;
     static constexpr inline Level strings = Level::debug;
     static constexpr inline Level audio = Level::debug;
     static constexpr inline Level input = Level::debug;
@@ -67,6 +69,9 @@ public:
     static constexpr inline Level gotos = Level::debug;
     static constexpr inline Level lua = Level::debug;
     static constexpr inline Level graphics = Level::debug;
+    static constexpr inline Level lifecycle = Level::debug;
+    static constexpr inline Level platform = Level::debug;
+    static constexpr inline Level persist = Level::debug;
 };
 
 #endif

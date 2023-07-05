@@ -30,7 +30,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
 
     unsigned int num, den;
     snd_pcm_hw_params_get_rate_numden(hw_params, &num, &den);
-    Log::debug("numden: ", num, " ", den);
+    Log::debug<Log::audio>("numden: ", num, " ", den);
 
     if(int err = snd_pcm_hw_params_set_channels(alsa, hw_params, 1); err < 0)
         Log::fatal("snd_pcm_hw_params_set_channels failed: ", snd_strerror(err));
@@ -38,12 +38,12 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
     auto bufSize = bufSizeTarget;
     if(int err = snd_pcm_hw_params_set_buffer_size_near(alsa, hw_params, &bufSize); err < 0)
         Log::fatal("snd_pcm_hw_params_set_buffer_size_near failed: ", snd_strerror(err));
-    Log::debug("Alsa buffer size: ", bufSize);
+    Log::debug<Log::audio>("Alsa buffer size: ", bufSize);
 
     auto periodSize = bufSize / 2;
     if(int err = snd_pcm_hw_params_set_period_size_near(alsa, hw_params, &periodSize, 0); err < 0)
         Log::fatal("snd_pcm_hw_params_set_period_size_near failed: ", snd_strerror(err));
-    Log::debug("Alsa period size: ", periodSize);
+    Log::debug<Log::audio>("Alsa period size: ", periodSize);
 
     if(int err = snd_pcm_hw_params(alsa, hw_params); err < 0)
         Log::fatal("snd_pcm_hw_params failed: ", snd_strerror(err));
@@ -66,7 +66,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
         Log::fatal("snd_pcm_sw_params failed: ", snd_strerror(err));
 
     m_thread = std::thread([=, this]() {
-        Log::debug("Audio thread started.");
+        Log::debug<Log::audio>("Audio thread started.");
         auto buffer = std::make_unique<float[]>(bufSize);
 
         if(int err = snd_pcm_prepare(alsa); err < 0)
@@ -91,7 +91,7 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
                 Log::error("snd_pcm_writei failed: ", snd_strerror(err));
         }
 
-        Log::debug("Audio thread exiting.");
+        Log::debug<Log::audio>("Audio thread exiting.");
         snd_pcm_close(alsa);
     });
 }

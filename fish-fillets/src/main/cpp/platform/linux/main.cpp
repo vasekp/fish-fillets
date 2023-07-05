@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     instance.running = true;
 
     try {
-        Log::info("Main loop");
+        Log::info<Log::lifecycle>("Main loop");
         int lastWidth = 0, lastHeight = 0;
         while(instance.running) {
             while(XPending(dpy)) {
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
                         {
                             if(event.xconfigure.width == lastWidth && event.xconfigure.height == lastHeight)
                                 break;
-                            Log::debug("Resize: ", event.xconfigure.width, "×", event.xconfigure.height);
+                            Log::debug<Log::platform>("Resize: ", event.xconfigure.width, "×", event.xconfigure.height);
                             instance.graphics().setViewport({0, 0}, {event.xconfigure.width, event.xconfigure.height});
                             lastWidth = event.xconfigure.width;
                             lastHeight = event.xconfigure.height;
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
                         }
                     case ClientMessage:
                         if((Atom)event.xclient.data.l[0] == wmDeleteMessage) {
-                            Log::info("Quitting");
+                            Log::info<Log::lifecycle>("Quitting");
                             instance.running = false;
                         }
                         break;

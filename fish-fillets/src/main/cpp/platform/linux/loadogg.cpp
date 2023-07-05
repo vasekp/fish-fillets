@@ -89,7 +89,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
             }
         }
         numSamples = curSample;
-        Log::debug("loadOGG ", filename, ": decoded ", curSample, " frames");
+        Log::debug<Log::audio>("loadOGG ", filename, ": decoded ", curSample, " frames");
         ov_clear(&vf);
     }).detach();
 

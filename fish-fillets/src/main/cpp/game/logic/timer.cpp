@@ -39,11 +39,11 @@ void Timer::reset() {
 }
 
 void Timer::worker() {
-    Log::debug("timer thread started");
+    Log::debug<Log::lifecycle>("timer thread started");
     while(!m_stop.load(std::memory_order::relaxed)) {
         m_tick.store(true, std::memory_order::relaxed);
         std::this_thread::sleep_for(interval);
     }
     m_stop.store(false, std::memory_order::release);
-    Log::debug("timer thread exited");
+    Log::debug<Log::lifecycle>("timer thread exited");
 }

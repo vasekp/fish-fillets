@@ -31,7 +31,10 @@ void FTFont::setSizes(float fontSize, float outline) {
         Log::fatal("FT_Set_Char_Size failed");
     m_fontSize = fontSize;
     m_outline = outline;
-    Log::debug("fontSize ", m_fontSize, " outline ", m_outline);
+    Log::debug<Log::graphics>("fontSize ", m_fontSize, " outline ", m_outline);
+    Log::debug<Log::graphics>("EM ", m_face->size->metrics.y_ppem,
+            " asc ", from266(m_face->size->metrics.ascender),
+            " desc ", -from266(m_face->size->metrics.descender));
 }
 
 std::vector<std::string> FTFont::breakLines(const std::string& text, float width) {
@@ -74,7 +77,6 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
 ogl::Texture FTFont::renderText(const std::string& text) const {
     float asc = from266(m_face->size->metrics.ascender);
     float desc = -from266(m_face->size->metrics.descender);
-    Log::debug("EM ", m_face->size->metrics.y_ppem, " asc ", asc, " desc ", desc);
 
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter{};
     auto wtext = converter.from_bytes(text);
@@ -91,7 +93,7 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
 
     auto width = (int)(fwidth + 2.f * m_outline) + 2;
     auto height = (int)(asc + desc + 2.f * m_outline) + 2;
-    Log::debug("bitmap size ", width, "x", height);
+    Log::verbose<Log::graphics>("bitmap size ", width, "x", height);
     auto pixels = std::make_unique<std::array<std::uint8_t, 4>[]>(width * height);
     auto data = pixels.get();
 

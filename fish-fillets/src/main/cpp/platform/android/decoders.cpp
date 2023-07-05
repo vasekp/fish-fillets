@@ -12,7 +12,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
 namespace decoders {
     ogl::Texture png(Instance& instance, const std::string& filename0) {
         auto filename = dynamic_cast<SystemFile&>(*instance.files().system(filename0)).path();
-        Log::debug("loadPNG ", filename);
+        Log::debug<Log::graphics>("loadPNG ", filename);
         auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
         jstring jPath = jni->NewStringUTF(filename.c_str());
         jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
@@ -166,7 +166,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 }
         } while(!(extractorDone && codecDone));
         numSamples = curSample;
-        Log::debug("loadSound ", filename, ": decoded ", curSample, " frames");
+        Log::verbose<Log::audio>("loadSound ", filename, ": decoded ", curSample, " frames");
 
         AMediaFormat_delete(format);
         AMediaCodec_delete(codec);
