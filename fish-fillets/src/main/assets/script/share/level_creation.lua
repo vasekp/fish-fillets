@@ -121,6 +121,9 @@ function createObject(model_index)
     object.setBusy = function(self, busy)
         model_setBusy(self.index, busy)
     end
+    object.goTo = function(self, x, y)
+        return model_goto(self.index, x, y)
+    end
 
     return object
 end

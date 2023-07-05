@@ -119,7 +119,7 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
     if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
         return {};
-    Log::verbose<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
+    Log::debug<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
@@ -161,7 +161,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
                 Log::verbose<Log::gotos>(target - ICoords{dx, dy}, " occupied");
             else
                 goto Found;
-    Log::verbose<Log::gotos>("no suitable final position found");
+    Log::debug<Log::gotos>("no suitable final position found");
     return {};
 Found:
     /* Now's the time to start our breadth-first search. */
@@ -192,15 +192,14 @@ Found:
             queue.emplace_back(coords + nextDir, nextDir);
     }
     if(!dirs.contains(end)) {
-        Log::verbose<Log::gotos>("path not found");
+        Log::debug<Log::gotos>("path not found");
         return {};
     }
     /* Reconstruct path */
     std::vector<Direction> ret;
     for(auto coords = end; coords != start; coords -= dirs[coords])
         ret.push_back(dirs[coords]);
+    Log::debug<Log::gotos>("found (", ret.size(), " moves)");
     std::reverse(ret.begin(),  ret.end());
-    for(auto dir : ret)
-        Log::verbose<Log::gotos>(dir);
     return ret;
 }

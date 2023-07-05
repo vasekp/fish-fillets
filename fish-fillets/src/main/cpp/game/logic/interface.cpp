@@ -119,10 +119,10 @@ bool Level::level_action_restart() {
     return true;
 }
 
-void Level::level_action_showMoves(std::string moves) {
+bool Level::level_action_showMoves(std::string moves) {
     Log::verbose<Log::lua>("showMoves");
-    m_tickSchedule.emplace_back([&, moves] { m_rules->enqueue(moves, true); return true; });
-    m_tickSchedule.emplace_back([&] { Log::verbose<Log::lua>("ready: ", m_rules->ready()); return m_rules->ready(); });
+    m_rules->enqueue(moves, true);
+    return true;
 }
 
 bool Level::level_action_save() {
@@ -141,14 +141,8 @@ bool Level::level_save(const std::string& text_models) {
 }
 
 bool Level::level_load(const std::string& text_moves) {
-    setBusy(BusyReason::loading);
+    setBusy(BusyReason::loading); // unset in Level::tick()
     m_rules->enqueue(text_moves, true);
-    m_tickSchedule.emplace_back([&] {
-        if(!m_rules->ready())
-            return false;
-        m_script.doString("script_loadState()");
-        setBusy(BusyReason::loading, false);
-        return true; });
     return true;
 }
 
@@ -401,9 +395,18 @@ bool Level::model_equals(int index, int x, int y) {
         return layout().modelAt({x, y}) == nullptr;
 }
 
-void Level::model_goto(int index, int x, int y) {
+bool Level::model_goto(int index, int x, int y) {
+    if(!m_rules->ready())
+        return false;
     Log::verbose<Log::lua>("model_goto");
-    scheduleGoTo(layout().getModel(index), ICoords{x, y});
+    ICoords dest{x, y};
+    auto* model = layout().getModel(index);
+    m_rules->switchFish(model);
+    auto path = layout().findPath(model, dest);
+    if(path.empty())
+        Log::error("model_goto requested but path from ", model->xy(), " to ", dest, " not found");
+    m_rules->enqueue(path, true);
+    return true;
 }
 
 void Level::sound_addSound(const std::string& name, const std::string& filename) {
@@ -435,7 +438,8 @@ void Level::game_killPlan() {
 }
 
 void Level::killDialogs() {
-    m_tickSchedule.clear();
+    if(!inDemo())
+        m_tickSchedule.clear();
 }
 
 void Level::killDialogsHard() {

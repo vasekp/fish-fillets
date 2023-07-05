@@ -113,7 +113,7 @@ private:
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
-    void level_action_showMoves(std::string moves);
+    bool level_action_showMoves(std::string moves);
     bool level_save(const std::string& text_models);
     bool level_load(const std::string& text_moves);
     void demo_enter();
@@ -158,7 +158,7 @@ private:
     void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
     bool model_equals(int index, int x, int y); // TODO remove
-    void model_goto(int index, int x, int y);
+    bool model_goto(int index, int x, int y);
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);

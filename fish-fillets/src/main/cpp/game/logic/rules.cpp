@@ -126,7 +126,7 @@ bool LevelRules::switchFish(Model* which) {
     if(target->action() != Model::Action::base || !target->alive() || m_layout.borderDepth(target).first > 0 || target->hidden())
         return false;
     setFish(target);
-    if(!m_vintage) {
+    if(!m_vintage && !m_level.inDemo()) {
         m_curFish->action() = Model::Action::activate;
         m_level.transition(framesActivate, [unit = m_curFish]() {
             unit->action() = Model::Action::base;
@@ -197,7 +197,7 @@ void LevelRules::moveFish(Direction d) {
     }
     for(auto* model : obs)
         model->displace(d, true);
-    Log::verbose<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
+    Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
     m_level.recordMove(dirToChar(d));
     m_level.notifyRound();
@@ -396,8 +396,7 @@ void LevelRules::death(Model* unit) {
     m_level.screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     unit->die();
     updateDepGraph(unit);
-    // assert !m_queueFixed
-    m_keyQueue.clear();
+    clearQueue();
     m_level.killModelSound(unit);
     m_level.killDialogs();
     unit->anim().removeExtra();

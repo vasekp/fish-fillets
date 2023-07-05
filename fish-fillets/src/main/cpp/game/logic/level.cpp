@@ -56,9 +56,13 @@ void Level::tick() {
             transition.callback();
     }
     m_transitions.erase(std::remove_if(m_transitions.begin(), m_transitions.end(), [](const auto& transition) { return transition.countdown == 0; }), m_transitions.end());
+    if(isBusy(BusyReason::loading) && m_rules->ready()) {
+        m_script.doString("script_loadState()");
+        setBusy(BusyReason::loading, false);
+    }
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::slideshow))
         m_script.doString("script_update()");
-    if(!m_tickSchedule.empty()) {
+    if(!isBusy(BusyReason::loading) && !m_tickSchedule.empty()) {
         if(m_tickSchedule.front()())
             m_tickSchedule.pop_front();
     }
@@ -176,13 +180,20 @@ void Level::save(bool force) {
 void Level::load(bool keepSchedule) {
     if(loadPossible() || keepSchedule) {
         killDialogsHard();
-        m_tickSchedule.clear();
-        m_tickSchedule.emplace_back([&, contents = saveFile()->read(), keepSchedule]() {
-            reinit(keepSchedule);
+        auto contents = saveFile()->read();
+        if(keepSchedule) {
+            reinit(true);
             m_script.doString(contents);
             m_script.doString("script_load()");
-            return true;
-        });
+        } else {
+            m_tickSchedule.clear();
+            m_tickSchedule.emplace_back([&, contents]() {
+                reinit();
+                m_script.doString(contents);
+                m_script.doString("script_load()");
+                return true;
+            });
+        }
     }
 }
 
@@ -223,11 +234,15 @@ bool Level::inReplay() const {
 
 void Level::restart(bool keepSchedule) {
     killDialogsHard();
-    m_tickSchedule.clear();
-    m_tickSchedule.emplace_back([&, keepSchedule]() {
-        reinit(keepSchedule);
-        return true;
-    });
+    if(keepSchedule) {
+        reinit(true);
+    } else {
+        m_tickSchedule.clear(); // TODO potřebujeme tick?
+        m_tickSchedule.emplace_back([&, keepSchedule]() {
+            reinit(keepSchedule);
+            return true;
+        });
+    }
 }
 
 void Level::restartWhenEmpty() {
