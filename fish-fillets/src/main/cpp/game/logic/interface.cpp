@@ -56,10 +56,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_getDepth", lua::wrap<&Level::level_getDepth>);
     m_script.registerFn("level_isNewRound", lua::wrap<&Level::level_isNewRound>);
     m_script.registerFn("level_isSolved", lua::wrap<&Level::level_isSolved>);
-    m_script.registerFn("level_planShow", lua::wrap<&Level::level_planShow>);
-    m_script.registerFn("level_isShowing", lua::wrap<&Level::level_isShowing>);
     m_script.registerFn("level_isReady", lua::wrap<&Level::level_isReady>);
-    m_script.registerFn("level_action_move", lua::wrap<&Level::level_action_move>);
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
     m_script.registerFn("level_action_restart", lua::wrap<&Level::level_action_restart>);
@@ -73,6 +70,7 @@ void Level::registerCallbacks() {
 
     m_script.registerFn("demo_enter", lua::wrap<&Level::demo_enter>);
     m_script.registerFn("demo_exit", lua::wrap<&Level::demo_exit>);
+    m_script.registerFn("demo_state", lua::wrap<&Level::demo_state>);
 
     m_script.registerFn("dialog_isDialog", lua::wrap<&Level::dialog_isDialog>);
     m_script.registerFn("dialog_defineColor", lua::wrap<&Level::dialog_defineColor>);
@@ -102,22 +100,8 @@ bool Level::level_isSolved() {
     return rules().solved();
 }
 
-void Level::level_planShow(LuaCallback function) {
-    //Log::warn("level_planShow");
-}
-
-bool Level::level_isShowing() {
-    return inDemo();
-}
-
 bool Level::level_isReady() {
     return m_rules->ready();
-}
-
-bool Level::level_action_move(const std::string& move) {
-    assert(move.length() == 1);
-    rules().enqueue(move[0]);
-    return true;
 }
 
 bool Level::level_action_restart() {
@@ -176,6 +160,10 @@ void Level::demo_enter() {
 
 void Level::demo_exit() {
     setBusy(BusyReason::demo, false);
+}
+
+bool Level::demo_state() {
+    return inDemo();
 }
 
 void Level::game_setRoomWaves(float amplitude, float period, float speed) {

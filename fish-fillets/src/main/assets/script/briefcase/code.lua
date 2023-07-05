@@ -19,10 +19,10 @@ local function prog_init()
 
         return function()
             if isReady(small) and isReady(big) then
-                if not level_isShowing() and small.X == 25 and small.Y == 23 and big.X == 27 and big.Y == 21 then
+                if not demo_state() and small.X == 25 and small.Y == 23 and big.X == 27 and big.Y == 21 then
                     file_include("script/"..codename.."/demo_help.lua")
                 end
-                if not level_isShowing() and no_dialog() then
+                if not demo_state() and no_dialog() then
                     if room.uvod == 0 then
                         switch(pokus){
                             [1] = function()

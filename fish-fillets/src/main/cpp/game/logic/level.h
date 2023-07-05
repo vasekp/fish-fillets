@@ -108,10 +108,7 @@ private:
     int level_getDepth() const;
     bool level_isNewRound() const;
     bool level_isSolved();
-    void level_planShow(LuaCallback function); // TODO remove
-    bool level_isShowing(); // TODO rename demo_state()
     bool level_isReady();
-    bool level_action_move(const std::string& move); // TODO model:goto
     bool level_action_save();
     bool level_action_load();
     bool level_action_restart();
@@ -120,6 +117,7 @@ private:
     bool level_load(const std::string& text_moves);
     void demo_enter();
     void demo_exit();
+    bool demo_state();
     void slideshow_enter();
     void slideshow_exit();
     void slide_display(const std::string& filename);
