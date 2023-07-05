@@ -1,6 +1,7 @@
 #include "common.h"
 #include "layout.h"
 #include "level.h"
+#include "subsystem/rng.h"
 
 LevelLayout::LevelLayout(Level& level, int width, int height) :
         m_level(level),
@@ -116,10 +117,7 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
         std::unreachable();
 }
 
-std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
-    if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
-        return {};
-    Log::debug<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
+std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::occupiedBitmap(const Model* unit) {
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
@@ -152,18 +150,33 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     for(auto i = 0u; i < unitHeight - 1; i++)
         for(auto y = 0u; y < maxDim - 1; y++)
             occupied[y] |= occupied[y + 1];
+    return occupied;
+}
+
+std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
+    if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
+        return {};
+    Log::debug<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
+    auto occupied = occupiedBitmap(unit);
     ICoords start = unit->xy();
-    if(occupied[start.y][start.x])
-        Log::fatal("Unit start field marked as occupied.");
-    for(int dx = 0; dx < std::min((int)unitWidth, target.x + 1); dx++)
-        for(int dy = 0; dy < std::min((int)unitHeight, target.y + 1); dy++)
+    /* Check validity */
+    if(occupied[start.y][start.x]) {
+        Log::error("Unit start field marked as occupied.");
+        return {};
+    }
+    auto unitWidth = unit->shape().width();
+    auto unitHeight = unit->shape().height();
+    bool found = false;
+    for(int dx = 0; !found && dx < std::min((int)unitWidth, target.x + 1); dx++)
+        for(int dy = 0; !found && dy < std::min((int)unitHeight, target.y + 1); dy++)
             if(occupied[target.y - dy][target.x - dx])
                 Log::verbose<Log::gotos>(target - ICoords{dx, dy}, " occupied");
             else
-                goto Found;
-    Log::debug<Log::gotos>("no suitable final position found");
-    return {};
-Found:
+                found = true;
+    if(!found) {
+        Log::debug<Log::gotos>("no suitable final position found");
+        return {};
+    }
     /* Now's the time to start our breadth-first search. */
     std::map<ICoords, Direction> dirs;
     std::deque<std::pair<ICoords, Direction>> queue;
@@ -200,6 +213,65 @@ Found:
     for(auto coords = end; coords != start; coords -= dirs[coords])
         ret.push_back(dirs[coords]);
     Log::debug<Log::gotos>("found (", ret.size(), " moves)");
+    std::reverse(ret.begin(),  ret.end());
+    return ret;
+}
+
+std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistance) {
+    Log::debug<Log::gotos>("path from ", unit->xy(), " minDistance ", minDistance, ":");
+    auto occupied = occupiedBitmap(unit);
+    ICoords start = unit->xy();
+    if(occupied[start.y][start.x]) {
+        Log::error("Unit start field marked as occupied.");
+        return {};
+    }
+    /* This algorithm is the same as in findPath except that we cover the entire field and also keep distances. */
+    std::map<ICoords, std::pair<Direction, int>> dirs;
+    std::deque<std::pair<ICoords, std::pair<Direction, int>>> queue;
+    for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right})
+        queue.push_back({start + dir, {dir, 1}});
+    while(!queue.empty()) {
+        auto [coords, pair] = queue.front();
+        auto [dir, dist] = pair;
+        queue.pop_front();
+        if(coords.x < 0 || coords.x >= width() || coords.y < 0 || coords.y >= height() || occupied[coords.y][coords.x]) {
+            Log::verbose<Log::gotos>(coords, " inaccessible");
+            continue;
+        }
+        if(dirs.contains(coords)) {
+            Log::verbose<Log::gotos>(coords, " already done: ", dirs[coords].first, " (", dirs[coords].second, ")");
+            continue;
+        }
+        Log::verbose<Log::gotos>(coords, " <- ", dir, " (", dist, ")");
+        dirs[coords] = {dir, dist};
+        for(auto nextDir : nextDirs(dir))
+            queue.push_back({coords + nextDir, {nextDir, dist + 1}});
+    }
+    auto maxIt = std::max_element(dirs.begin(), dirs.end(),
+        [](const auto& a, const auto& b) {
+            return a.second.second < b.second.second;
+    });
+    /* Filter on minDistance */
+    auto maxDist = maxIt == dirs.end() ? 0 : maxIt->second.second;
+    Log::debug<Log::gotos>("Max distance: ", maxDist);
+    /*std::remove_if(dirs.begin(), dirs.end(),
+        [minDistance](const auto& entry) { return entry.second.second < minDistance; });*/
+    std::vector<ICoords> pool{};
+    /*std::transform(dirs.begin(), dirs.end(), std::back_inserter(pool),
+            [](const auto& entry) { return entry.first; });*/
+    for(const auto& [coords, entry] : dirs)
+        if(entry.second >= minDistance)
+            pool.push_back(coords);
+    if(pool.empty()) {
+        Log::debug<Log::gotos>("No long enough path.");
+        return {};
+    }
+    auto end = pool[m_level.instance().rng().randomIndex(pool.size())];
+    /* Reconstruct path */
+    std::vector<Direction> ret;
+    for(auto coords = end; coords != start; coords -= dirs[coords].first)
+        ret.push_back(dirs[coords].first);
+    Log::debug<Log::gotos>("target ", end, " (", ret.size(), " moves)");
     std::reverse(ret.begin(),  ret.end());
     return ret;
 }

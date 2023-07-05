@@ -8,48 +8,6 @@ hybTable[HYB_SMALL] = small
 hybTable[HYB_BIG] = big
 
 -- -----------------------------------------------------------------
-local function charAt(s, i)
-    return string.sub(s, i, i)
-end
--- -----------------------------------------------------------------
-local function planHyb(unit, destX, destY)
-    if not level_isShowing() then
-        local symbols
-        --NOTE: symbols order is as dir_up==1, ...
-        if unit == small then
-            symbols = "udlr"
-        else
-            symbols = "UDLR"
-        end
-        level_planShow(function(count)
-                local result = false
-                local dir = findDir(unit, destX, destY)
-                if dir == dir_no then
-                    room.natvrdo = 0
-                    result = true
-                else
-                    level_action_move(charAt(symbols, dir))
-                end
-                return result
-            end)
-    end
-end
-
--- -----------------------------------------------------------------
-local function isCarring(model)
-    -- whether fish is under a object
-    --NOTE: wall and water does not count
-    local locX, locY = model:getLoc()
-    for x = locX, locX + model:getW() - 1 do
-        local y = locY - 1
-        if not model_equals(-1, x, y) and not model_equals(room.index, x, y) then
-            return true
-        end
-    end
-    return false
-end
-
--- -----------------------------------------------------------------
 -- Init
 -- -----------------------------------------------------------------
 local function prog_init()
@@ -83,8 +41,8 @@ local function prog_init()
             else
                 boring = 0
             end
-            if room.natvrdo == 1 then
-                planHyb(hybTable[room.tvrdaryba], room.tvrdex, room.tvrdey)
+            if room.natvrdo == 1 and level_isReady() then
+                room.natvrdo = 0
             end
 
             if stdBorderReport() then
@@ -103,15 +61,9 @@ local function prog_init()
                     pomb1 = true
                     room.tvrdaryba = random(2) + 1
                     local hybFish = hybTable[room.tvrdaryba]
-                    if not isCarring(hybFish) then
-                        room.tvrdex = random(room:getW() - 2) + 1
-                        room.tvrdey = random(room:getH() - 2) + 1
-                        if math.abs(hybFish.X - room.tvrdex) + math.abs(hybFish.Y - room.tvrdey) > 8 and findDir(hybFish, room.tvrdex, room.tvrdey) ~= dir_no then
-                            room.natvrdo = 1
-                        end
-                        if room.natvrdo == 1 then
-                            room.blbnout = (room.kolikrat + 3) * (random(100) + 50)
-                        end
+                    if model_gotoRandom(hybFish.index, 8) then
+                        room.natvrdo = 1
+                        room.blbnout = (room.kolikrat + 3) * (random(100) + 50)
                     end
                 end
                 if room.hlouposti > 0 then

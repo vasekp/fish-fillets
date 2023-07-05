@@ -54,6 +54,7 @@ public:
     Level(Instance& instance, LevelScreen& screen, LevelRecord& record);
     ~Level();
 
+    Instance& instance() { return m_instance; }
     LevelLayout& layout() { return *m_layout; }
     LevelRules& rules() { return *m_rules; }
     const LevelRules& rules() const { return *m_rules; }
@@ -158,8 +159,9 @@ private:
     bool model_isTalking(int index);
     void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
     void model_killSound(int index);
-    bool model_equals(int index, int x, int y); // TODO remove
+    bool model_equals(int index, int x, int y);
     bool model_goto(int index, int x, int y);
+    bool model_gotoRandom(int index, int minDistance);
     void sound_addSound(const std::string& name, const std::string& filename);
     void sound_playSound(const std::string& name, std::optional<int> volume);
     void sound_playMusic(const std::string& filename);

@@ -44,6 +44,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("model_killSound", lua::wrap<&Level::model_killSound>);
     m_script.registerFn("model_equals", lua::wrap<&Level::model_equals>);
     m_script.registerFn("model_goto", lua::wrap<&Level::model_goto>);
+    m_script.registerFn("model_gotoRandom", lua::wrap<&Level::model_gotoRandom>);
 
     m_script.registerFn("sound_addSound", lua::wrap<&Level::sound_addSound>);
     m_script.registerFn("sound_playSound", lua::wrap<&Level::sound_playSound>);
@@ -406,10 +407,27 @@ bool Level::model_goto(int index, int x, int y) {
     Log::verbose<Log::lua>("model_goto");
     ICoords dest{x, y};
     auto* model = layout().getModel(index);
-    m_rules->switchFish(model);
     auto path = layout().findPath(model, dest);
     if(path.empty())
         Log::error("model_goto requested but path from ", model->xy(), " to ", dest, " not found");
+    m_rules->switchFish(model);
+    m_rules->enqueue(path, true);
+    return true;
+}
+
+bool Level::model_gotoRandom(int index, int minDistance) {
+    if(!m_rules->ready())
+        return false;
+    Log::verbose<Log::lua>("model_gotoRandom");
+    auto* model = layout().getModel(index);
+    if(!m_rules->isFree(model)) {
+        Log::debug<Log::gotos>("gotoRandom: model not free.");
+        return false;
+    }
+    auto path = layout().randomPath(model, minDistance);
+    if(path.empty())
+        return false;
+    m_rules->switchFish(model);
     m_rules->enqueue(path, true);
     return true;
 }

@@ -57,11 +57,15 @@ public:
     std::set<Model*> intersections(const Model* model, ICoords d);
     std::set<Model*> obstacles(const Model* root, ICoords d);
     std::vector<Direction> findPath(const Model* unit, ICoords target);
+    std::vector<Direction> randomPath(const Model* unit, int minDistance);
 
     void animate(float dt, float speed = speed_normal);
 
+private:
     constexpr static unsigned maxDim = Shape::maxSize;
+    std::array<std::bitset<maxDim>, maxDim> occupiedBitmap(const Model* unit);
 
+public:
     constexpr static float speed_normal = 1.f;
     constexpr static float speed_loading = 10.f;
     constexpr static float speed_instant = 0.f;
