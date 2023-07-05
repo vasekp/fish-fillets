@@ -70,7 +70,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
         }
         queue.pop_front();
     }
-    Log::verbose("Obstacles: ", (int)ret.size());
+    Log::verbose<Log::motion>("Obstacles: ", (int)ret.size());
     return ret;
 }
 
@@ -119,7 +119,7 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
     if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
         return {};
-    Log::verbose("path from ", unit->xy(), " to ", target, ":");
+    Log::verbose<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
@@ -158,7 +158,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     for(int dx = 0; dx < std::min((int)unitWidth, target.x + 1); dx++)
         for(int dy = 0; dy < std::min((int)unitHeight, target.y + 1); dy++)
             if(occupied[target.y - dy][target.x - dx])
-                Log::verbose(target - ICoords{dx, dy}, " occupied");
+                Log::verbose<Log::gotos>(target - ICoords{dx, dy}, " occupied");
             else
                 goto Found;
     Log::debug("no suitable final position found");
@@ -175,14 +175,14 @@ Found:
         auto [coords, dir] = queue.front();
         queue.pop_front();
         if(coords.x < 0 || coords.x >= width() || coords.y < 0 || coords.y >= height() || occupied[coords.y][coords.x]) {
-            Log::verbose(coords, " inaccessible");
+            Log::verbose<Log::gotos>(coords, " inaccessible");
             continue;
         }
         if(dirs.contains(coords)) {
-            Log::verbose(coords, " already done: ", dirs[coords]);
+            Log::verbose<Log::gotos>(coords, " already done: ", dirs[coords]);
             continue;
         }
-        Log::verbose(coords, " <- ", dir);
+        Log::verbose<Log::gotos>(coords, " <- ", dir);
         dirs[coords] = dir;
         if((target - coords).within({}, accept)) {
             end = coords;
@@ -201,6 +201,6 @@ Found:
         ret.push_back(dirs[coords]);
     std::reverse(ret.begin(),  ret.end());
     for(auto dir : ret)
-        Log::verbose(dir);
+        Log::verbose<Log::gotos>(dir);
     return ret;
 }

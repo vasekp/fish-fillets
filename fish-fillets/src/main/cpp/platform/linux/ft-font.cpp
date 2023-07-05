@@ -130,7 +130,7 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
             if(FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, &vector, 1) != 0)
                 Log::error("FT_Glyph_To_Bitmap");
             auto bmpGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-            Log::verbose("glyph ", converter.to_bytes(c),
+            Log::verbose<Log::graphics>("glyph ", converter.to_bytes(c),
                     " at ", pen, " ", bmpGlyph->left, " ", bmpGlyph->top,
                     " ", bmpGlyph->bitmap.width, "x", bmpGlyph->bitmap.rows,
                     " advance ", from266(slot->advance.x), ", ", from266(slot->advance.y));

@@ -197,7 +197,7 @@ void LevelRules::moveFish(Direction d) {
     }
     for(auto* model : obs)
         model->displace(d, true);
-    Log::verbose(m_curFish->xy(), " -> ", m_curFish->xy() + d);
+    Log::verbose<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
     m_level.recordMove(dirToChar(d));
     m_level.notifyRound();
@@ -342,7 +342,7 @@ void LevelRules::evalSteel() {
 }
 
 void LevelRules::evalMotion(Model* model, Direction d) {
-    Log::verbose("stopped ", model->index(), " ", d);
+    Log::verbose<Log::motion>("stopped ", model->index(), " ", d);
     if(model->action() == Model::Action::willBusy)
         model->action() = Model::Action::busy;
     m_level.notifyRound();
@@ -355,7 +355,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
                     if(supp->alive()) {
-                        Log::verbose("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
+                        Log::verbose<Log::motion>("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
                         death(supp);
                     }
             } else {

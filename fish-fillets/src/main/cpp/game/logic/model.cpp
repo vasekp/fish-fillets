@@ -46,12 +46,12 @@ void Model::displace(ICoords d, bool pushing) {
     m_pushing = pushing;
     m_touchDir = {};
     if(!pushing)
-        Log::verbose("falling ", index(), " warp ", m_warp, " delta ", m_delta, " pos ", m_position);
+        Log::verbose<Log::motion>("falling ", index(), " warp ", m_warp, " delta ", m_delta, " pos ", m_position);
 }
 
 bool Model::syncFall(const Model* other) {
     if(m_warp > other->m_warp) {
-        Log::verbose("sync ", index(), " [", m_warp, ",", m_delta, "] / ", other->index(), " [", other->m_warp, ",", other->m_delta, "]", " ", m_position - other->m_position);
+        Log::verbose<Log::motion>("sync ", index(), " [", m_warp, ",", m_delta, "] / ", other->index(), " [", other->m_warp, ",", other->m_delta, "]", " ", m_position - other->m_position);
         m_warp = other->m_warp;
         if(m_delta > other->m_delta)
            m_delta = other->m_delta;

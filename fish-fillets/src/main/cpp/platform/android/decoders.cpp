@@ -93,14 +93,14 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
     AMediaCodec* codec = AMediaCodec_createDecoderByType(mimeType);
     AMediaCodec_configure(codec, format, nullptr, nullptr, 0);
     AMediaCodec_start(codec);
-    Log::verbose("input format: ", AMediaFormat_toString(format));
+    Log::verbose<Log::audio>("input format: ", AMediaFormat_toString(format));
 
     bool extractorDone = false, codecDone = false;
     std::int64_t duration;
     AMediaFormat_getInt64(format, AMEDIAFORMAT_KEY_DURATION, &duration);
     std::size_t numSamples = 1 + duration * 22050 / 1000000;
     assert(numSamples > 0);
-    Log::verbose("numSamples: ", numSamples);
+    Log::verbose<Log::audio>("numSamples: ", numSamples);
     std::int64_t curSample = 0;
 
     auto ret = AudioData::create(filename, numSamples);
@@ -154,7 +154,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 switch(outIndex) {
                     case AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED: {
                         auto ff = AMediaCodec_getOutputFormat(codec);
-                        Log::verbose("output format: ", AMediaFormat_toString(ff));
+                        Log::verbose<Log::audio>("output format: ", AMediaFormat_toString(ff));
                         AMediaFormat_delete(ff);
                     }
                     case AMEDIACODEC_INFO_TRY_AGAIN_LATER:

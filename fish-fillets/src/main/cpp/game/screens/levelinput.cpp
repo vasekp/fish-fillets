@@ -36,7 +36,7 @@ Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
-        Log::verbose("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
+        Log::verbose<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
         return Key::none;
@@ -82,7 +82,7 @@ bool LevelInput::pointerMove(FCoords coords) {
         dir = Direction::down;
     else if(diff.fy() < -2.f * std::abs(diff.fx()))
         dir = Direction::up;
-    Log::verbose("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir,
+    Log::verbose<Log::input>("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir,
             " timediff=", std::chrono::duration<float>(timeDiff).count());
     switch (m_dirpad.state) {
         case DirpadState::idle:
@@ -92,7 +92,7 @@ bool LevelInput::pointerMove(FCoords coords) {
             return false;
         case DirpadState::wait:
             if(!small && dir) {
-                Log::verbose("Input: sending from WAIT: ", dir);
+                Log::verbose<Log::input>("Input: sending from WAIT: ", dir);
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
@@ -105,7 +105,7 @@ bool LevelInput::pointerMove(FCoords coords) {
             if(small)
                 m_dirpad.lastDir = {};
             else if(dir && dir != m_dirpad.lastDir) {
-                Log::verbose("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
+                Log::verbose<Log::input>("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
                 m_dirpad.inside = false;

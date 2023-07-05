@@ -4,12 +4,12 @@ namespace ogl {
 
     Framebuffer::Framebuffer(const std::shared_ptr<ogl::Display>& ref) : m_ref(ref) {
         glGenFramebuffers(1, &m_name);
-        Log::verbose("framebuffer: generate ", m_name);
+        Log::verbose<Log::graphics>("framebuffer: generate ", m_name);
     }
 
     Framebuffer::~Framebuffer() {
         if(m_name && !m_ref.expired()) {
-          Log::verbose("framebuffer: delete ", m_name);
+          Log::verbose<Log::graphics>("framebuffer: delete ", m_name);
             glDeleteFramebuffers(1, &m_name);
         }
     }

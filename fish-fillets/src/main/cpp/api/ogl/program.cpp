@@ -4,7 +4,7 @@ namespace ogl {
 
     Program::Program(const std::shared_ptr<ogl::Display>& ref, const Shader &vertexShader, const Shader &fragmentShader) : m_ref(ref) {
         m_name = glCreateProgram();
-        Log::verbose("program: generate ", m_name);
+        Log::verbose<Log::graphics>("program: generate ", m_name);
         if (!m_name)
             Log::fatal("glCreateProgram failed");
 
@@ -41,7 +41,7 @@ namespace ogl {
 
     Program::~Program() {
         if(m_name && !m_ref.expired()) {
-          Log::verbose("program: delete ", m_name);
+          Log::verbose<Log::graphics>("program: delete ", m_name);
             glDeleteProgram(m_name);
         }
     }

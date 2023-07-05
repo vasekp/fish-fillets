@@ -32,7 +32,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
 
     {
         vorbis_info* vi = ov_info(&vf, -1);
-        Log::verbose(filename, ": sample rate ", vi->rate, ", ", vi->channels, " channels");
+        Log::verbose<Log::audio>(filename, ": sample rate ", vi->rate, ", ", vi->channels, " channels");
 
         if(vi->channels != 1) {
             Log::error("Unexpected channel count (", filename, "), expected mono: ", vi->channels);
@@ -54,7 +54,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
         numSamples = (std::size_t)ov_pcm_total(&vf, -1);
         if(doubleSample)
             numSamples *= 2;
-        Log::verbose("numSamples: ", numSamples);
+        Log::verbose<Log::audio>("numSamples: ", numSamples);
     }
 
     auto ret = AudioData::create(filename, numSamples);

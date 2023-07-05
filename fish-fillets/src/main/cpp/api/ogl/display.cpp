@@ -65,7 +65,7 @@ namespace ogl {
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
             auto info = glGetString(name);
-            Log::verbose("OpenGL Info: ", info);
+            Log::verbose<Log::graphics>("OpenGL Info: ", info);
         }
 
         glDisable(GL_CULL_FACE);

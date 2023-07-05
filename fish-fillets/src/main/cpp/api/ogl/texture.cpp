@@ -4,7 +4,7 @@ namespace ogl {
 
     Texture::Texture(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height) : m_ref(ref), m_width(width), m_height(height) {
         glGenTextures(1, &m_name);
-        Log::verbose("texture: generate ", m_name);
+        Log::verbose<Log::graphics>("texture: generate ", m_name);
         bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -14,7 +14,7 @@ namespace ogl {
 
     Texture::~Texture() {
         if(m_name && !m_ref.expired()) {
-            Log::verbose("texture: delete ", m_name);
+            Log::verbose<Log::graphics>("texture: delete ", m_name);
             glDeleteTextures(1, &m_name);
         }
     }

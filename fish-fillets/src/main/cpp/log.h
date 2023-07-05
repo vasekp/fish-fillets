@@ -15,9 +15,10 @@ public:
         fatal
     };
 
-    template<typename... Ts>
-    static void verbose(const Ts& ... ts) {
-        //log(Level::verbose, format(ts...));
+    template<Level minLevel, typename... Ts>
+    static void verbose([[maybe_unused]] const Ts& ... ts) {
+        if constexpr((int)minLevel <= (int)Level::verbose)
+            log(Level::verbose, format(ts...));
     }
 
     template<typename... Ts>
@@ -56,6 +57,16 @@ private:
     }
 
     static void log(Level level, const std::string& message);
+
+public:
+    //static constexpr inline bool video_timing = true;
+    static constexpr inline Level strings = Level::debug;
+    static constexpr inline Level audio = Level::debug;
+    static constexpr inline Level input = Level::debug;
+    static constexpr inline Level motion = Level::debug;
+    static constexpr inline Level gotos = Level::debug;
+    static constexpr inline Level lua = Level::debug;
+    static constexpr inline Level graphics = Level::debug;
 };
 
 #endif

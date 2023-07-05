@@ -27,7 +27,7 @@ LuaCallback LuaCallback::from(lua_State* L) {
 }
 
 bool LuaCallback::operator()() {
-    Log::verbose("calling [", m_ref, "] tries=", m_tries);
+    Log::verbose<Log::lua>("calling [", m_ref, "] tries=", m_tries);
     lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_ref);
     lua_pushnumber(m_state, m_tries++);
     if(lua_pcall(m_state, 1, 1, 0) != LUA_OK)
