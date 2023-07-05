@@ -34,8 +34,6 @@ local function prog_init()
                 addm(5, "z-m-nemluv")
                 addv(2, "z-v-slyset")
                 addm(6, "z-m-netusi")
-                room:planDialog(5, "z-c-konkretne")
-                adddel(3)
                 planSet(room, "hlaska", 1)
             elseif room.uvod == 2 then
                 room.uvod = 3
@@ -61,11 +59,13 @@ local function prog_init()
                 planSet(room, "uvod", 4)
             end
             if room.hlaska == 1 then
+                room.hlaska = 2
                 room.cas = math.floor(0.5 +
                         options_getInt("playtime") / 3600)
+                room:talk("z-c-konkretne@"..room.cas)
             end
             if room.hlaska >= 1 and not room:isTalking() then
-                pom1 = room.hlaska
+                pom1 = room.hlaska - 1
                 room.hlaska = room.hlaska + 1
                 if room.cas >= 1000 then
                     if room.cas >= 2000 then
@@ -152,7 +152,7 @@ local function prog_init()
                 pom1 = pom1 - 1
                 if pom1 == 0 then
                     room.hlaska = 0
-                    room:talk("z-c-hodin@"..room.cas)
+                    room:talk("z-c-hodin")
                     room.uvod = 2
                 end
             end

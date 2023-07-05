@@ -108,11 +108,11 @@ dialog_add("z-c-tisic", "", {})
 
 dialog_add("z-c-tisice", "", {})
 
-dialog_add("z-c-hodin", "white", {
+dialog_add("z-c-hodin", "", {})
+
+dialog_add("z-c-konkretne", "white", {
   cs="Konkrétně %1 hodin!",
   en="To be specific, it took you %1 hours!"})
-
-dialog_add("z-c-konkretne", "", {})
 
 dialog_add("bar-x-suck0", "", {})
 
