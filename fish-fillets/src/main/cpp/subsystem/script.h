@@ -29,7 +29,6 @@ public:
     void loadFile(const std::string& filename);
 
     bool file_exists(const std::string& filename);
-    void sendMsg(const std::string& target, const std::string& text);
 };
 
 #include "script/wrapper-additions.h"

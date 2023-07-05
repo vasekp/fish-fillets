@@ -10,7 +10,6 @@ Script::Script(Instance &instance, ScriptReferrer& ref) :
 
     registerFn("file_include", lua::wrap<&Script::loadFile>);
     registerFn("file_exists", lua::wrap<&Script::file_exists>);
-    registerFn("sendMsg", lua::wrap<&Script::sendMsg>);
 }
 
 Script& Script::from(lua_State* L) {
@@ -38,8 +37,4 @@ void Script::loadFile(const std::string& filename) {
 
 bool Script::file_exists(const std::string& filename) {
     return m_instance.files().system(filename)->exists();
-}
-
-void Script::sendMsg(const std::string& target, const std::string& text) {
-    Log::debug<Log::lua>("sendMsg ", target, " -> ", text, " IGNORED");
 }

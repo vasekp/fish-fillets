@@ -4,16 +4,9 @@
 #include <fstream>
 
 SystemFile::SystemFile(std::string path, const std::filesystem::path& basePath) :
-        m_relPath(std::move(path))
-{
-    auto overrideRel = "override" / m_relPath;
-    auto overrideFull = basePath / overrideRel;
-    if(std::filesystem::exists(overrideFull)) {
-        Log::debug<Log::platform>("override ", m_relPath, " -> ", overrideRel);
-        m_fullPath = overrideFull;
-    } else
-        m_fullPath = basePath / m_relPath;
-}
+        m_relPath(std::move(path)),
+        m_fullPath(basePath / m_relPath)
+{ }
 
 bool SystemFile::exists() const {
     return std::filesystem::exists(m_fullPath);
