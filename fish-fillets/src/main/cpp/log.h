@@ -61,17 +61,17 @@ private:
     static void log(Level level, const std::string& message);
 
 public:
-    static constexpr inline Level video = Level::debug;
-    static constexpr inline Level strings = Level::debug;
-    static constexpr inline Level audio = Level::debug;
-    static constexpr inline Level input = Level::debug;
-    static constexpr inline Level motion = Level::debug;
-    static constexpr inline Level gotos = Level::debug;
+    static constexpr inline Level video = Level::info;
+    static constexpr inline Level strings = Level::info;
+    static constexpr inline Level audio = Level::info;
+    static constexpr inline Level input = Level::info;
+    static constexpr inline Level motion = Level::info;
+    static constexpr inline Level gotos = Level::info;
     static constexpr inline Level lua = Level::debug;
-    static constexpr inline Level graphics = Level::debug;
-    static constexpr inline Level lifecycle = Level::debug;
-    static constexpr inline Level platform = Level::debug;
-    static constexpr inline Level persist = Level::debug;
+    static constexpr inline Level graphics = Level::info;
+    static constexpr inline Level lifecycle = Level::info;
+    static constexpr inline Level platform = Level::info;
+    static constexpr inline Level persist = Level::info;
 };
 
 #endif
