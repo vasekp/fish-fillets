@@ -17,7 +17,6 @@ void GameTree::addNode(const std::string& codename, const std::string& parent, c
     LevelRecord* parentRecord = parent.empty() ? nullptr : &m_levels.at(parent);
     if(!depth)
         depth = parentRecord ? parentRecord->depth + 1 : 1;
-    //Log::verbose<Log::lua>("addNode ", parent, " -> ", codename, " [", depth, "]");
     LevelRecord newRecord{codename, std::move(title), parentRecord, FCoords{x, y}, depth, filename, ending.value_or(""), maskColor};
     newRecord.solved = m_instance.files().user(newRecord.solveFilename())->exists();
     m_levels.insert({codename, std::move(newRecord)});

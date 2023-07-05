@@ -1,28 +1,5 @@
-
--- -----------------------------------------------------------------
-local function charAt(s, i)
-    return string.sub(s, i, i)
-end
--- -----------------------------------------------------------------
-local function planHyb(unit, destX, destY)
-    local symbols
-    --NOTE: symbols order is as dir_up==1, ...
-    if unit == small then
-        symbols = "udlr"
-    else
-        symbols = "UDLR"
-    end
-    level_planShow(function(count)
-            local result = false
-            local dir = findDir(unit, destX, destY)
-            if dir == dir_no then
-                room.natvrdo = 0
-                result = true
-            else
-                level_action_move(charAt(symbols, dir))
-            end
-            return result
-        end)
+local function syncMoves()
+    game_planAction(function() return level_isReady() end)
 end
 
 -- -----------------------------------------------------------------
@@ -43,6 +20,11 @@ local function prog_init()
         zavermode = true
 
         return function()
+            if room.uvod < 4 then
+                demo_enter()
+            else
+                demo_exit()
+            end
             if room.uvod == 0 then
                 room.uvod = 1
                 addv(20, "z-v-doma")
@@ -58,22 +40,25 @@ local function prog_init()
             elseif room.uvod == 2 then
                 room.uvod = 3
                 adddel(5)
-                planTimeAction(0, function() planHyb(small, 14, 16) end)
                 addm(5, "z-m-dlouho")
                 planBusy(big, true)
                 addv(10, "z-v-pozdrav")
+                planTimeAction(0, function() small:goTo(14, 16) end)
+                syncMoves()
                 planBusy(small, true)
                 planBusy(big, false)
                 addm(5, "z-m-oblicej")
-                planTimeAction(0, function() planHyb(big, 15, 15) end)
+                planTimeAction(0, function() big:goTo(15, 15) end)
                 addv(0, "z-v-forky")
                 adddel(2)
+                syncMoves()
                 planBusy(big, true)
                 planBusy(small, true)
                 planDialog(TALK_INDEX_BOTH, 2, "z-o-blahoprejeme")
                 adddel(20)
                 planBusy(big, false)
                 planBusy(small, false)
+                planSet(room, "uvod", 4)
             end
             if room.hlaska == 1 then
                 room.cas = math.floor(0.5 +
