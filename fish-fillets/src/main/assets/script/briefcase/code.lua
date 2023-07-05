@@ -31,9 +31,9 @@ local function prog_init()
                     if room.uvod == 0 then
                         switch(pokus){
                             [1] = function()
-                                -- addm(6, "kuf-m-je")
-                                -- addv(4, "kuf-v-noco")
-                                -- addv(9, "kuf-v-hod")
+                                addm(6, "kuf-m-je")
+                                addv(4, "kuf-v-noco")
+                                addv(9, "kuf-v-hod")
                             end,
                             [2] = function()
                                 addv(9, "kuf-v-hod")
