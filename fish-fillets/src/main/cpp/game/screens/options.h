@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_SCREENS_OPTIONS_H
 #define FISH_FILLETS_SCREENS_OPTIONS_H
 
+#include "subsystem/audio.h"
+
 class OptionsOverlay : public GameScreen, public IInputSink {
     PNGImage m_options;
     PNGImage m_slider;

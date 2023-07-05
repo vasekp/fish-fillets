@@ -1,9 +1,9 @@
-#ifndef FISH_FILLETS_GAME_STATEMANAGER_H
-#define FISH_FILLETS_GAME_STATEMANAGER_H
+#ifndef FISH_FILLETS_GAME_SCREENMANAGER_H
+#define FISH_FILLETS_GAME_SCREENMANAGER_H
 
 #include "instance.h"
 #include "screen.h"
-#include "game/logic/level.h"
+#include "game/structure/levelrecord.h"
 #include "game/graphics/leveltitle.h"
 #include "options.h"
 
@@ -45,4 +45,4 @@ private:
     void useNext();
 };
 
-#endif //FISH_FILLETS_GAME_STATEMANAGER_H
+#endif //FISH_FILLETS_GAME_SCREENMANAGER_H
