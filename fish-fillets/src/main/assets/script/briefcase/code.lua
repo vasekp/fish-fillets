@@ -20,11 +20,6 @@ local function prog_init()
         return function()
             if isReady(small) and isReady(big) then
                 if not level_isShowing() and small.X == 25 and small.Y == 23 and big.X == 27 and big.Y == 21 then
-                    if not big:isLeft() then
-                        level_planShow(function(count)
-                            return level_action_move('L')
-                        end)
-                    end
                     file_include("script/"..codename.."/demo_help.lua")
                 end
                 if not level_isShowing() and no_dialog() then

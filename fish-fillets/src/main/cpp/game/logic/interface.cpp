@@ -57,6 +57,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("level_isSolved", lua::wrap<&Level::level_isSolved>);
     m_script.registerFn("level_planShow", lua::wrap<&Level::level_planShow>);
     m_script.registerFn("level_isShowing", lua::wrap<&Level::level_isShowing>);
+    m_script.registerFn("level_isReady", lua::wrap<&Level::level_isReady>);
     m_script.registerFn("level_action_move", lua::wrap<&Level::level_action_move>);
     m_script.registerFn("level_action_save", lua::wrap<&Level::level_action_save>);
     m_script.registerFn("level_action_load", lua::wrap<&Level::level_action_load>);
@@ -106,6 +107,10 @@ void Level::level_planShow(LuaCallback function) {
 
 bool Level::level_isShowing() {
     return inDemo();
+}
+
+bool Level::level_isReady() {
+    return m_rules->ready();
 }
 
 bool Level::level_action_move(const std::string& move) {
