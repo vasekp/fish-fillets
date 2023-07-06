@@ -11,7 +11,9 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
         m_winSize(),
         m_subs(instance),
         m_flashAlpha(0)
-{ }
+{
+    m_level.init();
+}
 
 void LevelScreen::restore() {
     m_display.reset();
@@ -24,7 +26,6 @@ void LevelScreen::exit() {
 
 void LevelScreen::own_start() {
     m_instance.audio().clear();
-    m_level.init();
 }
 
 void LevelScreen::own_resize() {

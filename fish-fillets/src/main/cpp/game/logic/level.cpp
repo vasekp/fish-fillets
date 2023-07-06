@@ -180,39 +180,28 @@ void Level::save(bool force) {
 void Level::load(bool keepSchedule) {
     if(loadPossible() || keepSchedule) {
         killDialogsHard();
-        auto contents = saveFile()->read();
-        if(keepSchedule) {
-            reinit(true);
-            m_script.doString(contents);
-            m_script.doString("script_load()");
-        } else {
+        if(!keepSchedule)
             m_tickSchedule.clear();
-            m_tickSchedule.emplace_back([&, contents]() {
-                reinit();
-                m_script.doString(contents);
-                m_script.doString("script_load()");
-                return true;
-            });
-        }
+        reinit(keepSchedule);
+        m_script.doString(saveFile()->read());
+        m_script.doString("script_load()");
     }
 }
 
 void Level::success() {
     m_tickSchedule.emplace_back([&]() {
-        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
-            if(!isBusy(BusyReason::replay)) {
-                m_record.solved = true;
-                solveFile()->write("saved_moves = '"s + m_replay + "'\n");
-            }
-            if(record().script_ending.empty())
-                m_screen.exit();
-            else {
-                m_script.loadFile(record().script_ending);
-                setBusy(BusyReason::poster);
-            }
+        if(m_instance.audio().isDialog())
+            return false;
+        if(!isBusy(BusyReason::replay)) {
+            m_record.solved = true;
+            solveFile()->write("saved_moves = '"s + m_replay + "'\n");
         }
-        else
-            m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
+        if(record().script_ending.empty())
+            m_screen.exit();
+        else {
+            m_script.loadFile(record().script_ending);
+            setBusy(BusyReason::poster);
+        }
         return true;
     });
 }
@@ -220,12 +209,9 @@ void Level::success() {
 void Level::replay() {
     input().setRestartPossible(false);
     setBusy(BusyReason::replay);
-    m_tickSchedule.emplace_back([&, contents = solveFile()->read()]() {
-        m_script.doString(contents);
-        m_script.doString("saved_models = {{}}");
-        m_script.doString("script_load()");
-        return true;
-    });
+    m_script.doString(solveFile()->read());
+    m_script.doString("saved_models = {{}}");
+    m_script.doString("script_load()");
 }
 
 bool Level::inReplay() const {
@@ -234,27 +220,18 @@ bool Level::inReplay() const {
 
 void Level::restart(bool keepSchedule) {
     killDialogsHard();
-    if(keepSchedule) {
-        reinit(true);
-    } else {
-        m_tickSchedule.clear(); // TODO potřebujeme tick?
-        m_tickSchedule.emplace_back([&, keepSchedule]() {
-            reinit(keepSchedule);
-            return true;
-        });
-    }
+    if(!keepSchedule)
+        m_tickSchedule.clear();
+    reinit(keepSchedule);
 }
 
 void Level::restartWhenEmpty() {
     m_tickSchedule.emplace_back([&]() {
-        Log::debug<Log::lua>("restartWhenEmpty waiting callbacks: ", m_tickSchedule.size());
-        if(m_tickSchedule.size() == 1 && !m_instance.audio().isDialog()) {
-            m_screen.subs().clear();
-            m_screen.killSounds();
-            reinit();
-        }
-        else
-            m_tickSchedule.push_back(std::move(m_tickSchedule.front()));
+        if(m_instance.audio().isDialog())
+            return false;
+        m_screen.subs().clear();
+        m_screen.killSounds();
+        reinit();
         return true;
     });
 }
