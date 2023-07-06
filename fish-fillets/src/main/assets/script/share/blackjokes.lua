@@ -109,7 +109,6 @@ function stdBlackJoke()
                     [15] = function()
                         hlaska = hauto
                         hlrestart = false
-                        initAutoRestart()
                     end,
                 }
 
@@ -167,9 +166,10 @@ function stdBlackJoke()
                     end
                 end,
                 [hauto] = function()
-                    if PoslSmrtVelke ~= 20 or random(50) < 100 then
+                    if PoslSmrtVelke ~= 20 or random(100) < 50 then
                         PoslSmrtVelke = 20
                         addm(0, "smrt-m-autorest")
+                        initAutoRestart()
                     end
                 end,
             }
@@ -205,9 +205,10 @@ function stdBlackJoke()
                     end
                 end,
                 [hauto] = function()
-                    if PoslSmrtMale ~= 20 or random(50) < 100 then
+                    if PoslSmrtMale ~= 20 or random(100) < 50 then
                         PoslSmrtMale = 20
                         addv(0, "smrt-v-autorest")
+                        initAutoRestart()
                     end
                 end,
             }
