@@ -44,7 +44,6 @@ class Level : public ScriptReferrer {
         slideshow,
         demo,
         replay,
-        poster,
         SIZE
     };
     EnumBitset<BusyReason> m_busy;

@@ -49,7 +49,6 @@ void Level::reinit(bool fromScript) {
     m_timer.reset();
     setBusy(BusyReason::slideshow, false);
     setBusy(BusyReason::loading, false);
-    setBusy(BusyReason::poster, false);
     m_goto = false;
     if(!fromScript)
         setBusy(BusyReason::demo, false);
@@ -107,9 +106,7 @@ bool Level::inDemo() const {
 }
 
 void Level::skipBusy() {
-    if(m_busy[BusyReason::poster])
-        m_screen.exit();
-    else if(m_busy[BusyReason::slideshow])
+    if(m_busy[BusyReason::slideshow])
         quitSlideshow();
     else if(m_busy[BusyReason::loading] && !inDemo())
         dispatchMoveQueue();
