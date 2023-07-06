@@ -168,13 +168,16 @@ void Level::notifyFish(Model::Fish fish) {
         input().setFish(fish);
 }
 
-void Level::notifyDeath(Model* unit, bool bothDead) {
+void Level::notifyDeath(Model* unit) {
     input().setSavePossible(false);
     screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     killModelSound(unit);
+    auto [small, big] = rules().bothFish();
+    small->action() = Model::Action::base;
+    big->action() = Model::Action::base;
     if(!inDemo()) {
         killPlan();
-        if(bothDead)
+        if(!small->alive() && !big->alive())
             transition(ModelAnim::framesRestart, [this]() { restartWhenEmpty(); });
     }
 }

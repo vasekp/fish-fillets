@@ -405,9 +405,9 @@ void LevelRules::death(Model* unit) {
     });
     evalMotion(unit, Direction::down); // see this line's commit's comment
     m_doomed = true;
+    m_level.notifyDeath(unit);
     if(unit == m_curFish && !switchFish())
         setFish(Model::Fish::none);
-    m_level.notifyDeath(unit, m_curFish == nullptr);
 }
 
 void LevelRules::buildDepGraph() {

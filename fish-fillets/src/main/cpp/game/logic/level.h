@@ -96,7 +96,7 @@ public:
 
     void notifyRound();
     void notifyFish(Model::Fish fish);
-    void notifyDeath(Model* unit, bool bothDead);
+    void notifyDeath(Model* unit);
     void notifyEscape(Model* model);
 
 private:
