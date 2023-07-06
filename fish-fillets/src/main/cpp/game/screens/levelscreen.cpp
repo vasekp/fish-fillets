@@ -15,10 +15,11 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
     m_level.init();
 }
 
-void LevelScreen::restore() {
+void LevelScreen::reset() {
     m_display.reset();
     m_instance.graphics().setWindowShift({});
     subs().clear();
+    m_hint.reset();
 }
 
 void LevelScreen::exit() {

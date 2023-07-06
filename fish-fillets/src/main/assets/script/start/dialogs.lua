@@ -132,6 +132,6 @@ dialog_add("1st-x-hint1", "", {
 });
 
 dialog_add("1st-x-hint2", "", {
-  cs="Dotyková obrazovka: ťuknout a podržet",
-  en="Touch screen: tap and hold"
+  cs="Dotyková obrazovka: ťuknout a podržet\nPřeskočit animaci pohybu: dotek dvěma prsty",
+  en="Touch screen: tap and hold\nFast-forward travel: two-finger tap"
 });
