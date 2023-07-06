@@ -3,17 +3,16 @@
 #include "screenmanager.h"
 #include "subsystem/rng.h"
 
-LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
+LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         GameScreen(instance),
         m_level(instance, *this, record),
         m_input(instance, *this),
         m_waves(),
         m_winSize(),
         m_subs(instance),
-        m_flashAlpha(0)
-{
-    m_level.init();
-}
+        m_flashAlpha(0),
+        m_replay(replay)
+{ }
 
 void LevelScreen::reset() {
     m_display.reset();
@@ -28,6 +27,9 @@ void LevelScreen::exit() {
 
 void LevelScreen::own_start() {
     m_instance.audio().clear();
+    m_level.init();
+    if(m_replay)
+        m_level.replay();
 }
 
 void LevelScreen::own_resize() {

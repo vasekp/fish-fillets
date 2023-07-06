@@ -20,13 +20,13 @@ class LevelScreen : public GameScreen {
     Subtitles m_subs;
     std::optional<Hint> m_hint;
     std::optional<PNGImage> m_display;
-
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
     float m_flashAlpha;
+    bool m_replay;
 
 public:
-    LevelScreen(Instance&, LevelRecord&);
+    LevelScreen(Instance& instance, LevelRecord& record, bool replay);
 
     Level& level() { return m_level; }
     IInputSink& input() override { return m_input; }
