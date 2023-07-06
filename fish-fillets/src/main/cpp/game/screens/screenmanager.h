@@ -31,9 +31,7 @@ public:
     void startMode(Mode mode);
     void announceLevel(const std::string& title);
     void startLevel(LevelRecord& record, bool replay = false);
-
-    template<class ScreenType, typename... Ts>
-    ScreenType& open(Ts&&... ts);
+    void poster(const LevelRecord& record);
 
     OptionsOverlay& options() { return m_options; }
 
@@ -42,6 +40,9 @@ public:
     IInputSource& inputSourceMasked();
 
 private:
+    template<class ScreenType, typename... Ts>
+    ScreenType& open(Ts&&... ts);
+
     void useNext();
 };
 

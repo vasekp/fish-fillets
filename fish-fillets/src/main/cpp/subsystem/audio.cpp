@@ -113,17 +113,19 @@ AudioData::Ref Audio::loadSound(const std::string& filename) const {
         return decoders::ogg(m_instance, filename);
 }
 
-AudioSource::Ref Audio::loadMusic(const std::string& filename) const {
+AudioSource::Ref Audio::loadMusic(const std::string& filename, bool repeat) const {
     auto data = loadSound(filename);
     auto source = AudioSource::create(data, AudioType::music);
-    auto meta = m_instance.files().system(filename + ".meta");
-    if(meta->exists()) {
-        auto contents = meta->read();
-        std::istringstream iss{contents};
-        std::size_t start, end;
-        iss >> start >> end;
-        source->setLoop(start, end);
-    } else
-        source->setLoop();
+    if(repeat) {
+        auto meta = m_instance.files().system(filename + ".meta");
+        if(meta->exists()) {
+            auto contents = meta->read();
+            std::istringstream iss{contents};
+            std::size_t start, end;
+            iss >> start >> end;
+            source->setLoop(start, end);
+        } else
+            source->setLoop();
+    }
     return source;
 }

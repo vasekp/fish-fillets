@@ -1,9 +1,2 @@
-
-codename = "barrel"
-file_include("script/"..codename.."/demo_dialogs.lua")
-
--- -----------------------------------------------------------------
-file_include("script/share/prog_demo.lua")
-slide_display("images/"..codename.."/poster.png", 0, 0)
-
-game_hint("dlg-x-poster")
+poster_display("images/barrel/poster.png", 0, 0)
+poster_translation("Greetings from the rubbish heap to our beloved boss.\nYours sincerely\nAgents\n\nPS: It’s great to be here. We irradiate ourselves and swim in the sea a lot. We have many new friends.")

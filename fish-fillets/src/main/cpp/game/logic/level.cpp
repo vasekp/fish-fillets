@@ -1,5 +1,7 @@
 #include "level.h"
 #include "game/screens/levelscreen.h"
+#include "game/screens/poster.h"
+#include "game/screens/screenmanager.h"
 #include "subsystem/persist.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
@@ -224,10 +226,8 @@ void Level::success() {
         }
         if(record().script_ending.empty())
             m_screen.exit();
-        else {
-            m_script.loadFile(record().script_ending);
-            setBusy(BusyReason::poster);
-        }
+        else
+            m_instance.screens().poster(record());
         return true;
     });
 }

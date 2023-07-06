@@ -3,6 +3,7 @@
 #include "game/screens/credits.h"
 #include "game/screens/intro.h"
 #include "game/screens/levelscreen.h"
+#include "game/screens/poster.h"
 
 void ScreenManager::startMode(Mode mode) {
     switch(mode) {
@@ -40,8 +41,12 @@ void ScreenManager::announceLevel(const std::string& title) {
 }
 
 void ScreenManager::startLevel(LevelRecord& record, bool replay) {
-    auto& level = open<LevelScreen>(record, replay).level();
+    open<LevelScreen>(record, replay).level();
     m_title.fadeout();
+}
+
+void ScreenManager::poster(const LevelRecord& record) {
+    open<PosterScreen>(record.script_ending);
 }
 
 void ScreenManager::useNext() {

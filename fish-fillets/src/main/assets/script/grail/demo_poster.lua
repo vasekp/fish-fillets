@@ -1,9 +1,2 @@
-
-codename = "grail"
-file_include("script/"..codename.."/demo_dialogs.lua")
-
--- -----------------------------------------------------------------
-file_include("script/share/prog_demo.lua")
-slide_display("images/"..codename.."/poster.png", 0, 0)
-
-game_hint("dlg-x-poster")
+poster_display("images/grail/poster.png", 0, 0)
+poster_translation("We recommend subject the enclosed material to thorough tests of holiness. Due to the lack of equipment we performed only the basic tests and the results are more than promising.\nBombing some of the grails with ultradirty words, we measured sometimes even 3 Santa Clauses, some of them withstanded the circumstances pressure of 0.8 jobs for the period of one minute!\nIt is also possible that we have encountered the whole Holy Service.")

@@ -18,7 +18,7 @@ public:
     Audio(Instance& instance);
 
     AudioData::Ref loadSound(const std::string& filename) const;
-    AudioSource::Ref loadMusic(const std::string& filename) const;
+    AudioSource::Ref loadMusic(const std::string& filename, bool repeat = true) const;
 
     void addSource(const AudioSourceBase::Ref& source);
     void removeSource(const AudioSourceBase::Ref& source);

@@ -1,9 +1,2 @@
-
-codename = "ending"
-file_include("script/"..codename.."/demo_dialogs.lua")
-
--- -----------------------------------------------------------------
-file_include("script/share/prog_demo.lua")
-slide_display("images/"..codename.."/poster.png", 0, 0)
-
-game_hint("dlg-x-poster")
+poster_display("images/ending/poster.png", 0, 0)
+poster_translation("Good morning, fish!\nAgain, you didn’t disappoint us. General Committee decided to decorate you with the highest orders. They are made of milk chocolate. Due to confidentiality, eat them immediately.\nBOSS\n\nPS: I understand this little issue, but next time please tell me in advance, so that we can provide an adoption permission.\nPPS: Tell me, where did you find such a good player that he managed it all? I wish he won the computer or at least some of the other prizes.")

@@ -1,10 +1,2 @@
-
-codename = "map"
-file_include("script/"..codename.."/demo_dialogs.lua")
-
--- -----------------------------------------------------------------
-file_include("script/share/prog_demo.lua")
-slide_display("images/"..codename.."/poster.png", 0, 0)
-
-game_hint("dlg-x-poster")
-
+poster_display("images/map/poster.png", 0, 0)
+poster_translation("After much hardship we succeeded in finding captain Silver’s map. Initial enthusiasm afterwards changed into bitter disappointment, when we found out that the above mentioned map does not indicate the location of the treasure, but the place of residence of the last surviving Silver’s parrot that, unfortunately, suffers from sclerosis and cannot remember where the treasure is.")
