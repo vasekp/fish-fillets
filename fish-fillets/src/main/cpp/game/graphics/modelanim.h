@@ -31,6 +31,11 @@ public:
 
     void update();
     std::vector<const Image*> get(int dir) const;
+
+    constexpr static int framesTurn = 3; // bound to the animation
+    constexpr static int framesActivate = 4;
+    constexpr static int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
+    constexpr static int framesRestart = 30;
 };
 
 #endif //FISH_FILLETS_MODELANIM_H

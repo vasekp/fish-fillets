@@ -128,7 +128,7 @@ bool LevelRules::switchFish(Model* which) {
     setFish(target);
     if(!m_vintage && !m_level.inDemo()) {
         m_curFish->action() = Model::Action::activate;
-        m_level.transition(framesActivate, [unit = m_curFish]() {
+        m_level.transition(ModelAnim::framesActivate, [unit = m_curFish]() {
             unit->action() = Model::Action::base;
         });
     }
@@ -164,7 +164,7 @@ void LevelRules::moveFish(Direction d) {
        (m_curFish->orientation() == Model::Orientation::left && d.x > 0)) {
         if(!m_vintage) {
             m_curFish->action() = Model::Action::turning;
-            m_level.transition(framesTurn, [&, d]() {
+            m_level.transition(ModelAnim::framesTurn, [&, d]() {
                 m_curFish->action() = Model::Action::base;
                 m_curFish->turn();
                 moveFish(d);
@@ -393,27 +393,21 @@ void LevelRules::evalMotion(Model* model, Direction d) {
 void LevelRules::death(Model* unit) {
     if(!unit->alive())
         return;
-    m_level.screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     unit->die();
     updateDepGraph(unit);
     clearQueue();
-    m_level.killModelSound(unit);
-    m_level.killDialogs();
     unit->anim().removeExtra();
     if(!m_vintage)
         m_level.setModelEffect(unit, "disintegrate");
-    m_level.transition(framesDeath, [&, unit]() {
+    m_level.transition(ModelAnim::framesDeath, [&, unit]() {
         unit->disappear();
         updateDepGraph(unit);
     });
     evalMotion(unit, Direction::down); // see this line's commit's comment
     m_doomed = true;
-    m_level.notifyDeath();
-    if(unit == m_curFish && !switchFish()) {
+    if(unit == m_curFish && !switchFish())
         setFish(Model::Fish::none);
-        if(!m_level.inDemo())
-            m_level.transition(framesRestart, [&]() { m_level.restartWhenEmpty(); });
-    }
+    m_level.notifyDeath(unit, m_curFish == nullptr);
 }
 
 void LevelRules::buildDepGraph() {

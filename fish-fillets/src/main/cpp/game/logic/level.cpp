@@ -37,6 +37,23 @@ void Level::init() {
     input().setLoadPossible(loadPossible());
 }
 
+void Level::reinit(bool fromScript) {
+    m_dialogs.clear();
+    m_screen.killSounds();
+    m_screen.reset();
+    init();
+    m_transitions.clear();
+    m_replay.clear();
+    m_timer.reset();
+    setBusy(BusyReason::slideshow, false);
+    setBusy(BusyReason::loading, false);
+    setBusy(BusyReason::poster, false);
+    m_goto = false;
+    if(!fromScript)
+        setBusy(BusyReason::demo, false);
+}
+
+
 void Level::update(float dt) {
     layout().animate(dt, isBusy(BusyReason::loading)
             ? LevelLayout::speed_loading
@@ -151,8 +168,15 @@ void Level::notifyFish(Model::Fish fish) {
         input().setFish(fish);
 }
 
-void Level::notifyDeath() {
+void Level::notifyDeath(Model* unit, bool bothDead) {
     input().setSavePossible(false);
+    screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
+    killModelSound(unit);
+    if(!inDemo()) {
+        killPlan();
+        if(bothDead)
+            transition(ModelAnim::framesRestart, [this]() { restartWhenEmpty(); });
+    }
 }
 
 void Level::notifyEscape(Model* model) {
@@ -179,9 +203,8 @@ void Level::save(bool fromScript) {
 
 void Level::load(bool fromScript) {
     if(loadPossible() || fromScript) {
-        killDialogsHard();
         if(!fromScript)
-            m_plan.clear();
+            killPlan();
         reinit(fromScript);
         m_script.doString(saveFile()->read());
         m_script.doString("script_load()");
@@ -219,9 +242,8 @@ bool Level::inReplay() const {
 }
 
 void Level::restart(bool fromScript) {
-    killDialogsHard();
     if(!fromScript)
-        m_plan.clear();
+        killPlan();
     reinit(fromScript);
 }
 
@@ -229,26 +251,13 @@ void Level::restartWhenEmpty() {
     m_plan.emplace_back([&]() {
         if(m_instance.audio().isDialog())
             return false;
-        m_screen.subs().clear();
-        m_screen.killSounds();
         reinit();
         return true;
     });
 }
 
-void Level::reinit(bool fromScript) {
-    m_dialogs.clear();
-    m_screen.restore();
-    init();
-    m_transitions.clear();
-    m_replay.clear();
-    m_timer.reset();
-    setBusy(BusyReason::slideshow, false);
-    setBusy(BusyReason::loading, false);
-    setBusy(BusyReason::poster, false);
-    m_goto = false;
-    if(!fromScript)
-        setBusy(BusyReason::demo, false);
+void Level::killPlan() {
+    m_plan.clear();
 }
 
 bool Level::savePossible() const {

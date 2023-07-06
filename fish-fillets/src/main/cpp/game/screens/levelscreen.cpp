@@ -18,6 +18,7 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record) :
 void LevelScreen::restore() {
     m_display.reset();
     m_instance.graphics().setWindowShift({});
+    subs().clear();
 }
 
 void LevelScreen::exit() {

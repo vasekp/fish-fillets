@@ -445,18 +445,7 @@ void Level::game_planAction(LuaCallback function) {
 }
 
 void Level::game_killPlan() {
-    killDialogs();
-}
-
-void Level::killDialogs() {
-    if(!inDemo())
-        m_plan.clear();
-}
-
-void Level::killDialogsHard() {
-    killDialogs();
-    m_screen.subs().clear();
-    m_screen.killSounds();
+    killPlan();
 }
 
 void Level::game_addDecor(const std::string& type, int m1, int m2, int dx1, int dy1, int dx2, int dy2) {

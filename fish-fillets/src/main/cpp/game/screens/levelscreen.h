@@ -33,7 +33,7 @@ public:
     Subtitles& subs() { return m_subs; }
 
     void display(const std::string& filename);
-    void restore();
+    void reset();
     void exit();
 
     bool longPress(FCoords coords);

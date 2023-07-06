@@ -91,13 +91,12 @@ public:
     void skipGoTo(bool finish);
 
     void killModelSound(Model* model);
-    void killDialogs();
-    void killDialogsHard();
+    void killPlan();
     void setModelEffect(Model* model, const std::string& name);
 
     void notifyRound();
     void notifyFish(Model::Fish fish);
-    void notifyDeath();
+    void notifyDeath(Model* unit, bool bothDead);
     void notifyEscape(Model* model);
 
 private:
