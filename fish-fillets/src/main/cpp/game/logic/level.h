@@ -24,7 +24,7 @@ class Level : public ScriptReferrer {
     int m_attempt;
     bool m_roundFlag;
 
-    std::deque<Callback> m_tickSchedule;
+    std::deque<Callback> m_plan;
 
     struct Delayed {
         int countdown;
@@ -64,14 +64,14 @@ public:
     LevelInput& input();
 
     void init();
-    void reinit(bool keepSchedule = false); // TODO rename parameter
+    void reinit(bool fromScript = false);
     void update(float dt);
     void tick();
-    void save(bool force = false);
-    void load(bool keepSchedule = false);
+    void save(bool fromScript = false);
+    void load(bool fromScript = false);
     bool savePossible() const;
     bool loadPossible() const;
-    void restart(bool keepSchedule = false);
+    void restart(bool fromScript = false);
     void restartWhenEmpty();
     void replay();
     void success();
@@ -79,9 +79,9 @@ public:
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     bool loading() const;
-    bool scheduleGoTo(ICoords coords);
-    bool scheduleGoTo(Model* unit, ICoords coords);
-    void runScheduledAll(); // TODO rename
+    bool enqueueGoTo(ICoords coords);
+    bool enqueueGoTo(Model* unit, ICoords coords);
+    void dispatchMoveQueue();
     void recordMove(char key);
     bool accepting() const;
     void skipBusy();

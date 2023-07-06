@@ -224,7 +224,7 @@ bool LevelScreen::longPress(FCoords coords) { // TODO rename semantically
         return false;
     ICoords iCoords = round(coords / size_unit);
     m_level.skipGoTo(false);
-    return m_level.scheduleGoTo(iCoords);
+    return m_level.enqueueGoTo(iCoords);
 }
 
 bool LevelScreen::doubleTap(FCoords coords) { // TODO rename semantically

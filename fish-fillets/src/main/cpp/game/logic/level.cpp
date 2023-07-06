@@ -62,9 +62,9 @@ void Level::tick() {
     }
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::slideshow))
         m_script.doString("script_update()");
-    if(!isBusy(BusyReason::loading) && !m_tickSchedule.empty()) {
-        if(m_tickSchedule.front()())
-            m_tickSchedule.pop_front();
+    if(!isBusy(BusyReason::loading) && !m_plan.empty()) {
+        if(m_plan.front()())
+            m_plan.pop_front();
     }
     m_roundFlag = false;
 }
@@ -93,7 +93,7 @@ void Level::skipBusy() {
     else if(m_busy[BusyReason::slideshow])
         quitSlideshow();
     else if(m_busy[BusyReason::loading] && !inDemo())
-        runScheduledAll();
+        dispatchMoveQueue();
 }
 
 void Level::transition(int frames, std::function<void()>&& callback) {
@@ -121,13 +121,13 @@ bool Level::inGoTo() const {
 
 void Level::skipGoTo(bool finish) {
     if(finish)
-        runScheduledAll();
+        dispatchMoveQueue();
     else
         m_rules->clearQueue();
     m_goto = false;
 }
 
-void Level::runScheduledAll() {
+void Level::dispatchMoveQueue() {
     while(!m_rules->ready()) {
         for(auto& transition : m_transitions)
             transition.callback();
@@ -163,13 +163,13 @@ bool Level::quitSlideshow() {
     if(!isBusy(BusyReason::slideshow))
         return false;
     model_killSound(1); /* actor_index used in demo_briefcase.lua */
-    m_tickSchedule.clear();
+    m_plan.clear();
     slideshow_exit();
     return true;
 }
 
-void Level::save(bool force) {
-    if(savePossible() || force) {
+void Level::save(bool fromScript) {
+    if(savePossible() || fromScript) {
         m_script.doString("script_save()");
         if(m_busy.none())
             input().setLoadPossible(true);
@@ -177,19 +177,19 @@ void Level::save(bool force) {
     }
 }
 
-void Level::load(bool keepSchedule) {
-    if(loadPossible() || keepSchedule) {
+void Level::load(bool fromScript) {
+    if(loadPossible() || fromScript) {
         killDialogsHard();
-        if(!keepSchedule)
-            m_tickSchedule.clear();
-        reinit(keepSchedule);
+        if(!fromScript)
+            m_plan.clear();
+        reinit(fromScript);
         m_script.doString(saveFile()->read());
         m_script.doString("script_load()");
     }
 }
 
 void Level::success() {
-    m_tickSchedule.emplace_back([&]() {
+    m_plan.emplace_back([&]() {
         if(m_instance.audio().isDialog())
             return false;
         if(!isBusy(BusyReason::replay)) {
@@ -218,15 +218,15 @@ bool Level::inReplay() const {
     return isBusy(BusyReason::replay);
 }
 
-void Level::restart(bool keepSchedule) {
+void Level::restart(bool fromScript) {
     killDialogsHard();
-    if(!keepSchedule)
-        m_tickSchedule.clear();
-    reinit(keepSchedule);
+    if(!fromScript)
+        m_plan.clear();
+    reinit(fromScript);
 }
 
 void Level::restartWhenEmpty() {
-    m_tickSchedule.emplace_back([&]() {
+    m_plan.emplace_back([&]() {
         if(m_instance.audio().isDialog())
             return false;
         m_screen.subs().clear();
@@ -236,7 +236,7 @@ void Level::restartWhenEmpty() {
     });
 }
 
-void Level::reinit(bool keepSchedule) {
+void Level::reinit(bool fromScript) {
     m_dialogs.clear();
     m_screen.restore();
     init();
@@ -247,7 +247,7 @@ void Level::reinit(bool keepSchedule) {
     setBusy(BusyReason::loading, false);
     setBusy(BusyReason::poster, false);
     m_goto = false;
-    if(!keepSchedule)
+    if(!fromScript)
         setBusy(BusyReason::demo, false);
 }
 
@@ -267,11 +267,11 @@ std::unique_ptr<IFile> Level::solveFile() const {
     return m_instance.files().user(m_record.solveFilename());
 }
 
-bool Level::scheduleGoTo(ICoords coords) {
-    return scheduleGoTo(rules().activeFish_model(), coords);
+bool Level::enqueueGoTo(ICoords coords) {
+    return enqueueGoTo(rules().activeFish_model(), coords);
 }
 
-bool Level::scheduleGoTo(Model* unit, ICoords coords) {
+bool Level::enqueueGoTo(Model* unit, ICoords coords) {
     if(!m_rules->isFree(unit)) {
         Log::debug<Log::gotos>("GoTo rejected, model not free.");
         return false;
@@ -280,7 +280,7 @@ bool Level::scheduleGoTo(Model* unit, ICoords coords) {
     if(!path.empty()) {
         m_goto = true;
         m_rules->enqueue(path, false);
-        m_tickSchedule.emplace_back([&]() {
+        m_plan.emplace_back([&]() {
             if(!m_rules->ready())
                 return false;
             m_goto = false;

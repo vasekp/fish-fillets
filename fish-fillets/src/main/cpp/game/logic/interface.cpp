@@ -437,11 +437,11 @@ void Level::sound_stopMusic() {
 }
 
 bool Level::game_isPlanning() {
-    return !m_tickSchedule.empty();
+    return !m_plan.empty();
 }
 
 void Level::game_planAction(LuaCallback function) {
-    m_tickSchedule.emplace_back(std::move(function));
+    m_plan.emplace_back(std::move(function));
 }
 
 void Level::game_killPlan() {
@@ -450,7 +450,7 @@ void Level::game_killPlan() {
 
 void Level::killDialogs() {
     if(!inDemo())
-        m_tickSchedule.clear();
+        m_plan.clear();
 }
 
 void Level::killDialogsHard() {
