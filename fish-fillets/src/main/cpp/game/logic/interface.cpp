@@ -352,11 +352,8 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
     auto data = m_screen.addSound(name, dialog.soundFile, true);
     Log::verbose<Log::audio>("Audio type ", type.value_or(0));
     auto source = AudioSource::create(data, types[type.value_or(0)]);
-    if(loops.value_or(0) != 0) {
-        assert(loops.value() == -1);
-        source->setLoop();
-    } else
-        source->setLoop(0, 0);
+    if(loops.value_or(0) != 0)
+        source->setRepeat(true);
     source->setDialog(dialogFlag);
     if(index != index_talk_both)
         layout().getModel(index)->talk() = source;

@@ -109,23 +109,21 @@ void Audio::mix(float* output, std::size_t numSamples) {
 AudioData::Ref Audio::loadSound(const std::string& filename) const {
     if(m_sounds_preload.contains(filename))
         return m_sounds_preload.at(filename);
-    else
-        return decoders::ogg(m_instance, filename);
+    auto ref = decoders::ogg(m_instance, filename);
+    auto meta = m_instance.files().system(filename + ".meta");
+    if(meta->exists()) {
+        auto contents = meta->read();
+        std::istringstream iss{contents};
+        std::size_t start;
+        iss >> start;
+        ref->setLoopStart(start);
+    }
+    return ref;
 }
 
 AudioSource::Ref Audio::loadMusic(const std::string& filename, bool repeat) const {
     auto data = loadSound(filename);
     auto source = AudioSource::create(data, AudioType::music);
-    if(repeat) {
-        auto meta = m_instance.files().system(filename + ".meta");
-        if(meta->exists()) {
-            auto contents = meta->read();
-            std::istringstream iss{contents};
-            std::size_t start, end;
-            iss >> start >> end;
-            source->setLoop(start, end);
-        } else
-            source->setLoop();
-    }
+    source->setRepeat(repeat);
     return source;
 }

@@ -8,9 +8,7 @@ AudioSource::AudioSource(AudioData::Ref data, AudioType type, Private) :
     m_data(std::move(data)),
     m_samplesTotal(m_data->samples()),
     m_sampleIndex(),
-    m_loop(false),
-    m_loopStart(0),
-    m_loopEnd(0)
+    m_repeat(false)
 { }
 
 AudioSource::Ref AudioSource::create(const AudioData::Ref& data, AudioType type) {
@@ -22,17 +20,11 @@ void AudioSource::mixin(float *output, std::size_t numSamples, float refVolume) 
     float volume = refVolume * m_volume;
     for (auto i = 0u; i < countRead; i++)
         output[i] += volume * (*m_data)[m_sampleIndex++];
-    if(m_loop && m_sampleIndex >= m_loopEnd) {
-        Log::verbose<Log::audio>("music loop");
-        m_sampleIndex = m_loopStart;
+    if(m_sampleIndex == m_samplesTotal && m_repeat) {
+        Log::debug<Log::audio>("audio loop");
+        m_sampleIndex = m_data->loopStart();
         mixin(output + countRead, numSamples - countRead, refVolume);
     }
-}
-
-void AudioSource::setLoop(std::size_t start, std::size_t end) {
-    m_loop = (end != start);
-    m_loopStart = start;
-    m_loopEnd = std::min(end, m_samplesTotal);
 }
 
 bool AudioSource::done() const {

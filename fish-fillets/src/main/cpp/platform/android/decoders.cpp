@@ -166,7 +166,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 }
         } while(!(extractorDone && codecDone));
         numSamples = curSample;
-        Log::verbose<Log::audio>("loadSound ", filename, ": decoded ", curSample, " frames");
+        Log::debug<Log::audio>("loadSoundAsync ", filename, ": decoded ", curSample, " frames");
 
         AMediaFormat_delete(format);
         AMediaCodec_delete(codec);

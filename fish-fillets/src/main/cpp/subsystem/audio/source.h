@@ -31,10 +31,7 @@ class AudioSource : public AudioSourceBase {
     AudioData::Ref m_data;
     std::size_t m_samplesTotal;
     std::size_t m_sampleIndex;
-
-    bool m_loop;
-    std::size_t m_loopStart;
-    std::size_t m_loopEnd;
+    bool m_repeat;
 
     enum class Private { tag };
 
@@ -51,7 +48,7 @@ public:
     void mixin(float output[], std::size_t numSamples, float refVolume) override;
     bool done() const override;
 
-    void setLoop(std::size_t start = 0, std::size_t end = (std::size_t)(-1));
+    void setRepeat(bool repeat) { m_repeat = repeat; }
 };
 
 class AudioSourceQueue : public AudioSourceBase {

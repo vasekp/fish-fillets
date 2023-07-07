@@ -315,7 +315,7 @@ void LevelScreen::display(const std::string& filename) {
 }
 
 void LevelScreen::saveEffect() {
-    auto data = addSound("shutter", "sound/share/shutter.ogg");
+    addSound("shutter", "sound/share/shutter.ogg");
     playSound("shutter");
     m_flashAlpha = flashInit;
 }

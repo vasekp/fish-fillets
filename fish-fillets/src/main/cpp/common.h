@@ -26,6 +26,7 @@
 #include <filesystem>
 #include <functional>
 #include <atomic>
+#include <limits>
 
 #include "types.h"
 #include "utils.h"
