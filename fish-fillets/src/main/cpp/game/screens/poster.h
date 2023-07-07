@@ -30,7 +30,7 @@ private:
     void poster_display(const std::string& filename);
     void poster_translation(const std::string& text);
 
-    constexpr static float minTime = 10.f;
+    constexpr static float minTime = 3.f;
 };
 
 #endif //FISH_FILLETS_GAME_POSTER_H
