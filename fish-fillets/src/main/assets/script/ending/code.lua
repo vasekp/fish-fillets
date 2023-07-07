@@ -20,9 +20,10 @@ local function prog_init()
         zavermode = true
 
         return function()
-            if room.uvod < 4 then
+            if room.uvod < 4 and pom2 == 0 then
+                pom2 = 1
                 demo_enter()
-            else
+            elseif room.uvod == 4 then
                 demo_exit()
             end
             if room.uvod == 0 then
