@@ -18,14 +18,14 @@ local function xor2(value)
 end
 
 local function sinkShip(ship)
-    if objekty.afaze == -1 then
+    --if objekty.afaze == -1 then
         objekty:setEffect("none")
         local shiftX, shiftY = randint(10, 30), -7
         local speedX, speedY = randint(-1, 1), randint(4, 10)
         model_setViewShift(objekty.index, shiftX, shiftY, speedX, speedY)
         objekty.afaze = ship
         objekty:updateAnim()
-    end
+    --end
 end
 
 -- -----------------------------------------------------------------
@@ -232,6 +232,9 @@ local function prog_init()
         buh2.lodi = getNShips()
 
         return function()
+            if buh1:isOut() or buh2:isOut() then
+                buh2.cinnost = 0
+            end
             switch(buh2.cinnost){
                 [1] = function()
                     pom1, buh2.px, buh2.py = hrajlode(2)
@@ -422,6 +425,9 @@ local function prog_init()
 
 
         return function()
+            if buh1:isOut() or buh2:isOut() then
+                buh1.cinnost = 0
+            end
             switch(buh1.cinnost){
                 [1] = function()
                     pom1, buh1.px, buh1.py = hrajlode(1)
