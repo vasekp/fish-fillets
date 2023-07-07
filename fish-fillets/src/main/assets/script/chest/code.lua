@@ -12,63 +12,68 @@ local function prog_init()
     local function prog_init_room()
         local pom1, pom2, pomb1, pomb2 = 0, 0, false, false
 
+        room.uvod = 0
         room.posl = 2
-        pom1 = 0
-        local rand1 = random(pokus + 1)
-        if isIn(rand1, {0, 2, 4, 10, 20, 30, 50}) then
-            addv(random(30), "tru-v-nasly")
-            addm(7, "tru-m-co")
-            if random(2) == 1 then
-                addv(10 + random(6), "tru-v-poklad")
-            else
-                addv(10 + random(6), "tru-v-gral")
-            end
-            if random(5) == 1 then
-                addm(7, "tru-m-zrada")
-            end
-            pom1 = 1
-        elseif isIn(rand1, {1, 3, 5, 11, 43}) then
-            addv(random(30), "tru-v-vkupe")
-            if random(3) > 0 then
-                addm(8, "tru-m-zrada")
-            end
-            pom1 = 1
-        end
-        if pom1 == 1 then
-            addm(10 + random(10), "tru-m-oznamit")
-            if pokus < 3 or random(6) > 0 then
-                addv(5 + random(5), "tru-v-stacit")
-                addm(7 + random(6), "tru-m-zpochybnit")
-            end
-            addv(8 + random(9), "tru-v-nejspis")
-            if random(2) == 1 then
-                addm(9, "tru-m-nejistota")
-            end
-        end
 
         return function()
             if no_dialog() and isReady(small) and isReady(big) then
-                pom1 = room.posl
-                while pom1 == room.posl do
-                    pom1 = random(4)
+                if room.uvod == 0 then
+                    room.uvod = 1
+                    pom1 = 0
+                    local rand1 = random(pokus + 1)
+                    if isIn(rand1, {0, 2, 4, 10, 20, 30, 50}) then
+                        addv(random(30), "tru-v-nasly")
+                        addm(7, "tru-m-co")
+                        if random(2) == 1 then
+                            addv(10 + random(6), "tru-v-poklad")
+                        else
+                            addv(10 + random(6), "tru-v-gral")
+                        end
+                        if random(5) == 1 then
+                            addm(7, "tru-m-zrada")
+                        end
+                        pom1 = 1
+                    elseif isIn(rand1, {1, 3, 5, 11, 43}) then
+                        addv(random(30), "tru-v-vkupe")
+                        if random(3) > 0 then
+                            addm(8, "tru-m-zrada")
+                        end
+                        pom1 = 1
+                    end
+                    if pom1 == 1 then
+                        addm(10 + random(10), "tru-m-oznamit")
+                        if pokus < 3 or random(6) > 0 then
+                            addv(5 + random(5), "tru-v-stacit")
+                            addm(7 + random(6), "tru-m-zpochybnit")
+                        end
+                        addv(8 + random(9), "tru-v-nejspis")
+                        if random(2) == 1 then
+                            addm(9, "tru-m-nejistota")
+                        end
+                    end
+                else
+                    pom1 = room.posl
+                    while pom1 == room.posl do
+                        pom1 = random(4)
+                    end
+                    room.posl = pom1
+                    switch(pom1){
+                        [0] = function()
+                            addm(500 + random(1000), "tru-m-truhla"..random(2))
+                            addv(10 + random(14), "tru-v-truhla"..random(2))
+                        end,
+                        [1] = function()
+                            addm(500 + random(1000), "tru-m-vzit"..random(3))
+                            addv(10, "tru-v-vzit"..random(3))
+                        end,
+                        [2] = function()
+                            addv(500 + random(1000), "tru-v-zrak")
+                        end,
+                        [3] = function()
+                            addm(500 + random(1000), "tru-m-trpyt")
+                        end,
+                    }
                 end
-                room.posl = pom1
-                switch(pom1){
-                    [0] = function()
-                        addm(500 + random(1000), "tru-m-truhla"..random(2))
-                        addv(10 + random(14), "tru-v-truhla"..random(2))
-                    end,
-                    [1] = function()
-                        addm(500 + random(1000), "tru-m-vzit"..random(3))
-                        addv(10, "tru-v-vzit"..random(3))
-                    end,
-                    [2] = function()
-                        addv(500 + random(1000), "tru-v-zrak")
-                    end,
-                    [3] = function()
-                        addm(500 + random(1000), "tru-m-trpyt")
-                    end,
-                }
             end
         end
     end
