@@ -30,18 +30,7 @@ public:
 class AudioSource : public AudioSourceBase {
     AudioData::Ref m_data;
     std::size_t m_samplesTotal;
-    class Index {
-        std::size_t i;
-    public:
-        Index() : i(0) { }
-        Index(const Index&) : i(0) { }
-        Index& operator=(const Index&) { i = 0; return *this; }
-        Index& operator=(std::size_t j) { i = j; return *this; }
-        Index(Index&& other) : i(other.i) { }
-        Index& operator=(Index&& other) { i = other.i; return *this; }
-        operator std::size_t&() { return i; }
-        operator std::size_t() const { return i; }
-    } m_sampleIndex;
+    std::size_t m_sampleIndex;
 
     bool m_loop;
     std::size_t m_loopStart;
@@ -51,6 +40,8 @@ class AudioSource : public AudioSourceBase {
 
 public:
     AudioSource(AudioData::Ref data, AudioType type, Private);
+    AudioSource(const AudioSource&) = delete;
+    AudioSource& operator=(const AudioSource&) = delete;
 
     using Ref = std::shared_ptr<AudioSource>;
     static Ref create(const AudioData::Ref&, AudioType type);
