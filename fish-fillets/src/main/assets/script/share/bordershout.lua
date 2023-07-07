@@ -11,9 +11,7 @@ function notify_escape(modelId)
             small:planDialog(0, "sp-shout_small_0"..random(5))
         end
     elseif model == big then
-        if room.zvykacka and small.isOut() then
-            small:planDialog(0, "ob-m-zvykacka")
-        elseif random(100) < 15 and small:isOut() then
+        if random(100) < 15 and small:isOut() then
             big:planDialog(0, "sp-shout_big_04")
         else
             big:planDialog(0, "sp-shout_big_0"..random(4))
