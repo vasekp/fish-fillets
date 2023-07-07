@@ -156,9 +156,9 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
     if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
         return {};
-    Log::debug<Log::gotos>("path from ", unit->xy(), " to ", target, ":");
+    ICoords start = unit->xyFinal();
+    Log::debug<Log::gotos>("path from ", start, " to ", target, ":");
     auto occupied = occupiedBitmap(unit);
-    ICoords start = unit->xy();
     /* Check validity */
     if(occupied[start.y][start.x]) {
         Log::error("Unit start field marked as occupied.");
@@ -218,9 +218,9 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
 }
 
 std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistance) {
-    Log::debug<Log::gotos>("path from ", unit->xy(), " minDistance ", minDistance, ":");
+    ICoords start = unit->xyFinal();
+    Log::debug<Log::gotos>("path from ", start, " minDistance ", minDistance, ":");
     auto occupied = occupiedBitmap(unit);
-    ICoords start = unit->xy();
     if(occupied[start.y][start.x]) {
         Log::error("Unit start field marked as occupied.");
         return {};
