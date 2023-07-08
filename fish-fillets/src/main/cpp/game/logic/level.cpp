@@ -105,6 +105,10 @@ bool Level::inDemo() const {
     return isBusy(BusyReason::demo);
 }
 
+bool Level::inSlideshow() const {
+    return isBusy(BusyReason::slideshow);
+}
+
 void Level::skipBusy() {
     if(m_busy[BusyReason::slideshow])
         quitSlideshow();

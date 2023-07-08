@@ -85,9 +85,11 @@ public:
     bool accepting() const;
     void skipBusy();
     bool inDemo() const;
+    bool inSlideshow() const;
     bool inGoTo() const;
     bool inReplay() const;
     void skipGoTo(bool finish);
+    bool quitSlideshow();
 
     void killModelSound(Model* model);
     void killPlan();
@@ -169,7 +171,6 @@ private:
 
     void setBusy(BusyReason reason, bool busy = true);
     bool isBusy(BusyReason reason) const;
-    bool quitSlideshow();
 
     std::unique_ptr<IFile> saveFile() const;
     std::unique_ptr<IFile> solveFile() const;

@@ -274,7 +274,10 @@ bool LevelScreen::own_key(Key key) {
             m_level.skipBusy();
             return true;
         case Key::exit:
-            exit();
+            if(m_level.inSlideshow())
+                m_level.quitSlideshow();
+            else
+                exit();
             return true;
         case Key::save:
             if(m_level.savePossible()) {
