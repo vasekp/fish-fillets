@@ -18,6 +18,16 @@ local function planMoveAction(delay, action) -- TODO precondition, postcondition
     end)
 end
 
+local function planPushingAnim(delay)
+    syncMoves()
+    local time = delay
+    planMoveAction(0, function()
+        small:useSpecialAnim("head_pushing", 0)
+        time = time - 1
+        return time <= 0
+    end)
+end
+
 demo_enter()
 addm(0, "help1") -- Teď na nic nesahej
 planMoveAction(3, function() return level_action_showMoves("llll") end)
@@ -74,11 +84,12 @@ addm(5, "help12") -- Nesmíme ani přihazovat
 planMoveAction(5, function() return small:goTo(8, 17) end)
 syncTalk()
 planMoveAction(5, function() return level_action_showMoves("rr") end) -- velká zemře
-planMoveAction(5, function() return small:goTo(17, 26) end)
+planMoveAction(5, function() return small:goTo(18, 26) end)
 addm(0, "help13") -- nepohnu s ocelí
 syncTalk()
-planMoveAction(0, function() return level_action_showMoves("l") end) -- TODO malá tlačí
-planMoveAction(20, function() return level_action_showMoves("rdllll") end) -- malá umře
+planMoveAction(0, function() return level_action_showMoves("ll") end)
+planPushingAnim(20)
+planMoveAction(0, function() return level_action_showMoves("rdllll") end) -- malá umře
 syncMoves()
 planTimeAction(20, function() level_action_restart() end)
 
