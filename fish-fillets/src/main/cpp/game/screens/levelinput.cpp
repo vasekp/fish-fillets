@@ -48,7 +48,7 @@ bool LevelInput::pointerDown(FCoords coords) {
         m_activeButton = button;
         return true;
     }
-    if(m_activeFish == Model::Fish::none) {
+    if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
         return false;
     }
@@ -144,7 +144,7 @@ bool LevelInput::doubleTap(FCoords coords) {
     bool ret = false;
     if(!m_screen.doubleTap(windowCoords))
         ret = m_screen.keypress(Key::space);
-    if(m_activeFish == Model::Fish::none) {
+    if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
         return ret;
     }
@@ -234,9 +234,11 @@ void LevelInput::drawButtons(const DrawTarget& target, float time) {
         target.fill(coords, program, button.coordsFrom.fx(), button.coordsFrom.fy(), button.coordsTo.fx(), button.coordsTo.fy());
     }
     if(m_activeFish != Model::Fish::none) {
-        auto& copyProgram = m_instance.graphics().shaders().copy;
+        auto& alphaProgram = m_instance.graphics().shaders().alpha;
         auto& button = keyButton(Key::space);
         auto& image = m_activeFish == Model::Fish::small ? m_fishSmall : m_fishBig;
+        glUseProgram(alphaProgram);
+        glUniform1f(alphaProgram.uniform("uAlpha"), m_screen.level().activeFishReady() ? 1.f : 0.5f);
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
         FCoords imgExtent(image.width(), image.height());
@@ -244,7 +246,7 @@ void LevelInput::drawButtons(const DrawTarget& target, float time) {
         FCoords from = center - scale / 2.f * imgExtent;
         FCoords to = center + scale / 2.f * imgExtent;
         image.texture().bind();
-        target.fill(coords, copyProgram, from.fx(), from.fy(), to.fx(), to.fy());
+        target.fill(coords, alphaProgram, from.fx(), from.fy(), to.fx(), to.fy());
     }
 }
 

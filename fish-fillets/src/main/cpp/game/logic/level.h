@@ -90,6 +90,7 @@ public:
     bool inReplay() const;
     void skipGoTo(bool finish);
     bool quitSlideshow();
+    bool activeFishReady() const;
 
     void killModelSound(Model* model);
     void killPlan();

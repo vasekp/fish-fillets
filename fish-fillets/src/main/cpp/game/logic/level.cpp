@@ -109,6 +109,14 @@ bool Level::inSlideshow() const {
     return isBusy(BusyReason::slideshow);
 }
 
+bool Level::activeFishReady() const {
+    auto* unit = m_rules->activeFish_model();
+    if(!unit || unit->driven() || unit->action() == Model::Action::busy)
+        return false;
+    else
+        return true;
+}
+
 void Level::skipBusy() {
     if(m_busy[BusyReason::slideshow])
         quitSlideshow();
