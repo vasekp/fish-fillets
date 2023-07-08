@@ -15,7 +15,7 @@ class AndroidInput : public IInputSource {
     bool m_pointerFollow;
     std::int32_t m_pointerId;
     std::chrono::steady_clock::time_point m_pointerDownTime;
-    FCoords m_pointerDownCoords;
+    FCoords m_pointerCoords;
     bool m_pointerHandled;
     FCoords m_lastHover;
 

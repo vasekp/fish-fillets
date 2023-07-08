@@ -89,7 +89,7 @@ void XInput::buttonEvent(const XButtonEvent& event) {
     case ButtonPress:
         if(event.button == Button1) {
             m_pointerDownTime = std::chrono::steady_clock::now();
-            m_pointerDownCoords = coords;
+            m_pointerCoords = coords;
             m_pointerFollow = true;
             if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
                 m_pointerHandled = inputSink.doubleTap(coords);
@@ -117,12 +117,13 @@ void XInput::motionEvent(const XMotionEvent& event) {
     m_lastHover = coords;
     if(!m_pointerFollow || !(event.state & Button1Mask))
         return;
+    m_pointerCoords = coords;
     m_pointerHandled |= m_instance.inputSink().pointerMove(coords);
 }
 
 void XInput::ping() {
     if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerDownCoords);
+        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerCoords);
         m_pointerDownTime = absolutePast;
     }
 }

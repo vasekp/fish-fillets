@@ -19,16 +19,17 @@ class LevelInput : public IInputSink {
         wait,
         follow,
         ignore,
-        button
+        button,
+        goTo
     };
 
     struct {
         DirpadState state;
         std::chrono::steady_clock::time_point touchTime;
         std::deque<std::pair<std::chrono::steady_clock::time_point, FCoords>> history;
+        FCoords gotoPos;
         ICoords lastDir;
         ICoords lastNonzeroDir;
-        bool inside;
     } m_dirpad;
 
     struct Button {
@@ -78,7 +79,8 @@ private:
     void drawDirpad(const DrawTarget& target);
 
     constexpr static const char* fontFilename = "font/FFArrows.ttf";
-    constexpr static float minDistance = 40.f; // all dimension in "base pixels"
+    constexpr static float minDistance = 30.f; // all dimension in "base pixels"
+    constexpr static float maxDriftGoto = 15.f;
     constexpr static float buttonDistance = 35.f;
     constexpr static float arrowSize = 64.f;
     constexpr static float buttonSize = 48.f;

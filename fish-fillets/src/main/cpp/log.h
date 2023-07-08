@@ -64,10 +64,10 @@ public:
     static constexpr inline Level video = Level::info;
     static constexpr inline Level strings = Level::info;
     static constexpr inline Level audio = Level::info;
-    static constexpr inline Level input = Level::info;
+    static constexpr inline Level input = Level::debug;
     static constexpr inline Level motion = Level::info;
     static constexpr inline Level gotos = Level::debug;
-    static constexpr inline Level lua = Level::debug;
+    static constexpr inline Level lua = Level::info;
     static constexpr inline Level graphics = Level::info;
     static constexpr inline Level lifecycle = Level::info;
     static constexpr inline Level platform = Level::info;

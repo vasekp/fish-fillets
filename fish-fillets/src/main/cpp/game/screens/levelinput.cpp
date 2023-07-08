@@ -36,7 +36,7 @@ Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
-        Log::verbose<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
+        Log::debug<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
         return Key::none;
@@ -56,7 +56,6 @@ bool LevelInput::pointerDown(FCoords coords) {
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
     m_dirpad.state = DirpadState::wait;
-    m_dirpad.inside = false;
     return false;
 }
 
@@ -70,7 +69,8 @@ bool LevelInput::pointerMove(FCoords coords) {
     auto [then, pos2] = m_dirpad.history.back();
     auto timeDiff = now - then;
     auto diff = coords - pos2;
-    bool small = diff.length() < minDistance * m_instance.graphics().coords(Graphics::CoordSystems::base).scale;
+    auto cscale = m_instance.graphics().coords(Graphics::CoordSystems::base).scale;
+    bool small = diff.length() < minDistance * cscale;
     if(timeDiff > dirpadHistoryLength)
         m_dirpad.history.pop_back();
     ICoords dir{};
@@ -90,14 +90,19 @@ bool LevelInput::pointerMove(FCoords coords) {
             return false;
         case DirpadState::ignore:
             return false;
+        case DirpadState::goTo:
+            if((coords - m_dirpad.gotoPos).length() > maxDriftGoto * cscale) {
+                m_dirpad.state = DirpadState::wait;
+                m_screen.keypress(Key::interrupt);
+            }
+            [[fallthrough]];
         case DirpadState::wait:
             if(!small && dir) {
-                Log::verbose<Log::input>("Input: sending from WAIT: ", dir);
+                Log::debug<Log::input>("Input: sending from WAIT: ", dir);
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.state = DirpadState::follow;
-                m_dirpad.inside = false;
                 return true;
             } else
                 return false;
@@ -105,10 +110,9 @@ bool LevelInput::pointerMove(FCoords coords) {
             if(small)
                 m_dirpad.lastDir = {};
             else if(dir && dir != m_dirpad.lastDir) {
-                Log::verbose<Log::input>("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
+                Log::debug<Log::input>("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
-                m_dirpad.inside = false;
             }
             return true;
         case DirpadState::button: // handled earlier
@@ -164,8 +168,10 @@ bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         bool ret = m_screen.longPress(windowCoords);
-        if(ret)
-            m_dirpad.inside = true;
+        if(ret) {
+            m_dirpad.gotoPos = coords;
+            m_dirpad.state = DirpadState::goTo;
+        }
         return ret;
     } else
         return false;
@@ -251,7 +257,7 @@ void LevelInput::drawButtons(const DrawTarget& target, float time) {
 }
 
 void LevelInput::drawDirpad(const DrawTarget& target) {
-    if(m_dirpad.state != DirpadState::wait && m_dirpad.state != DirpadState::follow)
+    if(m_dirpad.state != DirpadState::wait && m_dirpad.state != DirpadState::follow && m_dirpad.state != DirpadState::goTo)
         return;
 
     float baseAlpha;
@@ -267,7 +273,7 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
     glUseProgram(program);
 
-    float s = m_dirpad.inside ? -1 : 1; // TODO uniform bool?
+    float s = m_dirpad.state == DirpadState::goTo ? -1 : 1; // TODO uniform bool?
     float vertices[3][3] = {
         {s, 0, 0},
         {0, s, 0},
@@ -278,13 +284,13 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     auto displayDim = graphics.display().size();
     glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
     glUniform2f(program.uniform("uDstSize"), displayDim.fx(), displayDim.fy());
-    auto [_, pos] = m_dirpad.history.front();
+    auto pos = m_dirpad.state == DirpadState::goTo ? m_dirpad.gotoPos : m_dirpad.history.front().second;
     glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
     auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         glUniform2fv(program.uniform("uDirection"), 1, FCoords{dir}.gl().data());
-        float alpha = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir ? 1.f : 0.5f) * baseAlpha;
+        float alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? 1.f : 0.5f) * baseAlpha;
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).data());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }

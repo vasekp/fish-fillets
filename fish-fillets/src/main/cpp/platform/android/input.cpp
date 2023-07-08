@@ -71,7 +71,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 case AMOTION_EVENT_ACTION_DOWN: {
                     auto lastPointerTime = m_pointerDownTime;
                     m_pointerDownTime = std::chrono::steady_clock::now();
-                    m_pointerDownCoords = coords;
+                    m_pointerCoords = coords;
                     m_pointerId = pointerId;
                     m_pointerFollow = true;
                     if(m_pointerDownTime - lastPointerTime < doubletapTime)
@@ -84,8 +84,8 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 case AMOTION_EVENT_ACTION_MOVE: {
                     if(!m_pointerFollow || pointerId != m_pointerId)
                         return false;
-                    else
-                        return m_pointerHandled |= inputSink.pointerMove(coords);
+                    m_pointerCoords = coords;
+                    return m_pointerHandled |= inputSink.pointerMove(coords);
                 }
                 case AMOTION_EVENT_ACTION_UP: {
                     if(!m_pointerFollow)
@@ -151,7 +151,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
 
 void AndroidInput::ping() {
     if(m_pointerFollow && m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerDownCoords);
+        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerCoords);
         m_pointerDownTime = absolutePast;
     }
 }
