@@ -54,7 +54,7 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
     }
     while(!m_lines.empty()) {
         const auto& front = m_lines.front();
-        if(front.live && (front.yOffset > 5 || absTime - front.addTime > front.duration))
+        if(front.live && ((front.yOffset > 5 && m_lines.front().groupSize < m_lines.size()) || absTime - front.addTime > front.duration))
             m_lines.erase(m_lines.begin(), m_lines.begin() + (int)m_lines.front().groupSize);
         else
             break;
