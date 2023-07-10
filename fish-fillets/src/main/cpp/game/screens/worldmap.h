@@ -60,7 +60,7 @@ protected:
 
     void own_start() override;
     void own_resume() override;
-    void own_draw(const DrawTarget& target, float dt) override;
+    void own_draw(const DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;
 

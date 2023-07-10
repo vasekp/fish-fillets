@@ -18,7 +18,7 @@ void PosterScreen::own_start() {
     m_instance.audio().addSource(m_music);
 }
 
-void PosterScreen::own_draw(const DrawTarget& target, float) {
+void PosterScreen::own_draw(const DrawTarget& target) {
     const auto& program = m_instance.graphics().shaders().copy;
     target.blit(getImage("poster"), m_instance.graphics().coords(Graphics::CoordSystems::base), program);
     if(m_hint)

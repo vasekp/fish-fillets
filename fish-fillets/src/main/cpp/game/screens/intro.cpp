@@ -54,7 +54,7 @@ void IntroScreen::own_start() {
     m_instance.screens().announceLevel("");
 }
 
-void IntroScreen::own_draw(const DrawTarget& target, float dt) {
+void IntroScreen::own_draw(const DrawTarget& target) {
     while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeAlive())
         m_vBuffer.pop_front();
     if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeAlive() && m_theora.done()) {

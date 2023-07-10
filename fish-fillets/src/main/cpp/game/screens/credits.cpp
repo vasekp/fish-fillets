@@ -16,7 +16,7 @@ void CreditsScreen::own_start() {
     m_instance.audio().addSource(m_music);
 }
 
-void CreditsScreen::own_draw(const DrawTarget& target, float) {
+void CreditsScreen::own_draw(const DrawTarget& target) {
     float offset = std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight;
     const auto& program = m_instance.graphics().shaders().copy;
     target.blit(getImage("credits"), m_instance.graphics().coords(Graphics::CoordSystems::base), program, 0, 0,

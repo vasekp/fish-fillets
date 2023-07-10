@@ -2,7 +2,6 @@
 
 GameScreen::GameScreen(Instance &instance) :
     m_instance(instance),
-    m_lastDraw(0),
     m_running(false)
 { }
 
@@ -66,7 +65,5 @@ float GameScreen::timeAlive() {
 
 void GameScreen::draw(const DrawTarget& target) {
     target.bind();
-    auto liveTime = timeAlive();
-    own_draw(target, liveTime - m_lastDraw);
-    m_lastDraw = liveTime;
+    own_draw(target);
 }

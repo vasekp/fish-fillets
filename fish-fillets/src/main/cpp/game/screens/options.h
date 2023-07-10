@@ -40,7 +40,7 @@ public:
 
     IInputSink& input() override { return *this; }
 
-    void own_draw(const DrawTarget &target, float dt) override;
+    void own_draw(const DrawTarget &target) override;
     bool pointerDown(FCoords coords) override;
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;

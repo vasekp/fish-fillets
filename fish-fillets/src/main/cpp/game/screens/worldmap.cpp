@@ -47,7 +47,7 @@ void WorldMap::own_start() {
     m_instance.screens().announceLevel("");
 }
 
-void WorldMap::own_draw(const DrawTarget& target, float dt) {
+void WorldMap::own_draw(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
@@ -86,7 +86,7 @@ void WorldMap::own_draw(const DrawTarget& target, float dt) {
         drawMasked(target, m_maskColors.at(Frames::options));
 
     if(m_pm && m_staticFrame != Frames::loading)
-        m_pm->draw(target, dt);
+        m_pm->draw(target, timeAlive());
 
     switch(m_staticFrame) {
         case Frames::loading:
@@ -130,6 +130,7 @@ bool WorldMap::own_pointer(FCoords coords) {
                 default:;
             }
         }
+
     if(m_pm) {
         switch(auto button = m_pm->findButton(coords)) {
             case Pedometer::Buttons::retry:
@@ -160,7 +161,7 @@ bool WorldMap::own_pointer(FCoords coords) {
             lang = "cs"s;
         m_instance.screens().announceLevel(it->second.title.at(lang));
         if(record.state() == LevelState::solved)
-            m_pm.emplace(m_instance, it->second);
+            m_pm.emplace(m_instance, it->second, timeAlive());
         else {
             staticFrame(WorldMap::Frames::loading, [this, it]() {
                 m_instance.screens().startLevel(it->second);

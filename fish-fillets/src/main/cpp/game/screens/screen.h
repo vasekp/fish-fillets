@@ -11,7 +11,6 @@ protected:
     Instance& m_instance;
     std::chrono::steady_clock::time_point m_relStartTime;
     std::chrono::steady_clock::time_point m_pauseTime;
-    float m_lastDraw;
     bool m_running;
 
 private:
@@ -43,7 +42,7 @@ protected:
     virtual void own_pause() { }
     virtual void own_resume() { }
     virtual void own_resize();
-    virtual void own_draw(const DrawTarget& target, float dt) = 0;
+    virtual void own_draw(const DrawTarget& target) = 0;
     virtual bool own_pointer(FCoords coords) { return false; }
     virtual bool own_key(Key key) { return false; }
 };

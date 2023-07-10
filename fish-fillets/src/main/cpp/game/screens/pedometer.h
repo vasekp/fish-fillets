@@ -11,7 +11,7 @@ class Pedometer {
     PNGImage m_digImage;
 
     std::array<int, 5> m_digits;
-    float m_time;
+    float m_createTime;
 
 public:
     enum class Buttons {
@@ -30,9 +30,9 @@ private:
     } m_buttons[3];
 
 public:
-    Pedometer(Instance& instance, LevelRecord& level);
+    Pedometer(Instance& instance, LevelRecord& level, float time);
 
-    void draw(const DrawTarget& target, float dt);
+    void draw(const DrawTarget& target, float time);
     Buttons findButton(FCoords coords);
     LevelRecord& record() { return m_record; }
 
