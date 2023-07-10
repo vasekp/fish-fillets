@@ -157,6 +157,11 @@ void LevelScreen::own_draw(const DrawTarget& target, float dt) {
         target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
         m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
+
+    m_subs.draw(target, dt, timeAlive());
+    if(m_hint)
+        m_hint->draw(target);
+    m_input.draw(target, timeAlive());
 }
 
 AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
@@ -301,13 +306,6 @@ bool LevelScreen::own_key(Key key) {
         default:
             return false;
     }
-}
-
-void LevelScreen::own_drawOverlays(const DrawTarget &target, float dTime, float absTime) {
-    m_subs.draw(target, dTime, absTime);
-    if(m_hint)
-        m_hint->draw(target);
-    m_input.draw(target, absTime);
 }
 
 void LevelScreen::display(const std::string& filename) {

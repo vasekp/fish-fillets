@@ -2,7 +2,7 @@
 
 GameScreen::GameScreen(Instance &instance) :
     m_instance(instance),
-    m_lastDraw(0), m_lastDrawOverlays(0),
+    m_lastDraw(0),
     m_running(false)
 { }
 
@@ -69,11 +69,4 @@ void GameScreen::draw(const DrawTarget& target) {
     auto liveTime = timeAlive();
     own_draw(target, liveTime - m_lastDraw);
     m_lastDraw = liveTime;
-}
-
-void GameScreen::drawOverlays(const DrawTarget& target) {
-    target.bind();
-    auto liveTime = timeAlive();
-    own_drawOverlays(target, liveTime - m_lastDrawOverlays, liveTime); // TODO 3rd argument not needed
-    m_lastDrawOverlays = liveTime;
 }

@@ -74,7 +74,6 @@ void ScreenManager::drawFrame() {
     glClear(GL_COLOR_BUFFER_BIT);
     curScreen().draw(offscreen);
 
-    curScreen().drawOverlays(offscreen);
     m_title.draw(offscreen);
 
     if(m_options.visible()) {
