@@ -16,8 +16,7 @@ void LevelTitle::hide() {
 }
 
 void LevelTitle::fadeout() {
-    constexpr float fadeoutTotal = lingerTime + fadeoutTime;
-    m_hide = std::chrono::steady_clock::now() + std::chrono::milliseconds((int)fadeoutTotal);
+    m_hide = std::chrono::steady_clock::now() + lingerTime + fadeoutTime;
 }
 
 void LevelTitle::draw(const DrawTarget& target) {
@@ -26,10 +25,8 @@ void LevelTitle::draw(const DrawTarget& target) {
 
     float opacity = 1.0;
     if(m_hide) {
-        constexpr float fadeoutFactor = 1000.f / fadeoutTime;
-        auto timeLeft = std::chrono::duration<float>(
-                m_hide.value() - std::chrono::steady_clock::now()).count();
-        opacity = std::clamp(fadeoutFactor * timeLeft, 0.f, 1.f);
+        std::chrono::duration<float> timeLeft = m_hide.value() - std::chrono::steady_clock::now();
+        opacity = std::clamp(timeLeft / fadeoutTime, 0.f, 1.f);
     }
     if(opacity == 0.f) {
         hide();
