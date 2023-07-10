@@ -1,6 +1,11 @@
 #ifndef FISH_FILLETS_OGG_INTERNALS_H
 #define FISH_FILLETS_OGG_INTERNALS_H
 
+#include "common.h"
+
+#include <vorbis/codec.h>
+#include <theora/theoradec.h>
+
 namespace ogg::internal {
     template<class C, auto init, auto clear>
     class OggStruct : public C {

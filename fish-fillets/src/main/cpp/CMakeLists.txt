@@ -9,6 +9,7 @@ file(GLOB fillets_sources
         "*.cpp"
         "api/lua/*.cpp"
         "api/ogl/*.cpp"
+        "api/ogg/*.cpp"
         "subsystem/*.cpp"
         "subsystem/*/*.cpp"
         "game/*.cpp"

@@ -3,7 +3,7 @@
 
 #include "screen.h"
 #include "subsystem/audio.h"
-#include "api/ogg.h"
+#include "api/ogg/video.h"
 
 class IntroScreen : public GameScreen {
     BaseInput m_input;
