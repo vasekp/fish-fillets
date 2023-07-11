@@ -102,7 +102,7 @@ void ScreenManager::drawFrame() {
 }
 
 IInputSink& ScreenManager::input() {
-    return m_options.visible() ? m_options.input() : curScreen().input();
+    return m_options.visible() ? m_options : curScreen().input();
 }
 
 IInputSource& ScreenManager::inputSourceMasked() {

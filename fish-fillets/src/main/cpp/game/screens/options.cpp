@@ -2,7 +2,7 @@
 #include "subsystem/persist.h"
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :
-    GameScreen(instance),
+    m_instance(instance),
     m_options(instance, "images/menu/options.png"),
     m_slider(instance, "images/menu/cudlik.png"),
     m_origin((Graphics::baseDim - imgSize) / 2),
@@ -27,7 +27,7 @@ OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, F
     to = origin + FCoords(volTolerance, volTolerance) + FCoords(volLength, 0.f);
 }
 
-void OptionsOverlay::own_draw(const DrawTarget& target) {
+void OptionsOverlay::draw(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base).shifted(m_origin);
 

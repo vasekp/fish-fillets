@@ -3,7 +3,8 @@
 
 #include "subsystem/audio.h"
 
-class OptionsOverlay : public GameScreen, public IInputSink {
+class OptionsOverlay : public IInputSink {
+    Instance& m_instance;
     PNGImage m_options;
     PNGImage m_slider;
     FCoords m_origin;
@@ -38,9 +39,7 @@ public:
     void hide();
     bool visible() const { return m_visible; }
 
-    IInputSink& input() override { return *this; }
-
-    void own_draw(const DrawTarget &target) override;
+    void draw(const DrawTarget &target);
     bool pointerDown(FCoords coords) override;
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;
