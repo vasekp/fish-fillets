@@ -1,8 +1,9 @@
 #ifndef FISH_FILLETS_CREDITS_H
 #define FISH_FILLETS_CREDITS_H
 
-#include "screen.h"
+#include "gamescreen.h"
 #include "subsystem/audio.h"
+#include "baseinput.h"
 
 class CreditsScreen : public GameScreen {
     BaseInput m_input;

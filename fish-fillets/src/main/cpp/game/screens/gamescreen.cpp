@@ -1,4 +1,4 @@
-#include "screen.h"
+#include "gamescreen.h"
 
 GameScreen::GameScreen(Instance &instance) :
     m_instance(instance),

@@ -1,4 +1,4 @@
-#include "screenmanager.h"
+#include "options.h"
 #include "subsystem/persist.h"
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :

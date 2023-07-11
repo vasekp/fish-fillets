@@ -2,10 +2,11 @@
 #define FISH_FILLETS_GAME_SCREENMANAGER_H
 
 #include "instance.h"
-#include "screen.h"
-#include "game/structure/levelrecord.h"
-#include "game/graphics/leveltitle.h"
+#include "gamescreen.h"
+#include "leveltitle.h"
 #include "options.h"
+
+class LevelRecord;
 
 class ScreenManager {
     Instance& m_instance;

@@ -1,10 +1,11 @@
 #ifndef FISH_FILLETS_GAME_WORLDMAP_H
 #define FISH_FILLETS_GAME_WORLDMAP_H
 
-#include "screen.h"
+#include "gamescreen.h"
 #include "game/structure/gametree.h"
 #include "subsystem/audio.h"
 #include "pedometer.h"
+#include "baseinput.h"
 
 class WorldMap : public GameScreen {
     enum class Frames {

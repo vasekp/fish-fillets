@@ -1,6 +1,6 @@
 #include "baseinput.h"
 #include "instance.h"
-#include "game/screens/screen.h"
+#include "game/screens/gamescreen.h"
 
 bool BaseInput::keyDown(Key key) {
     return m_screen.keypress(key);

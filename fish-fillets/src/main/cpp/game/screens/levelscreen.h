@@ -1,7 +1,7 @@
 #ifndef FISH_FILLETS_LEVELSCREEN_H
 #define FISH_FILLETS_LEVELSCREEN_H
 
-#include "screen.h"
+#include "gamescreen.h"
 #include "levelinput.h"
 #include "game/structure/levelrecord.h"
 #include "game/logic/level.h"

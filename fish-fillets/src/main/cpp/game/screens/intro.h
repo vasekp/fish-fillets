@@ -1,9 +1,10 @@
 #ifndef FISH_FILLETS_GAME_INTRO_H
 #define FISH_FILLETS_GAME_INTRO_H
 
-#include "screen.h"
+#include "gamescreen.h"
 #include "subsystem/audio.h"
 #include "api/ogg/video.h"
+#include "baseinput.h"
 
 class IntroScreen : public GameScreen {
     BaseInput m_input;

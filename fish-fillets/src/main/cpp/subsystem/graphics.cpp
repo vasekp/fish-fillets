@@ -1,5 +1,4 @@
 #include "graphics.h"
-#include "game/screens/screen.h"
 #include "game/screens/screenmanager.h"
 
 void Graphics::activate() {

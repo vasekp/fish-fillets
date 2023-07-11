@@ -2,6 +2,8 @@
 #define FISH_FILLETS_SCREENS_OPTIONS_H
 
 #include "subsystem/audio.h"
+#include "subsystem/input.h"
+#include "subsystem/graphics.h"
 
 class OptionsOverlay : public IInputSink {
     Instance& m_instance;
