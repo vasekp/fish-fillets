@@ -73,6 +73,23 @@ void LevelScreen::own_update() {
 }
 
 void LevelScreen::own_draw(const DrawTarget& target) {
+    drawLevel(target);
+
+    if(m_flashAlpha > 0) {
+        const auto& flatProgram = m_instance.graphics().shaders().flat;
+        const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
+        glUseProgram(flatProgram);
+        glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
+        target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
+    }
+
+    m_subs.draw(target, timeAlive());
+    if(m_hint)
+        m_hint->draw(target);
+    m_input.draw(target);
+}
+
+void LevelScreen::drawLevel(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& flatProgram = m_instance.graphics().shaders().flat;
@@ -164,17 +181,6 @@ void LevelScreen::own_draw(const DrawTarget& target) {
         m_instance.graphics().setMask(m_mirrorTarget->texture().texture()); // TODO
         target.blit(mirror->anim().get(mirror->orientation())[0], coords, m_instance.graphics().shaders().mirror, mirror->fx() * size_unit, mirror->fy() * size_unit);
     }
-
-    if(m_flashAlpha > 0) {
-        glUseProgram(flatProgram);
-        glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
-    }
-
-    m_subs.draw(target, timeAlive());
-    if(m_hint)
-        m_hint->draw(target);
-    m_input.draw(target);
 }
 
 AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {

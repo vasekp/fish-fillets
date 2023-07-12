@@ -65,6 +65,8 @@ private:
     void own_draw(const DrawTarget& target) override;
     bool own_key(Key key) override;
 
+    void drawLevel(const DrawTarget& target);
+
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 
     constexpr static float flashInit = 0.5f;
