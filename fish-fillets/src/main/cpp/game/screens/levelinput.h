@@ -44,7 +44,7 @@ class LevelInput : public IInputSink {
     };
     std::unique_ptr<IFont> m_buttonsFont;
     std::vector<Button> m_buttons;
-    int m_activeButton;
+    const Button* m_activeButton;
 
     PNGImage m_fishSmall;
     PNGImage m_fishBig;
@@ -73,7 +73,7 @@ public:
     Key pool();
 
 private:
-    int findButton(FCoords pos);
+    const Button* findButton(FCoords pos);
     Button& keyButton(Key key);
 
     void drawButtons(const DrawTarget& target);
@@ -89,7 +89,6 @@ private:
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = 300ms;
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = 100ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
-    constexpr static int noButton = -1;
 
     constexpr static Color colorSmall{255, 197, 102};
     constexpr static Color colorBig{162, 244, 255};

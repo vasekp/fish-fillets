@@ -9,7 +9,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
-        m_activeButton(noButton),
+        m_activeButton(nullptr),
         m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
         m_fishBig(instance, "images/fishes/big/right/body_rest_00.png")
 {
@@ -43,7 +43,7 @@ Key LevelInput::pool() {
 }
 
 bool LevelInput::pointerDown(FCoords coords) {
-    if(auto button = findButton(coords); button != noButton && m_buttons[button].enabled) {
+    if(auto button = findButton(coords); button != nullptr && button->enabled) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
@@ -124,9 +124,9 @@ bool LevelInput::pointerMove(FCoords coords) {
 bool LevelInput::pointerUp(bool empty) {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
-    if(lastState == DirpadState::button && m_activeButton != noButton) {
-        if(m_buttons[m_activeButton].enabled)
-            m_screen.keypress(m_buttons[m_activeButton].key);
+    if(lastState == DirpadState::button && m_activeButton != nullptr) {
+        if(m_activeButton->enabled)
+            m_screen.keypress(m_activeButton->key);
         return true;
     }
     if(empty)
@@ -139,7 +139,7 @@ void LevelInput::pointerCancel() {
 }
 
 bool LevelInput::doubleTap(FCoords coords) {
-    if(auto button = findButton(coords); button != noButton && m_buttons[button].enabled) {
+    if(auto button = findButton(coords); button != nullptr && button->enabled) {
         m_dirpad.state = DirpadState::button;
         m_activeButton = button;
         return true;
@@ -211,8 +211,7 @@ void LevelInput::flashButton(Key which) {
 
 void LevelInput::update(float time) {
     // update buttons
-    for(auto i = 0u; i < m_buttons.size(); i++) {
-        auto& button = m_buttons[i];
+    for(auto& button : m_buttons) {
         if(button.flashing) {
             if(!button.flashTime)
                 button.flashTime = time;
@@ -224,7 +223,7 @@ void LevelInput::update(float time) {
         else if(!button.enabled)
             button.alpha = alphaDisabled;
         else if(m_dirpad.state == DirpadState::button)
-            button.alpha = (int)i == m_activeButton ? alphaActive : alphaBase;
+            button.alpha = &button == m_activeButton ? alphaActive : alphaBase;
         else
             button.alpha = alphaBase;
     }
@@ -239,7 +238,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     glUseProgram(program);
-    for(auto& button : m_buttons) {
+    for(const auto& button : m_buttons) {
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(button.alpha).data());
         glUniform2f(program.uniform("uTexSize"), (float)button.image.width(), (float)button.image.height());
         button.image.texture().bind();
@@ -302,13 +301,11 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
     }
 }
 
-int LevelInput::findButton(FCoords pos) {
-    for(auto i = 0u; i < m_buttons.size(); i++) {
-        auto& button = m_buttons[i];
+const LevelInput::Button* LevelInput::findButton(FCoords pos) {
+    for(const auto& button : m_buttons)
         if(pos.within(button.coordsFrom, button.coordsTo))
-            return (int)i;
-    }
-    return noButton;
+            return &button;
+    return nullptr;
 }
 
 LevelInput::Button& LevelInput::keyButton(Key key) {
