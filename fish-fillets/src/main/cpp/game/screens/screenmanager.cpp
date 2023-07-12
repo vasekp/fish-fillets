@@ -57,15 +57,15 @@ void ScreenManager::useNext() {
     m_instance.inputSource().reset();
 }
 
-void ScreenManager::drawFrame() {
+void ScreenManager::updateAll() {
     if(m_next)
         useNext();
+    curScreen().update();
+    m_title.update();
+}
 
+void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
-    if(!graphics.ready()) {
-      Log::error("drawFrame called without active graphics subsystem");
-        return;
-    }
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
 
     const auto& offscreen = graphics.offscreenTarget();

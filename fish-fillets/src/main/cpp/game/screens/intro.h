@@ -16,6 +16,11 @@ class IntroScreen : public GameScreen {
     AudioSourceQueue::Ref m_aBuffer;
     std::deque<ogg::TheoraDecoder::Frame> m_vBuffer;
 
+    ogl::Texture m_texY;
+    ogl::Texture m_texCb;
+    ogl::Texture m_texCr;
+    float m_texTime;
+
 public:
     IntroScreen(Instance&);
 
@@ -23,6 +28,7 @@ public:
 
 protected:
     void own_start() override;
+    void own_update() override;
     void own_draw(const DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;

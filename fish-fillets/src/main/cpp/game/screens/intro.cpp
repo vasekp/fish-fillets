@@ -8,7 +8,8 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_ogg(instance.files().system("video/intro.ogv")->read()),
     m_vorbis(m_ogg),
     m_theora(m_ogg),
-    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music))
+    m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music)),
+    m_texTime(-1.f)
 {
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)
@@ -54,30 +55,37 @@ void IntroScreen::own_start() {
     m_instance.screens().announceLevel("");
 }
 
-void IntroScreen::own_draw(const DrawTarget& target) {
+void IntroScreen::own_update() {
     while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeAlive())
         m_vBuffer.pop_front();
     if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeAlive() && m_theora.done()) {
         Log::debug<Log::video>("Intro ended.");
         m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
     }
-    auto& frame = m_vBuffer.front();
-    Log::verbose<Log::video>("drawing frame ", frame.time, " @ ", timeAlive());
     // FIXME: Condiser upload upfront / asynchronously somehow? I think it doesn't really matter as we have to do 3 texture uploads
     // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
     // exist in the targeted OpenGL ES version.
-    auto texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.yData.data(), 1);
-    auto texCb = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.cbData.data(), 1);
-    auto texCr = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.crData.data(), 1);
+    auto& frame = m_vBuffer.front();
+    if(frame.time == m_texTime)
+        return;
+    Log::verbose<Log::video>("uploading frame ", frame.time);
+    m_texY = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 640, 480, 640, frame.yData.data(), 1);
+    m_texCb = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.cbData.data(), 1);
+    m_texCr = ogl::Texture::fromImageData(m_instance.graphics().system().ref(), 320, 240, 320, frame.crData.data(), 1);
+    m_texTime = frame.time;
+    fill_buffers();
+}
+
+void IntroScreen::own_draw(const DrawTarget& target) {
+    Log::verbose<Log::video>("drawing frame ", m_texTime, " @ ", timeAlive());
     const auto& program = m_instance.graphics().shaders().ycbcr;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     glActiveTexture(Shaders::texCb_gl);
-    glBindTexture(GL_TEXTURE_2D, texCb);
+    glBindTexture(GL_TEXTURE_2D, m_texCb);
     glActiveTexture(Shaders::texCr_gl);
-    glBindTexture(GL_TEXTURE_2D, texCr);
+    glBindTexture(GL_TEXTURE_2D, m_texCr);
     glActiveTexture(Shaders::texImage_gl);
-    target.blit(texY, coords, program);
-    fill_buffers();
+    target.blit(m_texY, coords, program);
 }
 
 bool IntroScreen::own_pointer(FCoords coords) {

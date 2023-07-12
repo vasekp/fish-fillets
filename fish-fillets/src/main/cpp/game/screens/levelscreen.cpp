@@ -10,7 +10,7 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         m_waves(),
         m_winSize(),
         m_subs(instance),
-        m_lastDraw(0),
+        m_lastUpdate(0),
         m_flashAlpha(0),
         m_replay(replay)
 { }
@@ -57,13 +57,22 @@ std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model)
     return ret;
 }
 
-void LevelScreen::own_draw(const DrawTarget& target) {
+void LevelScreen::own_update() {
     auto liveTime = timeAlive();
-    auto dt = liveTime - m_lastDraw;
-    m_lastDraw = liveTime;
+    auto dt = liveTime - m_lastUpdate;
 
     m_level.update(dt);
 
+    if(m_flashAlpha > 0)
+        m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
+
+    m_subs.update(liveTime, dt);
+    m_input.update(liveTime);
+
+    m_lastUpdate = liveTime;
+}
+
+void LevelScreen::own_draw(const DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& flatProgram = m_instance.graphics().shaders().flat;
@@ -160,13 +169,12 @@ void LevelScreen::own_draw(const DrawTarget& target) {
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
         target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
-        m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
     }
 
-    m_subs.draw(target, dt, timeAlive());
+    m_subs.draw(target, timeAlive());
     if(m_hint)
         m_hint->draw(target);
-    m_input.draw(target, timeAlive());
+    m_input.draw(target);
 }
 
 AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {

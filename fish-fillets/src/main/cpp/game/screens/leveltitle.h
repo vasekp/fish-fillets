@@ -8,6 +8,7 @@ class LevelTitle {
     std::unique_ptr<IFont> m_font;
     std::optional<TextImage> m_image;
     std::optional<std::chrono::steady_clock::time_point> m_hide;
+    float m_opacity;
 
 public:
     LevelTitle(Instance& instance);
@@ -16,6 +17,7 @@ public:
     void fadeout();
     void hide();
     void resize();
+    void update();
     void draw(const DrawTarget& target);
 
 private:

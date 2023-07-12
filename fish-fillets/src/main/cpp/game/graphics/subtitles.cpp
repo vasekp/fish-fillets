@@ -14,7 +14,7 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
     auto lines = m_font->breakLines(text, Graphics::baseDim.fx() * coords.scale);
     auto countLines = lines.size();
     for(const auto& line : lines) {
-        float duration = std::max((float)text.length() * timePerChar, minTimePerLine);
+        auto duration = std::max((int)text.length() * timePerChar, minTimePerLine);
         auto [color1, color2] = [&]() {
             if(m_colors.contains(colors))
                 return m_colors.at(colors);
@@ -35,12 +35,7 @@ void Subtitles::clear() {
     m_lines.clear();
 }
 
-void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
-    if(m_lines.empty())
-        return;
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto bottomY = coords.out2in(FCoords{0.f, m_instance.graphics().display().size().fy()}).fy();
-    const auto& textProgram = m_instance.graphics().shaders().wavyText;
+void Subtitles::update(float absTime, float dTime) {
     auto liveEnd = std::find_if(m_lines.begin(), m_lines.end(), [](const auto& line) { return !line.live; });
     float lowest = std::accumulate(m_lines.begin(), liveEnd, 0.f, [](float y, const auto& line) { return std::min(y, line.yOffset); });
     float dy = std::min(dTime * speed, -lowest);
@@ -51,20 +46,30 @@ void Subtitles::draw(const DrawTarget& target, float dTime, float absTime) {
         line.live = true;
         line.yOffset = -1.5f;
         line.addTime = absTime;
+        Log::verbose<Log::graphics>("subtitle live: ", line.image.text());
     }
     while(!m_lines.empty()) {
         const auto& front = m_lines.front();
-        if(front.live && ((front.yOffset > 5 && m_lines.front().groupSize < m_lines.size()) || absTime - front.addTime > front.duration))
+        if(front.live && ((front.yOffset > 5 && m_lines.front().groupSize < m_lines.size()) || absTime - front.addTime > front.duration.count())) {
+            Log::verbose<Log::graphics>("hiding old subtitle: ", m_lines.front().groupSize, " lines");
             m_lines.erase(m_lines.begin(), m_lines.begin() + (int)m_lines.front().groupSize);
-        else
+        } else
             break;
     }
+}
+
+void Subtitles::draw(const DrawTarget& target, float time) {
+    if(m_lines.empty())
+        return;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
+    auto bottomY = coords.out2in(FCoords{0.f, m_instance.graphics().display().size().fy()}).fy();
+    const auto& textProgram = m_instance.graphics().shaders().wavyText;
     for(const auto& line : m_lines)
         if(line.live) {
             glUseProgram(textProgram);
             glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
             glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
-            glUniform1f(textProgram.uniform("uTime"), absTime - line.addTime);
+            glUniform1f(textProgram.uniform("uTime"), time - line.addTime);
             auto width = (float)line.image.width() / coords.scale;
             auto height = (float)line.image.height() / coords.scale;
             FCoords dest0{320.f - width / 2.f, bottomY - (float)height * (2.5f + line.yOffset)};

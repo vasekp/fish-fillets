@@ -27,6 +27,7 @@ public:
     void resize();
     void pause();
     void resume();
+    void updateAll();
     void drawFrame();
 
     void startMode(Mode mode);

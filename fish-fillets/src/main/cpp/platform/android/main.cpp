@@ -107,6 +107,7 @@ void android_main(struct android_app* app) {
 
             if(instance.live && instance.running) {
                 instance.inputSource().ping();
+                instance.screens().updateAll();
                 instance.screens().drawFrame();
             }
         } catch(std::exception& e) {

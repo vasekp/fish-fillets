@@ -9,9 +9,9 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
+        m_activeButton(noButton),
         m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
-        m_fishBig(instance, "images/fishes/big/right/body_rest_00.png"),
-        m_activeButton(noButton)
+        m_fishBig(instance, "images/fishes/big/right/body_rest_00.png")
 {
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
@@ -206,35 +206,41 @@ void LevelInput::setRestartPossible(bool possible) {
 
 void LevelInput::flashButton(Key which) {
     keyButton(which).flashing = true;
+    keyButton(which).flashTime = 0.f;
 }
 
-void LevelInput::draw(const DrawTarget& target, float time) {
-    drawButtons(target, time);
-    drawDirpad(target);
-}
-
-void LevelInput::drawButtons(const DrawTarget& target, float time) {
-    auto& program = m_instance.graphics().shaders().button;
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
-    glUseProgram(program);
+void LevelInput::update(float time) {
+    // update buttons
     for(auto i = 0u; i < m_buttons.size(); i++) {
         auto& button = m_buttons[i];
         if(button.flashing) {
             if(!button.flashTime)
                 button.flashTime = time;
-            else if(button.flashTime + flashDuration < time) {
+            else if(button.flashTime + flashDuration < time)
                 button.flashing = false;
-                button.flashTime = 0.f;
-            }
         }
-        float alpha = button.flashing && std::fmod(time - button.flashTime, flashDuration * 2 / 5) < flashDuration / 5
-                ? flashBrightness
-                : !button.enabled
-                    ? 0.25f
-                    : m_dirpad.state == DirpadState::button && (int)i == m_activeButton
-                        ? 1.0f
-                        : 0.5f;
-        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(alpha).data());
+        if(button.flashing && std::fmod(time - button.flashTime, flashDuration * 2 / 5) < flashDuration / 5)
+            button.alpha = alphaFlash;
+        else if(!button.enabled)
+            button.alpha = alphaDisabled;
+        else if(m_dirpad.state == DirpadState::button)
+            button.alpha = (int)i == m_activeButton ? alphaActive : alphaBase;
+        else
+            button.alpha = alphaBase;
+    }
+}
+
+void LevelInput::draw(const DrawTarget& target) {
+    drawButtons(target);
+    drawDirpad(target);
+}
+
+void LevelInput::drawButtons(const DrawTarget& target) {
+    auto& program = m_instance.graphics().shaders().button;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
+    glUseProgram(program);
+    for(auto& button : m_buttons) {
+        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(button.alpha).data());
         glUniform2f(program.uniform("uTexSize"), (float)button.image.width(), (float)button.image.height());
         button.image.texture().bind();
         target.fill(coords, program, button.coordsFrom.fx(), button.coordsFrom.fy(), button.coordsTo.fx(), button.coordsTo.fy());
@@ -290,7 +296,7 @@ void LevelInput::drawDirpad(const DrawTarget& target) {
 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         glUniform2fv(program.uniform("uDirection"), 1, FCoords{dir}.gl().data());
-        float alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? 1.f : 0.5f) * baseAlpha;
+        float alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
         glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).data());
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }

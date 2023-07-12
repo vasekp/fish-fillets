@@ -102,6 +102,7 @@ int main(int argc, char **argv) {
             }
 
             instance.inputSource().ping();
+            instance.screens().updateAll();
             instance.screens().drawFrame();
         }
     } catch(std::exception& e) {

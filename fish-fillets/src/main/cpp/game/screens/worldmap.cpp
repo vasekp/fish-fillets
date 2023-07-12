@@ -5,7 +5,8 @@
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
-    m_staticFrame(Frames::none)
+    m_staticFrame(Frames::none),
+    m_frameShown(false)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
     addImage("images/menu/map.png", "background");
@@ -45,6 +46,13 @@ void WorldMap::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
     m_instance.screens().announceLevel("");
+}
+
+void WorldMap::own_update() {
+    if(m_nextAction && m_frameShown) {
+        m_nextAction();
+        m_nextAction = nullptr;
+    }
 }
 
 void WorldMap::own_draw(const DrawTarget& target) {
@@ -91,19 +99,16 @@ void WorldMap::own_draw(const DrawTarget& target) {
     switch(m_staticFrame) {
         case Frames::loading:
             target.blit(getImage("loading"), coords, copyProgram, 227, 160);
+            m_frameShown = true;
             break;
         case Frames::exit:
         case Frames::intro:
         case Frames::credits:
             drawMasked(target, m_maskColors.at(m_staticFrame));
+            m_frameShown = true;
             break;
         default:
             break;
-    }
-
-    if(m_nextAction) {
-        m_nextAction();
-        m_nextAction = nullptr;
     }
 }
 

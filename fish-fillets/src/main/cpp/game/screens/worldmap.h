@@ -25,6 +25,7 @@ class WorldMap : public GameScreen {
     std::vector<const LevelRecord*> m_forks;
     Frames m_staticFrame;
     std::function<void()> m_nextAction;
+    bool m_frameShown;
     std::optional<Pedometer> m_pm;
     bool m_showEnding;
 
@@ -61,6 +62,7 @@ protected:
 
     void own_start() override;
     void own_resume() override;
+    void own_update() override;
     void own_draw(const DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;

@@ -63,7 +63,10 @@ float GameScreen::timeAlive() {
         : 0;
 }
 
+void GameScreen::update() {
+    own_update();
+}
+
 void GameScreen::draw(const DrawTarget& target) {
-    target.bind();
     own_draw(target);
 }

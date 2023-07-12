@@ -22,7 +22,7 @@ class LevelScreen : public GameScreen {
     std::optional<PNGImage> m_display;
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
-    float m_lastDraw;
+    float m_lastUpdate;
     float m_flashAlpha;
     bool m_replay;
 
@@ -61,13 +61,14 @@ private:
     void own_resize() override;
     void own_pause() override;
     void own_resume() override;
+    void own_update() override;
     void own_draw(const DrawTarget& target) override;
     bool own_key(Key key) override;
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 
     constexpr static float flashInit = 0.5f;
-    constexpr static float flashDecay = 1.5f;
+    constexpr static float flashDecay = 1.5f; // decay speed: time = flashInit / flashDecay [s]
 };
 
 #endif //FISH_FILLETS_LEVELSCREEN_H

@@ -48,6 +48,7 @@ public:
     TextImage& operator=(TextImage&&) = default;
 
     IFont& font() { return m_font.get(); }
+    const std::string& text() const { return m_text; }
     void render() override;
 };
 
