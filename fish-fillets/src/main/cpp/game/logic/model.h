@@ -108,8 +108,6 @@ public:
     ICoords xy() const { return m_position; }
     FCoords fxy() const;
     ICoords xyFinal() const { return m_position + m_move; }
-    float fx() const { return fxy().fx(); } // TODO remove
-    float fy() const { return fxy().fy(); }
     FCoords size() const { return {shape().width(), shape().height()}; }
 
     Type type() const { return m_type; }
