@@ -31,7 +31,7 @@ void LevelTitle::update() {
     }
 }
 
-void LevelTitle::draw(const DrawTarget& target) {
+void LevelTitle::draw(DrawTarget& target) {
     if(!m_image)
         return;
 

@@ -63,12 +63,12 @@ protected:
     void own_start() override;
     void own_resume() override;
     void own_update() override;
-    void own_draw(const DrawTarget& target) override;
+    void own_draw(DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;
 
 private:
-    void drawMasked(const DrawTarget& target, Color maskColor);
+    void drawMasked(DrawTarget& target, Color maskColor);
     void staticFrame(Frames frame, std::function<void()>&& action);
 };
 

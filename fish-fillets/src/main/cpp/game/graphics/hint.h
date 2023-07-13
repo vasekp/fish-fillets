@@ -11,7 +11,7 @@ class Hint {
 public:
     Hint(Instance& instance, const std::string& text);
 
-    void draw(const DrawTarget& target);
+    void draw(DrawTarget& target);
     void resize();
 
     constexpr static const char* fontFilename = "font/font_subtitle.ttf";

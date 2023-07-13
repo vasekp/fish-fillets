@@ -30,7 +30,7 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
     }
 }
 
-void Pedometer::draw(const DrawTarget& target, float time) {
+void Pedometer::draw(DrawTarget& target, float time) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.blit(&m_pmImage, coords, copyProgram, pos.x, pos.y);

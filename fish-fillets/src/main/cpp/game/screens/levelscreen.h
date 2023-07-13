@@ -62,10 +62,10 @@ private:
     void own_pause() override;
     void own_resume() override;
     void own_update() override;
-    void own_draw(const DrawTarget& target) override;
+    void own_draw(DrawTarget& target) override;
     bool own_key(Key key) override;
 
-    void drawLevel(const DrawTarget& target);
+    void drawLevel(DrawTarget& target);
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 

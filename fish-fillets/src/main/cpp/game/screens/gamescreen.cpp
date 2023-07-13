@@ -67,6 +67,6 @@ void GameScreen::update() {
     own_update();
 }
 
-void GameScreen::draw(const DrawTarget& target) {
+void GameScreen::draw(DrawTarget& target) {
     own_draw(target);
 }

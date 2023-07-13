@@ -20,7 +20,7 @@ protected:
     IInputSink& input() override { return m_input; }
 
     void own_start() override;
-    void own_draw(const DrawTarget& target) override;
+    void own_draw(DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;
     void own_resize() override;

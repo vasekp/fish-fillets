@@ -18,7 +18,7 @@ public:
     void hide();
     void resize();
     void update();
-    void draw(const DrawTarget& target);
+    void draw(DrawTarget& target);
 
 private:
     constexpr static const char* fontFilename = "font/font_title.ttf";

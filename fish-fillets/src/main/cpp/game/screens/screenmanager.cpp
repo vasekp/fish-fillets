@@ -68,7 +68,7 @@ void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
 
-    const auto& offscreen = graphics.offscreenTarget();
+    auto& offscreen = graphics.offscreenTarget();
     const auto& copyProgram = graphics.shaders().copy;
     offscreen.bind();
     glClear(GL_COLOR_BUFFER_BIT);

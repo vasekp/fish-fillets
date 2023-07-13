@@ -72,7 +72,7 @@ void LevelScreen::own_update() {
     m_lastUpdate = liveTime;
 }
 
-void LevelScreen::own_draw(const DrawTarget& target) {
+void LevelScreen::own_draw(DrawTarget& target) {
     drawLevel(target);
 
     if(m_flashAlpha > 0) {
@@ -89,7 +89,7 @@ void LevelScreen::own_draw(const DrawTarget& target) {
     m_input.draw(target);
 }
 
-void LevelScreen::drawLevel(const DrawTarget& target) {
+void LevelScreen::drawLevel(DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
     const auto& flatProgram = m_instance.graphics().shaders().flat;

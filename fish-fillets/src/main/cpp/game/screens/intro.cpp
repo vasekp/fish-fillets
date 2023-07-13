@@ -76,7 +76,7 @@ void IntroScreen::own_update() {
     fill_buffers();
 }
 
-void IntroScreen::own_draw(const DrawTarget& target) {
+void IntroScreen::own_draw(DrawTarget& target) {
     Log::verbose<Log::video>("drawing frame ", m_texTime, " @ ", timeAlive());
     const auto& program = m_instance.graphics().shaders().ycbcr;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);

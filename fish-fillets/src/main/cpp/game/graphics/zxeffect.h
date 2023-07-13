@@ -22,7 +22,7 @@ class ZXEffect {
 public:
     ZXEffect(Instance& m_instance);
 
-    void render(const DrawTarget& target, const Image* image);
+    void render(DrawTarget& target, const Image* image);
     void update(int tickCount);
 };
 

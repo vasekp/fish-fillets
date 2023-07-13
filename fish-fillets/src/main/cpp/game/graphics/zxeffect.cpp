@@ -11,7 +11,7 @@ ZXEffect::ZXEffect(Instance& instance) :
     update(0);
 }
 
-void ZXEffect::render(const DrawTarget& target, const Image* image) {
+void ZXEffect::render(DrawTarget& target, const Image* image) {
     const auto& program = m_instance.graphics().shaders().zx;
     glUseProgram(program);
     glUniform4fv(program.uniform("uColor1"), 1, colors[m_colors].first.gl().data());

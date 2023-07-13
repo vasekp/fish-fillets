@@ -55,7 +55,7 @@ void WorldMap::own_update() {
     }
 }
 
-void WorldMap::own_draw(const DrawTarget& target) {
+void WorldMap::own_draw(DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
@@ -190,7 +190,7 @@ bool WorldMap::own_key(Key key) {
         return false;
 }
 
-void WorldMap::drawMasked(const DrawTarget& target, Color maskColor) {
+void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
     const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColor.gl().data());

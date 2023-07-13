@@ -26,7 +26,7 @@ public:
     void add(const std::string& text, const std::string& colors);
     void defineColors(const std::string& name, Color color1, Color color2);
     void update(float absTime, float dTime);
-    void draw(const DrawTarget& target, float time);
+    void draw(DrawTarget& target, float time);
     void resize();
     void clear();
 

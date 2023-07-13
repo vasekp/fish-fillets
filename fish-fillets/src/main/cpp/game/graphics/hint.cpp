@@ -12,7 +12,7 @@ Hint::Hint(Instance& instance, const std::string& text) :
         m_lines.push_back(TextImage(m_instance, *m_font, line));
 }
 
-void Hint::draw(const DrawTarget& target) {
+void Hint::draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
     const auto& program = m_instance.graphics().shaders().copy;
     float y = 0;

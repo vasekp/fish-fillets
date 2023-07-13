@@ -26,7 +26,7 @@ public:
     void pause();
     void resume();
     void update();
-    void draw(const DrawTarget& target);
+    void draw(DrawTarget& target);
     bool pointer(FCoords coords) { return own_pointer(coords); }
     bool keypress(Key key) { return own_key(key); }
 
@@ -44,7 +44,7 @@ protected:
     virtual void own_resume() { }
     virtual void own_resize();
     virtual void own_update() { }
-    virtual void own_draw(const DrawTarget& target) = 0;
+    virtual void own_draw(DrawTarget& target) = 0;
     virtual bool own_pointer(FCoords coords) { return false; }
     virtual bool own_key(Key key) { return false; }
 };

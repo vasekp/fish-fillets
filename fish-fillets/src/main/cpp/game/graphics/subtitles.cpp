@@ -58,7 +58,7 @@ void Subtitles::update(float absTime, float dTime) {
     }
 }
 
-void Subtitles::draw(const DrawTarget& target, float time) {
+void Subtitles::draw(DrawTarget& target, float time) {
     if(m_lines.empty())
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);

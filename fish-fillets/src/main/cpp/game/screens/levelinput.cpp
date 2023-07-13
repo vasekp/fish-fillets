@@ -229,12 +229,12 @@ void LevelInput::update(float time) {
     }
 }
 
-void LevelInput::draw(const DrawTarget& target) {
+void LevelInput::draw(DrawTarget& target) {
     drawButtons(target);
     drawDirpad(target);
 }
 
-void LevelInput::drawButtons(const DrawTarget& target) {
+void LevelInput::drawButtons(DrawTarget& target) {
     auto& program = m_instance.graphics().shaders().button;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     glUseProgram(program);
@@ -261,7 +261,7 @@ void LevelInput::drawButtons(const DrawTarget& target) {
     }
 }
 
-void LevelInput::drawDirpad(const DrawTarget& target) {
+void LevelInput::drawDirpad(DrawTarget& target) {
     if(m_dirpad.state != DirpadState::wait && m_dirpad.state != DirpadState::follow && m_dirpad.state != DirpadState::goTo)
         return;
 

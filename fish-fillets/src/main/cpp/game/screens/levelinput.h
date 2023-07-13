@@ -69,15 +69,15 @@ public:
 
     void resize();
     void update(float time);
-    void draw(const DrawTarget& target);
+    void draw(DrawTarget& target);
     Key pool();
 
 private:
     const Button* findButton(FCoords pos);
     Button& keyButton(Key key);
 
-    void drawButtons(const DrawTarget& target);
-    void drawDirpad(const DrawTarget& target);
+    void drawButtons(DrawTarget& target);
+    void drawDirpad(DrawTarget& target);
 
     constexpr static const char* fontFilename = "font/FFArrows.ttf";
     constexpr static float minDistance = 30.f; // all dimension in "base pixels"

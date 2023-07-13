@@ -27,7 +27,7 @@ OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, F
     to = origin + FCoords(volTolerance, volTolerance) + FCoords(volLength, 0.f);
 }
 
-void OptionsOverlay::draw(const DrawTarget& target) {
+void OptionsOverlay::draw(DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base).shifted(m_origin);
 
