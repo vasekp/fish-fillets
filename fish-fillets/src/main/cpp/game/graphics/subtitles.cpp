@@ -74,7 +74,7 @@ void Subtitles::draw(DrawTarget& target, float time) {
             auto height = (float)line.image.height() / coords.scale;
             FCoords dest0{320.f - width / 2.f, bottomY - (float)height * (2.5f + line.yOffset)};
             FCoords dest = coords.out2in(coords.in2out(dest0).round());
-            target.blit(line.image.texture(), coords, textProgram, dest.fx(), dest.fy(), 0, 0, (int)width, 3 * (int)height);
+            target.draw(line.image.texture(), textProgram, coords, { .dest = dest, .area = FCoords{width, 3 * height} });
         }
 }
 

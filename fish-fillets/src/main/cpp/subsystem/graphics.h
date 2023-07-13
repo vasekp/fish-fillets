@@ -44,7 +44,7 @@ public:
     auto& system() const { return *m_system; }
     auto& display() const { return *m_system->m_display; }
     auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
-    auto& blurTargets() const { return m_system->m_blurTargets; }
+    auto& blurTargets() { return m_system->m_blurTargets; }
     auto& offscreenTarget() const { return m_system->m_offscreenTarget; }
     auto& shaders() const { return m_system->m_shaders; }
     bool ready() const { return (bool)m_system; }

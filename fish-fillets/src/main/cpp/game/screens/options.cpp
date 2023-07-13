@@ -31,14 +31,16 @@ void OptionsOverlay::draw(DrawTarget& target) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base).shifted(m_origin);
 
-    target.blit(&m_options, coords, copyProgram, 0, 0);
+    target.draw(&m_options, copyProgram, coords);
 
     for(const auto& button : m_buttons)
         if(button.value == m_currSubs)
-            target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
+            target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
 
     for(const auto& bar : m_volbars)
-        target.blit(&m_slider, coords, copyProgram, bar.origin.fx() + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset);
+        target.draw(&m_slider, copyProgram, coords, {
+            .dest = FCoords{bar.origin.fx() + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset}
+        });
 }
 
 void OptionsOverlay::show() {

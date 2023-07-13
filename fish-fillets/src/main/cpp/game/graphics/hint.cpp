@@ -21,8 +21,7 @@ void Hint::draw(DrawTarget& target) {
         auto height = (float)line.height() / coords.scale;
         FCoords dest0{(coords.size.fx() - width) / 2.f, y};
         FCoords dest = coords.out2in(coords.in2out(dest0).round());
-        line.texture().bind();
-        target.fill(coords, program, dest.fx(), dest.fy(), dest.fx() + (int)width, dest.fy() + (int)height);
+        target.draw(line.texture(), program, coords, { .dest = dest, .srcSize = FCoords{width, height} });
         y += height;
     }
 }

@@ -35,9 +35,9 @@ public:
 protected:
     GameScreen(Instance& instance);
 
-    Image* addImage(const std::string& path, const std::string& name = "");
-    Image* replaceImage(const std::string& name, const std::string& path);
-    Image* getImage(const std::string& name);
+    const Image* addImage(const std::string& path, const std::string& name = "");
+    const Image* replaceImage(const std::string& name, const std::string& path);
+    const Image* getImage(const std::string& name);
 
     virtual void own_start() { }
     virtual void own_pause() { }

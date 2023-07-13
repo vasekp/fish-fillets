@@ -16,6 +16,7 @@ public:
     auto& texture() const { return m_texture; }
     auto width() const { return m_texture.width(); }
     auto height() const { return m_texture.height(); }
+    ICoords size() const { return {(int)width(), (int)height()}; }
 
     operator const ogl::Texture&() const { return texture(); }
     virtual void render() = 0;

@@ -60,16 +60,17 @@ void WorldMap::own_draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
     m_instance.graphics().setMask(getImage("mask"));
-    target.blit(getImage("background"), coords, copyProgram);
+    target.draw(getImage("background"), copyProgram, coords);
     if(m_staticFrame != Frames::loading && !m_pm) {
         for(const auto& record : m_forks)
             if(record->depth == 1 || (record->parent && record->parent->solved))
                 drawMasked(target, record->maskColor);
         if(m_showEnding)
             drawMasked(target, MaskColors::ending);
+        constexpr FCoords nodeOffset{nodeRadius, nodeRadius};
         for(const auto& [name, record] : m_instance.levels())
             if(record.solved)
-                target.blit(m_nodeImages[0], coords, copyProgram, record.coords.fx() - nodeRadius, record.coords.fy() - nodeRadius);
+                target.draw(m_nodeImages[0], copyProgram, coords, { .dest = record.coords - nodeOffset });
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::pow(std::sin((float)M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
@@ -77,8 +78,8 @@ void WorldMap::own_draw(DrawTarget& target) {
         glUseProgram(alphaProgram);
         glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
         for(const auto& record : m_open) {
-            target.blit(m_nodeImages[base + 1], coords, copyProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
-            target.blit(m_nodeImages[base + 2], coords, alphaProgram, record->coords.fx() - nodeRadius, record->coords.fy() - nodeRadius);
+            target.draw(m_nodeImages[base + 1], copyProgram, coords, { .dest = record->coords - nodeOffset });
+            target.draw(m_nodeImages[base + 2], alphaProgram, coords, { .dest = record->coords - nodeOffset });
         }
     }
 
@@ -98,7 +99,7 @@ void WorldMap::own_draw(DrawTarget& target) {
 
     switch(m_staticFrame) {
         case Frames::loading:
-            target.blit(getImage("loading"), coords, copyProgram, 227, 160);
+            target.draw(getImage("loading"), copyProgram, coords, { .dest = FCoords{227, 160} });
             m_frameShown = true;
             break;
         case Frames::exit:
@@ -192,9 +193,10 @@ bool WorldMap::own_key(Key key) {
 
 void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
     const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     glUseProgram(maskProgram);
     glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColor.gl().data());
-    target.blit(getImage("masked"), m_instance.graphics().coords(Graphics::CoordSystems::base), maskProgram);
+    target.draw(getImage("masked"), maskProgram, coords);
 }
 
 void WorldMap::own_resume() {

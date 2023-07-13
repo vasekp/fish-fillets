@@ -20,7 +20,8 @@ void PosterScreen::own_start() {
 
 void PosterScreen::own_draw(DrawTarget& target) {
     const auto& program = m_instance.graphics().shaders().copy;
-    target.blit(getImage("poster"), m_instance.graphics().coords(Graphics::CoordSystems::base), program);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    target.draw(getImage("poster"), program, coords);
     if(m_hint)
         m_hint->draw(target);
 }

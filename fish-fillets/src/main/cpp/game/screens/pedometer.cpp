@@ -33,17 +33,21 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
 void Pedometer::draw(DrawTarget& target, float time) {
     const auto& copyProgram = m_instance.graphics().shaders().copy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    target.blit(&m_pmImage, coords, copyProgram, pos.x, pos.y);
+    target.draw(&m_pmImage, copyProgram, coords, { .dest = pos });
     if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {
         auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
         for(const auto& button : m_buttons)
             if(hcoords.within(button.origin, button.origin + Button::size))
-                target.blit(&button.image, coords, copyProgram, button.origin.fx(), button.origin.fy());
+                target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
     }
     float yBase = (time - m_createTime) * digitSpeed;
     for(auto x = 0u; x < m_digits.size(); x++) {
         float y = std::min((float)m_digits[x], yBase);
-        target.blit(&m_digImage, coords, copyProgram, digitArray.fx() + (float)x * digitSize.fx(), digitArray.fy(), 0, (9.f - y) * digitSize.fy(), digitSize.x(), digitSize.y());
+        target.draw(&m_digImage, copyProgram, coords, {
+           .src = FCoords{0.f, (9.f - y) * digitSize.fy()},
+           .dest = digitArray + FCoords{x * digitSize.fx(), 0.f},
+           .area = {digitSize.x(), digitSize.y()}
+        });
     }
 }
 

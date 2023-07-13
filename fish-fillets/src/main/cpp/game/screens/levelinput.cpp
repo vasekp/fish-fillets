@@ -241,8 +241,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
     for(const auto& button : m_buttons) {
         glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(button.alpha).data());
         glUniform2f(program.uniform("uTexSize"), (float)button.image.width(), (float)button.image.height());
-        button.image.texture().bind();
-        target.fill(coords, program, button.coordsFrom.fx(), button.coordsFrom.fy(), button.coordsTo.fx(), button.coordsTo.fy());
+        target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .srcSize = button.coordsTo - button.coordsFrom });
     }
     if(m_activeFish != Model::Fish::none) {
         auto& alphaProgram = m_instance.graphics().shaders().alpha;
@@ -256,8 +255,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
         float scale = std::min(extent.fx() / imgExtent.fx(), extent.fy() / imgExtent.fy());
         FCoords from = center - scale / 2.f * imgExtent;
         FCoords to = center + scale / 2.f * imgExtent;
-        image.texture().bind();
-        target.fill(coords, alphaProgram, from.fx(), from.fy(), to.fx(), to.fy());
+        target.draw(&image, alphaProgram, coords, { .dest = from, .srcSize = to - from });
     }
 }
 

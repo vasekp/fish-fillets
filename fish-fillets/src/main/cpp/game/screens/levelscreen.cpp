@@ -80,7 +80,7 @@ void LevelScreen::own_draw(DrawTarget& target) {
         const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.fill(coords, flatProgram, 0, 0, m_winSize.fx(), m_winSize.fy());
+        target.draw(flatProgram, coords, { .area = m_winSize });
     }
 
     m_subs.draw(target, timeAlive());
@@ -96,7 +96,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
-        target.blit(&m_display.value(), coords, copyProgram);
+        target.draw(&m_display.value(), copyProgram, coords);
         return;
     }
 
@@ -115,7 +115,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     glUniform1f(wavyProgram.uniform("uSpeed"), m_waves[2]);
     glUniform1f(wavyProgram.uniform("uPhase"), phase);
 
-    target.blit(getImage("background"), coords, wavyProgram);
+    target.draw(getImage("background"), wavyProgram, coords);
 
     for(const auto& rope : m_level.layout().getRopes()) {
         constexpr Color ropeColor{0x30404E};
@@ -123,7 +123,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
         glUseProgram(flatProgram);
         glUniform4fv(flatProgram.uniform("uColor"), 1, ropeColor.gl().data());
-        target.fill(coords, flatProgram, rope.m1->fx() * size_unit + (float)rope.d1.x, c1.fy(), std::max(c1.fx(), c2.fx()) + 1.f, c2.fy());
+        target.draw(flatProgram, coords, { .dest = c2, .area = c1 - c2 + FCoords{1, 0} });
     }
 
     const Model* mirror = nullptr;
@@ -138,23 +138,25 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         switch(effect) {
             case Model::Effect::none:
                 for(const auto* image : images)
-                    target.blit(image, coords, copyProgram, model.fx() * size_unit, model.fy() * size_unit);
+                    target.draw(image, copyProgram, coords, { .dest = model.fxy() * size_unit });
                 break;
             case Model::Effect::invisible:
                 std::unreachable();
             case Model::Effect::mirror:
                 mirror = &model;
                 break;
-            case Model::Effect::reverse:
+            case Model::Effect::reverse: {
+                const auto& program = m_instance.graphics().shaders().reverse;
                 for(const auto* image : images)
-                    target.blit(image, coords, m_instance.graphics().shaders().reverse, model.fx() * size_unit, model.fy() * size_unit);
+                    target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
+                }
                 break;
             case Model::Effect::disintegrate: {
                 auto& program = m_instance.graphics().shaders().disintegrate;
                 glUseProgram(program);
                 glUniform1f(program.uniform("uTime"), timeAlive() - effectTime);
                 for(const auto* image : images)
-                    target.blit(image, coords, program, model.fx() * size_unit, model.fy() * size_unit);
+                    target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
                 break;
             }
             case Model::Effect::zx: {
@@ -170,16 +172,20 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     glDisable(GL_SCISSOR_TEST);
 
     if(mirror) {
+        const auto& program = m_instance.graphics().shaders().mirror;
         m_mirrorTarget->bind();
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
         FCoords size = coords.in2out_dim(mirror->size() * size_unit);
-        m_mirrorTarget->blit(m_instance.graphics().offscreenTarget().texture(),
-            m_instance.graphics().coords(Graphics::CoordSystems::null),
-            m_instance.graphics().shaders().copy,
-            0, 0, topLeft.fx() - size.fx(), topLeft.fy(), size.x(), size.y());
+        m_mirrorTarget->draw(m_instance.graphics().offscreenTarget().texture(),
+            copyProgram, m_instance.graphics().coords(Graphics::CoordSystems::null),
+            {
+                .src = FCoords{topLeft.fx() - size.fx(), topLeft.fy()},
+                .area = size
+            });
         target.bind();
         m_instance.graphics().setMask(m_mirrorTarget->texture().texture()); // TODO
-        target.blit(mirror->anim().get(mirror->orientation())[0], coords, m_instance.graphics().shaders().mirror, mirror->fx() * size_unit, mirror->fy() * size_unit);
+        target.draw(mirror->anim().get(mirror->orientation())[0],
+            program, coords, { .dest = mirror->fxy() * size_unit });
     }
 }
 

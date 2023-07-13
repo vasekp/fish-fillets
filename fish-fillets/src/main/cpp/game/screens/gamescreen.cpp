@@ -5,7 +5,7 @@ GameScreen::GameScreen(Instance &instance) :
     m_running(false)
 { }
 
-Image* GameScreen::addImage(const std::string& filename, const std::string& name) {
+const Image* GameScreen::addImage(const std::string& filename, const std::string& name) {
     const std::string key = name.empty() ? filename : name;
     if(m_images.contains(key))
         return &m_images.at(key);
@@ -15,12 +15,12 @@ Image* GameScreen::addImage(const std::string& filename, const std::string& name
     }
 }
 
-Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
+const Image* GameScreen::replaceImage(const std::string& name, const std::string& filename) {
     auto[iterator, _] = m_images.insert_or_assign(name, PNGImage(m_instance, filename));
     return &iterator->second;
 }
 
-Image* GameScreen::getImage(const std::string& name) {
+const Image* GameScreen::getImage(const std::string& name) {
     return &m_images.at(name);
 }
 

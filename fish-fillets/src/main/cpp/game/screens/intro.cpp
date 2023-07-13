@@ -85,7 +85,7 @@ void IntroScreen::own_draw(DrawTarget& target) {
     glActiveTexture(Shaders::texCr_gl);
     glBindTexture(GL_TEXTURE_2D, m_texCr);
     glActiveTexture(Shaders::texImage_gl);
-    target.blit(m_texY, coords, program);
+    target.draw(m_texY, program, coords);
 }
 
 bool IntroScreen::own_pointer(FCoords coords) {
