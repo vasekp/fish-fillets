@@ -15,9 +15,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
     switch(cmd) {
         case APP_CMD_SAVE_STATE:
             Log::debug<Log::platform>("APP_CMD_SAVE_STATE");
-            /*instance.app()->savedState = malloc(sizeof(struct saved_state));
-            *((struct saved_state*)instance.app()->savedState) = instance.state;
-            instance.app()->savedStateSize = sizeof(struct saved_state);*/
+            // FIXME: there is nothing to save across restarts, unless we can do a full Lua state dump
             break;
         case APP_CMD_INIT_WINDOW:
             Log::debug<Log::platform>("APP_CMD_INIT_WINDOW");
@@ -84,8 +82,6 @@ void android_main(struct android_app* app) {
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
 
-    /*if (app->savedState != nullptr) // TODO
-        instance.state = *(struct saved_state*)app->savedState;*/
     bool intro = !instance.persist().get<int>("intro", 0);
     instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
     if(intro)
