@@ -11,19 +11,19 @@ In particular, it is
 * *not open* for new level designs,
 * *not open* for new translations,
  
-and no such pull requests will not be accepted. You are free to contribute to Next Generation which welcomes such extensions.
+and no such pull requests will be accepted. You are free to contribute to Next Generation which welcomes such extensions.
 
 ## Why a new version?
 
-Originally the plan was to simply port Fish Fillets NG source code to a new platform. However, problems started to arise, like a hard-coded limitation to 10 FPS, very outdated codebase, or limitations of SDL support library, including e.g. an unspecified cap on simultaneously playing sounds. Some design decisions were made differently in NG than in the original game, like level titles, options settings, music looping, without obvious ways to change. Also, the idea of reverting to the original levelset was there from the beginning.
+Originally the plan was to simply port Fish Fillets NG source code to a new platform. However, problems started to arise, like a hard-coded limitation to 10 FPS, very outdated codebase, or limitations of SDL support library, including e.g. an unspecified cap on simultaneously playing sounds. Some design decisions were made differently in NG than in the original game, like level titles, options settings, music looping, with no obvious ways to change. Also, the idea of reverting to the original levelset was there from the beginning.
 
-In this version, Fish Fillets Reborn, hardcoded ties between display and game logic were broken. In result, the game will run in your native screen FPS and pixel resolution (limited, of course, by upscaling the original image assets). Motion, falling, text are much smoother and not bound to fixed keyframes. Despite thorough efforts in testing, it's possible that this fact causes some misbehaviour. Please report such problems.
+In this version, Fish Fillets Reborn, hardcoded ties between display and game logic were removed. In result, the game will run in your native screen FPS and pixel resolution (limited, of course, by upscaling the original bitmaps). Motion, falling, text are much smoother and not bound to fixed keyframes. Despite thorough efforts in testing, it's possible that this fact causes some misbehaviour. Please report such problems.
 
 ## I can't find a way to undo a wrong move or save partial progress!
 
-This is 100% intentional and *will not* change. Undo mechanics were a part of Next Generation, but part of the intended complexity of the game is the necessity to be able to finish it without crutches. Also, due to the states of all the game elements, undoing a step is a delicate process that is extremely prone to not bringing the game back to a consistent state, unless a full state backup is done in every moment.
+This is 100% intentional and *will not* change. Undo mechanics were a part of Next Generation, but part of the intended complexity of the game is the necessity to be able to finish it without crutches. Also, due to the interaction of all the game elements, undoing a step is a delicate process that is extremely prone to not bringing the game back to a consistent state, unless a full state backup is done in every moment.
 
-Saves are possible but you only have one save slot per level. When you make progress and save again, you can not restore to the previous save point. Same if you restart the level and save earlier. It has been confirmed by the long history of the game, and tested in the new version, that this goal is cumbersome but achievable.
+Saves are possible but you only have one save slot per level. When you make progress and save again, you can not restore to the previous save point. Same if you restart the level and save earlier, or hit save instead of load (a mistake you only do once, trust me). It has been confirmed by the long history of the game, and tested in the new version, that this goal is cumbersome but achievable.
 
 Please also note that while the general form of save and solve files from FFNG was retained, the content is not compatible. In other words, a file saved in Next Generation and loaded in Reborn will not work.
 
@@ -33,7 +33,7 @@ Currently the most valuable contribution is user feedback. This comprises
 * ease of using (e.g., trouble moving fish around, click areas too small to hit right, game not reacting at all),
 * seemingly wrong game behaviour (e.g., an object falls through the ground),
 * interference with the operating system (e.g., you can't see your notifications, switch to another app without unintended motion, or something hides parts of your screen),
-* failures on specific platforms (e.g., game won't start, crashes when exiting, sound or video does not work)
+* failures on specific platforms (e.g., game won't start at all, crashes when exiting, sound or video does not work)
 and similar. As stated above, new levels, sound data or translations are not accepted. Changes to current levels will only be considered if they are obviously wrong.
 
 Example: if you feel that you're bothered by the fish saying the same introduction each time you restart a level, this is not a bug. If an object suddenly disappears, or responds to something that did not happen, it probably is.
