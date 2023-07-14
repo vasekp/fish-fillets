@@ -19,14 +19,13 @@ public:
         bool flipY{false};
     };
 
-protected:
+public:
     Program(const ogl::Program& native) : m_native(native) { }
 
-public:
     void run(DrawTarget& target, const Params& params) const;
 
 protected:
-    virtual void own_params() const = 0;
+    virtual void own_params() const { }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_PROGRAM_H

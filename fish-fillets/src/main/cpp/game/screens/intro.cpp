@@ -78,7 +78,7 @@ void IntroScreen::own_update() {
 
 void IntroScreen::own_draw(DrawTarget& target) {
     Log::verbose<Log::video>("drawing frame ", m_texTime, " @ ", timeAlive());
-    const auto& program = m_instance.graphics().shaders().ycbcr;
+    const auto program = m_instance.graphics().shaders().YCbCr();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     glActiveTexture(Shaders::texCb_gl);
     glBindTexture(GL_TEXTURE_2D, m_texCb);

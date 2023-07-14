@@ -18,7 +18,7 @@ void CreditsScreen::own_start() {
 
 void CreditsScreen::own_draw(DrawTarget& target) {
     float offset = std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight;
-    const auto& program = m_instance.graphics().shaders().copy;
+    const auto program = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.draw(getImage("credits"), program, coords, {
         .src = FCoords{0.f, offset - Graphics::baseDim.fy()},

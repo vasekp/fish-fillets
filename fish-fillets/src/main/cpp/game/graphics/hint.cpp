@@ -14,7 +14,7 @@ Hint::Hint(Instance& instance, const std::string& text) :
 
 void Hint::draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
-    const auto& program = m_instance.graphics().shaders().copy;
+    const auto program = m_instance.graphics().shaders().copy();
     float y = 0;
     for(const auto& line : m_lines) {
         auto width = (float)line.width() / coords.scale;

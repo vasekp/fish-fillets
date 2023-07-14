@@ -70,7 +70,7 @@ void ScreenManager::drawFrame() {
 
     auto& offscreen = graphics.offscreenTarget();
     auto& fullscreen = graphics.fullscreenTarget();
-    const auto& copyProgram = graphics.shaders().copy;
+    const auto copyProgram = graphics.shaders().copy();
     offscreen.bind();
     glClear(GL_COLOR_BUFFER_BIT);
     curScreen().draw(offscreen);
@@ -84,10 +84,10 @@ void ScreenManager::drawFrame() {
         blur1.draw(offscreen.texture(), copyProgram, coords);
 
         blur2.bind();
-        blur2.draw(blur1.texture(), graphics.shaders().p_blur({ .dir = FCoords{1.f, 0.f} }), coords);
+        blur2.draw(blur1.texture(), graphics.shaders().blur({ .dir = FCoords{1.f, 0.f} }), coords);
 
         fullscreen.bind();
-        fullscreen.draw(blur2.texture(), graphics.shaders().p_blur({ .dir = FCoords{0.f, 1.f} }), coords);
+        fullscreen.draw(blur2.texture(), graphics.shaders().blur({ .dir = FCoords{0.f, 1.f} }), coords);
 
         m_options.draw(fullscreen);
     } else {

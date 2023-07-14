@@ -31,7 +31,7 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
 }
 
 void Pedometer::draw(DrawTarget& target, float time) {
-    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.draw(&m_pmImage, copyProgram, coords, { .dest = pos });
     if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {

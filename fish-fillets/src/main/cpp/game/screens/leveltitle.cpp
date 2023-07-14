@@ -36,18 +36,17 @@ void LevelTitle::draw(DrawTarget& target) {
         return;
 
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    const auto& program = m_instance.graphics().shaders().titleText;
-
     constexpr FCoords offset{Graphics::baseDim.fx() / 2.f - maxWidth / 2.f, startY};
     constexpr FCoords rect{maxWidth, endY - startY};
-    glUseProgram(program);
-    glUniform2f(program.uniform("uBlitSize"), rect.fx(), rect.fy());
-    glUniform2f(program.uniform("uSrcSizeScaled"), (float)m_image->texture().width() / coords.scale, (float)m_image->texture().height() / coords.scale);
 
-    glUniform4fv(program.uniform("uColor"), 1, colorBg.gl(m_opacity).data());
+    auto program = m_instance.graphics().shaders().titleText({
+        .blitSize = rect,
+        .srcSizeScaled = FCoords{m_image->size()} / coords.scale,
+        .color = colorBg
+    });
     target.draw(&m_image.value(), program, coords, { .dest = offset + shadow, .area = rect });
 
-    glUniform4fv(program.uniform("uColor"), 1, colorFg.gl(m_opacity).data());
+    program.m_color = colorFg;
     target.draw(&m_image.value(), program, coords, { .dest = offset, .area = rect });
 }
 

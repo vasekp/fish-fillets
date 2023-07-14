@@ -235,20 +235,21 @@ void LevelInput::draw(DrawTarget& target) {
 }
 
 void LevelInput::drawButtons(DrawTarget& target) {
-    auto& program = m_instance.graphics().shaders().button;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
-    glUseProgram(program);
     for(const auto& button : m_buttons) {
-        glUniform4fv(program.uniform("uColor"), 1, colorButtons.gl(button.alpha).data());
-        glUniform2f(program.uniform("uTexSize"), (float)button.image.width(), (float)button.image.height());
+        const auto program = m_instance.graphics().shaders().button({
+            .texSize = button.image.size(),
+            .color = colorButtons,
+            .alpha = button.alpha
+        });
         target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .srcSize = button.coordsTo - button.coordsFrom });
     }
     if(m_activeFish != Model::Fish::none) {
-        auto& alphaProgram = m_instance.graphics().shaders().alpha;
-        auto& button = keyButton(Key::space);
-        auto& image = m_activeFish == Model::Fish::small ? m_fishSmall : m_fishBig;
-        glUseProgram(alphaProgram);
-        glUniform1f(alphaProgram.uniform("uAlpha"), m_screen.level().activeFishReady() ? 1.f : 0.5f);
+        const auto& button = keyButton(Key::space);
+        const auto& image = m_activeFish == Model::Fish::small ? m_fishSmall : m_fishBig;
+        const auto alphaProgram = m_instance.graphics().shaders().alpha({
+            .alpha = m_screen.level().activeFishReady() ? 1.f : 0.5f
+        });
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
         FCoords imgExtent(image.width(), image.height());
@@ -272,7 +273,7 @@ void LevelInput::drawDirpad(DrawTarget& target) {
         baseAlpha = 1;
 
     auto& graphics = m_instance.graphics();
-    auto& program = graphics.shaders().arrow;
+    auto& program = graphics.shaders().m_arrow; // TODO
     const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
     glUseProgram(program);
 

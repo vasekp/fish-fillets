@@ -63,18 +63,18 @@ void Subtitles::draw(DrawTarget& target, float time) {
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
     auto bottomY = coords.out2in(FCoords{0.f, m_instance.graphics().display().size().fy()}).fy();
-    const auto& textProgram = m_instance.graphics().shaders().wavyText;
     for(const auto& line : m_lines)
         if(line.live) {
-            glUseProgram(textProgram);
-            glUniform4fv(textProgram.uniform("uColor1"), 1, line.color1.gl().data());
-            glUniform4fv(textProgram.uniform("uColor2"), 1, line.color2.gl().data());
-            glUniform1f(textProgram.uniform("uTime"), time - line.addTime);
+            const auto program = m_instance.graphics().shaders().wavyText({
+                .color1 = line.color1,
+                .color2 = line.color2,
+                .time = time - line.addTime
+            });
             auto width = (float)line.image.width() / coords.scale;
             auto height = (float)line.image.height() / coords.scale;
             FCoords dest0{320.f - width / 2.f, bottomY - (float)height * (2.5f + line.yOffset)};
             FCoords dest = coords.out2in(coords.in2out(dest0).round());
-            target.draw(line.image.texture(), textProgram, coords, { .dest = dest, .area = FCoords{width, 3 * height} });
+            target.draw(line.image.texture(), program, coords, { .dest = dest, .area = FCoords{width, 3 * height} });
         }
 }
 

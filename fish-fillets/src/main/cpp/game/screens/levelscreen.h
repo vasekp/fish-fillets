@@ -71,6 +71,7 @@ private:
 
     constexpr static float flashInit = 0.5f;
     constexpr static float flashDecay = 1.5f; // decay speed: time = flashInit / flashDecay [s]
+    constexpr static Color ropeColor{0x30404E};
 };
 
 #endif //FISH_FILLETS_LEVELSCREEN_H

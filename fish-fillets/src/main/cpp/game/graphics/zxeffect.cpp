@@ -12,13 +12,13 @@ ZXEffect::ZXEffect(Instance& instance) :
 }
 
 void ZXEffect::render(DrawTarget& target, const Image* image) {
-    const auto& program = m_instance.graphics().shaders().zx;
+    const auto program = m_instance.graphics().shaders().ZX({
+        .color1 = colors[m_colors].first,
+        .color2 = colors[m_colors].second,
+        .period = 2.f * m_stripHeight,
+        .offset = m_stripOffset
+    });
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
-    glUseProgram(program);
-    glUniform4fv(program.uniform("uColor1"), 1, colors[m_colors].first.gl().data());
-    glUniform4fv(program.uniform("uColor2"), 1, colors[m_colors].second.gl().data());
-    glUniform1f(program.uniform("uPeriod"), 2.f * m_stripHeight);
-    glUniform1f(program.uniform("uOffset"), m_stripOffset);
     target.draw(image, program, coords);
 }
 

@@ -56,7 +56,7 @@ void WorldMap::own_update() {
 }
 
 void WorldMap::own_draw(DrawTarget& target) {
-    const auto& copyProgram = m_instance.graphics().shaders().copy;
+    const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
     m_instance.graphics().setMask(getImage("mask"));
@@ -74,9 +74,7 @@ void WorldMap::own_draw(DrawTarget& target) {
         float phase = std::fmod(timeAlive(), 10.f);
         float sin2 = 3.f * std::pow(std::sin((float)M_PI * phase), 2.f);
         auto base = std::min((int)sin2, 2);
-        const auto& alphaProgram = m_instance.graphics().shaders().alpha;
-        glUseProgram(alphaProgram);
-        glUniform1f(alphaProgram.uniform("uAlpha"), sin2 - (float)base);
+        const auto alphaProgram = m_instance.graphics().shaders().alpha({ .alpha = sin2 - (float)base });
         for(const auto& record : m_open) {
             target.draw(m_nodeImages[base + 1], copyProgram, coords, { .dest = record->coords - nodeOffset });
             target.draw(m_nodeImages[base + 2], alphaProgram, coords, { .dest = record->coords - nodeOffset });
@@ -192,10 +190,8 @@ bool WorldMap::own_key(Key key) {
 }
 
 void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
-    const auto& maskProgram = m_instance.graphics().shaders().maskCopy;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    glUseProgram(maskProgram);
-    glUniform4fv(maskProgram.uniform("uMaskColor"), 1, maskColor.gl().data());
+    const auto maskProgram = m_instance.graphics().shaders().maskCopy({ .maskColor = maskColor });
     target.draw(getImage("masked"), maskProgram, coords);
 }
 

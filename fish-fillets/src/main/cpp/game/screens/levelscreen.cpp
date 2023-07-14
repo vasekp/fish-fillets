@@ -76,11 +76,9 @@ void LevelScreen::own_draw(DrawTarget& target) {
     drawLevel(target);
 
     if(m_flashAlpha > 0) {
-        const auto& flatProgram = m_instance.graphics().shaders().flat;
+        const auto program = m_instance.graphics().shaders().flat({ .color = Color::white, .alpha = m_flashAlpha });
         const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
-        glUseProgram(flatProgram);
-        glUniform4fv(flatProgram.uniform("uColor"), 1, Color::white.gl(m_flashAlpha).data());
-        target.draw(flatProgram, coords, { .area = m_winSize });
+        target.draw(program, coords, { .area = m_winSize });
     }
 
     m_subs.draw(target, timeAlive());
@@ -90,9 +88,7 @@ void LevelScreen::own_draw(DrawTarget& target) {
 }
 
 void LevelScreen::drawLevel(DrawTarget& target) {
-    const auto& copyProgram = m_instance.graphics().shaders().copy;
-    const auto& wavyProgram = m_instance.graphics().shaders().wavyImage;
-    const auto& flatProgram = m_instance.graphics().shaders().flat;
+    const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
@@ -109,21 +105,20 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     }
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
-    glUseProgram(wavyProgram);
-    glUniform1f(wavyProgram.uniform("uAmplitude"), m_waves[0]);
-    glUniform1f(wavyProgram.uniform("uPeriod"), m_waves[1]);
-    glUniform1f(wavyProgram.uniform("uSpeed"), m_waves[2]);
-    glUniform1f(wavyProgram.uniform("uPhase"), phase);
+    const auto wavyProgram = m_instance.graphics().shaders().wavyImage({
+        .amplitude = m_waves[0],
+        .period = m_waves[1],
+        .speed = m_waves[2],
+        .phase = phase
+    });
 
     target.draw(getImage("background"), wavyProgram, coords);
 
+    const auto ropeProgram = m_instance.graphics().shaders().flat({ .color = ropeColor });
     for(const auto& rope : m_level.layout().getRopes()) {
-        constexpr Color ropeColor{0x30404E};
         FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;
-        glUseProgram(flatProgram);
-        glUniform4fv(flatProgram.uniform("uColor"), 1, ropeColor.gl().data());
-        target.draw(flatProgram, coords, { .dest = c2, .area = c1 - c2 + FCoords{1, 0} });
+        target.draw(ropeProgram, coords, { .dest = c2, .area = c1 - c2 + FCoords{1, 0} });
     }
 
     const Model* mirror = nullptr;
@@ -146,15 +141,13 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 mirror = &model;
                 break;
             case Model::Effect::reverse: {
-                const auto& program = m_instance.graphics().shaders().reverse;
+                const auto program = m_instance.graphics().shaders().reverse();
                 for(const auto* image : images)
                     target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
                 }
                 break;
             case Model::Effect::disintegrate: {
-                auto& program = m_instance.graphics().shaders().disintegrate;
-                glUseProgram(program);
-                glUniform1f(program.uniform("uTime"), timeAlive() - effectTime);
+                const auto program = m_instance.graphics().shaders().disintegrate({ .time = timeAlive() - effectTime });
                 for(const auto* image : images)
                     target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
                 break;
@@ -172,7 +165,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     glDisable(GL_SCISSOR_TEST);
 
     if(mirror) {
-        const auto& program = m_instance.graphics().shaders().mirror;
+        const auto program = m_instance.graphics().shaders().mirror();
         m_mirrorTarget->bind();
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
         FCoords size = coords.in2out_dim(mirror->size() * size_unit);
