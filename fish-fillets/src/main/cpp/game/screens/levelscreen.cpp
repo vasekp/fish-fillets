@@ -96,13 +96,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         return;
     }
 
-    {
-        FCoords from = coords.in2out({0, 0});
-        FCoords to = coords.in2out(m_winSize);
-        FCoords size = to - from;
-        glScissor(from.x(), from.y(), size.x(), size.y());
-        glEnable(GL_SCISSOR_TEST);
-    }
+    target.setScissor(coords.in2out({0, 0}), coords.in2out(m_winSize));
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     const auto wavyProgram = m_instance.graphics().shaders().wavyImage({
@@ -162,7 +156,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         }
     }
 
-    glDisable(GL_SCISSOR_TEST);
+    target.releaseScissor();
 
     if(mirror) {
         m_mirrorTarget->bind();

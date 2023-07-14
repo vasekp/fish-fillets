@@ -72,7 +72,7 @@ void ScreenManager::drawFrame() {
     auto& fullscreen = graphics.fullscreenTarget();
     const auto copyProgram = graphics.shaders().copy();
     offscreen.bind();
-    glClear(GL_COLOR_BUFFER_BIT);
+    offscreen.clear();
     curScreen().draw(offscreen);
 
     m_title.draw(offscreen);

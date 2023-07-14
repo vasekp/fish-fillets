@@ -1,6 +1,10 @@
 #include "subsystem/graphics.h"
 #include "drawtarget.h"
 
+void DrawTarget::clear() {
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {
     if(!params.srcSize)
         params.srcSize = params.area;
@@ -19,4 +23,14 @@ void DrawTarget::draw(TextureView image, const BaseProgram& program, const Coord
         params.area = params.srcSize;
     params.image.emplace(image);
     draw(program, coords, params, shape);
+}
+
+void DrawTarget::setScissor(FCoords from, FCoords to) {
+    FCoords size = to - from;
+    glScissor(from.x(), from.y(), size.x(), size.y());
+    glEnable(GL_SCISSOR_TEST);
+}
+
+void DrawTarget::releaseScissor() {
+    glDisable(GL_SCISSOR_TEST);
 }
