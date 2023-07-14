@@ -63,7 +63,6 @@ public:
 
     struct TitleTextParams {
         FCoords blitSize;
-        FCoords srcSizeScaled; // TODO just srcSize?
         Color color;
         float alpha;
     };

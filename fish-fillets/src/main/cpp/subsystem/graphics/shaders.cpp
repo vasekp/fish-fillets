@@ -97,7 +97,6 @@ void Program<Shaders::WavyTextParams>::own_params() const {
 template<>
 void Program<Shaders::TitleTextParams>::own_params() const {
     glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy());
-    glUniform2f(m_native.uniform("uSrcSizeScaled"), m_params.srcSizeScaled.fx(), m_params.srcSizeScaled.fy());
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 }
 
