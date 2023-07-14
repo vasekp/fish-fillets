@@ -69,6 +69,7 @@ void ScreenManager::drawFrame() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
 
     auto& offscreen = graphics.offscreenTarget();
+    auto& fullscreen = graphics.fullscreenTarget();
     const auto& copyProgram = graphics.shaders().copy;
     offscreen.bind();
     glClear(GL_COLOR_BUFFER_BIT);
@@ -78,24 +79,20 @@ void ScreenManager::drawFrame() {
 
     if(m_options.visible()) {
         auto& [blur1, blur2] = graphics.blurTargets();
-        const auto& blurProgram = graphics.shaders().blur;
 
         blur1.bind();
         blur1.draw(offscreen.texture(), copyProgram, coords);
 
         blur2.bind();
-        glUseProgram(blurProgram);
-        glUniform2f(blurProgram.uniform("uDelta"), 1.f, 0.f);
-        blur2.draw(blur1.texture(), blurProgram, coords);
+        blur2.draw(blur1.texture(), graphics.shaders().p_blur({ .dir = FCoords{1.f, 0.f} }), coords);
 
-        graphics.fullscreenTarget().bind();
-        glUniform2f(blurProgram.uniform("uDelta"), 0.f, 1.f);
-        graphics.fullscreenTarget().draw(blur2.texture(), blurProgram, coords);
+        fullscreen.bind();
+        fullscreen.draw(blur2.texture(), graphics.shaders().p_blur({ .dir = FCoords{0.f, 1.f} }), coords);
 
-        m_options.draw(graphics.fullscreenTarget());
+        m_options.draw(fullscreen);
     } else {
-        graphics.fullscreenTarget().bind();
-        graphics.fullscreenTarget().draw(offscreen.texture(), copyProgram, coords);
+        fullscreen.bind();
+        fullscreen.draw(offscreen.texture(), copyProgram, coords);
     }
 
     graphics.system().display().swap();

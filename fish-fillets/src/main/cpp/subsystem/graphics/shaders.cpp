@@ -39,3 +39,7 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     glUniform1i(ycbcr.uniform("uCbTexture"), texCb_shader);
     glUniform1i(ycbcr.uniform("uCrTexture"), texCr_shader);
 }
+
+void Shaders::BlurProgram::own_params() const {
+    glUniform2f(m_native.uniform("uDelta"), m_dir.fx(), m_dir.fy());
+}

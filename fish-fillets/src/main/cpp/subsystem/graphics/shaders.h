@@ -29,6 +29,25 @@ struct Shaders {
     constexpr static GLint texCr_gl = GL_TEXTURE2;
 
     Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance);
+
+    class BlurProgram : public Program {
+        FCoords m_dir;
+
+    public:
+        struct Params {
+            FCoords dir;
+        };
+
+        BlurProgram(ogl::Program& program, Params params) :
+            Program(program),
+            m_dir(params.dir)
+        { }
+
+    private:
+        void own_params() const override;
+    };
+
+    BlurProgram p_blur(BlurProgram::Params params) { return {blur, params}; }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SHADERS_H
