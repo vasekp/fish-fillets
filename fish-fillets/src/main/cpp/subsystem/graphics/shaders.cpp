@@ -124,3 +124,12 @@ void Program<Shaders::ButtonParams>::own_params() const {
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
     glUniform2f(m_native.uniform("uTexSize"), m_params.texSize.fx(), m_params.texSize.fy());
 }
+
+template<>
+void Program<Shaders::ArrowParams>::own_params() const {
+    glUniform2f(m_native.uniform("uPosition"), m_params.position.fx(), m_params.position.fy());
+    glUniform1f(m_native.uniform("uSize"), m_params.size);
+    glUniform2f(m_native.uniform("uDirection"), m_params.direction.fx(), m_params.direction.fy());
+    glUniform1f(m_native.uniform("uSign"), m_params.inwards ? -1.f : 1.f);
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+}

@@ -19,10 +19,15 @@ public:
         bool flipY{false};
     };
 
+    enum class Shape {
+        rect,
+        triangle
+    };
+
 public:
     BaseProgram(const ogl::Program& native) : m_native(native) { }
 
-    void run(DrawTarget& target, const Params& params) const;
+    void run(DrawTarget& target, const Params& params, Shape shape) const;
 
 protected:
     virtual void own_params() const { }

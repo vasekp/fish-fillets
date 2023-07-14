@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h"
 
-void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params) const {
+void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
     if(params.image)
         params.image->texture().bind();
     glUseProgram(m_native);
@@ -13,12 +13,25 @@ void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params) con
 
     own_params();
 
-    float vertices[4][2] = {
-        {0, 0},
-        {0, params.area.fy()},
-        {params.area.fx(), 0},
-        {params.area.fx(), params.area.fy()}
-    };
-    glVertexAttribPointer(ogl::Program::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &vertices[0][0]);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    switch(shape) {
+        case Shape::rect: {
+            float vertices[4][2] = {
+                {0, 0},
+                {0, params.area.fy()},
+                {params.area.fx(), 0},
+                {params.area.fx(), params.area.fy()}
+            };
+            glVertexAttribPointer(ogl::Program::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &vertices[0][0]);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        }
+        case Shape::triangle: {
+            float vertices[3][3] = {
+                {1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 1}
+            };
+            glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &vertices[0][0]);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+        }
+    }
 }

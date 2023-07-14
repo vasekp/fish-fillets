@@ -273,30 +273,18 @@ void LevelInput::drawDirpad(DrawTarget& target) {
         baseAlpha = 1;
 
     auto& graphics = m_instance.graphics();
-    auto& program = graphics.shaders().m_arrow; // TODO
     const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
-    glUseProgram(program);
-
-    float s = m_dirpad.state == DirpadState::goTo ? -1 : 1; // TODO uniform bool?
-    float vertices[3][3] = {
-        {s, 0, 0},
-        {0, s, 0},
-        {0, 0, s}
-    };
-    glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &vertices[0][0]);
-
-    auto displayDim = graphics.display().size();
-    glUniform1f(program.uniform("uSize"), arrowSize * coords.scale);
-    glUniform2f(program.uniform("uDstSize"), displayDim.fx(), displayDim.fy());
-    auto pos = m_dirpad.state == DirpadState::goTo ? m_dirpad.gotoPos : m_dirpad.history.front().second;
-    glUniform2f(program.uniform("uPosition"), pos.fx(), pos.fy());
-    auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
+    auto program = graphics.shaders().arrow({
+        .position = m_dirpad.state == DirpadState::goTo ? m_dirpad.gotoPos : m_dirpad.history.front().second,
+        .size = arrowSize * coords.scale,
+        .inwards = m_dirpad.state == DirpadState::goTo,
+        .color = m_activeFish == Model::Fish::small ? colorSmall : colorBig,
+    });
 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
-        glUniform2fv(program.uniform("uDirection"), 1, FCoords{dir}.gl().data());
-        float alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
-        glUniform4fv(program.uniform("uColor"), 1, color.gl(alpha).data());
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        program.params().direction = FCoords{dir};
+        program.params().alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
+        target.draw(program, coords, {}, BaseProgram::Shape::triangle);
     }
 }
 

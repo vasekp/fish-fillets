@@ -17,10 +17,9 @@ private:
     ogl::Program m_zx;
     ogl::Program m_ycbcr;
     ogl::Program m_button;
+    ogl::Program m_arrow;
 
 public:
-    ogl::Program m_arrow; // TODO private
-
     Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance);
 
     struct AlphaParams {
@@ -88,6 +87,15 @@ public:
         float alpha;
     };
 
+    struct ArrowParams {
+        FCoords position;
+        float size;
+        FCoords direction = {};
+        bool inwards;
+        Color color;
+        float alpha = 1.f;
+    };
+
     BaseProgram copy() { return {m_copy}; }
     Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }
     BaseProgram reverse() { return {m_reverse}; }
@@ -102,6 +110,7 @@ public:
     Program<ZXParams> ZX(ZXParams params) { return {m_zx, params}; }
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
+    Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
 
 private:
     constexpr static GLint texImage_shader = 0;
