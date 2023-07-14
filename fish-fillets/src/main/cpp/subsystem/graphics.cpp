@@ -55,18 +55,6 @@ void Graphics::recalc() {
     m_coords[window].origin += m_windowShift;
 }
 
-void Graphics::setMask(const ogl::Texture& texture) {
-    glActiveTexture(Shaders::texMask_gl);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glActiveTexture(Shaders::texImage_gl);
-}
-
-void Graphics::setMask(const Image* image) {
-    setMask(image->texture());
-}
-
 void Graphics::regImage(Image* image) {
     m_images.push_back(image);
     if(m_system)

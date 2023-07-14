@@ -78,14 +78,13 @@ void IntroScreen::own_update() {
 
 void IntroScreen::own_draw(DrawTarget& target) {
     Log::verbose<Log::video>("drawing frame ", m_texTime, " @ ", timeAlive());
-    const auto program = m_instance.graphics().shaders().YCbCr();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    glActiveTexture(Shaders::texCb_gl);
-    glBindTexture(GL_TEXTURE_2D, m_texCb);
-    glActiveTexture(Shaders::texCr_gl);
-    glBindTexture(GL_TEXTURE_2D, m_texCr);
-    glActiveTexture(Shaders::texImage_gl);
-    target.draw(m_texY, program, coords);
+    const auto program = m_instance.graphics().shaders().YCbCr({
+        .texY = m_texY,
+        .texCb = m_texCb,
+        .texCr = m_texCr,
+    });
+    target.draw(program, coords, { .area = Graphics::baseDim });
 }
 
 bool IntroScreen::own_pointer(FCoords coords) {

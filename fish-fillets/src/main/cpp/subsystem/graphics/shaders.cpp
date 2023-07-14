@@ -48,6 +48,20 @@ void Program<Shaders::AlphaParams>::own_params() const {
 template<>
 void Program<Shaders::MaskCopyParams>::own_params() const {
     glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.gl().data());
+    glActiveTexture(Shaders::texMask_gl);
+    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.texture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glActiveTexture(Shaders::texImage_gl);
+}
+
+template<>
+void Program<Shaders::MirrorParams>::own_params() const {
+    glActiveTexture(Shaders::texMask_gl);
+    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.texture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glActiveTexture(Shaders::texImage_gl);
 }
 
 template<>
@@ -93,6 +107,16 @@ void Program<Shaders::ZXParams>::own_params() const {
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uOffset"), m_params.offset);
+}
+
+template<>
+void Program<Shaders::YCbCrParams>::own_params() const {
+    glActiveTexture(Shaders::texCb_gl);
+    glBindTexture(GL_TEXTURE_2D, m_params.texCb);
+    glActiveTexture(Shaders::texCr_gl);
+    glBindTexture(GL_TEXTURE_2D, m_params.texCr);
+    glActiveTexture(Shaders::texImage_gl);
+    glBindTexture(GL_TEXTURE_2D, m_params.texY);
 }
 
 template<>

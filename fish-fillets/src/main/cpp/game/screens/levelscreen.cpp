@@ -165,7 +165,6 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     glDisable(GL_SCISSOR_TEST);
 
     if(mirror) {
-        const auto program = m_instance.graphics().shaders().mirror();
         m_mirrorTarget->bind();
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
         FCoords size = coords.in2out_dim(mirror->size() * size_unit);
@@ -176,7 +175,9 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 .area = size
             });
         target.bind();
-        m_instance.graphics().setMask(m_mirrorTarget->texture().texture()); // TODO
+        const auto program = m_instance.graphics().shaders().mirror({
+            .maskImage = m_mirrorTarget->texture()
+        });
         target.draw(mirror->anim().get(mirror->orientation())[0],
             program, coords, { .dest = mirror->fxy() * size_unit });
     }

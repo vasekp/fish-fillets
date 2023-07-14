@@ -59,7 +59,6 @@ void WorldMap::own_draw(DrawTarget& target) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
 
-    m_instance.graphics().setMask(getImage("mask"));
     target.draw(getImage("background"), copyProgram, coords);
     if(m_staticFrame != Frames::loading && !m_pm) {
         for(const auto& record : m_forks)
@@ -191,7 +190,10 @@ bool WorldMap::own_key(Key key) {
 
 void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    const auto maskProgram = m_instance.graphics().shaders().maskCopy({ .maskColor = maskColor });
+    const auto maskProgram = m_instance.graphics().shaders().maskCopy({
+        .maskColor = maskColor,
+        .maskImage = getImage("mask")
+    });
     target.draw(getImage("masked"), maskProgram, coords);
 }
 
