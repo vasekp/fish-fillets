@@ -32,232 +32,74 @@ public:
 
     Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance);
 
-    class Alpha : public Program {
-        float m_alpha;
-
-    public:
-        struct Params {
-            float alpha = 1.f;
-        };
-
-        Alpha(ogl::Program& program, Params params) :
-            Program(program),
-            m_alpha(params.alpha)
-        { }
-
-    private:
-        void own_params() const override;
+    struct AlphaParams {
+        float alpha = 1.f;
     };
 
-    class MaskCopy : public Program {
-        Color m_maskColor;
-
-    public:
-        struct Params {
-            Color maskColor;
-        };
-
-        MaskCopy(ogl::Program& program, Params params) :
-            Program(program),
-            m_maskColor(params.maskColor)
-        { }
-
-    private:
-        void own_params() const override;
+    struct MaskCopyParams {
+        Color maskColor;
     };
 
-    class Flat : public Program {
-        Color m_color;
-        float m_alpha;
-
-    public:
-        struct Params {
-            Color color;
-            float alpha = 1.f;
-        };
-
-        Flat(ogl::Program& program, Params params) :
-            Program(program),
-            m_color(params.color),
-            m_alpha(params.alpha)
-        { }
-
-    private:
-        void own_params() const override;
+    struct FlatParams {
+        Color color;
+        float alpha = 1.f;
     };
 
-    class Blur : public Program {
-        FCoords m_dir;
-
-    public:
-        struct Params {
-            FCoords dir;
-        };
-
-        Blur(ogl::Program& program, Params params) :
-            Program(program),
-            m_dir(params.dir)
-        { }
-
-    private:
-        void own_params() const override;
+    struct BlurParams {
+        FCoords dir;
     };
 
-    class Disintegrate : public Program {
-        float m_time;
-
-    public:
-        struct Params {
-            float time;
-        };
-
-        Disintegrate(ogl::Program& program, Params params) :
-            Program(program),
-            m_time(params.time)
-        { }
-
-    private:
-        void own_params() const override;
+    struct DisintegrateParams {
+        float time;
     };
 
-    class WavyImage : public Program {
-        float m_amplitude;
-        float m_period;
-        float m_speed;
-        float m_phase;
-
-    public:
-        struct Params {
-            float amplitude;
-            float period;
-            float speed;
-            float phase;
-        };
-
-        WavyImage(ogl::Program& program, Params params) :
-            Program(program),
-            m_amplitude(params.amplitude),
-            m_period(params.period),
-            m_speed(params.speed),
-            m_phase(params.phase)
-        { }
-
-    private:
-        void own_params() const override;
+    struct WavyImageParams {
+        float amplitude;
+        float period;
+        float speed;
+        float phase;
     };
 
-    class WavyText : public Program {
-        Color m_color1;
-        Color m_color2;
-        float m_time;
-
-    public:
-        struct Params {
-            Color color1;
-            Color color2;
-            float time;
-        };
-
-        WavyText(ogl::Program& program, Params params) :
-            Program(program),
-            m_color1(params.color1),
-            m_color2(params.color2),
-            m_time(params.time)
-        { }
-
-    private:
-        void own_params() const override;
+    struct WavyTextParams {
+        Color color1;
+        Color color2;
+        float time;
     };
 
-    class TitleText : public Program {
-    public: // TODO: color changed
-        FCoords m_blitSize;
-        FCoords m_srcSizeScaled;
-        Color m_color;
-        float m_alpha;
-
-        struct Params {
-            FCoords blitSize;
-            FCoords srcSizeScaled; // TODO just srcSize?
-            Color color;
-            float alpha;
-        };
-
-        TitleText(ogl::Program& program, Params params) :
-            Program(program),
-            m_blitSize(params.blitSize),
-            m_srcSizeScaled(params.srcSizeScaled),
-            m_color(params.color),
-            m_alpha(params.alpha)
-        { }
-
-    private:
-        void own_params() const override;
+    struct TitleTextParams {
+        FCoords blitSize;
+        FCoords srcSizeScaled; // TODO just srcSize?
+        Color color;
+        float alpha;
     };
 
-    class ZX : public Program {
-        Color m_color1;
-        Color m_color2;
-        float m_period;
-        float m_offset;
-
-    public:
-        struct Params {
-            Color color1;
-            Color color2;
-            float period;
-            float offset;
-        };
-
-        ZX(ogl::Program& program, Params params) :
-            Program(program),
-            m_color1(params.color1),
-            m_color2(params.color2),
-            m_period(params.period),
-            m_offset(params.offset)
-        { }
-
-    private:
-        void own_params() const override;
+    struct ZXParams {
+        Color color1;
+        Color color2;
+        float period;
+        float offset;
     };
 
-    class Button : public Program {
-        FCoords m_texSize;
-        Color m_color;
-        float m_alpha;
-
-    public:
-        struct Params {
-            FCoords texSize;
-            Color color;
-            float alpha;
-        };
-
-        Button(ogl::Program& program, Params params) :
-            Program(program),
-            m_texSize(params.texSize),
-            m_color(params.color),
-            m_alpha(params.alpha)
-        { }
-
-    private:
-        void own_params() const override;
+    struct ButtonParams {
+        FCoords texSize;
+        Color color;
+        float alpha;
     };
 
-    Program copy() { return {m_copy}; }
-    MaskCopy maskCopy(MaskCopy::Params params) { return {m_maskCopy, params}; }
-    Program reverse() { return {m_reverse}; }
-    Alpha alpha(Alpha::Params params) { return {m_alpha, params}; }
-    Flat flat(Flat::Params params) { return {m_flat, params}; }
-    Blur blur(Blur::Params params) { return {m_blur, params}; }
-    Disintegrate disintegrate(Disintegrate::Params params) { return {m_disintegrate, params}; }
-    Program mirror() { return {m_mirror}; }
-    WavyImage wavyImage(WavyImage::Params params) { return {m_wavyImage, params}; }
-    WavyText wavyText(WavyText::Params params) { return {m_wavyText, params}; }
-    TitleText titleText(TitleText::Params params) { return {m_titleText, params}; }
-    ZX ZX(ZX::Params params) { return {m_zx, params}; }
-    Program YCbCr() { return {m_ycbcr}; } // TODO
-    Button button(Button::Params params) { return {m_button, params}; }
+    BaseProgram copy() { return {m_copy}; }
+    Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }
+    BaseProgram reverse() { return {m_reverse}; }
+    Program<AlphaParams> alpha(AlphaParams params) { return {m_alpha, params}; }
+    Program<FlatParams> flat(FlatParams params) { return {m_flat, params}; }
+    Program<BlurParams> blur(BlurParams params) { return {m_blur, params}; }
+    Program<DisintegrateParams> disintegrate(DisintegrateParams params) { return {m_disintegrate, params}; }
+    BaseProgram mirror() { return {m_mirror}; }
+    Program<WavyImageParams> wavyImage(WavyImageParams params) { return {m_wavyImage, params}; }
+    Program<WavyTextParams> wavyText(WavyTextParams params) { return {m_wavyText, params}; }
+    Program<TitleTextParams> titleText(TitleTextParams params) { return {m_titleText, params}; }
+    Program<ZXParams> ZX(ZXParams params) { return {m_zx, params}; }
+    BaseProgram YCbCr() { return {m_ycbcr}; } // TODO
+    Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SHADERS_H

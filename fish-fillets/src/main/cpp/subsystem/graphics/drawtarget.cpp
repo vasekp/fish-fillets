@@ -1,7 +1,7 @@
 #include "subsystem/graphics.h"
 #include "drawtarget.h"
 
-void DrawTarget::draw(const ogl::Program& program, const Coords& coords, Program::Params params) {
+void DrawTarget::draw(const ogl::Program& program, const Coords& coords, BaseProgram::Params params) {
     glUseProgram(program);
     if(!params.srcSize)
         params.srcSize = params.area;
@@ -24,7 +24,7 @@ void DrawTarget::draw(const ogl::Program& program, const Coords& coords, Program
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void DrawTarget::draw(TextureView image, const ogl::Program& program, const Coords& coords, Program::Params params) {
+void DrawTarget::draw(TextureView image, const ogl::Program& program, const Coords& coords, BaseProgram::Params params) {
     if(!params.srcSize)
         params.srcSize = image.size();
     if(!params.area)
@@ -33,7 +33,7 @@ void DrawTarget::draw(TextureView image, const ogl::Program& program, const Coor
     draw(program, coords, params);
 }
 
-void DrawTarget::draw(const Program& program, const Coords& coords, Program::Params params) {
+void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params) {
     if(!params.srcSize)
         params.srcSize = params.area;
     else if(!params.area)
@@ -44,7 +44,7 @@ void DrawTarget::draw(const Program& program, const Coords& coords, Program::Par
     program.run(*this, params);
 }
 
-void DrawTarget::draw(TextureView image, const Program& program, const Coords& coords, Program::Params params) {
+void DrawTarget::draw(TextureView image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params) {
     if(!params.srcSize)
         params.srcSize = image.size();
     if(!params.area)

@@ -9,11 +9,11 @@ public:
     virtual FCoords size() const = 0;
 
 public:
-    void draw(const ogl::Program &program, const Coords& coords, Program::Params params);
-    void draw(TextureView image, const ogl::Program& program, const Coords& coords, Program::Params params = {});
+    void draw(const ogl::Program &program, const Coords& coords, BaseProgram::Params params);
+    void draw(TextureView image, const ogl::Program& program, const Coords& coords, BaseProgram::Params params = {});
 
-    void draw(const Program &program, const Coords& coords, Program::Params params);
-    void draw(TextureView image, const Program& program, const Coords& coords, Program::Params params = {});
+    void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params);
+    void draw(TextureView image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
 
 protected:
     virtual bool flipY() const { return false; }

@@ -46,7 +46,7 @@ void LevelTitle::draw(DrawTarget& target) {
     });
     target.draw(&m_image.value(), program, coords, { .dest = offset + shadow, .area = rect });
 
-    program.m_color = colorFg;
+    program.params().color = colorFg;
     target.draw(&m_image.value(), program, coords, { .dest = offset, .area = rect });
 }
 

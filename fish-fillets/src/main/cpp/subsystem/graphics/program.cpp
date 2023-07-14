@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h"
 
-void Program::run(DrawTarget& target, const Program::Params& params) const {
+void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params) const {
     if(params.image)
         params.image->texture().bind();
     glUseProgram(m_native);

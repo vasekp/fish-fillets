@@ -40,53 +40,63 @@ Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
     glUniform1i(m_ycbcr.uniform("uCrTexture"), texCr_shader);
 }
 
-void Shaders::Alpha::own_params() const {
-    glUniform1f(m_native.uniform("uAlpha"), m_alpha);
+template<>
+void Program<Shaders::AlphaParams>::own_params() const {
+    glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
 }
 
-void Shaders::MaskCopy::own_params() const {
-    glUniform4fv(m_native.uniform("uMaskColor"), 1, m_maskColor.gl().data());
+template<>
+void Program<Shaders::MaskCopyParams>::own_params() const {
+    glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.gl().data());
 }
 
-void Shaders::Flat::own_params() const {
-    glUniform4fv(m_native.uniform("uColor"), 1, m_color.gl(m_alpha).data());
+template<>
+void Program<Shaders::FlatParams>::own_params() const {
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 }
 
-void Shaders::Blur::own_params() const {
-    glUniform2f(m_native.uniform("uDelta"), m_dir.fx(), m_dir.fy());
+template<>
+void Program<Shaders::BlurParams>::own_params() const {
+    glUniform2f(m_native.uniform("uDelta"), m_params.dir.fx(), m_params.dir.fy());
 }
 
-void Shaders::Disintegrate::own_params() const {
-    glUniform1f(m_native.uniform("uTime"), m_time);
+template<>
+void Program<Shaders::DisintegrateParams>::own_params() const {
+    glUniform1f(m_native.uniform("uTime"), m_params.time);
 }
 
-void Shaders::WavyImage::own_params() const {
-    glUniform1f(m_native.uniform("uAmplitude"), m_amplitude);
-    glUniform1f(m_native.uniform("uPeriod"), m_period);
-    glUniform1f(m_native.uniform("uSpeed"), m_speed);
-    glUniform1f(m_native.uniform("uPhase"), m_phase);
+template<>
+void Program<Shaders::WavyImageParams>::own_params() const {
+    glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
+    glUniform1f(m_native.uniform("uPeriod"), m_params.period);
+    glUniform1f(m_native.uniform("uSpeed"), m_params.speed);
+    glUniform1f(m_native.uniform("uPhase"), m_params.phase);
 }
 
-void Shaders::WavyText::own_params() const {
-    glUniform4fv(m_native.uniform("uColor1"), 1, m_color1.gl().data());
-    glUniform4fv(m_native.uniform("uColor2"), 1, m_color2.gl().data());
-    glUniform1f(m_native.uniform("uTime"), m_time);
+template<>
+void Program<Shaders::WavyTextParams>::own_params() const {
+    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
+    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
+    glUniform1f(m_native.uniform("uTime"), m_params.time);
 }
 
-void Shaders::TitleText::own_params() const {
-    glUniform2f(m_native.uniform("uBlitSize"), m_blitSize.fx(), m_blitSize.fy());
-    glUniform2f(m_native.uniform("uSrcSizeScaled"), m_srcSizeScaled.fx(), m_srcSizeScaled.fy());
-    glUniform4fv(m_native.uniform("uColor"), 1, m_color.gl(m_alpha).data());
+template<>
+void Program<Shaders::TitleTextParams>::own_params() const {
+    glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy());
+    glUniform2f(m_native.uniform("uSrcSizeScaled"), m_params.srcSizeScaled.fx(), m_params.srcSizeScaled.fy());
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 }
 
-void Shaders::ZX::own_params() const {
-    glUniform4fv(m_native.uniform("uColor1"), 1, m_color1.gl().data());
-    glUniform4fv(m_native.uniform("uColor2"), 1, m_color2.gl().data());
-    glUniform1f(m_native.uniform("uPeriod"), m_period);
-    glUniform1f(m_native.uniform("uOffset"), m_offset);
+template<>
+void Program<Shaders::ZXParams>::own_params() const {
+    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
+    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
+    glUniform1f(m_native.uniform("uPeriod"), m_params.period);
+    glUniform1f(m_native.uniform("uOffset"), m_params.offset);
 }
 
-void Shaders::Button::own_params() const {
-    glUniform4fv(m_native.uniform("uColor"), 1, m_color.gl(m_alpha).data());
-    glUniform2f(m_native.uniform("uTexSize"), m_texSize.fx(), m_texSize.fy());
+template<>
+void Program<Shaders::ButtonParams>::own_params() const {
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+    glUniform2f(m_native.uniform("uTexSize"), m_params.texSize.fx(), m_params.texSize.fy());
 }

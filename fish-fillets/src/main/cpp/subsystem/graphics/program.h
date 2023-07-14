@@ -3,7 +3,7 @@
 
 class DrawTarget;
 
-class Program {
+class BaseProgram {
 protected:
     const ogl::Program& m_native;
 
@@ -20,12 +20,25 @@ public:
     };
 
 public:
-    Program(const ogl::Program& native) : m_native(native) { }
+    BaseProgram(const ogl::Program& native) : m_native(native) { }
 
     void run(DrawTarget& target, const Params& params) const;
 
 protected:
     virtual void own_params() const { }
+};
+
+template<typename SpecParams>
+class Program : public BaseProgram {
+    SpecParams m_params;
+
+public:
+    Program(ogl::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+
+    SpecParams& params() { return m_params; }
+
+private:
+    void own_params() const override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_PROGRAM_H
