@@ -32,7 +32,7 @@ local function prog_init()
         room.okachne = 0
 
         return function()
-            if stdBorderReport() then
+            if stdGoalReminder() then
                 addm(6, "bar-m-barel")
                 if random(100) < 30 or room.celakrajni == 0 then
                     addv(random(10) + 5, "bar-v-genofond")

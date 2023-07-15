@@ -32,7 +32,7 @@ function notify_escape(modelId)
 end
 
 -- -----------------------------------------------------------------
-function borderShoutLoad()
-    file_include("script/share/shout_dialogs.lua")
+function escapeLoad()
+    file_include("script/share/escape_dialogs.lua")
 end
 

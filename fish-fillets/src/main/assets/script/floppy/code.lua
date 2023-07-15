@@ -52,7 +52,7 @@ local function prog_init()
                 elseif svab.pohyby % 121 == 120 then
                     svab.pohyby = svab.pohyby + 1
                     pom2 = 9
-                elseif stdBorderReport() then
+                elseif stdGoalReminder() then
                     addm(13, "disk-m-ukol")
                 elseif room.obecna > 0 then
                     room.obecna = room.obecna - 1

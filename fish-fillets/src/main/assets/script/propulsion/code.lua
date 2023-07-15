@@ -26,7 +26,7 @@ local function prog_init()
         room.kteraprosba = 0
 
         return function()
-            if stdBorderReport() then
+            if stdGoalReminder() then
                 addv(random(10) + 5, "poh-v-ukol")
             end
             if no_dialog() and isReady(big) and isReady(small) then

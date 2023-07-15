@@ -13,7 +13,7 @@ end
 
 local boredDialogTable = {}
 
-function insertBoreJoke(joke)
+local function insertBoreJoke(joke)
     table.insert(boredDialogTable, joke)
     if usedJokesCapacity * 3 < #boredDialogTable then
         usedJokesCapacity = usedJokesCapacity + 1
@@ -241,12 +241,12 @@ local function boredUnits()
     return boredRate > delayForJoke
 end
 
-function stdBoreJokeLoad()
+function stdBoredomLoad()
     lastDialog = game_getCycles()
-    file_include("script/share/bore_dialogs.lua")
+    file_include("script/share/boredom_dialogs.lua")
 end
 
-function stdBoreJoke()
+function stdBoredom()
     if boredUnits() and no_dialog() then
         boredRate = 0
         delayForJoke = delayForJoke * randint(100, 150) / 100

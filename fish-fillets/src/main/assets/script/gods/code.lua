@@ -55,7 +55,7 @@ local function prog_init()
         room.shodit = -1
 
         return function()
-            if stdBorderReport() then
+            if stdGoalReminder() then
                 addm(random(10) + 5, "lod-m-bohove")
             end
             if isReady(small) and isReady(big) and no_dialog() then

@@ -44,15 +44,15 @@ end
 
 -- -----------------------------------------------------------------
 local loaded = false
-function stdBorderReportLoad()
+function stdGoalReminderLoad()
     if not loaded then
         loaded = true
-        file_include("script/share/border_dialogs.lua")
+        file_include("script/share/goal_dialogs.lua")
     end
 end
 -- -----------------------------------------------------------------
-function stdBorderReport()
-    stdBorderReportLoad()
+function stdGoalReminder()
+    stdGoalReminderLoad()
     local reported = false
     local oneTry = true
     if canReport() then

@@ -25,7 +25,7 @@ local function prog_init()
         return function()
             pom2 = 0
             if no_dialog() and isReady(small) and isReady(big) then
-                if stdBorderReport() then
+                if stdGoalReminder() then
                     addv(10, "map-v-ukol")
                 elseif game_getCycles() == 10 + pokus then
                     pom2 = 1

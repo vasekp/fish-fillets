@@ -6,10 +6,10 @@
 -- original level design (e.g. afaze, X, Y, dir)
 -- -----------------------------------------------------------------
 
-file_include("script/share/borejokes.lua")
+file_include("script/share/boredom.lua")
 file_include("script/share/blackjokes.lua")
 file_include("script/share/bubbles.lua")
-file_include("script/share/bordershout.lua")
+file_include("script/share/escape.lua")
 
 
 -- -----------------------------------------------------------------
@@ -31,8 +31,8 @@ function initModels()
         resetanim(model)
     end
 
-    borderShoutLoad()
-    stdBoreJokeLoad()
+    escapeLoad()
+    stdBoredomLoad()
     stdBlackJokeLoad()
     stdBublesLoad()
     loadColors()
@@ -80,6 +80,6 @@ function script_update()
     prog_update()
 
     stdBubles()
-    stdBoreJoke()
+    stdBoredom()
     stdBlackJoke()
 end

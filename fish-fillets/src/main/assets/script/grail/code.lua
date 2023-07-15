@@ -68,7 +68,7 @@ local function prog_init()
                 elseif room.pokr == 0 then
                     room.pokr = -1
                     pom2 = 3
-                elseif stdBorderReport() then
+                elseif stdGoalReminder() then
                     if room.uztovedi > 2 then
                         addm(8, "gr-m-vsechny1")
                     else

@@ -45,7 +45,7 @@ local function prog_init()
                 room.natvrdo = 0
             end
 
-            if stdBorderReport() then
+            if stdGoalReminder() then
                 addv(5, "zel-v-ukol")
             end
             if isReady(small) and isReady(big) and no_dialog() and room.natvrdo == 0 then

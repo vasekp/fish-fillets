@@ -24,7 +24,7 @@ local function prog_init()
         room.zatraceny = randint(2000, 4000)
 
         return function()
-            if stdBorderReport() then
+            if stdGoalReminder() then
                 addv(random(10) + 5, "sp-v-ven")
             end
             if isReady(small) and isReady(big) and no_dialog() then
