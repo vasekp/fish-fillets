@@ -178,13 +178,6 @@ void LevelRules::moveFish(Direction d) {
 
     const auto obs = m_layout.obstacles(m_curFish, d);
 
-    if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)
-        return;
-    for(const auto* model : obs) {
-        if(m_layout.borderDepth(model, d).first > 0 && model->goal() != Model::Goal::escape)
-            return;
-    }
-
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end()) {
         for(auto* model : obs)
             model->touchDir() = d;
@@ -195,6 +188,13 @@ void LevelRules::moveFish(Direction d) {
         if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
     }
+    if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)
+        return;
+    for(const auto* model : obs) {
+        if(m_layout.borderDepth(model, d).first > 0 && model->goal() != Model::Goal::escape)
+            return;
+    }
+
     for(auto* model : obs)
         model->displace(d, true);
     Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
