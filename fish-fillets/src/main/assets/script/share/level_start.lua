@@ -8,7 +8,7 @@
 
 file_include("script/share/borejokes.lua")
 file_include("script/share/blackjokes.lua")
-file_include("script/share/bubles.lua")
+file_include("script/share/bubbles.lua")
 file_include("script/share/bordershout.lua")
 
 

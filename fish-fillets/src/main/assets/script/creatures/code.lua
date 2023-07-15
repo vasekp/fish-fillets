@@ -273,7 +273,7 @@ local function prog_init()
                     balalajka.afaze = 5
                 end,
                 [19] = function()
-                    room:talk("kor-room-music", CLASS_MUSIC)
+                    room:talk("kor-balalajka", CLASS_MUSIC)
                 end,
                 [83] = function()
                     balalajka.afaze = 5

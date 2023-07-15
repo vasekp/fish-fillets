@@ -8,22 +8,22 @@ function notify_escape(modelId)
         if room.zvykacka and big:isOut() then
             small:planDialog(0, "ob-m-zvykacka")
         else
-            small:planDialog(0, "sp-shout_small_0"..random(5))
+            small:planDialog(0, "jo-m-"..random(5))
         end
     elseif model == big then
         if random(100) < 15 and small:isOut() then
-            big:planDialog(0, "sp-shout_big_04")
+            big:planDialog(0, "jo-v-4")
         else
-            big:planDialog(0, "sp-shout_big_0"..random(4))
+            big:planDialog(0, "jo-v-"..random(4))
         end
     else
         model:setGoal("goal_none")
         if level_isSolved() then
             if not small:isTalking() then
-                small:planDialog(0, "sp-shout_small_0"..random(5))
+                small:planDialog(0, "jo-m-"..random(5))
             end
             if not big:isTalking() then
-                big:planDialog(0, "sp-shout_big_0"..random(5))
+                big:planDialog(0, "jo-v-"..random(5))
             end
             small:setGoal("goal_escape");
             big:setGoal("goal_escape");

@@ -132,4 +132,4 @@ dialog_add("kor-chob-psi", "", {})
 
 dialog_add("kor-chob-tca", "", {})
 
-dialog_add("kor-room-music", "", {})
+dialog_add("kor-balalajka", "", {})

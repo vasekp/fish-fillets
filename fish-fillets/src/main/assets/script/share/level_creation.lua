@@ -14,13 +14,13 @@ TALK_INDEX_BOTH = -1
 -- -----------------------------------------------------------------
 function createRoom(width, height, picture)
     level_createRoom(width, height, picture)
-    sound_addSound("impact_light", "sound/share/sp-impact_light_00.ogg")
-    sound_addSound("impact_light", "sound/share/sp-impact_light_01.ogg")
-    sound_addSound("impact_heavy", "sound/share/sp-impact_heavy_00.ogg")
-    sound_addSound("impact_heavy", "sound/share/sp-impact_heavy_01.ogg")
+    sound_addSound("impact_light", "sound/share/sp-zuch1.ogg")
+    sound_addSound("impact_light", "sound/share/sp-zuch2.ogg")
+    sound_addSound("impact_heavy", "sound/share/sp-ocel1.ogg")
+    sound_addSound("impact_heavy", "sound/share/sp-ocel2.ogg")
 
-    sound_addSound("dead_small", "sound/share/sp-dead_small.ogg")
-    sound_addSound("dead_big", "sound/share/sp-dead_big.ogg")
+    sound_addSound("dead_small", "sound/share/sp-smrt1.ogg")
+    sound_addSound("dead_big", "sound/share/sp-smrt2.ogg")
 end
 
 function setRoomWaves(double_amp, periode, inv_speed)
