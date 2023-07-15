@@ -1,7 +1,6 @@
 #include <utility>
 
 #include "subsystem/audio.h"
-#include "source.h"
 
 AudioSource::AudioSource(AudioData::Ref data, AudioType type, Private) :
     AudioSourceBase(type),

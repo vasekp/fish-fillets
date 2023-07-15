@@ -4,8 +4,8 @@
 #include "instance.h"
 
 #include "audio/audiodata.h"
-#include "audio/source.h"
-#include "audio/sourcelist.h"
+#include "audio/audiosource.h"
+#include "audio/audiosourcelist.h"
 
 class Audio {
     Instance& m_instance;

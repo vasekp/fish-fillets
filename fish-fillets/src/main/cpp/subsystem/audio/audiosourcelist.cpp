@@ -1,5 +1,4 @@
 #include "subsystem/audio.h"
-#include "sourcelist.h"
 
 AudioSourceList::AudioSourceList() :
         m_sources_thread(std::make_unique<Sources>()),
