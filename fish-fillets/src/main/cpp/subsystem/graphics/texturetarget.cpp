@@ -1,6 +1,18 @@
 #include "subsystem/graphics.h"
 
-void TextureTarget::bind() const {
+TextureTarget::TextureTarget(GraphicsSystem& system) :
+    DrawTarget(system),
+    m_ref(system.ref()),
+    m_framebuffer(system.ref()),
+    m_texture(),
+    m_size()
+{ }
+
+TextureView TextureTarget::texture() const {
+    return {m_texture, m_size};
+}
+
+void TextureTarget::bind() {
     m_framebuffer.bind();
     glViewport(0, 0, (GLsizei)m_texture.width(), (GLsizei)m_texture.height());
 }

@@ -71,7 +71,6 @@ void ScreenManager::drawFrame() {
     auto& offscreen = graphics.offscreenTarget();
     auto& fullscreen = graphics.fullscreenTarget();
     const auto copyProgram = graphics.shaders().copy();
-    offscreen.bind();
     offscreen.clear();
     curScreen().draw(offscreen);
 
@@ -79,19 +78,11 @@ void ScreenManager::drawFrame() {
 
     if(m_options.visible()) {
         auto& [blur1, blur2] = graphics.blurTargets();
-
-        blur1.bind();
         blur1.draw(offscreen.texture(), copyProgram, coords);
-
-        blur2.bind();
         blur2.draw(blur1.texture(), graphics.shaders().blur({ .dir = FCoords{1.f, 0.f} }), coords);
-
-        fullscreen.bind();
         fullscreen.draw(blur2.texture(), graphics.shaders().blur({ .dir = FCoords{0.f, 1.f} }), coords);
-
         m_options.draw(fullscreen);
     } else {
-        fullscreen.bind();
         fullscreen.draw(offscreen.texture(), copyProgram, coords);
     }
 

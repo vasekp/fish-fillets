@@ -9,12 +9,15 @@ private:
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
+    DisplayTarget* m_curTarget;
 
 public:
     GraphicsSystem(Instance& instance);
 
     auto& display() { return *m_display; }
     auto& ref() { return m_display; }
+
+    void bind(DrawTarget* target);
 
     void resizeBuffers();
 

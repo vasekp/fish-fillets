@@ -2,10 +2,12 @@
 #include "drawtarget.h"
 
 void DrawTarget::clear() {
+    m_system.bind(this);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {
+    m_system.bind(this);
     if(!params.srcSize)
         params.srcSize = params.area;
     else if(!params.area)
@@ -17,6 +19,7 @@ void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProg
 }
 
 void DrawTarget::draw(TextureView image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {
+    m_system.bind(this);
     if(!params.srcSize)
         params.srcSize = image.size();
     if(!params.area)

@@ -9,14 +9,14 @@ class DisplayTarget : public DrawTarget {
     FCoords m_size;
 
 public:
-    DisplayTarget(const ogl::Display& display) : m_display(display) { }
-
-    void bind() const override { m_display.bind(); }
+    DisplayTarget(GraphicsSystem& system, const ogl::Display& display) :
+        DrawTarget(system), m_display(display) { }
 
     FCoords size() const override { return m_display.getViewport().second; }
 
-protected:
+private:
     bool flipY() const override { return true; }
+    void bind() override { m_display.bind(); }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H

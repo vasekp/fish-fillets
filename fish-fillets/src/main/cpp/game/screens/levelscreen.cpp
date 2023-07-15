@@ -52,7 +52,7 @@ void LevelScreen::own_resize() {
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
     FCoords modelSizePixel = coords.in2out_dim(model.size() * size_unit);
-    auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system().ref());
+    auto ret = std::make_unique<TextureTarget>(m_instance.graphics().system());
     ret->resize(modelSizePixel.x(), modelSizePixel.y());
     return ret;
 }
@@ -159,7 +159,6 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     target.releaseScissor();
 
     if(mirror) {
-        m_mirrorTarget->bind();
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
         FCoords size = coords.in2out_dim(mirror->size() * size_unit);
         m_mirrorTarget->draw(m_instance.graphics().offscreenTarget().texture(),
@@ -168,7 +167,6 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 .src = FCoords{topLeft.fx() - size.fx(), topLeft.fy()},
                 .area = size
             });
-        target.bind();
         const auto program = m_instance.graphics().shaders().mirror({
             .maskImage = m_mirrorTarget->texture()
         });
