@@ -1,5 +1,4 @@
 #include "subsystem/graphics.h"
-#include "system.h"
 
 GraphicsSystem::GraphicsSystem(Instance& instance) :
         m_graphics(instance.graphics()),
