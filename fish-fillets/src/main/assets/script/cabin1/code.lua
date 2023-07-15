@@ -1,3 +1,16 @@
+local function getDirShift(dir)
+    local shiftX, shiftY = 0, 0
+    if dir == dir_left then
+        shiftX = -1
+    elseif dir == dir_right then
+        shiftX = 1
+    elseif dir == dir_up then
+        shiftY = -1
+    elseif dir == dir_down then
+        shiftY = 1
+    end
+    return shiftX, shiftY
+end
 
 -- -----------------------------------------------------------------
 -- Init

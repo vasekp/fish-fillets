@@ -3,7 +3,6 @@
 -- -----------------------------------------------------------------
 
 file_include("script/share/prog_goanim.lua")
-file_include("script/share/prog_finder.lua")
 
 -- -----------------------------------------------------------------
 -- Compatibility functions
