@@ -6,7 +6,7 @@
 #include "leveltitle.h"
 #include "options.h"
 
-class LevelRecord;
+struct LevelRecord;
 
 class ScreenManager {
     Instance& m_instance;
