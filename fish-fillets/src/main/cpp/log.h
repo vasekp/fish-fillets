@@ -61,7 +61,7 @@ private:
     static void log(Level level, const std::string& message);
 
 public:
-    static constexpr inline Level video = Level::error;
+    static constexpr inline Level video = Level::verbose;
     static constexpr inline Level strings = Level::error;
     static constexpr inline Level audio = Level::error;
     static constexpr inline Level input = Level::error;

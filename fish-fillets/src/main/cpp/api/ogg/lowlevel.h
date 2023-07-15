@@ -61,14 +61,19 @@ namespace ogg::ll {
         }
 
         void operator<<(ogg_packet& packet) {
-            if(vorbis_synthesis(&m_block, &packet) == 0)
-                vorbis_synthesis_blockin(this, &m_block);
+            if(auto ret = vorbis_synthesis(&m_block, &packet); ret != 0) {
+                Log::error("vorbis_synthesis returned ", ret);
+                return;
+            }
+            if(auto ret = vorbis_synthesis_blockin(this, &m_block); ret != 0)
+                Log::error("vorbis_synthesis_blockin returned ", ret);
         }
 
         std::size_t operator>>(std::vector<float>& ret) {
             float **pcm;
             auto oldSize = ret.size();
             auto size = vorbis_synthesis_pcmout(this, &pcm);
+            Log::verbose<Log::video>("pcmout size: ", size, " vector ", (void*)(pcm), " ", (void*)(pcm[0]));
             ret.resize(oldSize + size);
             std::memcpy(ret.data() + oldSize, pcm[0], size * sizeof(float));
             vorbis_synthesis_read(this, size);
