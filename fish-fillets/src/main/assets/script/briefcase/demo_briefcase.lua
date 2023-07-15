@@ -1,6 +1,5 @@
 
-codename = "briefcase"
-file_include("script/briefcase/brief_dialogs.lua")
+file_include("script/"..codename.."/brief_dialogs.lua")
 
 local function planDelay(delay)
     if delay > 0 then
