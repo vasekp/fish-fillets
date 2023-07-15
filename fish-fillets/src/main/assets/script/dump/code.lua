@@ -208,13 +208,10 @@ local function prog_init()
                 end,
                 [5] = function()
                     budik.afaze = 1
+                    budik:talk("sm-x-tiktak", CLASS_SOUND)
                 end,
             }
             budik:updateAnim()
-
-            if not budik:isTalking() then
-                budik:talk("sm-x-tiktak", CLASS_SOUND, -1)
-            end
         end
     end
 

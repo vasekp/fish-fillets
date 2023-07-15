@@ -156,7 +156,7 @@ private:
     std::pair<float, float> model_getViewShift(int index);
     void model_setBusy(int index, bool busy);
     bool model_isTalking(int index);
-    void model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag);
+    void model_talk(int index, std::string name, std::optional<int> type, std::optional<bool> loops, std::optional<bool> dialogFlag);
     void model_killSound(int index);
     bool model_equals(int index, int x, int y);
     bool model_goto(int index, int x, int y);

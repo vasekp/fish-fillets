@@ -201,7 +201,7 @@ local function prog_init()
                 end
             else
                 if not kachnicka:isTalking() then
-                    kachnicka:talk("bar-x-kchkch", CLASS_SOUND, -1)
+                    kachnicka:talk("bar-x-kchkch", CLASS_SOUND, true)
                 end
                 kachnicka.afaze = ((kachnicka.afaze - 5 + 1) % 4) + 5
                 kachnicka.cinnost = kachnicka.cinnost + 1

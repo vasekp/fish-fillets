@@ -135,7 +135,7 @@ local function prog_init()
                     if room.poc > 0 then
                         room.poc = room.poc - 1
                     elseif not ibudik:isTalking() then
-                        ibudik:talk("bat-t-budik", CLASS_SOUND, -1)
+                        ibudik:talk("bat-t-budik", CLASS_SOUND, true)
                     elseif ibudik.dir ~= dir_no then
                         ibudik:killSound()
                         room.aktivni = -1

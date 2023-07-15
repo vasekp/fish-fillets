@@ -91,7 +91,7 @@ end
 
 function planDialog(actor_index, delay, dialog, action)
     planTimeAction(delay, function()
-            model_talk(actor_index, dialog, CLASS_TALK, 0, true)
+            model_talk(actor_index, dialog, CLASS_TALK, false, true)
             if nil ~= action then
             action()
             end

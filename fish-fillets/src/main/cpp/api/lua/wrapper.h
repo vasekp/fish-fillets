@@ -49,6 +49,11 @@ namespace lua {
         }
 
         template<>
+        inline std::optional<bool> read(lua_State *L, std::size_t index) {
+            return lua_isnoneornil(L, index) ? std::optional<bool>{} : lua_toboolean(L, index);
+        }
+
+        template<>
         inline std::map<std::string, std::string> read(lua_State *L, std::size_t index) {
             lua_pushvalue(L, index);
             lua_pushnil(L);

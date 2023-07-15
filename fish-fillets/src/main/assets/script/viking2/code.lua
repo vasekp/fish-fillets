@@ -631,7 +631,7 @@ local function prog_init()
                     end
                 end,
                 [2] = function()
-                    pesos:talk("dr-x-pes", CLASS_SOUND, -1)
+                    pesos:talk("dr-x-pes", CLASS_SOUND, true)
                     pesos.delay = random(100) + 20
                     pesos.cinnost = pesos.cinnost + 1
                 end,

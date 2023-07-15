@@ -323,7 +323,7 @@ bool Level::model_isTalking(int index) {
     return layout().getModel(index)->talking();
 }
 
-void Level::model_talk(int index, std::string name, std::optional<int> type, std::optional<int> loops, bool dialogFlag) {
+void Level::model_talk(int index, std::string name, std::optional<int> type, std::optional<bool> loops, std::optional<bool> dialogFlag) {
     constexpr std::array<AudioType, 3> types = {AudioType::talk, AudioType::sound, AudioType::music};
     if(isBusy(BusyReason::loading) || isBusy(BusyReason::replay))
         return;
@@ -352,9 +352,8 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
     auto data = m_screen.addSound(name, dialog.soundFile, true);
     Log::verbose<Log::audio>("Audio type ", type.value_or(0));
     auto source = AudioSource::create(data, types[type.value_or(0)]);
-    if(loops.value_or(0) != 0)
-        source->setRepeat(true);
-    source->setDialog(dialogFlag);
+    source->setRepeat(loops.value_or(false));
+    source->setDialog(dialogFlag.value_or(false));
     if(index != index_talk_both)
         layout().getModel(index)->talk() = source;
     else {

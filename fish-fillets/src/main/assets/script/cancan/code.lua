@@ -252,7 +252,7 @@ local function prog_init()
                 if no_dialog() then
                     klavir.vyruseni = klavir.vyruseni - 1
                     if klavir.vyruseni == 0 then
-                        klavir:talk("kan-klavir", CLASS_MUSIC, -1)
+                        klavir:talk("kan-klavir", CLASS_MUSIC, true)
                     end
                 end
                 if random(100) < 3 then
@@ -262,7 +262,7 @@ local function prog_init()
                 end
             else
                 if not klavir:isTalking() then
-                    klavir:talk("kan-klavir", CLASS_MUSIC, -1)
+                    klavir:talk("kan-klavir", CLASS_MUSIC, true)
                 end
                 if klavir.otocka > 0 and klavir.mrknuti > 0 then
                     if klavir.ruce == 0 then
