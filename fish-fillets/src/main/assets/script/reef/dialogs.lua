@@ -1,6 +1,6 @@
 dialog_add("uts-m-otresy", "small", {
   cs="Probůh, to otřesy způsobily zával!",
-  en="My goodness, the impact created cave-in!"})
+  en="My goodness, the impact created a cave-in!"})
 
 dialog_add("uts-v-projet0", "big", {
   cs="Nemůžu kolem toho závalu projet, musíme zkusit jiný východ.",

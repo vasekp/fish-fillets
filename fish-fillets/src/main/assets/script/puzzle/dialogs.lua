@@ -20,7 +20,7 @@ dialog_add("puc-m-pld0", "small", {
 
 dialog_add("puc-m-pld1", "small", {
   cs="Podívej se na toho plda. To je ale potvora.",
-  en="Look at that pld. What a monster."})
+  en="Look at that blob. What a monster."})
 
 dialog_add("puc-m-hele", "small", {
   cs="Hele, to je ale nechutnost.",

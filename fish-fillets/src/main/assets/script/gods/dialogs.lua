@@ -84,7 +84,7 @@ dialog_add("lod-v-hul", "big", {
 
 dialog_add("lod-m-ozizlana", "small", {
   cs="Asi ji ožižlával pld.",
-  en="A pld probably sucked upon it."})
+  en="A blob probably sucked upon it."})
 
 dialog_add("lod-v-hravost", "big", {
   cs="Maminka měla pravdu: Příčinou všeho zla je chorobná hravost.",

@@ -88,7 +88,7 @@ dialog_add("bar-m-noha", "small", {
 
 dialog_add("bar-v-pld", "big", {
   cs="Podívej na toho plda. Vypadá pořád stejně a přitom je pořád odpornější.",
-  en="Look at that pld. It looks the same and still it grows more and more repulsive."})
+  en="Look at that blob. It looks the same and still it grows more and more repulsive."})
 
 dialog_add("bar-m-pudy", "small", {
   cs="Ale i v něm dřímou mateřské pudy. Podívej, jak se stará o to maličké.",
