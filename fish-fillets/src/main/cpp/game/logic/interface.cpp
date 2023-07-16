@@ -289,12 +289,16 @@ unsigned Level::model_getH(int index) {
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
+    auto* model = layout().getModel(index);
     if(goal == "goal_alive")
-        layout().getModel(index)->goal() = Model::Goal::alive;
-    else if(goal == "goal_escape" || goal == "goal_out") // FIXME: is there any need to differentiate?
-        layout().getModel(index)->goal() = Model::Goal::escape;
-    else
-        layout().getModel(index)->goal() = Model::Goal::none;
+        model->goal() = Model::Goal::alive;
+    else if(goal == "goal_escape" || goal == "goal_out") { // FIXME: is there any need to differentiate?
+        bool release = model->goal() == Model::Goal::alive;
+        model->goal() = Model::Goal::escape;
+        if(release)
+            rules().checkEscape(model);
+    } else
+        model->goal() = Model::Goal::none;
 }
 
 void Level::model_change_turnSide(int index) {
@@ -317,6 +321,8 @@ void Level::model_setBusy(int index, bool busy) {
     model->action() = busy
         ? model->moving() ? Model::Action::willBusy : Model::Action::busy
         : Model::Action::base;
+    if(!busy)
+        rules().checkEscape(model);
 }
 
 bool Level::model_isTalking(int index) {
