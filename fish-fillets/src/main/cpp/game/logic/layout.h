@@ -50,12 +50,12 @@ public:
     void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);
     Model* getModel(int index) const;
     Model* modelAt(ICoords coords) const;
-
     const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
-    std::pair<int, int> borderDepth(const Model* model, ICoords delta = {}) const;
 
     std::set<Model*> intersections(const Model* model, ICoords d);
     std::set<Model*> obstacles(const Model* root, ICoords d);
+    Direction borderDir(const Model* model) const;
+    bool isOut(const Model* model) const;
     std::vector<Direction> findPath(const Model* unit, ICoords target);
     std::vector<Direction> randomPath(const Model* unit, int minDistance);
 

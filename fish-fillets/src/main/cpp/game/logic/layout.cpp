@@ -91,17 +91,29 @@ void LevelLayout::animate(float dt, float speed) {
     }
 }
 
-std::pair<int, int> LevelLayout::borderDepth(const Model* model, ICoords delta) const {
-    auto x = model->x() + delta.x, y = model->y() + delta.y,
+Direction LevelLayout::borderDir(const Model* model) const {
+    auto x = model->x(), y = model->y(),
         width = (int)model->shape().width(),
         height = (int)model->shape().height();
-    auto depth1 = std::max(
-            std::max(-x, x + width - m_width),
-            std::max(-y, y + height - m_height));
-    auto depth2 = std::max(
-            std::max(-x - width, x - m_width),
-            std::max(-y - height, y - m_height));
-    return {depth1, depth2};
+    if(isOut(model))
+        return Direction::none;
+    else if(x <= 0)
+        return Direction::left;
+    else if(x + width >= m_width)
+        return Direction::right;
+    else if(y <= 0)
+        return Direction::up;
+    else if(y + height >= m_height)
+        return Direction::down;
+    else
+        return Direction::none;
+}
+
+bool LevelLayout::isOut(const Model* model) const {
+    auto x = model->x(), y = model->y(),
+        width = (int)model->shape().width(),
+        height = (int)model->shape().height();
+    return x + width <= 0 || y + height <= 0 || x >= m_width || y >= m_height;
 }
 
 static std::array<Direction, 3> nextDirs(Direction dir) {
@@ -121,7 +133,7 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
     for(const auto* model : models()) {
-        if(model == unit || model->hidden() || borderDepth(model).first > 0)
+        if(model == unit || model->hidden() || model->driven())
             continue;
         auto [x, y] = model->xy();
         for(auto dx = 0u; dx < model->shape().width(); dx++)

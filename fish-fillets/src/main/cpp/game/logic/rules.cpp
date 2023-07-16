@@ -123,7 +123,7 @@ void LevelRules::processKey(Key key) {
 
 bool LevelRules::switchFish(Model* which) {
     Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
-    if(target->action() != Model::Action::base || !target->alive() || m_layout.borderDepth(target).first > 0 || target->hidden())
+    if(target->action() != Model::Action::base || !target->alive() || target->hidden() || target->driven())
         return false;
     setFish(target);
     if(!m_vintage && !m_level.inDemo()) {
@@ -188,10 +188,11 @@ void LevelRules::moveFish(Direction d) {
         if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
     }
-    if(m_layout.borderDepth(m_curFish, d).first > 0 && m_curFish->goal() != Model::Goal::escape)
+    if(m_layout.borderDir(m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
         return;
     for(const auto* model : obs) {
-        if(m_layout.borderDepth(model, d).first > 0 && model->goal() != Model::Goal::escape)
+      Log::debug<Log::motion>(m_layout.borderDir(model), d);
+        if(m_layout.borderDir(model) == d && model->goal() != Model::Goal::escape)
             return;
     }
 
@@ -367,27 +368,7 @@ void LevelRules::evalMotion(Model* model, Direction d) {
             }
         }
     }
-
-    if(model->goal() == Model::Goal::escape) {
-        auto depth = m_layout.borderDepth(model);
-        if((model->alive() && depth.first == 0) || (!model->alive() && depth.second == 0))
-            m_level.notifyEscape(model);
-        if(depth.first >= 0 && depth.second < 0) {
-            clearQueue();
-            model->driven() = true;
-            model->displace(d);
-        }
-        if(depth.second >= 0 || (m_bonusExit && model->intersects(m_bonusExit))) {
-            std::erase(m_goals, model);
-            if(model == m_curFish)
-                if(!switchFish()) {
-                    setFish(Model::Fish::none);
-                    if(!m_vintage)
-                        m_level.success();
-                }
-            model->disappear();
-        }
-    }
+    checkEscape(model);
 }
 
 void LevelRules::death(Model* unit) {
@@ -408,6 +389,30 @@ void LevelRules::death(Model* unit) {
     m_level.notifyDeath(unit);
     if(unit == m_curFish && !switchFish())
         setFish(Model::Fish::none);
+}
+
+void LevelRules::checkEscape(Model* model) {
+    if(model->goal() == Model::Goal::escape && model->action() != Model::Action::busy) {
+        auto dir = m_layout.borderDir(model);
+        auto out = m_layout.isOut(model);
+        if((model->alive() && !!dir) || (!model->alive() && out))
+            m_level.notifyEscape(model);
+        if(!!dir) {
+            clearQueue();
+            model->driven() = true;
+            model->displace(dir);
+        }
+        if(out || (m_bonusExit && model->intersects(m_bonusExit))) {
+            std::erase(m_goals, model);
+            if(model == m_curFish)
+                if(!switchFish()) {
+                    setFish(Model::Fish::none);
+                    if(!m_vintage)
+                        m_level.success();
+                }
+            model->disappear();
+        }
+    }
 }
 
 void LevelRules::buildDepGraph() {

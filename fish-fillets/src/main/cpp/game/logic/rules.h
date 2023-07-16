@@ -38,6 +38,7 @@ public:
     void clearQueue();
     void update();
     bool ready();
+    void checkEscape(Model* model);
 
     bool switchFish(Model* which = nullptr);
     Model::Fish activeFish() const;

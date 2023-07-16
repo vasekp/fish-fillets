@@ -269,7 +269,7 @@ bool Level::model_isAlive(int index) {
 }
 
 bool Level::model_isAtBorder(int index) {
-    return layout().borderDepth(layout().getModel(index)).first == 0;
+    return !!layout().borderDir(layout().getModel(index));
 }
 
 bool Level::model_isOut(int index) {
