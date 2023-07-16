@@ -25,7 +25,7 @@ public:
     void* window() override { return app->window; }
     AndroidInput& inputSource() override { return m_input; }
     std::string lang() override;
-    void quit() override;
+    void own_quit() override;
 
     void startstop();
     OboeSink& oboe() { return m_sink; }

@@ -29,6 +29,8 @@ protected:
     Instance(std::unique_ptr<IFiles>&& files);
     ~Instance();
 
+    void init();
+
 public:
     auto& files() { return *m_files; }
     auto& graphics() { return *m_graphics; }
@@ -47,9 +49,11 @@ public:
     virtual std::string lang() = 0;
     virtual void* window() = 0;
 
-    void init();
     void updateAndDraw();
-    virtual void quit();
+    void quit();
+
+private:
+    virtual void own_quit() { }
 };
 
 #endif //FISH_FILLETS_INSTANCE_H

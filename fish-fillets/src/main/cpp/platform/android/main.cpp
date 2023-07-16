@@ -82,8 +82,6 @@ void android_main(struct android_app* app) {
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
 
-    instance.init();
-
     while(true) {
         try {
             int events;

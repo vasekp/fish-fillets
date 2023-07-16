@@ -55,4 +55,5 @@ void Instance::updateAndDraw() {
 void Instance::quit() {
     running = false;
     audio().clear();
+    own_quit();
 }

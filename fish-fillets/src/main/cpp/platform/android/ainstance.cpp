@@ -10,14 +10,14 @@ AndroidInstance::AndroidInstance(android_app* androidApp):
         live(false)
 {
     app->userData = this;
+    init();
 }
 
 AndroidInstance& AndroidInstance::get(android_app* app) {
     return *static_cast<AndroidInstance*>(app->userData);
 }
 
-void AndroidInstance::quit() {
-    Instance::quit();
+void AndroidInstance::own_quit() {
     ANativeActivity_finish(app->activity);
 }
 

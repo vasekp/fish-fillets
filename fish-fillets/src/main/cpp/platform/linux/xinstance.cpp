@@ -12,6 +12,7 @@ XInstance::XInstance(Display* dpy, Window win) :
     auto wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
     m_deleteAtom = wmDeleteMessage;
+    init();
 }
 
 void* XInstance::window() {

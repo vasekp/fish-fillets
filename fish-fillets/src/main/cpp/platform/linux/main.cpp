@@ -46,7 +46,6 @@ int main(int argc, char **argv) {
         XInstance instance{dpy, win};
 
         instance.graphics().activate();
-        instance.init();
 
         XMapWindow(dpy, win);
         XFlush(dpy);
