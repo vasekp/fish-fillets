@@ -23,10 +23,8 @@ namespace jni {
         ::JNIEnv *operator->() const { return m_env; }
 
         jobject object() const { return m_obj; }
-        jmethodID method(const std::string& name) const;
-
-    private:
-        jmethodID getMethodID(const char* name, const char* sig);
+        void addMethod(const char* name, const char* sig);
+        jmethodID getMethod(const std::string& name) const;
     };
 }
 

@@ -15,7 +15,7 @@ namespace decoders {
         Log::debug<Log::graphics>("loadPNG ", filename);
         auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
         jstring jPath = jni->NewStringUTF(filename.c_str());
-        jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.method("loadBitmap"), jPath);
+        jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("loadBitmap"), jPath);
         AndroidBitmapInfo info;
         AndroidBitmap_getInfo(jni, jBitmap, &info);
         std::uint32_t width = info.width;

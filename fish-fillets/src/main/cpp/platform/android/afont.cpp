@@ -19,7 +19,7 @@ std::vector<std::string> AndroidFont::breakLines(const std::string& text, float 
     auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jArray = (jobjectArray)jni->CallObjectMethod(jni.object(), jni.method("breakLines"),
+    auto jArray = (jobjectArray)jni->CallObjectMethod(jni.object(), jni.getMethod("breakLines"),
             jText, jFilename, m_fontSize, (int)width);
     auto length = jni->GetArrayLength(jArray);
     std::vector <std::string> ret{};
@@ -41,7 +41,7 @@ ogl::Texture AndroidFont::renderText(const std::string& text) const {
     auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
-    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.method("renderText"), jText, jFilename, m_fontSize, m_outline);
+    auto jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("renderText"), jText, jFilename, m_fontSize, m_outline);
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);
     std::uint32_t width = info.width;

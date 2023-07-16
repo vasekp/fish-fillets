@@ -8,12 +8,6 @@ namespace jni {
     {
         m_vm->AttachCurrentThread(&m_env, nullptr);
         m_class = m_env->GetObjectClass(m_obj);
-        m_methods["loadBitmap"] = getMethodID("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
-        m_methods["breakLines"] = getMethodID("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
-        m_methods["renderText"] = getMethodID("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
-        m_methods["showUI"] = getMethodID("showUI", "()V");
-        m_methods["hideUI"] = getMethodID("hideUI", "()V");
-        m_methods["getLang"] = getMethodID("getLang", "()Ljava/lang/String;");
     }
 
     Env::~Env() {
@@ -21,13 +15,14 @@ namespace jni {
         m_vm->DetachCurrentThread();
     }
 
-    jmethodID Env::getMethodID(const char *name, const char *sig) {
+    void Env::addMethod(const char *name, const char *sig) {
         auto ret = m_env->GetMethodID(m_class, name, sig);
-        assert(ret);
-        return ret;
+        if(!ret)
+            Log::fatal("JNI: method ", name, " not found!");
+        m_methods[name] = ret;
     }
 
-    jmethodID Env::method(const std::string &name) const {
+    jmethodID Env::getMethod(const std::string &name) const {
         return m_methods.at(name);
     }
 }

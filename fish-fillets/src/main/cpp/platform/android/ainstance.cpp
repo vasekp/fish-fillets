@@ -10,6 +10,14 @@ AndroidInstance::AndroidInstance(android_app* androidApp):
         live(false)
 {
     app->userData = this;
+
+    jni.addMethod("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+    jni.addMethod("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
+    jni.addMethod("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
+    jni.addMethod("showUI", "()V");
+    jni.addMethod("hideUI", "()V");
+    jni.addMethod("getLang", "()Ljava/lang/String;");
+
     init();
 }
 
@@ -34,7 +42,7 @@ void AndroidInstance::startstop() {
 }
 
 std::string AndroidInstance::lang() {
-    auto jString = (jstring)jni->CallObjectMethod(jni.object(), jni.method("getLang"));
+    auto jString = (jstring)jni->CallObjectMethod(jni.object(), jni.getMethod("getLang"));
     auto chars = jni->GetStringUTFChars(jString, nullptr);
     std::string ret{chars};
     jni->ReleaseStringUTFChars(jString, chars);

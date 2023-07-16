@@ -78,7 +78,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                         m_pointerHandled = inputSink.doubleTap(coords);
                     else
                         m_pointerHandled = inputSink.pointerDown(coords);
-                    jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
+                    jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
                     return m_pointerHandled;
                 }
                 case AMOTION_EVENT_ACTION_MOVE: {
@@ -93,10 +93,10 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     if(pointerId == m_pointerId)
                         m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
                     if(!m_pointerHandled) {
-                        jni->CallVoidMethod(jni.object(), jni.method("showUI"));
+                        jni->CallVoidMethod(jni.object(), jni.getMethod("showUI"));
                         // keep m_pointerDownTime for double tap
                     } else {
-                        jni->CallVoidMethod(jni.object(), jni.method("hideUI"));
+                        jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
                         m_pointerDownTime = absolutePast;
                     }
                     m_pointerFollow = false;
