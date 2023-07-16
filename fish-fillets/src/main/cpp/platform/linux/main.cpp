@@ -3,19 +3,13 @@
 #include "subsystem/graphics.h"
 #include "subsystem/persist.h"
 #include "game/screens/screenmanager.h"
-#include "alsasink.h"
-
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Xutil.h>
-#include <X11/XKBlib.h>
 
 #include <iostream>
 
-int main(int argc, char **argv) {
+std::pair<Display*, Window> initWindow() {
     Display* dpy = XOpenDisplay(nullptr);
     if(!dpy)
-        std::cerr << "cannot connect to X server";
+        Log::fatal("Cannot connect to X server.");
     Window root = DefaultRootWindow(dpy);
 
     XSetWindowAttributes swa;
@@ -40,61 +34,32 @@ int main(int argc, char **argv) {
     hints.flags = InputHint;
     XSetWMHints(dpy, win, &hints);
 
-    auto wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-    XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
-
     XkbSetDetectableAutoRepeat(dpy, True, nullptr);
 
-    XInstance instance{win};
-    AlsaSink sink{instance.audio()};
+    return {dpy, win};
+}
 
-    instance.graphics().activate();
-    instance.init();
-
-    XMapWindow(dpy, win);
-    XFlush(dpy);
-
-    instance.screens().resume();
-    instance.running = true;
-
+int main(int argc, char **argv) {
     try {
+        auto [dpy, win] = initWindow();
+
+        XInstance instance{dpy, win};
+
+        instance.graphics().activate();
+        instance.init();
+
+        XMapWindow(dpy, win);
+        XFlush(dpy);
+
+        instance.screens().resume();
+        instance.running = true;
+
         Log::info<Log::lifecycle>("Main loop");
-        int lastWidth = 0, lastHeight = 0;
         while(instance.running) {
             while(XPending(dpy)) {
                 XEvent event;
                 XNextEvent(dpy, &event);
-                switch(event.type) {
-                    case KeyPress: [[fallthrough]];
-                    case KeyRelease:
-                        instance.inputSource().keyEvent(event.xkey);
-                        break;
-                    case ButtonPress: [[fallthrough]];
-                    case ButtonRelease:
-                        instance.inputSource().buttonEvent(event.xbutton);
-                        break;
-                    case MotionNotify:
-                        instance.inputSource().motionEvent(event.xmotion);
-                        break;
-                    case ConfigureNotify:
-                        {
-                            if(event.xconfigure.width == lastWidth && event.xconfigure.height == lastHeight)
-                                break;
-                            Log::debug<Log::platform>("Resize: ", event.xconfigure.width, "×", event.xconfigure.height);
-                            instance.graphics().setViewport({0, 0}, {event.xconfigure.width, event.xconfigure.height});
-                            lastWidth = event.xconfigure.width;
-                            lastHeight = event.xconfigure.height;
-                            break;
-                        }
-                    case ClientMessage:
-                        if((Atom)event.xclient.data.l[0] == wmDeleteMessage) {
-                            Log::info<Log::lifecycle>("Quitting");
-                            instance.running = false;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                instance.dispatchEvent(event);
             }
             instance.updateAndDraw();
         }

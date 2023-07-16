@@ -67,10 +67,10 @@ Key XKeyMap(KeySym keysym) {
     }
 }
 
-void XInput::keyEvent(XKeyEvent& event) {
+void XInput::keyEvent(const XKeyEvent& event) {
     if(event.type == KeyPress) {
         if(m_lastKey == Key::none) {
-            auto key = XKeyMap(XLookupKeysym(&event, 0));
+            auto key = XKeyMap(XLookupKeysym(const_cast<XKeyEvent*>(&event), 0));
             if(key != Key::none) {
               m_instance.inputSink().keyDown(key);
               m_lastKey = key;

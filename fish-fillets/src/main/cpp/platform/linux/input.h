@@ -26,7 +26,7 @@ class XInput : public IInputSource {
 public:
     XInput(Instance& instance);
 
-    void keyEvent(XKeyEvent& xkey);
+    void keyEvent(const XKeyEvent& xkey);
     void buttonEvent(const XButtonEvent& xbutton);
     void motionEvent(const XMotionEvent& xmotion);
     void ping() override;
