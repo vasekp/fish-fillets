@@ -27,7 +27,7 @@ public:
     AndroidInput(AndroidInstance& instance);
 
     bool processEvent(AInputEvent* event);
-    void ping();
+    void ping() override;
     Key poolKey() override;
     void reset() override;
     FCoords hover() override;

@@ -33,6 +33,25 @@ IInputSource& Instance::inputSourceMasked() {
     return screens().inputSourceMasked();
 }
 
+void Instance::init() {
+    if(persist().get("subtitles", ""s).empty()) {
+        auto sysLang = lang();
+        Log::info<Log::platform>("Lang empty, system: ", sysLang);
+        persist().set("subtitles", sysLang == "cs" || sysLang == "sk" ? "cs"s : "en"s);
+    }
+
+    bool playIntro = !persist().get<int>("intro", 0);
+    screens().startMode(playIntro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
+    if(playIntro)
+        persist().set("intro", 1);
+}
+
+void Instance::updateAndDraw() {
+    inputSource().ping();
+    screens().updateAll();
+    screens().drawFrame();
+}
+
 void Instance::quit() {
     running = false;
     audio().clear();

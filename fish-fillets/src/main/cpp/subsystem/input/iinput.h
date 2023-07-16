@@ -10,6 +10,7 @@ class IInputSource {
 public:
     virtual ~IInputSource() { }
     virtual Key poolKey() { return Key::none; }
+    virtual void ping() { }
     virtual void reset() { }
     virtual FCoords hover() { return noHover; }
 

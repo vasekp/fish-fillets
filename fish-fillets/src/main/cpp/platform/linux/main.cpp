@@ -49,18 +49,7 @@ int main(int argc, char **argv) {
     AlsaSink sink{instance.audio()};
 
     instance.graphics().activate();
-
-    if(instance.persist().get("subtitles", ""s).empty()) {
-        auto sysLang = instance.lang();
-        Log::info<Log::platform>("Lang empty, system: ", sysLang);
-        instance.persist().set("subtitles", sysLang == "cs" || sysLang == "sk" ? "cs"s : "en"s);
-    }
-
-    bool intro = !instance.persist().get<int>("intro", 0);
-    instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
-    if(intro)
-        instance.persist().set("intro", 1);
-    instance.screens().drawFrame();
+    instance.init();
 
     XMapWindow(dpy, win);
     XFlush(dpy);
@@ -107,10 +96,7 @@ int main(int argc, char **argv) {
                         break;
                 }
             }
-
-            instance.inputSource().ping();
-            instance.screens().updateAll();
-            instance.screens().drawFrame();
+            instance.updateAndDraw();
         }
     } catch(std::exception& e) {
         Log::error("Caught exception ", e.what(), ", exiting");

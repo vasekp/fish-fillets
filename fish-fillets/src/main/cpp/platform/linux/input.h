@@ -29,7 +29,7 @@ public:
     void keyEvent(XKeyEvent& xkey);
     void buttonEvent(const XButtonEvent& xbutton);
     void motionEvent(const XMotionEvent& xmotion);
-    void ping();
+    void ping() override;
     Key poolKey() override;
     void reset() override;
     FCoords hover() override;

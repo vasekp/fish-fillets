@@ -82,16 +82,7 @@ void android_main(struct android_app* app) {
     app->onAppCmd = handle_cmd;
     app->onInputEvent = handle_input;
 
-    if(instance.persist().get("subtitles", ""s).empty()) {
-        auto sysLang = instance.lang();
-        Log::info<Log::platform>("Lang empty, system: ", sysLang);
-        instance.persist().set("subtitles", sysLang == "cs" || sysLang == "sk" ? "cs"s : "en"s);
-    }
-
-    bool intro = !instance.persist().get<int>("intro", 0);
-    instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
-    if(intro)
-        instance.persist().set("intro", 1);
+    instance.init();
 
     while(true) {
         try {
@@ -107,11 +98,8 @@ void android_main(struct android_app* app) {
                 }
             }
 
-            if(instance.live && instance.running) {
-                instance.inputSource().ping();
-                instance.screens().updateAll();
-                instance.screens().drawFrame();
-            }
+            if(instance.live && instance.running)
+                instance.updateAndDraw();
         } catch(std::exception& e) {
             Log::error("Caught exception: %s", e.what());
             instance.quit();

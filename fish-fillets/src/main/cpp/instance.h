@@ -45,8 +45,11 @@ public:
     bool running = false;
 
     virtual std::string lang() = 0;
-    virtual void quit();
     virtual void* window() = 0;
+
+    void init();
+    void updateAndDraw();
+    virtual void quit();
 };
 
 #endif //FISH_FILLETS_INSTANCE_H
