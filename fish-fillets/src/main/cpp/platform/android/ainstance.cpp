@@ -32,3 +32,12 @@ void AndroidInstance::startstop() {
         screens().resume();
     }
 }
+
+std::string AndroidInstance::lang() {
+    auto jString = (jstring)jni->CallObjectMethod(jni.object(), jni.method("getLang"));
+    auto chars = jni->GetStringUTFChars(jString, nullptr);
+    std::string ret{chars};
+    jni->ReleaseStringUTFChars(jString, chars);
+    jni->DeleteLocalRef(jString);
+    return ret;
+}

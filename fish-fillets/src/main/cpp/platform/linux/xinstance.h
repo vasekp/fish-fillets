@@ -13,15 +13,11 @@ class XInstance : public Instance {
 public:
     Window m_window;
 
-    XInstance(Window window) :
-        Instance(std::make_unique<LinuxFiles>()),
-        m_input(*this),
-        m_window(window)
-    { }
+    XInstance(Window window);
 
-    void* window() override { return reinterpret_cast<void*>(m_window); }
-
+    void* window() override;
     XInput& inputSource() override { return m_input; }
+    std::string lang() override;
 };
 
 #endif //FF_LINUX_INSTANCE_H

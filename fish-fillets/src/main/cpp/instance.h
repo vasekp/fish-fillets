@@ -44,6 +44,7 @@ public:
 
     bool running = false;
 
+    virtual std::string lang() = 0;
     virtual void quit();
     virtual void* window() = 0;
 };

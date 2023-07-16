@@ -13,6 +13,7 @@ namespace jni {
         m_methods["renderText"] = getMethodID("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
         m_methods["showUI"] = getMethodID("showUI", "()V");
         m_methods["hideUI"] = getMethodID("hideUI", "()V");
+        m_methods["getLang"] = getMethodID("getLang", "()Ljava/lang/String;");
     }
 
     Env::~Env() {

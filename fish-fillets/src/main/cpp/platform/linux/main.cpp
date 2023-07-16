@@ -49,6 +49,13 @@ int main(int argc, char **argv) {
     AlsaSink sink{instance.audio()};
 
     instance.graphics().activate();
+
+    if(instance.persist().get("subtitles", ""s).empty()) {
+        auto sysLang = instance.lang();
+        Log::info<Log::platform>("Lang empty, system: ", sysLang);
+        instance.persist().set("subtitles", sysLang == "cs" || sysLang == "sk" ? "cs"s : "en"s);
+    }
+
     bool intro = !instance.persist().get<int>("intro", 0);
     instance.screens().startMode(intro ? ScreenManager::Mode::Intro : ScreenManager::Mode::WorldMap);
     if(intro)

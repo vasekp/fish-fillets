@@ -22,12 +22,13 @@ public:
 
     static AndroidInstance& get(android_app* app);
 
-    void quit() override;
     void* window() override { return app->window; }
-    OboeSink& oboe() { return m_sink; }
     AndroidInput& inputSource() override { return m_input; }
+    std::string lang() override;
+    void quit() override;
 
     void startstop();
+    OboeSink& oboe() { return m_sink; }
 };
 
 #endif //FF_ANDROID_INSTANCE_H

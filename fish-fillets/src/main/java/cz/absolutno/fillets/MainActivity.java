@@ -135,6 +135,10 @@ public class MainActivity extends NativeActivity {
         uiHandler.post(hideUIRunnable);
     }
 
+    String getLang() {
+        return getResources().getConfiguration().locale.getLanguage();
+    }
+
     private final Runnable showUIRunnable = () -> {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().getInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());

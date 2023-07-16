@@ -15,8 +15,7 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
         {AudioType::sound, "sound", {37, 105}},
         {AudioType::talk, "talk", {37, 154}},
         {AudioType::music, "music", {37, 203}}},
-    m_sliding(nullptr),
-    m_currSubs(instance.persist().get("subtitles", "cs"s))
+    m_sliding(nullptr)
 { }
 
 OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, FCoords origin_) :
@@ -46,6 +45,7 @@ void OptionsOverlay::draw(DrawTarget& target) {
 void OptionsOverlay::show() {
     m_visible = true;
     m_instance.inputSource().reset();
+    m_currSubs = m_instance.persist().get("subtitles", "cs"s);
 }
 
 void OptionsOverlay::hide() {
