@@ -2,7 +2,6 @@
 #define FISH_FILLETS_ANDROID_FONT_H
 
 #include "subsystem/graphics.h"
-#include "api/ogl.h"
 
 class AndroidFont : public IFont {
     Instance& m_instance;
@@ -15,7 +14,7 @@ public:
 
     void setSizes(float fontSize, float outline) override;
     std::vector<std::string> breakLines(const std::string& text, float width) override;
-    ogl::Texture renderText(const std::string& text) const override;
+    Texture renderText(const std::string& text) const override;
 };
 
 namespace decoders {

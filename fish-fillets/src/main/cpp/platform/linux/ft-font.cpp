@@ -74,7 +74,7 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
     return ret;
 }
 
-ogl::Texture FTFont::renderText(const std::string& text) const {
+Texture FTFont::renderText(const std::string& text) const {
     float asc = from266(m_face->size->metrics.ascender);
     float desc = -from266(m_face->size->metrics.descender);
 
@@ -156,5 +156,5 @@ ogl::Texture FTFont::renderText(const std::string& text) const {
         }
     }
 
-    return ogl::Texture::fromImageData(m_instance.graphics().system().ref(), width, height, 4 * width, (void*)data);
+    return Texture(m_instance.graphics().system().ref(), (void*)data, {width, height});
 }

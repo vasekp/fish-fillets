@@ -13,6 +13,7 @@ public:
 
     Texture(ogl::Texture&& texture);
     Texture(const std::shared_ptr<ogl::Display>& ref, FCoords logSize, ICoords physSize);
+    Texture(const std::shared_ptr<ogl::Display>& ref, void *data, ICoords size, int channels = 4);
 
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }

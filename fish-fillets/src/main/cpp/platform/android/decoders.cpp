@@ -10,22 +10,24 @@
 static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename);
 
 namespace decoders {
-    ogl::Texture png(Instance& instance, const std::string& filename0) {
+    Texture png(Instance& instance, const std::string& filename0) {
         auto filename = dynamic_cast<SystemFile&>(*instance.files().system(filename0)).path();
-        Log::debug<Log::graphics>("loadPNG ", filename);
+        Log::debug<Log::graphics>("Load PNG ", filename);
         auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
         jstring jPath = jni->NewStringUTF(filename.c_str());
         jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("loadBitmap"), jPath);
         AndroidBitmapInfo info;
         AndroidBitmap_getInfo(jni, jBitmap, &info);
-        std::uint32_t width = info.width;
-        std::uint32_t height = info.height;
+        int width = info.width;
+        int height = info.height;
         std::size_t stride = info.stride;
         void* pixels;
         AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
         if(!jBitmap)
             Log::fatal("bitmap data null (", filename, ")");
-        auto ret = ogl::Texture::fromImageData(instance.graphics().system().ref(), width, height, stride, pixels);
+        if(stride != 4 * width)
+            Log::error("PNG: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
+        auto ret = Texture(instance.graphics().system().ref(), pixels, {width, height});
         AndroidBitmap_unlockPixels(jni, jBitmap);
         jni->DeleteLocalRef(jPath);
         jni->DeleteLocalRef(jBitmap);

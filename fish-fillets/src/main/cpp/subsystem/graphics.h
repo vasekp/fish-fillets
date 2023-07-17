@@ -66,7 +66,7 @@ private:
 };
 
 namespace decoders {
-    ogl::Texture png(Instance& instance, const std::string& filename);
+    Texture png(Instance& instance, const std::string& filename);
     std::unique_ptr<IFont> ttf(Instance& instance, const std::string& filename);
 }
 

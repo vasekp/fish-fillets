@@ -12,6 +12,10 @@ Texture::Texture(const std::shared_ptr<ogl::Display>& ref, FCoords logSize, ICoo
     m_logSize(logSize)
 { }
 
+Texture::Texture(const std::shared_ptr<ogl::Display>& ref, void *data, ICoords size, int channels) :
+    Texture(ogl::Texture::fromImageData(ref, size.x, size.y, channels * size.x, data, channels))
+{ }
+
 void Texture::bind() const {
     m_native.bind();
 }

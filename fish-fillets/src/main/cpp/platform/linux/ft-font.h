@@ -18,7 +18,7 @@ public:
 
     void setSizes(float fontSize, float outline) override;
     std::vector<std::string> breakLines(const std::string& text, float width) override;
-    ogl::Texture renderText(const std::string& text) const override;
+    Texture renderText(const std::string& text) const override;
 };
 
 namespace decoders {
