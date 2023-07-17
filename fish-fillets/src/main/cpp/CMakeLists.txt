@@ -5,27 +5,29 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g -Wno-unused-variable")
 set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=0 -Wno-incompatible-library-redeclaration")
 
+set(FILLETS_DIR app)
+
 file(GLOB fillets_sources
-        "*.cpp"
-        "api/lua/*.cpp"
-        "api/ogl/*.cpp"
-        "api/ogg/*.cpp"
-        "subsystem/*.cpp"
-        "subsystem/*/*.cpp"
-        "game/*.cpp"
-        "game/*/*.cpp")
+        "${FILLETS_DIR}/*.cpp"
+        "${FILLETS_DIR}/api/lua/*.cpp"
+        "${FILLETS_DIR}/api/ogl/*.cpp"
+        "${FILLETS_DIR}/api/ogg/*.cpp"
+        "${FILLETS_DIR}/subsystem/*.cpp"
+        "${FILLETS_DIR}/subsystem/*/*.cpp"
+        "${FILLETS_DIR}/game/*.cpp"
+        "${FILLETS_DIR}/game/*/*.cpp")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     file(GLOB fillets_android
-            "platform/android/*.cpp"
-            "platform/android/*/*.cpp"
-            "api/jni.cpp")
+            "${FILLETS_DIR}/platform/android/*.cpp"
+            "${FILLETS_DIR}/platform/android/*/*.cpp"
+            "${FILLETS_DIR}/api/jni.cpp")
 
     add_library(fillets SHARED ${fillets_sources} ${fillets_android})
 else()
     file(GLOB fillets_linux
-            "platform/linux/*.cpp"
-            "platform/linux/*/*.cpp")
+            "${FILLETS_DIR}/platform/linux/*.cpp"
+            "${FILLETS_DIR}/platform/linux/*/*.cpp")
 
     add_executable(fillets ${fillets_sources} ${fillets_linux})
 endif()
@@ -104,7 +106,7 @@ else()
             Freetype::Freetype)
 endif()
 
-target_include_directories(fillets PRIVATE .)
+target_include_directories(fillets PRIVATE ${FILLETS_DIR})
 
 target_link_libraries(fillets
         EGL
