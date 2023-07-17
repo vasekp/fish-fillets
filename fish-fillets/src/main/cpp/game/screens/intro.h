@@ -16,9 +16,9 @@ class IntroScreen : public GameScreen {
     AudioSourceQueue::Ref m_aBuffer;
     std::deque<ogg::TheoraDecoder::Frame> m_vBuffer;
 
-    ogl::Texture m_texY;
-    ogl::Texture m_texCb;
-    ogl::Texture m_texCr;
+    Texture m_texY;
+    Texture m_texCb;
+    Texture m_texCr;
     float m_texTime;
 
 public:

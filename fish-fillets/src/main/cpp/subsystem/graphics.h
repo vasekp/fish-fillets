@@ -4,8 +4,8 @@
 #include "instance.h"
 #include "api/ogl.h"
 
+#include "graphics/texture.h"
 #include "graphics/image.h"
-#include "graphics/textureview.h"
 #include "graphics/coords.h"
 #include "graphics/program.h"
 #include "graphics/shaders.h"

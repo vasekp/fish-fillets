@@ -9,7 +9,7 @@ protected:
 
 public:
     struct Params {
-        std::optional<TextureView> image{};
+        const Texture* texture{};
         FCoords src{};
         FCoords dest{};
         FCoords srcSize{};

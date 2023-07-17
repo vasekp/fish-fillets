@@ -192,7 +192,7 @@ void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     const auto maskProgram = m_instance.graphics().shaders().maskCopy({
         .maskColor = maskColor,
-        .maskImage = getImage("mask")
+        .maskImage = getImage("mask")->texture()
     });
     target.draw(getImage("masked"), maskProgram, coords);
 }

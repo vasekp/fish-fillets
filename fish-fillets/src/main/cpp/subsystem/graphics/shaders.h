@@ -28,11 +28,11 @@ public:
 
     struct MaskCopyParams {
         Color maskColor;
-        TextureView maskImage;
+        const Texture& maskImage;
     };
 
     struct MirrorParams {
-        TextureView maskImage;
+        const Texture& maskImage;
     };
 
     struct FlatParams {
@@ -75,9 +75,9 @@ public:
     };
 
     struct YCbCrParams {
-        ogl::Texture& texY;
-        ogl::Texture& texCb;
-        ogl::Texture& texCr;
+        const Texture& texY;
+        const Texture& texCb;
+        const Texture& texCr;
     };
 
     struct ButtonParams {

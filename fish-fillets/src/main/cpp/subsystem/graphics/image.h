@@ -4,7 +4,7 @@
 class Image {
 protected:
     std::reference_wrapper<Instance> m_instance;
-    ogl::Texture m_texture;
+    Texture m_texture;
 
     Image(Instance& instance) : m_instance(instance), m_texture() { }
     Image(Image&&) noexcept;
@@ -13,10 +13,9 @@ protected:
     void init(); // Must be called at the end of derived classes' constructors.
 
 public:
-    auto& texture() const { return m_texture; }
-    FCoords size() const { return {(int)m_texture.width(), (int)m_texture.height()}; }
+    const auto& texture() const { return m_texture; }
+    FCoords size() const { return m_texture.logSize(); }
 
-    operator const ogl::Texture&() const { return texture(); }
     virtual void render() = 0;
 
 private:

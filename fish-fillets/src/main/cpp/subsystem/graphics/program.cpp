@@ -1,8 +1,8 @@
 #include "subsystem/graphics.h"
 
 void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
-    if(params.image)
-        params.image->texture().bind();
+    if(params.texture)
+        params.texture->bind();
     glUseProgram(m_native);
     glUniform2f(m_native.uniform("uSrcSize"), params.srcSize.fx(), params.srcSize.fy());
     glUniform2f(m_native.uniform("uDstSize"), params.dstSize.fx(), params.dstSize.fy());

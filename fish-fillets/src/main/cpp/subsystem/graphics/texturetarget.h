@@ -6,13 +6,13 @@
 class TextureTarget : public DrawTarget {
     const std::shared_ptr<ogl::Display> &m_ref;
     ogl::Framebuffer m_framebuffer;
-    ogl::Texture m_texture;
+    Texture m_texture;
     FCoords m_size;
 
 public:
     TextureTarget(GraphicsSystem& system);
 
-    TextureView texture() const;
+    const Texture& texture() const { return m_texture; }
     void resize(unsigned width, unsigned height, float scale = 1.f);
     FCoords size() const override;
 

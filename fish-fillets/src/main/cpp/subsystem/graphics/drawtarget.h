@@ -16,7 +16,8 @@ public:
     void clear();
 
     void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape = BaseProgram::Shape::rect);
-    void draw(TextureView image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {}, BaseProgram::Shape shape = BaseProgram::Shape::rect);
+    void draw(const Texture& image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {}, BaseProgram::Shape shape = BaseProgram::Shape::rect);
+    void draw(const Image* image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {}, BaseProgram::Shape shape = BaseProgram::Shape::rect);
 
     void setScissor(FCoords from, FCoords to);
     void releaseScissor();
