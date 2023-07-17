@@ -14,9 +14,7 @@ protected:
 
 public:
     auto& texture() const { return m_texture; }
-    auto width() const { return m_texture.width(); }
-    auto height() const { return m_texture.height(); }
-    ICoords size() const { return {(int)width(), (int)height()}; }
+    ICoords size() const { return {(int)m_texture.width(), (int)m_texture.height()}; }
 
     operator const ogl::Texture&() const { return texture(); }
     virtual void render() = 0;

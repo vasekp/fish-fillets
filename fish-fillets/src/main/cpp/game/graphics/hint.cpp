@@ -17,12 +17,11 @@ void Hint::draw(DrawTarget& target) {
     const auto program = m_instance.graphics().shaders().copy();
     float y = 0;
     for(const auto& line : m_lines) {
-        auto width = (float)line.width() / coords.scale;
-        auto height = (float)line.height() / coords.scale;
-        FCoords dest0{(coords.size.fx() - width) / 2.f, y};
+        auto size = FCoords{line.size()} / coords.scale;
+        FCoords dest0{(coords.size.fx() - size.fx()) / 2.f, y};
         FCoords dest = coords.out2in(coords.in2out(dest0).round());
-        target.draw(line.texture(), program, coords, { .dest = dest, .srcSize = FCoords{width, height} });
-        y += height;
+        target.draw(line.texture(), program, coords, { .dest = dest, .srcSize = size });
+        y += size.fy();
     }
 }
 

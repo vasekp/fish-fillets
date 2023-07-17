@@ -70,11 +70,10 @@ void Subtitles::draw(DrawTarget& target, float time) {
                 .color2 = line.color2,
                 .time = time - line.addTime
             });
-            auto width = (float)line.image.width() / coords.scale;
-            auto height = (float)line.image.height() / coords.scale;
-            FCoords dest0{320.f - width / 2.f, bottomY - (float)height * (2.5f + line.yOffset)};
+            auto size = FCoords{line.image.size()} / coords.scale;
+            FCoords dest0{320.f - size.fx() / 2.f, bottomY - size.fy() * (2.5f + line.yOffset)};
             FCoords dest = coords.out2in(coords.in2out(dest0).round());
-            target.draw(line.image.texture(), program, coords, { .dest = dest, .area = FCoords{width, 3 * height} });
+            target.draw(line.image.texture(), program, coords, { .dest = dest, .area = FCoords{size.fx(), 3.f * size.fy()} });
         }
 }
 

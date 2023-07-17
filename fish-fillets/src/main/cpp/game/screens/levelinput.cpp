@@ -252,7 +252,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
         });
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
-        FCoords imgExtent(image.width(), image.height());
+        FCoords imgExtent = image.size();
         float scale = std::min(extent.fx() / imgExtent.fx(), extent.fy() / imgExtent.fy());
         FCoords from = center - scale / 2.f * imgExtent;
         FCoords to = center + scale / 2.f * imgExtent;

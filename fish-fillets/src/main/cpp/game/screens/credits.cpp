@@ -8,7 +8,7 @@ CreditsScreen::CreditsScreen(Instance& instance) :
     auto* cImage = addImage("images/menu/credits.png", "credits");
     addImage("images/menu/credits-header.png", "header");
     m_music = m_instance.audio().loadMusic("music/kufrik.ogg");
-    m_totalHeight = cImage->height();
+    m_totalHeight = cImage->size().y;
 }
 
 void CreditsScreen::own_start() {
