@@ -3,9 +3,12 @@ project(Fillets)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g -Wno-unused-variable")
-set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=0 -Wno-incompatible-library-redeclaration")
 
 set(FILLETS_DIR app)
+set(OGG_DIR deps/ogg)
+set(VORBIS_DIR deps/vorbis)
+set(THEORA_DIR deps/theora)
+set(LUA_DIR deps/lua)
 
 file(GLOB fillets_sources
         "${FILLETS_DIR}/*.cpp"
@@ -39,46 +42,49 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(CMAKE_SHARED_LINKER_FLAGS
             "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
+    find_package(oboe REQUIRED CONFIG)
+
     target_include_directories(fillets PRIVATE
             ${ANDROID_NDK}/sources/android/native_app_glue
-            deps/lua
-            deps/ogg/include
-            deps/vorbis/include
-            deps/theora/include)
+            ${LUA_DIR}
+            ${OGG_DIR}/include
+            ${VORBIS_DIR}/include
+            ${THEORA_DIR}/include)
 
-    file(GLOB lua_sources "deps/lua/*.c")
+    file(GLOB lua_sources "${LUA_DIR}/*.c")
     list(FILTER lua_sources EXCLUDE REGEX ".*lua/(lua|luac|script|onelua).c")
 
     add_library(lua SHARED ${lua_sources})
 
-    target_compile_definitions(lua PRIVATE -DLUA_USE_POSIX)
+    target_compile_definitions(lua PRIVATE "-DLUA_USE_POSIX -D_FORTIFY_SOURCE=0")
 
-    find_package(oboe REQUIRED CONFIG)
+    target_compile_options(lua PRIVATE -Wno-incompatible-library-redeclaration)
 
-    add_subdirectory(deps/ogg)
-    add_subdirectory(deps/vorbis)
+    add_subdirectory(${OGG_DIR})
+    add_subdirectory(${VORBIS_DIR})
 
     add_library(theoradec
-            deps/theora/lib/apiwrapper.c
-            deps/theora/lib/bitpack.c
-            deps/theora/lib/decapiwrapper.c
-            deps/theora/lib/decinfo.c
-            deps/theora/lib/decode.c
-            deps/theora/lib/dequant.c
-            deps/theora/lib/fragment.c
-            deps/theora/lib/huffdec.c
-            deps/theora/lib/idct.c
-            deps/theora/lib/info.c
-            deps/theora/lib/internal.c
-            deps/theora/lib/quant.c
-            deps/theora/lib/state.c)
+            ${THEORA_DIR}/lib/apiwrapper.c
+            ${THEORA_DIR}/lib/bitpack.c
+            ${THEORA_DIR}/lib/decapiwrapper.c
+            ${THEORA_DIR}/lib/decinfo.c
+            ${THEORA_DIR}/lib/decode.c
+            ${THEORA_DIR}/lib/dequant.c
+            ${THEORA_DIR}/lib/fragment.c
+            ${THEORA_DIR}/lib/huffdec.c
+            ${THEORA_DIR}/lib/idct.c
+            ${THEORA_DIR}/lib/info.c
+            ${THEORA_DIR}/lib/internal.c
+            ${THEORA_DIR}/lib/quant.c
+            ${THEORA_DIR}/lib/state.c)
 
     target_include_directories(theoradec PRIVATE
-            deps/ogg/include
-            deps/theora/include
+            ${OGG_DIR}/include
+            ${THEORA_DIR}/include
             ${CMAKE_CURRENT_BINARY_DIR}/deps/ogg/include)
 
-    target_compile_options(theoradec PRIVATE -Wno-shift-negative-value
+    target_compile_options(theoradec PRIVATE
+            -Wno-shift-negative-value
             -Wno-shift-op-parentheses)
 
     target_link_libraries(fillets
