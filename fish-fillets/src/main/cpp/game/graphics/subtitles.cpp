@@ -62,7 +62,7 @@ void Subtitles::draw(DrawTarget& target, float time) {
     if(m_lines.empty())
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto bottomY = coords.out2in(FCoords{0.f, m_instance.graphics().display().size().fy()}).fy();
+    auto bottomY = coords.out2in(target.size()).fy();
     for(const auto& line : m_lines)
         if(line.live) {
             const auto program = m_instance.graphics().shaders().wavyText({

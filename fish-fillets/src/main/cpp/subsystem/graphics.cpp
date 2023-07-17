@@ -35,7 +35,7 @@ void Graphics::setViewport(FCoords origin, FCoords size) {
 }
 
 void Graphics::recalc() {
-    FCoords displayDim = display().size();
+    FCoords displayDim = m_system->display().size();
     float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     float stripSize = 64 * scale0; // TODO
