@@ -4,7 +4,6 @@
 #include "drawtarget.h"
 
 class TextureTarget : public DrawTarget {
-    const std::shared_ptr<ogl::Display> &m_ref;
     ogl::Framebuffer m_framebuffer;
     Texture m_texture;
     FCoords m_size;

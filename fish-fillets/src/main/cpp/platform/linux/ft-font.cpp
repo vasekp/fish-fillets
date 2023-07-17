@@ -156,5 +156,5 @@ Texture FTFont::renderText(const std::string& text) const {
         }
     }
 
-    return Texture(m_instance.graphics().system().ref(), (void*)data, {width, height});
+    return Texture(m_instance.graphics().system(), (void*)data, {width, height});
 }

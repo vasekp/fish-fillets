@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_PIXMAP_H
 #define FISH_FILLETS_PIXMAP_H
 
+class GraphicsSystem;
+
 class Texture {
     ogl::Texture m_native;
     ICoords m_physSize;
@@ -12,8 +14,8 @@ public:
     Texture& operator=(Texture&& other) = default;
 
     Texture(ogl::Texture&& texture);
-    Texture(const std::shared_ptr<ogl::Display>& ref, FCoords logSize, ICoords physSize);
-    Texture(const std::shared_ptr<ogl::Display>& ref, void *data, ICoords size, int channels = 4);
+    Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize);
+    Texture(GraphicsSystem& system, void *data, ICoords size, int channels = 4);
 
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }

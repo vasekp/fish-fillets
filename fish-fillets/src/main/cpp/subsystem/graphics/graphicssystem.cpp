@@ -6,7 +6,7 @@ GraphicsSystem::GraphicsSystem(Instance& instance) :
         m_fullscreenTarget(*this, *m_display),
         m_blurTargets{*this, *this},
         m_offscreenTarget(*this),
-        m_shaders(m_display, instance)
+        m_shaders(instance, *this)
 {
     resizeBuffers();
 }

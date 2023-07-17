@@ -20,7 +20,7 @@ private:
     ogl::Program m_arrow;
 
 public:
-    Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance);
+    Shaders(Instance& instance, GraphicsSystem& system);
 
     struct AlphaParams {
         float alpha = 1.f;

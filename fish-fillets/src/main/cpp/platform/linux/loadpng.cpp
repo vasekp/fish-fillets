@@ -64,6 +64,6 @@ namespace decoders {
             data_rgba[p] = std::array{r, g, b, a};
         }
 
-        return Texture(instance.graphics().system().ref(), data.get(), {(int)width, (int)height});
+        return Texture(instance.graphics().system(), data.get(), {(int)width, (int)height});
     }
 }

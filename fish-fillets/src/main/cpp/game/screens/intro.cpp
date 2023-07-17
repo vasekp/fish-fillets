@@ -69,9 +69,9 @@ void IntroScreen::own_update() {
     if(frame.time == m_texTime)
         return;
     Log::verbose<Log::video>("uploading frame ", frame.time);
-    m_texY = Texture(m_instance.graphics().system().ref(), frame.yData.data(), {640, 480}, 1);
-    m_texCb = Texture(m_instance.graphics().system().ref(), frame.cbData.data(), {320, 240}, 1);
-    m_texCr = Texture(m_instance.graphics().system().ref(), frame.crData.data(), {320, 240}, 1);
+    m_texY = Texture(m_instance.graphics().system(), frame.yData.data(), {640, 480}, 1);
+    m_texCb = Texture(m_instance.graphics().system(), frame.cbData.data(), {320, 240}, 1);
+    m_texCr = Texture(m_instance.graphics().system(), frame.crData.data(), {320, 240}, 1);
     m_texTime = frame.time;
     fill_buffers();
 }

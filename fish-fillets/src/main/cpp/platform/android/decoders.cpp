@@ -27,7 +27,7 @@ namespace decoders {
             Log::fatal("bitmap data null (", filename, ")");
         if(stride != 4 * width)
             Log::error("PNG: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
-        auto ret = Texture(instance.graphics().system().ref(), pixels, {width, height});
+        auto ret = Texture(instance.graphics().system(), pixels, {width, height});
         AndroidBitmap_unlockPixels(jni, jBitmap);
         jni->DeleteLocalRef(jPath);
         jni->DeleteLocalRef(jBitmap);

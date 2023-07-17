@@ -1,7 +1,9 @@
 #include "subsystem/graphics.h"
 #include "subsystem/files.h"
 
-Shaders::Shaders(const std::shared_ptr<ogl::Display>& ref, Instance& instance) {
+Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
+    // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
+    auto& ref = system.ref();
     auto vertCommon = ogl::Shader(ref, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert")->read());
 
     m_copy = ogl::Program(ref, vertCommon,{ref, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag")->read()});

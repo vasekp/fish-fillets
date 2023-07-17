@@ -53,7 +53,7 @@ Texture AndroidFont::renderText(const std::string& text) const {
         Log::fatal("bitmap data null (renderText)");
     if(stride != 4 * width)
         Log::error("renderText: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
-    auto ret = Texture(m_instance.graphics().system().ref(), pixels, {width, height});
+    auto ret = Texture(m_instance.graphics().system(), pixels, {width, height});
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);

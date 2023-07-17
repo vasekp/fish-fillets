@@ -6,14 +6,14 @@ Texture::Texture(ogl::Texture&& native) :
     m_logSize(m_physSize)
 { }
 
-Texture::Texture(const std::shared_ptr<ogl::Display>& ref, FCoords logSize, ICoords physSize) :
-    m_native(ogl::Texture::empty(ref, physSize.x, physSize.y)),
+Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
+    m_native(ogl::Texture::empty(system.ref(), physSize.x, physSize.y)),
     m_physSize(physSize),
     m_logSize(logSize)
 { }
 
-Texture::Texture(const std::shared_ptr<ogl::Display>& ref, void *data, ICoords size, int channels) :
-    Texture(ogl::Texture::fromImageData(ref, size.x, size.y, channels * size.x, data, channels))
+Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
+    Texture(ogl::Texture::fromImageData(system.ref(), size.x, size.y, channels * size.x, data, channels))
 { }
 
 void Texture::bind() const {
