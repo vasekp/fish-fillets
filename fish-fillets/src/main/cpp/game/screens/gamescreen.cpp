@@ -36,7 +36,7 @@ void GameScreen::resize() {
 }
 
 void GameScreen::own_resize() {
-    m_instance.graphics().setWindowSize(Graphics::baseDim.x(), Graphics::baseDim.y());
+    m_instance.graphics().setWindowSize(Graphics::baseDim);
 }
 
 void GameScreen::pause() {

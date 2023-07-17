@@ -51,7 +51,7 @@ public:
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
-    void setWindowSize(unsigned width, unsigned height);
+    void setWindowSize(FCoords size);
     void setWindowShift(FCoords shift);
     void setViewport(FCoords origin, FCoords size);
 

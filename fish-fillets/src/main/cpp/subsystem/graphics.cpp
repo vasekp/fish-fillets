@@ -13,8 +13,8 @@ void Graphics::shutdown() {
     m_system.reset();
 }
 
-void Graphics::setWindowSize(unsigned int width, unsigned int height) {
-    m_windowDim = { width, height };
+void Graphics::setWindowSize(FCoords size) {
+    m_windowDim = size;
     m_windowShift = {};
     if(m_system)
         recalc();

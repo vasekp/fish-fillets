@@ -38,7 +38,7 @@ void LevelTitle::draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     constexpr FCoords offset{Graphics::baseDim.fx() / 2.f - maxWidth / 2.f, startY};
     constexpr FCoords rect{maxWidth, endY - startY};
-    FCoords spoofSize = FCoords{m_image->size()} / coords.scale;
+    FCoords spoofSize = m_image->size() / coords.scale;
 
     auto program = m_instance.graphics().shaders().titleText({
         .blitSize = rect,

@@ -46,7 +46,7 @@ void Pedometer::draw(DrawTarget& target, float time) {
         target.draw(&m_digImage, copyProgram, coords, {
            .src = FCoords{0.f, (9.f - y) * digitSize.fy()},
            .dest = digitArray + FCoords{x * digitSize.fx(), 0.f},
-           .area = {digitSize.x(), digitSize.y()}
+           .area = digitSize
         });
     }
 }

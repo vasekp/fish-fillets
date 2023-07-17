@@ -252,10 +252,10 @@ void LevelInput::drawButtons(DrawTarget& target) {
         });
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
-        FCoords imgExtent = image.size();
-        float scale = std::min(extent.fx() / imgExtent.fx(), extent.fy() / imgExtent.fy());
-        FCoords from = center - scale / 2.f * imgExtent;
-        FCoords to = center + scale / 2.f * imgExtent;
+        FCoords imgSize = image.size();
+        float scale = std::min(extent.fx() / imgSize.fx(), extent.fy() / imgSize.fy());
+        FCoords from = center - scale / 2.f * imgSize;
+        FCoords to = center + scale / 2.f * imgSize;
         target.draw(&image, alphaProgram, coords, { .dest = from, .srcSize = to - from });
     }
 }

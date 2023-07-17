@@ -17,7 +17,7 @@ void Hint::draw(DrawTarget& target) {
     const auto program = m_instance.graphics().shaders().copy();
     float y = 0;
     for(const auto& line : m_lines) {
-        auto size = FCoords{line.size()} / coords.scale;
+        auto size = line.size() / coords.scale;
         FCoords dest0{(coords.size.fx() - size.fx()) / 2.f, y};
         FCoords dest = coords.out2in(coords.in2out(dest0).round());
         target.draw(line.texture(), program, coords, { .dest = dest, .srcSize = size });

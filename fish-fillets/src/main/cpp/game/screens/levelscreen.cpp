@@ -35,7 +35,7 @@ void LevelScreen::own_start() {
 
 void LevelScreen::own_resize() {
     m_winSize = FCoords{m_level.layout().width(), m_level.layout().height()} * size_unit;
-    m_instance.graphics().setWindowSize(m_winSize.x(), m_winSize.y());
+    m_instance.graphics().setWindowSize(m_winSize);
     m_input.resize();
     m_subs.resize();
     if(m_hint)
