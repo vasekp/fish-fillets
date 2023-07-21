@@ -1,11 +1,6 @@
 #include "subsystem/graphics.h"
 #include "drawtarget.h"
 
-void DrawTarget::clear() {
-    m_system.bind(this);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
 void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {
     m_system.bind(this);
     if(!params.srcSize)
@@ -30,14 +25,4 @@ void DrawTarget::draw(const Texture& texture, const BaseProgram& program, const 
 
 void DrawTarget::draw(const Image* image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {
     draw(image->texture(), program, coords, params, shape);
-}
-
-void DrawTarget::setScissor(FCoords from, FCoords to) {
-    FCoords size = to - from;
-    glScissor(from.x(), from.y(), size.x(), size.y());
-    glEnable(GL_SCISSOR_TEST);
-}
-
-void DrawTarget::releaseScissor() {
-    glDisable(GL_SCISSOR_TEST);
 }

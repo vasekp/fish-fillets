@@ -17,7 +17,10 @@ public:
     auto& display() { return *m_display; }
     auto& ref() { return m_display; }
 
+    void newFrame();
     void bind(DrawTarget* target);
+    void setScissor(FCoords from, FCoords to);
+    void releaseScissor();
     void present(TextureTarget& target);
 
     void resizeBuffers();

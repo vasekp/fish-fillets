@@ -14,8 +14,6 @@ public:
     const Texture& texture() const { return m_texture; }
     void resize(unsigned width, unsigned height, float scale = 1.f);
     FCoords size() const override;
-
-private:
     void bind() override;
 };
 

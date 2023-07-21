@@ -19,9 +19,24 @@ void GraphicsSystem::resizeBuffers() {
     m_blurTargets[1].resize(size.x(), size.y(), scale);
 }
 
+void GraphicsSystem::newFrame() {
+    m_offscreenTarget.bind();
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void GraphicsSystem::bind(DrawTarget* target) {
     if(target != m_curTarget)
         target->bind();
+}
+
+void GraphicsSystem::setScissor(FCoords from, FCoords to) {
+    FCoords size = to - from;
+    glScissor(from.x(), from.y(), size.x(), size.y());
+    glEnable(GL_SCISSOR_TEST);
+}
+
+void GraphicsSystem::releaseScissor() {
+    glDisable(GL_SCISSOR_TEST);
 }
 
 void GraphicsSystem::present(TextureTarget& target) {

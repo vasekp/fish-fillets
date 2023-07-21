@@ -96,7 +96,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         return;
     }
 
-    target.setScissor(coords.in2out({0, 0}), coords.in2out(m_winSize));
+    m_instance.graphics().system().setScissor(coords.in2out({0, 0}), coords.in2out(m_winSize));
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     const auto wavyProgram = m_instance.graphics().shaders().wavyImage({
@@ -156,7 +156,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         }
     }
 
-    target.releaseScissor();
+    m_instance.graphics().system().releaseScissor();
 
     if(mirror) {
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);

@@ -69,7 +69,7 @@ void ScreenManager::drawFrame() {
     const auto& coords = graphics.coords(Graphics::CoordSystems::null);
     auto& offscreen = graphics.offscreenTarget();
     const auto copyProgram = graphics.shaders().copy();
-    offscreen.clear();
+    graphics.system().newFrame();
     curScreen().draw(offscreen);
     m_title.draw(offscreen);
     if(m_options.visible()) {

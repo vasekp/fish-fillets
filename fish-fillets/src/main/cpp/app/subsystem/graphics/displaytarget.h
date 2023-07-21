@@ -14,9 +14,10 @@ public:
 
     FCoords size() const override { return m_display.getViewport().second; }
 
+    void bind() override { m_display.bind(); }
+
 private:
     bool flipY() const override { return true; }
-    void bind() override { m_display.bind(); }
 };
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
