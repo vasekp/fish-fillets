@@ -42,7 +42,6 @@ public:
     void shutdown();
 
     auto& system() const { return *m_system; }
-    auto& fullscreenTarget() const { return m_system->m_fullscreenTarget; }
     auto& blurTargets() { return m_system->m_blurTargets; }
     auto& offscreenTarget() const { return m_system->m_offscreenTarget; }
     auto& shaders() const { return m_system->m_shaders; }

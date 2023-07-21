@@ -66,27 +66,20 @@ void ScreenManager::updateAll() {
 
 void ScreenManager::drawFrame() {
     auto& graphics = m_instance.graphics();
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
-
+    const auto& coords = graphics.coords(Graphics::CoordSystems::null);
     auto& offscreen = graphics.offscreenTarget();
-    auto& fullscreen = graphics.fullscreenTarget();
     const auto copyProgram = graphics.shaders().copy();
     offscreen.clear();
     curScreen().draw(offscreen);
-
     m_title.draw(offscreen);
-
     if(m_options.visible()) {
         auto& [blur1, blur2] = graphics.blurTargets();
         blur1.draw(offscreen.texture(), copyProgram, coords);
         blur2.draw(blur1.texture(), graphics.shaders().blur({ .dir = FCoords{1.f, 0.f} }), coords);
-        fullscreen.draw(blur2.texture(), graphics.shaders().blur({ .dir = FCoords{0.f, 1.f} }), coords);
-        m_options.draw(fullscreen);
-    } else {
-        fullscreen.draw(offscreen.texture(), copyProgram, coords);
+        offscreen.draw(blur2.texture(), graphics.shaders().blur({ .dir = FCoords{0.f, 1.f} }), coords);
+        m_options.draw(offscreen);
     }
-
-    graphics.system().display().swap();
+    graphics.system().present(offscreen);
 }
 
 IInputSink& ScreenManager::input() {

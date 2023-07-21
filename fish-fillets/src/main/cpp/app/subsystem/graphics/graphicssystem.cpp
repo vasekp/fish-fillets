@@ -23,3 +23,8 @@ void GraphicsSystem::bind(DrawTarget* target) {
     if(target != m_curTarget)
         target->bind();
 }
+
+void GraphicsSystem::present(TextureTarget& target) {
+    m_fullscreenTarget.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
+    m_display->swap();
+}

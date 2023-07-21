@@ -18,6 +18,7 @@ public:
     auto& ref() { return m_display; }
 
     void bind(DrawTarget* target);
+    void present(TextureTarget& target);
 
     void resizeBuffers();
 
