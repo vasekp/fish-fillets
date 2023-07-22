@@ -29,6 +29,6 @@ void GraphicsSystem::releaseScissor() {
 }
 
 void GraphicsSystem::present(TextureTarget& target) {
-    m_fullscreenTarget.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
+    DisplayTarget{*this, *m_display}.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
     m_display->swap();
 }
