@@ -1,5 +1,5 @@
-#ifndef FISH_FILLETS_PIXMAP_H
-#define FISH_FILLETS_PIXMAP_H
+#ifndef FISH_FILLETS_TEXTURE_H
+#define FISH_FILLETS_TEXTURE_H
 
 class GraphicsSystem;
 
@@ -23,7 +23,4 @@ public:
     void bind() const;
 };
 
-#endif //FISH_FILLETS_PIXMAP_H
-
-
-
+#endif //FISH_FILLETS_TEXTURE_H
