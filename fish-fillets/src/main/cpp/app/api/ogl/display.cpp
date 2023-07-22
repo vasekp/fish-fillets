@@ -90,22 +90,18 @@ namespace ogl {
         Log::debug<Log::graphics>("display: closed ", (void*)m_display);
     }
 
-    void Display::setViewport(FCoords origin, FCoords size) {
+    void Display::setViewport(ICoords origin, ICoords size) {
         m_origin = origin;
         m_size = size;
     }
 
-    std::pair<FCoords, FCoords> Display::getViewport() const {
-        return {m_origin, m_size};
-    }
-
-    FCoords Display::size() const {
+    ICoords Display::size() const {
         return m_size;
     }
 
     void Display::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(m_origin.x(), m_origin.y(), m_size.x(), m_size.y());
+        glViewport(m_origin.x, m_origin.y, m_size.x, m_size.y);
     }
 
     void Display::swap() const {

@@ -7,8 +7,8 @@ namespace ogl {
         EGLDisplay m_display;
         EGLSurface m_surface;
         EGLContext m_context;
-        FCoords m_origin;
-        FCoords m_size;
+        ICoords m_origin;
+        ICoords m_size;
 
     public:
         template<typename... NativeArgs>
@@ -17,9 +17,8 @@ namespace ogl {
         Display &operator=(const Display &) = delete;
         ~Display();
 
-        void setViewport(FCoords origin, FCoords size);
-        std::pair<FCoords, FCoords> getViewport() const;
-        FCoords size() const;
+        void setViewport(ICoords origin, ICoords size);
+        ICoords size() const;
 
         void bind() const;
         void swap() const;

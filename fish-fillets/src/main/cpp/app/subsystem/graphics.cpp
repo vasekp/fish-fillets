@@ -28,14 +28,14 @@ void Graphics::setWindowShift(FCoords shift) {
 
 void Graphics::setViewport(FCoords origin, FCoords size) {
     Log::debug<Log::graphics>("viewport origin ", origin, " size ", size);
-    m_system->display().setViewport(origin, size);
+    m_system->setViewport(origin.round(), size.round());
     recalc();
     m_system->resizeBuffers();
     m_instance.screens().resize();
 }
 
 void Graphics::recalc() {
-    FCoords displayDim = m_system->display().size();
+    FCoords displayDim = m_system->displaySize();
     float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     float stripSize = 64 * scale0; // TODO

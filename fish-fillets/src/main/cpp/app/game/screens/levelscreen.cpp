@@ -96,7 +96,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         return;
     }
 
-    m_instance.graphics().system().setScissor(coords.in2out({0, 0}), coords.in2out(m_winSize));
+    m_instance.graphics().system().setScissor(coords.in2out({0, 0}).round(), coords.in2out(m_winSize).round());
 
     float phase = std::fmod(timeAlive(), (float)(2 * M_PI));
     const auto wavyProgram = m_instance.graphics().shaders().wavyImage({

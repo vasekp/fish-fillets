@@ -22,12 +22,14 @@ public:
         resizeBuffers();
     }
 
-    auto& display() { return *m_display; }
     auto& ref() { return m_display; }
+
+    ICoords displaySize() { return m_display->size(); }
 
     void newFrame();
     void bind(DrawTarget* target);
-    void setScissor(FCoords from, FCoords to);
+    void setViewport(ICoords origin, ICoords size);
+    void setScissor(ICoords from, ICoords to);
     void releaseScissor();
     void present(TextureTarget& target);
 
