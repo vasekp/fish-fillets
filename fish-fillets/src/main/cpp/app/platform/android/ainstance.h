@@ -22,7 +22,6 @@ public:
 
     static AndroidInstance& get(android_app* app);
 
-    void* window() override { return app->window; }
     AndroidInput& inputSource() override { return m_input; }
     std::string lang() override;
     void own_quit() override;

@@ -5,7 +5,6 @@
 
 XInstance::XInstance(Display* dpy, Window win) :
     Instance(std::make_unique<LinuxFiles>()),
-    m_window(win),
     m_input(*this),
     m_sink(audio())
 {
@@ -13,10 +12,6 @@ XInstance::XInstance(Display* dpy, Window win) :
     XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
     m_deleteAtom = wmDeleteMessage;
     init();
-}
-
-void* XInstance::window() {
-    return reinterpret_cast<void*>(m_window);
 }
 
 std::string XInstance::lang() {

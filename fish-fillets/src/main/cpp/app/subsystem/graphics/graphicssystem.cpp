@@ -1,16 +1,5 @@
 #include "subsystem/graphics.h"
 
-GraphicsSystem::GraphicsSystem(Instance& instance) :
-        m_graphics(instance.graphics()),
-        m_display(std::make_shared<ogl::Display>(reinterpret_cast<NativeWindowType>(instance.window()))),
-        m_fullscreenTarget(*this, *m_display),
-        m_blurTargets{*this, *this},
-        m_offscreenTarget(*this),
-        m_shaders(instance, *this)
-{
-    resizeBuffers();
-}
-
 void GraphicsSystem::resizeBuffers() {
     auto size = m_display->size();
     m_offscreenTarget.resize(size.x(), size.y());

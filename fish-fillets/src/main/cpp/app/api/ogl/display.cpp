@@ -2,7 +2,8 @@
 
 namespace ogl {
 
-    Display::Display(NativeWindowType window) {
+    template<typename... NativeArgs>
+    Display::Display(const NativeArgs& ... nativeArgs) {
         m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
         eglInitialize(m_display, nullptr, nullptr);
 
@@ -49,7 +50,7 @@ namespace ogl {
             return eglCreateContext(m_display, config, nullptr, attribs);
         }();
 
-        m_surface = eglCreateWindowSurface(m_display, config, window, nullptr);
+        m_surface = eglCreateWindowSurface(m_display, config, nativeArgs..., nullptr);
 
         if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
             Log::fatal("eglMakeCurrent failed");
@@ -77,6 +78,8 @@ namespace ogl {
         glClearColor(0, 0, 0, 1);
         glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
     }
+
+    template Display::Display(const NativeWindowType&);
 
     Display::~Display() {
         eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);

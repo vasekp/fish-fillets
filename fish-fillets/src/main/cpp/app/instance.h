@@ -47,7 +47,6 @@ public:
     bool running = false;
 
     virtual std::string lang() = 0;
-    virtual void* window() = 0;
 
     void updateAndDraw();
     void quit();

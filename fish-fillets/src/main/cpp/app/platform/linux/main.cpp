@@ -45,7 +45,8 @@ int main(int argc, char **argv) {
 
         XInstance instance{dpy, win};
 
-        instance.graphics().activate();
+        auto gsystem = std::make_unique<GraphicsSystem>(instance, win);
+        instance.graphics().activate(std::move(gsystem));
 
         XMapWindow(dpy, win);
         XFlush(dpy);

@@ -38,7 +38,7 @@ private:
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
 
-    void activate();
+    void activate(std::unique_ptr<GraphicsSystem>&& system);
     void shutdown();
 
     auto& system() const { return *m_system; }

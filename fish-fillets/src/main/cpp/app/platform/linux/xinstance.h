@@ -12,7 +12,6 @@
 #include <X11/XKBlib.h>
 
 class XInstance : public Instance {
-    Window m_window;
     LinuxFiles m_files;
     XInput m_input;
     AlsaSink m_sink;
@@ -22,7 +21,6 @@ class XInstance : public Instance {
 public:
     XInstance(Display* dpy, Window window);
 
-    void* window() override;
     XInput& inputSource() override { return m_input; }
     std::string lang() override;
 

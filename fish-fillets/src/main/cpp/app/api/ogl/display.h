@@ -11,7 +11,8 @@ namespace ogl {
         FCoords m_size;
 
     public:
-        Display(NativeWindowType window);
+        template<typename... NativeArgs>
+        Display(const NativeArgs& ... nativeArgs);
         Display(const Display &) = delete;
         Display &operator=(const Display &) = delete;
         ~Display();

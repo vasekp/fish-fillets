@@ -12,7 +12,17 @@ private:
     DisplayTarget* m_curTarget;
 
 public:
-    GraphicsSystem(Instance& instance);
+    template<typename... NativeArgs>
+    GraphicsSystem(Instance& instance, const NativeArgs& ... nativeArgs) :
+            m_graphics(instance.graphics()),
+            m_display(std::make_shared<ogl::Display>(nativeArgs...)),
+            m_fullscreenTarget(*this, *m_display),
+            m_blurTargets{*this, *this},
+            m_offscreenTarget(*this),
+            m_shaders(instance, *this)
+    {
+        resizeBuffers();
+    }
 
     auto& display() { return *m_display; }
     auto& ref() { return m_display; }
