@@ -10,7 +10,7 @@ set(VORBIS_DIR deps/vorbis)
 set(THEORA_DIR deps/theora)
 set(LUA_DIR deps/lua)
 
-file(GLOB fillets_sources
+set(fillets_sources
         "${FILLETS_DIR}/instance.cpp"
         "${FILLETS_DIR}/api/ogl/display.cpp"
         "${FILLETS_DIR}/api/ogl/framebuffer.cpp"
@@ -62,16 +62,33 @@ file(GLOB fillets_sources
         "${FILLETS_DIR}/game/screens/options.cpp")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    file(GLOB fillets_android
-            "${FILLETS_DIR}/platform/android/*.cpp"
-            "${FILLETS_DIR}/platform/android/*/*.cpp"
+    set(fillets_android
+            "${FILLETS_DIR}/platform/android/afont.cpp"
+            "${FILLETS_DIR}/platform/android/ainstance.cpp"
+            "${FILLETS_DIR}/platform/android/decoders.cpp"
+            "${FILLETS_DIR}/platform/android/files.cpp"
+            "${FILLETS_DIR}/platform/android/files/system.cpp"
+            "${FILLETS_DIR}/platform/android/files/user.cpp"
+            "${FILLETS_DIR}/platform/android/input.cpp"
+            "${FILLETS_DIR}/platform/android/log.cpp"
+            "${FILLETS_DIR}/platform/android/main.cpp"
+            "${FILLETS_DIR}/platform/android/oboestream.cpp"
             "${FILLETS_DIR}/api/jni.cpp")
 
     add_library(fillets SHARED ${fillets_sources} ${fillets_android})
 else()
-    file(GLOB fillets_linux
-            "${FILLETS_DIR}/platform/linux/*.cpp"
-            "${FILLETS_DIR}/platform/linux/*/*.cpp")
+    set(fillets_linux
+            "${FILLETS_DIR}/platform/linux/alsasink.cpp"
+            "${FILLETS_DIR}/platform/linux/files.cpp"
+            "${FILLETS_DIR}/platform/linux/files/system.cpp"
+            "${FILLETS_DIR}/platform/linux/files/user.cpp"
+            "${FILLETS_DIR}/platform/linux/ft-font.cpp"
+            "${FILLETS_DIR}/platform/linux/input.cpp"
+            "${FILLETS_DIR}/platform/linux/loadogg.cpp"
+            "${FILLETS_DIR}/platform/linux/loadpng.cpp"
+            "${FILLETS_DIR}/platform/linux/log.cpp"
+            "${FILLETS_DIR}/platform/linux/main.cpp"
+            "${FILLETS_DIR}/platform/linux/xinstance.cpp")
 
     add_executable(fillets ${fillets_sources} ${fillets_linux})
 endif()
@@ -92,7 +109,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             ${VORBIS_DIR}/include
             ${THEORA_DIR}/include)
 
-    file(GLOB lua_sources
+    set(lua_sources
             ${LUA_DIR}/lapi.c
             ${LUA_DIR}/lauxlib.c
             ${LUA_DIR}/lbaselib.c
