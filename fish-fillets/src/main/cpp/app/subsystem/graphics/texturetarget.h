@@ -4,16 +4,16 @@
 #include "drawtarget.h"
 
 class TextureTarget : public DrawTarget {
-    ogl::Framebuffer m_framebuffer;
     Texture m_texture;
+    ogl::Framebuffer m_framebuffer;
     FCoords m_size;
 
 public:
     TextureTarget(GraphicsSystem& system);
 
     const Texture& texture() const { return m_texture; }
+    FCoords size() const override { return m_size; }
     void resize(unsigned width, unsigned height, float scale = 1.f);
-    FCoords size() const override;
     void bind() override;
 };
 

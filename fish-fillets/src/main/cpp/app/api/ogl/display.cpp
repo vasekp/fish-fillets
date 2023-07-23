@@ -95,10 +95,6 @@ namespace ogl {
         m_size = size;
     }
 
-    ICoords Display::size() const {
-        return m_size;
-    }
-
     void Display::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(m_origin.x, m_origin.y, m_size.x, m_size.y);

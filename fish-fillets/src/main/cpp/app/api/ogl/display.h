@@ -19,7 +19,9 @@ namespace ogl {
         ~Display();
 
         void setViewport(ICoords origin, ICoords size);
-        ICoords size() const;
+        auto width() const { return m_size.x; }
+        auto height() const { return m_size.y; }
+        ICoords size() const { return m_size; }
 
         std::weak_ptr<int> ref() const { return {m_ref}; }
 

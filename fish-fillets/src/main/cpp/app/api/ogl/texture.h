@@ -23,7 +23,6 @@ namespace ogl {
         operator GLuint() const { return m_name; }
         auto width() const { return m_width; }
         auto height() const { return m_height; }
-        bool live() const { return m_name && !m_ref.expired(); }
 
         void bind() const;
 
