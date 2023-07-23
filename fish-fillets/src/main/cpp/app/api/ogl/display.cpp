@@ -3,7 +3,7 @@
 namespace ogl {
 
     template<typename... NativeArgs>
-    Display::Display(const NativeArgs& ... nativeArgs) {
+    Display::Display(const NativeArgs& ... nativeArgs) : m_ref(std::make_shared<int>(1)) {
         m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
         eglInitialize(m_display, nullptr, nullptr);
 

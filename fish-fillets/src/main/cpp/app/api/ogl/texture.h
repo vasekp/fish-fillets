@@ -4,14 +4,14 @@
 namespace ogl {
 
     class Texture {
-        std::weak_ptr<const Display> m_ref;
+        std::weak_ptr<int> m_ref;
         GLuint m_name = 0;
         GLuint m_width;
         GLuint m_height;
 
     public:
-        static Texture fromImageData(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height, std::size_t stride, void *data, int channels = 4);
-        static Texture empty(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height);
+        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, std::size_t stride, void *data, int channels = 4);
+        static Texture empty(const ogl::Display& display, GLuint width, GLuint height);
 
         Texture() = default;
         Texture(const Texture &) = delete;
@@ -28,7 +28,7 @@ namespace ogl {
         void bind() const;
 
     private:
-        Texture(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height);
+        Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height);
     };
 
 }

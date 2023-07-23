@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Framebuffer::Framebuffer(const std::shared_ptr<ogl::Display>& ref) : m_ref(ref) {
+    Framebuffer::Framebuffer(const ogl::Display& display) : m_ref(display.ref()) {
         glGenFramebuffers(1, &m_name);
         Log::verbose<Log::graphics>("framebuffer: generate ", m_name);
     }

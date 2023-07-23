@@ -9,6 +9,7 @@ namespace ogl {
         EGLContext m_context;
         ICoords m_origin;
         ICoords m_size;
+        std::shared_ptr<int> m_ref;
 
     public:
         template<typename... NativeArgs>
@@ -19,6 +20,8 @@ namespace ogl {
 
         void setViewport(ICoords origin, ICoords size);
         ICoords size() const;
+
+        std::weak_ptr<int> ref() const { return {m_ref}; }
 
         void bind() const;
         void swap() const;

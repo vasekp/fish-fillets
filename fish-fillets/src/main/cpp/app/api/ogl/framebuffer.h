@@ -4,11 +4,11 @@
 namespace ogl {
 
     class Framebuffer {
-        std::weak_ptr<const Display> m_ref;
+        std::weak_ptr<int> m_ref;
         GLuint m_name = 0;
 
     public:
-        Framebuffer(const std::shared_ptr<ogl::Display>& ref);
+        Framebuffer(const ogl::Display& display);
         Framebuffer(const Framebuffer&) = delete;
         Framebuffer& operator=(const Framebuffer&) = delete;
         ~Framebuffer();

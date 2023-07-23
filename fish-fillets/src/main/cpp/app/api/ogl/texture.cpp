@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Texture::Texture(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height) : m_ref(ref), m_width(width), m_height(height) {
+    Texture::Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height) : m_ref(ref), m_width(width), m_height(height) {
         glGenTextures(1, &m_name);
         Log::verbose<Log::graphics>("texture: generate ", m_name);
         bind();
@@ -19,19 +19,19 @@ namespace ogl {
         }
     }
 
-    Texture Texture::fromImageData(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height, std::size_t stride, void *data, int channels) {
+    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, std::size_t stride, void *data, int channels) {
         assert(channels == 1 || channels == 4);
         assert(stride == channels * width); // GLESv2 does not support GL_UNPACK_ROW_LENGTH
         auto format = channels == 4 ? GL_RGBA : GL_LUMINANCE;
-        Texture ret{ref, width, height};
+        Texture ret{display.ref(), width, height};
         ret.bind();
         glTexImage2D(GL_TEXTURE_2D, 0, format, (GLsizei) width, (GLsizei) height, 0, format,
                      GL_UNSIGNED_BYTE, data);
         return ret;
     }
 
-    Texture Texture::empty(const std::shared_ptr<ogl::Display>& ref, GLuint width, GLuint height) {
-        Texture ret{ref, width, height};
+    Texture Texture::empty(const ogl::Display& display, GLuint width, GLuint height) {
+        Texture ret{display.ref(), width, height};
         ret.bind();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei) width, (GLsizei) height, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, nullptr);

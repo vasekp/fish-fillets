@@ -1,7 +1,7 @@
 #include "subsystem/graphics.h"
 
 void GraphicsSystem::resizeBuffers() {
-    auto size = m_display->size();
+    auto size = m_display.size();
     m_offscreenTarget.resize(size.x, size.y);
     auto scale = 1 / m_graphics.coords(Graphics::CoordSystems::base).scale;
     m_blurTargets[0].resize(size.x, size.y, scale);
@@ -19,7 +19,7 @@ void GraphicsSystem::bind(DrawTarget* target) {
 }
 
 void GraphicsSystem::setViewport(ICoords origin, ICoords size) {
-    m_display->setViewport(origin, size);
+    m_display.setViewport(origin, size);
 }
 
 void GraphicsSystem::setScissor(ICoords from, ICoords to) {
@@ -33,6 +33,6 @@ void GraphicsSystem::releaseScissor() {
 }
 
 void GraphicsSystem::present(TextureTarget& target) {
-    DisplayTarget{*this, *m_display}.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
-    m_display->swap();
+    DisplayTarget{*this, m_display}.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
+    m_display.swap();
 }

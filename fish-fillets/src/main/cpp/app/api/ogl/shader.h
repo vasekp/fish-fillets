@@ -4,12 +4,12 @@
 namespace ogl {
 
     class Shader {
-        std::weak_ptr<const Display> m_ref;
+        std::weak_ptr<int> m_ref;
         GLuint m_name = 0;
 
     public:
         Shader() = default;
-        Shader(const std::shared_ptr<ogl::Display>& ref, GLenum type, const std::string &code);
+        Shader(const ogl::Display& display, GLenum type, const std::string &code);
         Shader(const Shader&) = delete;
         Shader& operator=(const Shader&) = delete;
         Shader(Shader&&) noexcept;

@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Shader::Shader(const std::shared_ptr<ogl::Display>& ref, GLenum type, const std::string& code) : m_ref(ref) {
+    Shader::Shader(const ogl::Display& display, GLenum type, const std::string& code) : m_ref(display.ref()) {
         m_name = glCreateShader(type);
         Log::verbose<Log::graphics>("shader: generate ", m_name);
         if (!m_name)

@@ -7,13 +7,13 @@ Texture::Texture(ogl::Texture&& native) :
 { }
 
 Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
-    m_native(ogl::Texture::empty(system.ref(), physSize.x, physSize.y)),
+    m_native(ogl::Texture::empty(system.display(), physSize.x, physSize.y)),
     m_physSize(physSize),
     m_logSize(logSize)
 { }
 
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
-    Texture(ogl::Texture::fromImageData(system.ref(), size.x, size.y, channels * size.x, data, channels))
+    Texture(ogl::Texture::fromImageData(system.display(), size.x, size.y, channels * size.x, data, channels))
 { }
 
 void Texture::bind() const {

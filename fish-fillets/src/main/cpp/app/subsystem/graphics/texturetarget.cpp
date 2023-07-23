@@ -2,7 +2,7 @@
 
 TextureTarget::TextureTarget(GraphicsSystem& system) :
     DrawTarget(system),
-    m_framebuffer(system.ref()),
+    m_framebuffer(system.display()),
     m_texture(),
     m_size()
 { }

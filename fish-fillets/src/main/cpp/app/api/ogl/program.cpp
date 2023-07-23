@@ -2,7 +2,7 @@
 
 namespace ogl {
 
-    Program::Program(const std::shared_ptr<ogl::Display>& ref, const Shader &vertexShader, const Shader &fragmentShader) : m_ref(ref) {
+    Program::Program(const ogl::Display& display, const Shader &vertexShader, const Shader &fragmentShader) : m_ref(display.ref()) {
         m_name = glCreateProgram();
         Log::verbose<Log::graphics>("program: generate ", m_name);
         if (!m_name)
