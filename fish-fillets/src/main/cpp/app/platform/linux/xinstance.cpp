@@ -12,6 +12,13 @@ XInstance::XInstance(Display* dpy, Window win) :
     XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
     m_deleteAtom = wmDeleteMessage;
     init();
+
+#ifdef FISH_FILLETS_USE_VULKAN
+    auto gsystem = std::make_unique<GraphicsSystem>(*this, dpy, win);
+#else
+    auto gsystem = std::make_unique<GraphicsSystem>(*this, win);
+#endif
+    graphics().activate(std::move(gsystem));
 }
 
 std::string XInstance::lang() {

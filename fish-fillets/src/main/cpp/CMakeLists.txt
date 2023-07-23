@@ -17,6 +17,9 @@ set(fillets_sources
         "${FILLETS_DIR}/api/ogl/program.cpp"
         "${FILLETS_DIR}/api/ogl/shader.cpp"
         "${FILLETS_DIR}/api/ogl/texture.cpp"
+        "${FILLETS_DIR}/api/vulkan/display.cpp"
+        "${FILLETS_DIR}/api/vulkan/texture.cpp"
+        "${FILLETS_DIR}/api/vulkan/framebuffer.cpp"
         "${FILLETS_DIR}/api/ogg/lowlevel.cpp"
         "${FILLETS_DIR}/api/ogg/video.cpp"
         "${FILLETS_DIR}/subsystem/audio.cpp"
@@ -88,9 +91,12 @@ else()
             "${FILLETS_DIR}/platform/linux/loadpng.cpp"
             "${FILLETS_DIR}/platform/linux/log.cpp"
             "${FILLETS_DIR}/platform/linux/main.cpp"
-            "${FILLETS_DIR}/platform/linux/xinstance.cpp")
+            "${FILLETS_DIR}/platform/linux/xinstance.cpp"
+            "${FILLETS_DIR}/api/vulkan/display_xlib.cpp")
 
     add_executable(fillets ${fillets_sources} ${fillets_linux})
+
+    target_compile_definitions(fillets PRIVATE "FISH_FILLETS_USE_VULKAN=1" "VK_USE_PLATFORM_XLIB_KHR")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
@@ -206,6 +212,7 @@ target_include_directories(fillets PRIVATE ${FILLETS_DIR})
 
 target_link_libraries(fillets
         EGL
+        vulkan
         GLESv2
         lua
         ogg

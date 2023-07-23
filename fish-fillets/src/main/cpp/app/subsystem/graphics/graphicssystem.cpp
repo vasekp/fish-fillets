@@ -9,8 +9,12 @@ void GraphicsSystem::resizeBuffers() {
 }
 
 void GraphicsSystem::newFrame() {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     m_offscreenTarget.bind();
     glClear(GL_COLOR_BUFFER_BIT);
+#endif
 }
 
 void GraphicsSystem::bind(DrawTarget* target) {
@@ -19,7 +23,11 @@ void GraphicsSystem::bind(DrawTarget* target) {
 }
 
 void GraphicsSystem::setViewport(ICoords origin, ICoords size) {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     m_display.setViewport(origin, size);
+#endif
 }
 
 void GraphicsSystem::setScissor(ICoords from, ICoords to) {
@@ -33,6 +41,10 @@ void GraphicsSystem::releaseScissor() {
 }
 
 void GraphicsSystem::present(TextureTarget& target) {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     DisplayTarget{*this, m_display}.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
     m_display.swap();
+#endif
 }

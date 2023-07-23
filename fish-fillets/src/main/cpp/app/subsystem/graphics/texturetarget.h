@@ -4,8 +4,14 @@
 #include "drawtarget.h"
 
 class TextureTarget : public DrawTarget {
+#ifdef FISH_FILLETS_USE_VULKAN
+    using PlatformType = vulkan::Framebuffer;
+#else
+    using PlatformType = ogl::Framebuffer;
+#endif
+
     Texture m_texture;
-    ogl::Framebuffer m_framebuffer;
+    PlatformType m_framebuffer;
     FCoords m_size;
 
 public:

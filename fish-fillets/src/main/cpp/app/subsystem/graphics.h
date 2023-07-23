@@ -3,6 +3,7 @@
 
 #include "instance.h"
 #include "api/ogl.h"
+#include "api/vulkan.h"
 
 #include "graphics/texture.h"
 #include "graphics/image.h"

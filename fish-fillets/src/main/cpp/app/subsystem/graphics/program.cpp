@@ -1,6 +1,9 @@
 #include "subsystem/graphics.h"
 
 void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     if(params.texture)
         params.texture->bind();
     glUseProgram(m_native);
@@ -34,4 +37,5 @@ void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Sha
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
+#endif
 }

@@ -4,6 +4,10 @@
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
     auto& display = system.display();
+
+#ifdef FISH_FILLETS_USE_VULKAN
+    //TODO
+#else
     auto vertCommon = ogl::Shader(display, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert")->read());
 
     m_copy = ogl::Program(display, vertCommon,{display, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag")->read()});
@@ -40,97 +44,150 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     glUseProgram(m_ycbcr);
     glUniform1i(m_ycbcr.uniform("uCbTexture"), texCb_shader);
     glUniform1i(m_ycbcr.uniform("uCrTexture"), texCr_shader);
+#endif
 }
 
 template<>
 void Program<Shaders::AlphaParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
+#endif
 }
 
 template<>
 void Program<Shaders::MaskCopyParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.gl().data());
     glActiveTexture(Shaders::texMask_gl);
     glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glActiveTexture(Shaders::texImage_gl);
+#endif
 }
 
 template<>
 void Program<Shaders::MirrorParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glActiveTexture(Shaders::texMask_gl);
     glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glActiveTexture(Shaders::texImage_gl);
+#endif
 }
 
 template<>
 void Program<Shaders::FlatParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+#endif
 }
 
 template<>
 void Program<Shaders::BlurParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform2f(m_native.uniform("uDelta"), m_params.dir.fx(), m_params.dir.fy());
+#endif
 }
 
 template<>
 void Program<Shaders::DisintegrateParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform1f(m_native.uniform("uTime"), m_params.time);
+#endif
 }
 
 template<>
 void Program<Shaders::WavyImageParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uSpeed"), m_params.speed);
     glUniform1f(m_native.uniform("uPhase"), m_params.phase);
+#endif
 }
 
 template<>
 void Program<Shaders::WavyTextParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
     glUniform1f(m_native.uniform("uTime"), m_params.time);
+#endif
 }
 
 template<>
 void Program<Shaders::TitleTextParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy());
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+#endif
 }
 
 template<>
 void Program<Shaders::ZXParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uOffset"), m_params.offset);
+#endif
 }
 
 template<>
 void Program<Shaders::YCbCrParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glActiveTexture(Shaders::texCb_gl);
     glBindTexture(GL_TEXTURE_2D, m_params.texCb.native());
     glActiveTexture(Shaders::texCr_gl);
     glBindTexture(GL_TEXTURE_2D, m_params.texCr.native());
     glActiveTexture(Shaders::texImage_gl);
     glBindTexture(GL_TEXTURE_2D, m_params.texY.native());
+#endif
 }
 
 template<>
 void Program<Shaders::ButtonParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
     glUniform2f(m_native.uniform("uTexSize"), m_params.texSize.fx(), m_params.texSize.fy());
+#endif
 }
 
 template<>
 void Program<Shaders::ArrowParams>::own_params() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     glUniform2f(m_native.uniform("uPosition"), m_params.position.fx(), m_params.position.fy());
     glUniform1f(m_native.uniform("uSize"), m_params.size);
     glUniform2f(m_native.uniform("uDirection"), m_params.direction.fx(), m_params.direction.fy());
     glUniform1f(m_native.uniform("uSign"), m_params.inwards ? -1.f : 1.f);
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+#endif
 }

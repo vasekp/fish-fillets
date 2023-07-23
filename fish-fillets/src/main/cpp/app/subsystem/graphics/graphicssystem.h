@@ -2,9 +2,14 @@
 #define FISH_FILLETS_GRAPHICS_SYSTEM_H
 
 class GraphicsSystem {
-private:
+#ifdef FISH_FILLETS_USE_VULKAN
+    using PlatformDisplay = vulkan::Display;
+#else
+    using PlatformDisplay = ogl::Display;
+#endif
+
     Graphics& m_graphics;
-    ogl::Display m_display;
+    PlatformDisplay m_display;
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;

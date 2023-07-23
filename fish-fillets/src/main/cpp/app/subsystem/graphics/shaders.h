@@ -3,6 +3,9 @@
 
 class Shaders {
 private:
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     ogl::Program m_copy;
     ogl::Program m_alpha;
     ogl::Program m_maskCopy;
@@ -18,6 +21,7 @@ private:
     ogl::Program m_ycbcr;
     ogl::Program m_button;
     ogl::Program m_arrow;
+#endif
 
 public:
     Shaders(Instance& instance, GraphicsSystem& system);
@@ -95,6 +99,23 @@ public:
         float alpha = 1.f;
     };
 
+#ifdef FISH_FILLETS_USE_VULKAN
+    BaseProgram copy() { return {}; }
+    Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {params}; }
+    BaseProgram reverse() { return {}; }
+    Program<MirrorParams> mirror(MirrorParams params) { return {params}; }
+    Program<AlphaParams> alpha(AlphaParams params) { return {params}; }
+    Program<FlatParams> flat(FlatParams params) { return {params}; }
+    Program<BlurParams> blur(BlurParams params) { return {params}; }
+    Program<DisintegrateParams> disintegrate(DisintegrateParams params) { return {params}; }
+    Program<WavyImageParams> wavyImage(WavyImageParams params) { return {params}; }
+    Program<WavyTextParams> wavyText(WavyTextParams params) { return {params}; }
+    Program<TitleTextParams> titleText(TitleTextParams params) { return {params}; }
+    Program<ZXParams> ZX(ZXParams params) { return {params}; }
+    Program<YCbCrParams> YCbCr(YCbCrParams params) { return {params}; }
+    Program<ButtonParams> button(ButtonParams params) { return {params}; }
+    Program<ArrowParams> arrow(ArrowParams params) { return {params}; }
+#else
     BaseProgram copy() { return {m_copy}; }
     Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }
     BaseProgram reverse() { return {m_reverse}; }
@@ -110,6 +131,7 @@ public:
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
     Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
+#endif
 
 private:
     constexpr static GLint texImage_shader = 0;

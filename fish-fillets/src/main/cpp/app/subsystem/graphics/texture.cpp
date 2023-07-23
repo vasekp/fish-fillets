@@ -1,13 +1,13 @@
 #include "subsystem/graphics.h"
 
-Texture::Texture(ogl::Texture&& native) :
+Texture::Texture(PlatformType&& native) :
     m_native(std::move(native)),
     m_physSize{(int)m_native.width(), (int)m_native.height()},
     m_logSize(m_physSize)
 { }
 
 Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
-    m_native(ogl::Texture::empty(system.display(), physSize.x, physSize.y)),
+    m_native(PlatformType::empty(system.display(), physSize.x, physSize.y)),
     m_physSize(physSize),
     m_logSize(logSize)
 { }
@@ -17,9 +17,13 @@ Texture::Texture(GraphicsSystem& system, ICoords size) :
 { }
 
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
-    Texture(ogl::Texture::fromImageData(system.display(), size.x, size.y, channels, data))
+    Texture(PlatformType::fromImageData(system.display(), size.x, size.y, channels, data))
 { }
 
 void Texture::bind() const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     m_native.bind();
+#endif
 }

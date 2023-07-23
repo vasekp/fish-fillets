@@ -5,7 +5,11 @@ class DrawTarget;
 
 class BaseProgram {
 protected:
+#ifdef FISH_FILLETS_USE_VULKAN
+    //TODO
+#else
     const ogl::Program& m_native;
+#endif
 
 public:
     struct Params {
@@ -25,7 +29,11 @@ public:
     };
 
 public:
+#ifdef FISH_FILLETS_USE_VULKAN
+    // TODO
+#else
     BaseProgram(const ogl::Program& native) : m_native(native) { }
+#endif
 
     void run(DrawTarget& target, const Params& params, Shape shape) const;
 
@@ -38,7 +46,11 @@ class Program : public BaseProgram {
     SpecParams m_params;
 
 public:
+#ifdef FISH_FILLETS_USE_VULKAN
+    Program(SpecParams params) : BaseProgram(), m_params(params) { }
+#else
     Program(ogl::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+#endif
 
     SpecParams& params() { return m_params; }
 
