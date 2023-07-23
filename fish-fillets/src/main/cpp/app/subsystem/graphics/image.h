@@ -50,4 +50,18 @@ public:
     void render() override;
 };
 
+class BufferImage : public Image {
+    ICoords m_size;
+    int m_channels;
+    std::vector<std::byte> m_data;
+
+public:
+    BufferImage(Instance& instance, ICoords size, int channels, void* data);
+    BufferImage(BufferImage&&) = default;
+    BufferImage& operator=(BufferImage&&) = default;
+
+    void render() override;
+    void replace(void* data);
+};
+
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

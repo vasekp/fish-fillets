@@ -9,7 +9,7 @@ class Texture {
     FCoords m_logSize;
 
 public:
-    Texture() = default;
+    Texture() = delete;
     Texture(Texture&& other) = default;
     Texture& operator=(Texture&& other) = default;
 

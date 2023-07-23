@@ -9,7 +9,10 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_vorbis(m_ogg),
     m_theora(m_ogg),
     m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music)),
-    m_texTime(-1.f)
+    m_imgY(instance, {640, 480}, 1, nullptr),
+    m_imgCb(instance, {320, 240}, 1, nullptr),
+    m_imgCr(instance, {320, 240}, 1, nullptr),
+    m_imgTime(-1.f)
 {
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)
@@ -66,23 +69,23 @@ void IntroScreen::own_update() {
     // per frame anyway. Perhaps in the future when we have a mmapped GPU memory / pixel buffer object, but that does not
     // exist in the targeted OpenGL ES version.
     auto& frame = m_vBuffer.front();
-    if(frame.time == m_texTime)
+    if(frame.time == m_imgTime)
         return;
     Log::verbose<Log::video>("uploading frame ", frame.time);
-    m_texY = Texture(m_instance.graphics().system(), frame.yData.data(), {640, 480}, 1);
-    m_texCb = Texture(m_instance.graphics().system(), frame.cbData.data(), {320, 240}, 1);
-    m_texCr = Texture(m_instance.graphics().system(), frame.crData.data(), {320, 240}, 1);
-    m_texTime = frame.time;
+    m_imgY.replace(frame.yData.data());
+    m_imgCb.replace(frame.cbData.data());
+    m_imgCr.replace(frame.crData.data());
+    m_imgTime = frame.time;
     fill_buffers();
 }
 
 void IntroScreen::own_draw(DrawTarget& target) {
-    Log::verbose<Log::video>("drawing frame ", m_texTime, " @ ", timeAlive());
+    Log::verbose<Log::video>("drawing frame ", m_imgTime, " @ ", timeAlive());
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     const auto program = m_instance.graphics().shaders().YCbCr({
-        .texY = m_texY,
-        .texCb = m_texCb,
-        .texCr = m_texCr,
+        .texY = m_imgY.texture(),
+        .texCb = m_imgCb.texture(),
+        .texCr = m_imgCr.texture(),
     });
     target.draw(program, coords, { .area = Graphics::baseDim });
 }
