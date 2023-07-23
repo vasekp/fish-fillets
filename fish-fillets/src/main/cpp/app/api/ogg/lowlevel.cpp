@@ -51,9 +51,9 @@ namespace ogg::ll {
         float **pcm;
         auto oldSize = ret.size();
         auto size = vorbis_synthesis_pcmout(this, &pcm);
-        Log::verbose<Log::video>("pcmout size: ", size, " vector ", (void*)(pcm), " ", (void*)(pcm[0]));
         if(size == 0)
             return 0;
+        Log::verbose<Log::video>("pcmout size: ", size, " vector ", (void*)(pcm), " ", (void*)(pcm[0]));
         ret.resize(oldSize + size);
         std::memcpy(ret.data() + oldSize, pcm[0], size * sizeof(float));
         vorbis_synthesis_read(this, size);

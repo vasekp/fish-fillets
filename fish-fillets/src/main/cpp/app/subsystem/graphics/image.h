@@ -4,7 +4,7 @@
 class Image {
 protected:
     std::reference_wrapper<Instance> m_instance;
-    Texture m_texture;
+    std::optional<Texture> m_texture;
 
     Image(Instance& instance) : m_instance(instance), m_texture() { }
     Image(Image&&) noexcept;
@@ -13,8 +13,8 @@ protected:
     void init(); // Must be called at the end of derived classes' constructors.
 
 public:
-    const auto& texture() const { return m_texture; }
-    FCoords size() const { return m_texture.logSize(); }
+    const auto& texture() const { return *m_texture; }
+    FCoords size() const { return m_texture->logSize(); }
 
     virtual void render() = 0;
 
