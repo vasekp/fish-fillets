@@ -14,6 +14,7 @@ public:
     Texture& operator=(Texture&& other) = default;
 
     Texture(ogl::Texture&& texture);
+    Texture(GraphicsSystem& system, ICoords size);
     Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize);
     Texture(GraphicsSystem& system, void *data, ICoords size, int channels = 4);
 

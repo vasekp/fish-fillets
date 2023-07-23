@@ -2,7 +2,7 @@
 
 TextureTarget::TextureTarget(GraphicsSystem& system) :
     DrawTarget(system),
-    m_texture(ogl::Texture::empty(system.display(), system.display().width(), system.display().height())),
+    m_texture{system, system.display().size()},
     m_framebuffer{system.display(), m_texture.native()},
     m_size()
 { }

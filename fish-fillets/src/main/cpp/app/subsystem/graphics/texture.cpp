@@ -12,6 +12,10 @@ Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
     m_logSize(logSize)
 { }
 
+Texture::Texture(GraphicsSystem& system, ICoords size) :
+    Texture(system, size, size)
+{ }
+
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
     Texture(ogl::Texture::fromImageData(system.display(), size.x, size.y, channels, data))
 { }
