@@ -19,9 +19,8 @@ namespace ogl {
         }
     }
 
-    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, std::size_t stride, void *data, int channels) {
+    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, int channels, void *data) {
         assert(channels == 1 || channels == 4);
-        assert(stride == channels * width); // GLESv2 does not support GL_UNPACK_ROW_LENGTH
         auto format = channels == 4 ? GL_RGBA : GL_LUMINANCE;
         Texture ret{display.ref(), width, height};
         ret.bind();

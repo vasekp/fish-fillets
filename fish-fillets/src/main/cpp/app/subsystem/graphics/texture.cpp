@@ -13,7 +13,7 @@ Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
 { }
 
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
-    Texture(ogl::Texture::fromImageData(system.display(), size.x, size.y, channels * size.x, data, channels))
+    Texture(ogl::Texture::fromImageData(system.display(), size.x, size.y, channels, data))
 { }
 
 void Texture::bind() const {

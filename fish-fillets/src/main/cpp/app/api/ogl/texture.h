@@ -10,7 +10,7 @@ namespace ogl {
         GLuint m_height;
 
     public:
-        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, std::size_t stride, void *data, int channels = 4);
+        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, int channels, void *data);
         static Texture empty(const ogl::Display& display, GLuint width, GLuint height);
 
         Texture() = default;
