@@ -1,7 +1,21 @@
 #include "subsystem/graphics.h"
 
-void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
+void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
 #ifdef FISH_FILLETS_USE_VULKAN
+    const auto& display = system.display();
+    const auto& commandBuffer = display.commandBuffer();
+    PushConstants constants{
+        {params.src.fx(), params.src.fy()},
+        {params.srcSize.fx(), params.srcSize.fy()},
+        {params.dest.fx(), params.dest.fy()},
+        {params.dstSize.fx(), params.dstSize.fy()},
+        {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale},
+        {1.f, params.flipY ? -1.f : 1.f},
+        {1.f, 1.f, 1.f, 1.f}
+    };
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
+    commandBuffer.draw(4, 1, 0, 0);
     // TODO
 #else
     if(params.texture)

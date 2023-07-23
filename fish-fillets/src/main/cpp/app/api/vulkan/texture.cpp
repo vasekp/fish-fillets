@@ -28,12 +28,13 @@ Texture Texture::empty(const Display& display, std::uint32_t width, std::uint32_
 }
 
 Texture Texture::fromImageData(const Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data) {
+    auto format = channels == 4 ? vk::Format::eR8G8B8A8Srgb : vk::Format::eR8Srgb;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
         .setExtent({width, height, 1})
         .setMipLevels(1)
         .setArrayLayers(1)
-        .setFormat(channels == 4 ? vk::Format::eR8G8B8A8Srgb : vk::Format::eR8Srgb)
+        .setFormat(format)
         .setTiling(vk::ImageTiling::eOptimal)
         .setInitialLayout(vk::ImageLayout::eUndefined)
         .setUsage(data
@@ -47,7 +48,7 @@ Texture Texture::fromImageData(const Display& display, std::uint32_t width, std:
     vk::raii::ImageView imageView{display.device(), vk::ImageViewCreateInfo{}
             .setImage(*image)
             .setViewType(vk::ImageViewType::e2D)
-            .setFormat(vk::Format::eR8G8B8A8Srgb)
+            .setFormat(format)
             .setSubresourceRange(baseRange)};
 
     /*vk::raii::Sampler sampler{display.device(), vk::SamplerCreateInfo{}
@@ -76,7 +77,7 @@ Texture Texture::fromImageData(const Display& display, std::uint32_t width, std:
 
         auto bufferImageCopy = vk::BufferImageCopy{}
             .setImageSubresource(baseLayers)
-            .setImageExtent({3, 2, 1})
+            .setImageExtent({width, height, 1})
             .setBufferOffset(0);
 
         auto barrierU2T = vk::ImageMemoryBarrier{}

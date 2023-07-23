@@ -48,7 +48,7 @@ public:
     void recreateSwapchain();
 
     const auto& device() const { return m_device; }
-    const auto& queue() const { return m_queue; }
+    const auto& queue() const { return *m_queue; }
     const auto& commandBuffer() const { return m_commandBuffer; }
     const auto& renderPass() const { return *m_renderPass; }
     const auto& swapchain() const { return m_swapchain; }

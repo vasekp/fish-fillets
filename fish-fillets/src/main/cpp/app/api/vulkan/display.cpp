@@ -3,7 +3,6 @@
 namespace vulkan {
 
 namespace {
-    constexpr std::uint64_t noTimeout = std::numeric_limits<std::uint64_t>::max();
     constexpr std::uint32_t noFamily = std::numeric_limits<std::uint32_t>::max();
 
     template<typename T>
@@ -59,7 +58,7 @@ vk::raii::Instance Display::createInstance() {
             debugUtilsInfo};
     if constexpr(!useValidation)
         instanceInfo.unlink<decltype(debugUtilsInfo)>();
-    return vk::raii::Instance{m_context, instanceInfo.get<vk::InstanceCreateInfo>()};
+    return {m_context, instanceInfo.get<vk::InstanceCreateInfo>()};
 }
 
 vk::raii::DebugUtilsMessengerEXT Display::createMessenger() {
@@ -164,7 +163,7 @@ vk::raii::Device Display::createLogicalDevice() {
 #endif
     vk::PhysicalDeviceFeatures features{};
     std::vector<const char*> deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-    return vk::raii::Device{m_physDevice, vk::DeviceCreateInfo{}
+    return {m_physDevice, vk::DeviceCreateInfo{}
             .setQueueCreateInfos(queueInfo)
             .setPEnabledLayerNames(layers)
             .setPEnabledFeatures(&features)
@@ -179,7 +178,7 @@ vk::raii::CommandPool Display::createCommandPool() {
 }
 
 vk::raii::CommandBuffers Display::createCommandBuffers() {
-    return vk::raii::CommandBuffers{m_device, vk::CommandBufferAllocateInfo{}
+    return {m_device, vk::CommandBufferAllocateInfo{}
             .setCommandPool(*m_commandPool)
             .setCommandBufferCount(1)
             .setLevel(vk::CommandBufferLevel::ePrimary)};
@@ -189,19 +188,19 @@ vk::raii::RenderPass Display::createRenderPass() {
     auto colorAttachment = vk::AttachmentDescription{}
             .setFormat(vk::Format::eR8G8B8A8Srgb)
             .setSamples(vk::SampleCountFlagBits::e1)
-            .setLoadOp(vk::AttachmentLoadOp::eClear)
+            .setLoadOp(vk::AttachmentLoadOp::eLoad)
             .setStoreOp(vk::AttachmentStoreOp::eStore)
             .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare)
             .setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
-            .setInitialLayout(vk::ImageLayout::eUndefined)
-            .setFinalLayout(vk::ImageLayout::eGeneral);
+            .setInitialLayout(vk::ImageLayout::eShaderReadOnlyOptimal)
+            .setFinalLayout(vk::ImageLayout::eShaderReadOnlyOptimal);
     auto colorAttachmentRef = vk::AttachmentReference{}
             .setAttachment(0)
             .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
     auto subpass = vk::SubpassDescription{}
             .setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
             .setColorAttachments(colorAttachmentRef);
-    return vk::raii::RenderPass{m_device, vk::RenderPassCreateInfo{}
+    return {m_device, vk::RenderPassCreateInfo{}
             .setAttachments(colorAttachment)
             .setSubpasses(subpass)};
 }

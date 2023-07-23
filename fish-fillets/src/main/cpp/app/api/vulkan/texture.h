@@ -22,6 +22,7 @@ public:
     auto height() const { return m_height; }
     const vk::Image& image() const;
     const vk::ImageView& imageView() const;
+    operator const vk::Image&() const { return image(); }
 
 private:
     Texture(std::uint32_t width, std::uint32_t height, vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,

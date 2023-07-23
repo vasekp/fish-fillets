@@ -12,6 +12,7 @@ public:
 
     void bind();
     void texture(const Texture& texture);
+    operator const vk::Framebuffer&() const { return *m_native; }
 
 private:
     vk::raii::Framebuffer createFramebuffer(const vulkan::Display& display, const Texture& texture);

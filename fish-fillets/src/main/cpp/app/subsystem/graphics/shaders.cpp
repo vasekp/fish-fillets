@@ -1,16 +1,21 @@
 #include "subsystem/graphics.h"
 #include "subsystem/files.h"
 
+#ifdef FISH_FILLETS_USE_VULKAN
+    //TODO
+Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
+    m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
+    m_flat{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}
+{ }
+#else
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
     auto& display = system.display();
 
-#ifdef FISH_FILLETS_USE_VULKAN
-    //TODO
-#else
     auto vertCommon = ogl::Shader(display, GL_VERTEX_SHADER, instance.files().system("shader/pixel.vert")->read());
 
-    m_copy = ogl::Program(display, vertCommon,{display, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag")->read()});
+    m_copy = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/copy.frag")->read()});
     m_maskCopy = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/mask-copy.frag")->read()});
     m_alpha = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/alpha.frag")->read()});
     m_blur = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/blur.frag")->read()});
@@ -44,8 +49,8 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     glUseProgram(m_ycbcr);
     glUniform1i(m_ycbcr.uniform("uCbTexture"), texCb_shader);
     glUniform1i(m_ycbcr.uniform("uCrTexture"), texCr_shader);
-#endif
 }
+#endif
 
 template<>
 void Program<Shaders::AlphaParams>::own_params() const {

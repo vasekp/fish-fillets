@@ -25,5 +25,6 @@ namespace vulkan {
 #include "vulkan/display.h"
 #include "vulkan/texture.h"
 #include "vulkan/framebuffer.h"
+#include "vulkan/program.h"
 
 #endif //FISH_FILLETS_VULKAN_H

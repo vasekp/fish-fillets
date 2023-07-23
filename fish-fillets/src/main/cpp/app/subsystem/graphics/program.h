@@ -6,7 +6,7 @@ class DrawTarget;
 class BaseProgram {
 protected:
 #ifdef FISH_FILLETS_USE_VULKAN
-    //TODO
+    const vulkan::Program& m_native;
 #else
     const ogl::Program& m_native;
 #endif
@@ -28,14 +28,25 @@ public:
         triangle
     };
 
-public:
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    struct PushConstants {
+        std::array<float, 2> uSrcOffset;
+        std::array<float, 2> uSrcSize;
+        std::array<float, 2> uDstOffset;
+        std::array<float, 2> uDstSize;
+        alignas(16) std::array<float, 3> uCoords;
+        alignas(8) std::array<float, 2> uSigns;
+        alignas(16) std::array<float, 4> uColor; // TODO flat
+    };
+#endif
+
+#ifdef FISH_FILLETS_USE_VULKAN
+    BaseProgram(const vulkan::Program& native) : m_native(native) { }
 #else
     BaseProgram(const ogl::Program& native) : m_native(native) { }
 #endif
 
-    void run(DrawTarget& target, const Params& params, Shape shape) const;
+    void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape) const;
 
 protected:
     virtual void own_params() const { }

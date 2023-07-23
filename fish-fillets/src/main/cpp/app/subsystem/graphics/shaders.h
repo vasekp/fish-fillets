@@ -4,6 +4,8 @@
 class Shaders {
 private:
 #ifdef FISH_FILLETS_USE_VULKAN
+    vulkan::Shader m_vert;
+    vulkan::Program m_flat;
     // TODO
 #else
     ogl::Program m_copy;
@@ -100,8 +102,22 @@ public:
     };
 
 #ifdef FISH_FILLETS_USE_VULKAN
-    BaseProgram copy() { return {}; }
-    Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {params}; }
+    BaseProgram copy() { return {m_flat}; }
+    BaseProgram maskCopy(MaskCopyParams params) { return {m_flat}; }
+    BaseProgram reverse() { return {m_flat}; }
+    BaseProgram mirror(MirrorParams params) { return {m_flat}; }
+    BaseProgram alpha(AlphaParams params) { return {m_flat}; }
+    BaseProgram flat(FlatParams params) { return {m_flat}; }
+    BaseProgram blur(BlurParams params) { return {m_flat}; }
+    BaseProgram disintegrate(DisintegrateParams params) { return {m_flat}; }
+    BaseProgram wavyImage(WavyImageParams params) { return {m_flat}; }
+    BaseProgram wavyText(WavyTextParams params) { return {m_flat}; }
+    BaseProgram titleText(TitleTextParams params) { return {m_flat}; }
+    BaseProgram ZX(ZXParams params) { return {m_flat}; }
+    BaseProgram YCbCr(YCbCrParams params) { return {m_flat}; }
+    BaseProgram button(ButtonParams params) { return {m_flat}; }
+    BaseProgram arrow(ArrowParams params) { return {m_flat}; }
+    /*Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {params}; }
     BaseProgram reverse() { return {}; }
     Program<MirrorParams> mirror(MirrorParams params) { return {params}; }
     Program<AlphaParams> alpha(AlphaParams params) { return {params}; }
@@ -114,7 +130,7 @@ public:
     Program<ZXParams> ZX(ZXParams params) { return {params}; }
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {params}; }
     Program<ButtonParams> button(ButtonParams params) { return {params}; }
-    Program<ArrowParams> arrow(ArrowParams params) { return {params}; }
+    Program<ArrowParams> arrow(ArrowParams params) { return {params}; }*/
 #else
     BaseProgram copy() { return {m_copy}; }
     Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }

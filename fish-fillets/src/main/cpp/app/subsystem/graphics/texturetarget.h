@@ -17,6 +17,7 @@ class TextureTarget : public DrawTarget {
 public:
     TextureTarget(GraphicsSystem& system);
 
+    const PlatformType& framebuffer() const { return m_framebuffer; }
     const Texture& texture() const { return m_texture; }
     FCoords size() const override { return m_size; }
     void resize(unsigned width, unsigned height, float scale = 1.f);
