@@ -15,7 +15,9 @@ namespace ogl {
         template<typename... NativeArgs>
         Display(const NativeArgs& ... nativeArgs);
         Display(const Display &) = delete;
-        Display &operator=(const Display &) = delete;
+        Display(Display&&);
+        Display& operator=(const Display&) = delete;
+        Display& operator=(Display&&);
         ~Display();
 
         void setViewport(ICoords origin, ICoords size);

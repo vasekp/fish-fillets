@@ -81,7 +81,27 @@ namespace ogl {
 
     template Display::Display(const NativeWindowType&);
 
+    Display& Display::operator=(Display&& other) {
+        m_display = other.m_display;
+        m_surface = other.m_surface;
+        m_context = other.m_context;
+        m_origin = other.m_origin;
+        m_size = other.m_size;
+        m_ref = std::move(other.m_ref);
+        other.m_display = EGL_NO_DISPLAY;
+        other.m_surface = EGL_NO_SURFACE;
+        other.m_context = EGL_NO_CONTEXT;
+        return *this;
+    }
+
+    Display::Display(Display&& other) {
+        *this = std::move(other);
+    }
+
     Display::~Display() {
+        if(m_display == EGL_NO_DISPLAY)
+            return;
+
         eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         eglDestroyContext(m_display, m_context);
         eglDestroySurface(m_display, m_surface);

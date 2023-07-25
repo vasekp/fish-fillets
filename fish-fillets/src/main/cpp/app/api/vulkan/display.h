@@ -4,24 +4,24 @@
 namespace vulkan {
 
 class Display {
-    const vk::raii::Context m_context;
-    const vk::raii::Instance m_instance;
-    const std::optional<vk::raii::DebugUtilsMessengerEXT> m_messenger;
-    const vk::raii::SurfaceKHR m_surface;
-    const vk::raii::PhysicalDevice m_physDevice;
-    const vk::PhysicalDeviceMemoryProperties m_memoryProperties;
-    const std::uint32_t m_queueFamily;
-    const vk::raii::Device m_device;
-    const vk::raii::Queue m_queue;
+    vk::raii::Context m_context;
+    vk::raii::Instance m_instance;
+    std::optional<vk::raii::DebugUtilsMessengerEXT> m_messenger;
+    vk::raii::SurfaceKHR m_surface;
+    vk::raii::PhysicalDevice m_physDevice;
+    vk::PhysicalDeviceMemoryProperties m_memoryProperties;
+    std::uint32_t m_queueFamily;
+    vk::raii::Device m_device;
+    vk::raii::Queue m_queue;
     // TODO cut here, move to another class
-    const vk::raii::CommandPool m_commandPool;
-    const vk::raii::CommandBuffers m_commandBuffers;
-    const vk::CommandBuffer& m_commandBuffer;
-    const vk::raii::DescriptorPool m_descriptorPool;
-    const vk::raii::DescriptorSetLayout m_descriptorSetLayout;
-    const vk::raii::DescriptorSets m_descriptorSets;
-    const vk::raii::RenderPass m_renderPass;
-    const vk::raii::Sampler m_samplerLinear;
+    vk::raii::CommandPool m_commandPool;
+    vk::raii::CommandBuffers m_commandBuffers;
+    const vk::CommandBuffer* m_commandBuffer; // TODO ref
+    vk::raii::DescriptorPool m_descriptorPool;
+    vk::raii::DescriptorSetLayout m_descriptorSetLayout;
+    vk::raii::DescriptorSets m_descriptorSets;
+    vk::raii::RenderPass m_renderPass;
+    vk::raii::Sampler m_samplerLinear;
     // TODO cut here, move to another class
     vk::SwapchainCreateInfoKHR m_swapchainInfo;
     vk::raii::SwapchainKHR m_swapchain;
@@ -45,7 +45,7 @@ public:
         m_queue{m_device, m_queueFamily, 0},
         m_commandPool{createCommandPool()},
         m_commandBuffers{createCommandBuffers()},
-        m_commandBuffer{*m_commandBuffers[0]},
+        m_commandBuffer{&*m_commandBuffers[0]},
         m_descriptorPool{createDescriptorPool()},
         m_descriptorSetLayout{createDescriptorSetLayout()},
         m_descriptorSets{createDescriptorSets()},
@@ -56,6 +56,8 @@ public:
         m_swapchainImages{m_swapchain.getImages()}
     { }
 
+    Display(Display&&) = default;
+
     template<typename Target>
     vk::raii::DeviceMemory allocMemory(const Target& target, vk::MemoryPropertyFlags reqProperties) const;
 
@@ -63,7 +65,7 @@ public:
 
     const auto& device() const { return m_device; }
     const auto& queue() const { return *m_queue; }
-    const auto& commandBuffer() const { return m_commandBuffer; }
+    const auto& commandBuffer() const { return *m_commandBuffer; }
     const auto& renderPass() const { return *m_renderPass; }
     const auto& samplerLinear() const { return *m_samplerLinear; }
     const auto& descriptorSetLayout() const { return *m_descriptorSetLayout; }

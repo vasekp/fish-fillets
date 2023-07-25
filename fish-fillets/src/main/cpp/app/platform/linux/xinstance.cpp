@@ -14,11 +14,11 @@ XInstance::XInstance(Display* dpy, Window win) :
     init();
 
 #ifdef FISH_FILLETS_USE_VULKAN
-    auto gsystem = std::make_unique<GraphicsSystem>(*this, dpy, win);
+    auto display = vulkan::Display(dpy, win);
 #else
-    auto gsystem = std::make_unique<GraphicsSystem>(*this, win);
+    auto display = ogl::Display(win);
 #endif
-    graphics().activate(std::move(gsystem));
+    graphics().activate(std::move(display));
 }
 
 std::string XInstance::lang() {

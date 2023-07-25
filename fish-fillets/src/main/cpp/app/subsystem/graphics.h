@@ -39,7 +39,7 @@ private:
 public:
     Graphics(Instance& instance) : m_instance(instance) { }
 
-    void activate(std::unique_ptr<GraphicsSystem>&& system);
+    void activate(GraphicsSystem::PlatformDisplay&& display);
     void shutdown();
 
     auto& system() const { return *m_system; }

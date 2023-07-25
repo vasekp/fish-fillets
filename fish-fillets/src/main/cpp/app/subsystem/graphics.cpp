@@ -1,9 +1,9 @@
 #include "graphics.h"
 #include "game/screens/screenmanager.h"
 
-void Graphics::activate(std::unique_ptr<GraphicsSystem>&& system) {
+void Graphics::activate(GraphicsSystem::PlatformDisplay&& display) {
     Log::debug<Log::graphics>("graphics: activate");
-    m_system = std::move(system);
+    m_system = std::make_unique<GraphicsSystem>(m_instance, std::move(display));
     for(auto* image : m_images)
         image->render();
 }
