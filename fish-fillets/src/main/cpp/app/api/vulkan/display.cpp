@@ -184,6 +184,51 @@ vk::raii::CommandBuffers Display::createCommandBuffers() {
             .setLevel(vk::CommandBufferLevel::ePrimary)};
 }
 
+vk::raii::DescriptorPool Display::createDescriptorPool() {
+    auto poolSize = vk::DescriptorPoolSize{}
+            .setType(vk::DescriptorType::eCombinedImageSampler)
+            .setDescriptorCount(maxDescriptors);
+    return {m_device, vk::DescriptorPoolCreateInfo{}
+            .setPoolSizes(poolSize)
+            .setMaxSets(maxDescriptors)
+            .setFlags(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)};
+}
+
+vk::raii::DescriptorSetLayout Display::createDescriptorSetLayout() {
+    auto setLayoutBinding = vk::DescriptorSetLayoutBinding{}
+        .setBinding(0)
+        .setDescriptorCount(1)
+        .setDescriptorType(vk::DescriptorType::eCombinedImageSampler)
+        .setStageFlags(vk::ShaderStageFlagBits::eFragment);
+    return vk::raii::DescriptorSetLayout{m_device, vk::DescriptorSetLayoutCreateInfo{}.setBindings(setLayoutBinding)};
+}
+
+vk::raii::DescriptorSets Display::createDescriptorSets() {
+    std::array<vk::DescriptorSetLayout, maxDescriptors> layouts;
+    std::fill(layouts.begin(), layouts.end(), *m_descriptorSetLayout);
+    return {m_device, vk::DescriptorSetAllocateInfo{}
+            .setDescriptorPool(*m_descriptorPool)
+            .setSetLayouts(layouts)};
+}
+
+std::size_t Display::allocDescriptorSet() const {
+    for(auto i = m_lastDescriptorIndex; i < m_lastDescriptorIndex + maxDescriptors; i++) {
+        auto index = i % maxDescriptors;
+        if(!m_usedDescriptors.test(index)) {
+            m_usedDescriptors.set(index);
+            m_lastDescriptorIndex = index;
+            Log::verbose<Log::graphics>("allocated descriptor set ", index);
+            return index;
+        }
+    }
+    Log::fatal("No descriptor left.");
+}
+
+void Display::freeDescriptorSet(std::size_t index) const {
+    Log::verbose<Log::graphics>("freed descriptor set ", index);
+    m_usedDescriptors.reset(index);
+}
+
 vk::raii::RenderPass Display::createRenderPass() {
     auto colorAttachment = vk::AttachmentDescription{}
             .setFormat(vk::Format::eR8G8B8A8Srgb)
@@ -203,6 +248,17 @@ vk::raii::RenderPass Display::createRenderPass() {
     return {m_device, vk::RenderPassCreateInfo{}
             .setAttachments(colorAttachment)
             .setSubpasses(subpass)};
+}
+
+vk::raii::Sampler Display::createSamplerLinear() {
+    return {m_device, vk::SamplerCreateInfo{}
+            .setMagFilter(vk::Filter::eLinear)
+            .setMinFilter(vk::Filter::eLinear)
+            .setAddressModeU(vk::SamplerAddressMode::eClampToEdge)
+            .setAddressModeV(vk::SamplerAddressMode::eClampToEdge)
+            .setAnisotropyEnable(vk::False)
+            .setUnnormalizedCoordinates(vk::False)
+            .setCompareEnable(vk::False)};
 }
 
 vk::SwapchainCreateInfoKHR Display::createSwapchainInfo(vk::SwapchainKHR old) {

@@ -31,7 +31,7 @@ vk::raii::PipelineLayout Program::createPipelineLayout(const vulkan::Display& di
             .setSize(sizeof(PushConstants))
             .setStageFlags(vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment);
     return {display.device(), vk::PipelineLayoutCreateInfo{}
-            //.setSetLayouts(*descriptorSetLayout)
+            .setSetLayouts(display.descriptorSetLayout()) // TODO
             .setPushConstantRanges(pushConstantRange)};
 }
 

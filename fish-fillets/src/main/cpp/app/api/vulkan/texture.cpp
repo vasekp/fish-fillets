@@ -3,25 +3,48 @@
 namespace vulkan {
 
 struct TextureImpl {
+    const vulkan::Display& display;
     const vk::raii::Image image;
     const vk::raii::DeviceMemory memory;
     const vk::raii::ImageView imageView;
-    //const vk::raii::Sampler sampler;
+    std::size_t descriptorSetIndex;
+    const vk::DescriptorSet& descriptorSet;
 };
 
-Texture::Texture(std::uint32_t width, std::uint32_t height, vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
-        vk::raii::ImageView&& imageView/*, vk::raii::Sampler&& sampler*/) :
+Texture::Texture(const vulkan::Display& display, std::uint32_t width, std::uint32_t height,
+        vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
+        vk::raii::ImageView&& imageView, std::size_t descriptorSetIndex) :
     pImpl{std::make_unique<TextureImpl>(
+        display,
         std::move(image),
         std::move(memory),
-        std::move(imageView)
-        /*std::move(sampler)*/)},
+        std::move(imageView),
+        descriptorSetIndex,
+        display.getDescriptorSet(descriptorSetIndex))},
     m_width(width), m_height(height)
-{ }
+{
+    const auto& descriptorSet = pImpl->descriptorSet;
+    auto imageInfo = vk::DescriptorImageInfo{}
+        .setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal)
+        .setImageView(*pImpl->imageView)
+        .setSampler(display.samplerLinear()); // TODO
+    auto dWrite = vk::WriteDescriptorSet{}
+        .setDstSet(descriptorSet)
+        .setDstBinding(0)
+        .setDstArrayElement(0)
+        .setDescriptorType(vk::DescriptorType::eCombinedImageSampler)
+        .setDescriptorCount(1)
+        .setPImageInfo(&imageInfo);
+    display.device().updateDescriptorSets({dWrite}, {});
+}
 
 Texture::Texture(Texture&&) = default;
 Texture& Texture::operator=(Texture&&) = default;
-Texture::~Texture() = default;
+
+Texture::~Texture() {
+    if(pImpl)
+        pImpl->display.freeDescriptorSet(pImpl->descriptorSetIndex);
+}
 
 Texture Texture::empty(const Display& display, std::uint32_t width, std::uint32_t height) {
     return fromImageData(display, width, height, 4, nullptr);
@@ -50,15 +73,6 @@ Texture Texture::fromImageData(const Display& display, std::uint32_t width, std:
             .setViewType(vk::ImageViewType::e2D)
             .setFormat(format)
             .setSubresourceRange(baseRange)};
-
-    /*vk::raii::Sampler sampler{display.device(), vk::SamplerCreateInfo{}
-            .setMagFilter(vk::Filter::eNearest)
-            .setMinFilter(vk::Filter::eNearest)
-            .setAddressModeU(vk::SamplerAddressMode::eClampToEdge)
-            .setAddressModeV(vk::SamplerAddressMode::eClampToEdge)
-            .setAnisotropyEnable(vk::False)
-            .setUnnormalizedCoordinates(vk::False)
-            .setCompareEnable(vk::False)};*/
 
     auto& commandBuffer = display.commandBuffer();
 
@@ -126,7 +140,8 @@ Texture Texture::fromImageData(const Display& display, std::uint32_t width, std:
         display.queue().waitIdle();
     }
 
-    return Texture{width, height, std::move(image), std::move(deviceMemory), std::move(imageView)/*, std::move(sampler)*/};
+    const auto descriptorSetIndex = display.allocDescriptorSet();
+    return Texture{display, width, height, std::move(image), std::move(deviceMemory), std::move(imageView), descriptorSetIndex};
 }
 
 const vk::Image& Texture::image() const {
@@ -135,6 +150,10 @@ const vk::Image& Texture::image() const {
 
 const vk::ImageView& Texture::imageView() const {
     return *pImpl->imageView;
+}
+
+const vk::DescriptorSet& Texture::descriptorSet() const {
+    return pImpl->descriptorSet;
 }
 
 }

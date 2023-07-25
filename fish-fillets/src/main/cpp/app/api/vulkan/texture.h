@@ -20,13 +20,16 @@ public:
 
     auto width() const { return m_width; }
     auto height() const { return m_height; }
+
     const vk::Image& image() const;
     const vk::ImageView& imageView() const;
     operator const vk::Image&() const { return image(); }
+    const vk::DescriptorSet& descriptorSet() const;
 
 private:
-    Texture(std::uint32_t width, std::uint32_t height, vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
-            vk::raii::ImageView&& imageView/*, vk::raii::Sampler&& sampler*/);
+    Texture(const vulkan::Display&, std::uint32_t width, std::uint32_t height,
+        vk::raii::Image&& image, vk::raii::DeviceMemory&& memory, vk::raii::ImageView&& imageView,
+        std::size_t descriptorSetIndex);
 };
 
 }

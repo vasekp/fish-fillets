@@ -4,19 +4,26 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& display = system.display();
     const auto& commandBuffer = display.commandBuffer();
+
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
+
     PushConstants constants{
         {params.src.fx(), params.src.fy()},
         {params.srcSize.fx(), params.srcSize.fy()},
         {params.dest.fx(), params.dest.fy()},
         {params.dstSize.fx(), params.dstSize.fy()},
         {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale},
-        {1.f, params.flipY ? -1.f : 1.f},
+        {1.f, params.flipY ? -1.f : 1.f}, // TODO not needed in Vulkan
         {1.f, 1.f, 1.f, 1.f}
     };
-    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
+
+    if(params.texture) {
+        const auto& descriptorSet = params.texture->native().descriptorSet();
+        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, {descriptorSet}, {});
+    }
+
     commandBuffer.draw(4, 1, 0, 0);
-    // TODO
 #else
     if(params.texture)
         params.texture->bind();

@@ -5,6 +5,8 @@
     //TODO
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
+    m_copy{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/copy.spv")->read()}},
     m_flat{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}
 { }

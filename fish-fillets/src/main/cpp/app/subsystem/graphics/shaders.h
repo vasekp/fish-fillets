@@ -5,6 +5,7 @@ class Shaders {
 private:
 #ifdef FISH_FILLETS_USE_VULKAN
     vulkan::Shader m_vert;
+    vulkan::Program m_copy;
     vulkan::Program m_flat;
     // TODO
 #else
@@ -102,7 +103,7 @@ public:
     };
 
 #ifdef FISH_FILLETS_USE_VULKAN
-    BaseProgram copy() { return {m_flat}; }
+    BaseProgram copy() { return {m_copy}; }
     BaseProgram maskCopy(MaskCopyParams params) { return {m_flat}; }
     BaseProgram reverse() { return {m_flat}; }
     BaseProgram mirror(MirrorParams params) { return {m_flat}; }

@@ -21,23 +21,26 @@ void GraphicsSystem::newFrame() {
     std::tie(std::ignore, m_curImageIndex) = m_display.swapchain().acquireNextImage(noTimeout, *imageAvailableSemaphore);
     m_curImage = &m_display.swapchainImages()[m_curImageIndex];
 
+    static constexpr auto clearColor = vk::ClearValue{{0.f, 0.f, 0.f, 1.f}};
+    static constexpr auto clearAttachment = vk::ClearAttachment{}
+        .setAspectMask(vk::ImageAspectFlagBits::eColor)
+        .setColorAttachment(0)
+        .setClearValue(clearColor);
     const auto& commandBuffer = m_display.commandBuffer();
     commandBuffer.reset({});
     commandBuffer.begin(vk::CommandBufferBeginInfo{}
             .setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
-    static constexpr vk::ClearValue clearColor{{0.f, 0.f, 0.f, 1.f}};
     commandBuffer.beginRenderPass(vk::RenderPassBeginInfo{}
                 .setRenderPass(m_display.renderPass())
                 .setFramebuffer(m_offscreenTarget.framebuffer())
-                .setRenderArea({{}, {m_display.width(), m_display.height()}})
-                .setClearValues(clearColor),
+                .setRenderArea({{}, {m_display.width(), m_display.height()}}),
             vk::SubpassContents::eInline);
     vk::Viewport viewport{0.f, 0.f, (float)m_display.width(), (float)m_display.height(), 0.f, 1.f};
-    vk::Rect2D scissor{{}, {m_display.width(), m_display.height()}};
+    vk::Rect2D fullRect{{}, {m_display.width(), m_display.height()}};
     commandBuffer.setViewport(0, viewport);
-    commandBuffer.setScissor(0, scissor);
-    //commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_prog);
-    //commandBuffer.draw(4, 1, 0, 0);
+    commandBuffer.setScissor(0, fullRect);
+    vk::ClearRect clearRect{fullRect, 0, 1};
+    commandBuffer.clearAttachments(clearAttachment, clearRect);
 #else
     m_offscreenTarget.bind();
     glClear(GL_COLOR_BUFFER_BIT);

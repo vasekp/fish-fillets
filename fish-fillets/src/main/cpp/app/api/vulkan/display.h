@@ -13,13 +13,23 @@ class Display {
     const std::uint32_t m_queueFamily;
     const vk::raii::Device m_device;
     const vk::raii::Queue m_queue;
+    // TODO cut here, move to another class
     const vk::raii::CommandPool m_commandPool;
     const vk::raii::CommandBuffers m_commandBuffers;
     const vk::CommandBuffer& m_commandBuffer;
+    const vk::raii::DescriptorPool m_descriptorPool;
+    const vk::raii::DescriptorSetLayout m_descriptorSetLayout;
+    const vk::raii::DescriptorSets m_descriptorSets;
     const vk::raii::RenderPass m_renderPass;
+    const vk::raii::Sampler m_samplerLinear;
+    // TODO cut here, move to another class
     vk::SwapchainCreateInfoKHR m_swapchainInfo;
     vk::raii::SwapchainKHR m_swapchain;
     std::vector<vk::Image> m_swapchainImages;
+
+    constexpr static std::size_t maxDescriptors = 500;
+    mutable std::bitset<maxDescriptors> m_usedDescriptors{};
+    mutable std::size_t m_lastDescriptorIndex = 0;
 
 public:
     template<typename... NativeArgs>
@@ -36,7 +46,11 @@ public:
         m_commandPool{createCommandPool()},
         m_commandBuffers{createCommandBuffers()},
         m_commandBuffer{*m_commandBuffers[0]},
+        m_descriptorPool{createDescriptorPool()},
+        m_descriptorSetLayout{createDescriptorSetLayout()},
+        m_descriptorSets{createDescriptorSets()},
         m_renderPass{createRenderPass()},
+        m_samplerLinear{createSamplerLinear()},
         m_swapchainInfo{createSwapchainInfo()},
         m_swapchain{m_device, m_swapchainInfo},
         m_swapchainImages{m_swapchain.getImages()}
@@ -51,8 +65,14 @@ public:
     const auto& queue() const { return *m_queue; }
     const auto& commandBuffer() const { return m_commandBuffer; }
     const auto& renderPass() const { return *m_renderPass; }
+    const auto& samplerLinear() const { return *m_samplerLinear; }
+    const auto& descriptorSetLayout() const { return *m_descriptorSetLayout; }
     const auto& swapchain() const { return m_swapchain; }
     const auto& swapchainImages() const { return m_swapchainImages; }
+
+    std::size_t allocDescriptorSet() const;
+    void freeDescriptorSet(std::size_t index) const;
+    const vk::DescriptorSet& getDescriptorSet(std::size_t index) const { return *m_descriptorSets[index]; }
 
     auto width() const { return m_swapchainInfo.imageExtent.width; }
     auto height() const { return m_swapchainInfo.imageExtent.height; }
@@ -68,7 +88,11 @@ private:
     vk::raii::Device createLogicalDevice();
     vk::raii::CommandPool createCommandPool();
     vk::raii::CommandBuffers createCommandBuffers();
+    vk::raii::DescriptorPool createDescriptorPool();
+    vk::raii::DescriptorSetLayout createDescriptorSetLayout();
+    vk::raii::DescriptorSets createDescriptorSets();
     vk::raii::RenderPass createRenderPass();
+    vk::raii::Sampler createSamplerLinear();
     vk::SwapchainCreateInfoKHR createSwapchainInfo(vk::SwapchainKHR old = nullptr);
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
