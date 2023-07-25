@@ -38,8 +38,14 @@ Texture::Texture(const vulkan::Display& display, std::uint32_t width, std::uint3
     display.device().updateDescriptorSets({dWrite}, {});
 }
 
-Texture::Texture(Texture&&) = default;
-Texture& Texture::operator=(Texture&&) = default;
+Texture::Texture(Texture&& other) = default;
+
+Texture& Texture::operator=(Texture&& other) {
+    m_width = other.m_width;
+    m_height = other.m_height;
+    std::swap(pImpl, other.pImpl); // so that the old one is properly freed
+    return *this;
+}
 
 Texture::~Texture() {
     if(pImpl)
