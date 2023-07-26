@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_GRAPHICS_SYSTEM_H
 #define FISH_FILLETS_GRAPHICS_SYSTEM_H
 
+struct PlatformDetail;
+
 class GraphicsSystem {
 public:
 #ifdef FISH_FILLETS_USE_VULKAN
@@ -16,31 +18,11 @@ private:
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
     DisplayTarget* m_curTarget;
-
-#ifdef FISH_FILLETS_USE_VULKAN // TODO m_
-    vk::raii::Semaphore imageAvailableSemaphore;
-    vk::raii::Semaphore renderFinishedSemaphore;
-    vk::raii::Fence inFlightFence;
-    std::uint32_t m_curImageIndex;
-    const vk::Image* m_curImage;
-#endif
+    std::unique_ptr<PlatformDetail> m_platform;
 
 public:
-    template<typename... NativeArgs>
-    GraphicsSystem(Instance& instance, const NativeArgs& ... nativeArgs) :
-            m_graphics(instance.graphics()),
-            m_display{nativeArgs...},
-            m_blurTargets{*this, *this},
-            m_offscreenTarget(*this),
-            m_shaders(instance, *this)
-#ifdef FISH_FILLETS_USE_VULKAN
-          , imageAvailableSemaphore{m_display.device(), vk::SemaphoreCreateInfo{}},
-            renderFinishedSemaphore{m_display.device(), vk::SemaphoreCreateInfo{}},
-            inFlightFence{m_display.device(), vk::FenceCreateInfo{}.setFlags(vk::FenceCreateFlagBits::eSignaled)}
-#endif
-    {
-        resizeBuffers();
-    }
+    GraphicsSystem(Instance& instance, PlatformDisplay&& display);
+    ~GraphicsSystem();
 
     auto& display() { return m_display; }
 
@@ -54,6 +36,9 @@ public:
     void resizeBuffers();
 
     friend class Graphics;
+
+private:
+    std::unique_ptr<PlatformDetail> platformDetail();
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SYSTEM_H

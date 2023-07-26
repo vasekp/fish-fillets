@@ -1,5 +1,48 @@
 #include "subsystem/graphics.h"
 
+#ifdef FISH_FILLETS_USE_VULKAN
+struct PlatformDetail {
+    vk::raii::Semaphore imageAvailableSemaphore;
+    vk::raii::Semaphore renderFinishedSemaphore;
+    vk::raii::Fence inFlightFence;
+
+    std::uint32_t curImageIndex;
+    const vk::Image* curImage;
+};
+
+std::unique_ptr<PlatformDetail> GraphicsSystem::platformDetail() {
+    const auto& device = m_display.device();
+
+    return std::make_unique<PlatformDetail>(
+        vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
+        vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
+        vk::raii::Fence{device, vk::FenceCreateInfo{}.setFlags(vk::FenceCreateFlagBits::eSignaled)},
+        0,
+        nullptr
+    );
+}
+#else
+struct PlatformDetail {
+};
+
+std::unique_ptr<PlatformDetail> GraphicsSystem::platformDetail() {
+    return {};
+}
+#endif
+
+GraphicsSystem::GraphicsSystem(Instance& instance, GraphicsSystem::PlatformDisplay&& display) :
+    m_graphics(instance.graphics()),
+    m_display(std::move(display)),
+    m_blurTargets{*this, *this},
+    m_offscreenTarget(*this),
+    m_shaders(instance, *this),
+    m_platform{platformDetail()}
+{
+    resizeBuffers();
+}
+
+GraphicsSystem::~GraphicsSystem() = default;
+
 void GraphicsSystem::resizeBuffers() {
 #ifdef FISH_FILLETS_USE_VULKAN
     m_display.recreateSwapchain();
@@ -15,11 +58,11 @@ void GraphicsSystem::newFrame() {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& device = m_display.device();
     constexpr std::uint64_t noTimeout = std::numeric_limits<std::uint64_t>::max();
-    if(auto ret = device.waitForFences(*inFlightFence, true, noTimeout); ret != vk::Result::eSuccess)
+    if(auto ret = device.waitForFences(*m_platform->inFlightFence, true, noTimeout); ret != vk::Result::eSuccess)
         Log::fatal("Error waiting for new frame");
-    device.resetFences(*inFlightFence);
-    std::tie(std::ignore, m_curImageIndex) = m_display.swapchain().acquireNextImage(noTimeout, *imageAvailableSemaphore);
-    m_curImage = &m_display.swapchainImages()[m_curImageIndex];
+    device.resetFences(*m_platform->inFlightFence);
+    std::tie(std::ignore, m_platform->curImageIndex) = m_display.swapchain().acquireNextImage(noTimeout, *m_platform->imageAvailableSemaphore);
+    m_platform->curImage = &m_display.swapchainImages()[m_platform->curImageIndex];
 
     static constexpr auto clearColor = vk::ClearValue{{0.f, 0.f, 0.f, 1.f}};
     static constexpr auto clearAttachment = vk::ClearAttachment{}
@@ -88,14 +131,14 @@ void GraphicsSystem::present(TextureTarget& target) {
     commandBuffer.endRenderPass();
 
     auto frameU2Tbarrier = vk::ImageMemoryBarrier{}
-        .setImage(*m_curImage)
+        .setImage(*m_platform->curImage)
         .setSubresourceRange(vulkan::baseRange)
         .setOldLayout(vk::ImageLayout::eUndefined)
         .setNewLayout(vk::ImageLayout::eTransferDstOptimal)
         .setSrcAccessMask(vk::AccessFlagBits::eNone)
         .setDstAccessMask(vk::AccessFlagBits::eTransferWrite);
     auto frameT2Pbarrier = vk::ImageMemoryBarrier{}
-        .setImage(*m_curImage)
+        .setImage(*m_platform->curImage)
         .setSubresourceRange(vulkan::baseRange)
         .setOldLayout(vk::ImageLayout::eTransferDstOptimal)
         .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
@@ -125,23 +168,23 @@ void GraphicsSystem::present(TextureTarget& target) {
         .setDstOffsets(rect);
     commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eTransfer,
             {}, {}, {}, {frameU2Tbarrier, offscreenS2Tbarrier});
-    commandBuffer.blitImage(m_offscreenTarget.texture().native(), vk::ImageLayout::eTransferSrcOptimal, *m_curImage, vk::ImageLayout::eTransferDstOptimal, {imageBlit}, vk::Filter::eNearest);
+    commandBuffer.blitImage(m_offscreenTarget.texture().native(), vk::ImageLayout::eTransferSrcOptimal, *m_platform->curImage, vk::ImageLayout::eTransferDstOptimal, {imageBlit}, vk::Filter::eNearest);
     commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eBottomOfPipe,
             {}, {}, {}, {frameT2Pbarrier, offscreenT2Sbarrier});
     commandBuffer.end();
 
     vk::PipelineStageFlags waitStage = vk::PipelineStageFlagBits::eTopOfPipe; // TODO "Subpass Dependencies"
     auto submitInfo = vk::SubmitInfo{}
-            .setWaitSemaphores(*imageAvailableSemaphore)
+            .setWaitSemaphores(*m_platform->imageAvailableSemaphore)
             .setWaitDstStageMask(waitStage)
             .setCommandBuffers(commandBuffer)
-            .setSignalSemaphores(*renderFinishedSemaphore);
-    m_display.queue().submit(submitInfo, *inFlightFence);
+            .setSignalSemaphores(*m_platform->renderFinishedSemaphore);
+    m_display.queue().submit(submitInfo, *m_platform->inFlightFence);
     try {
         auto res = m_display.queue().presentKHR(vk::PresentInfoKHR{}
-                .setWaitSemaphores(*renderFinishedSemaphore)
+                .setWaitSemaphores(*m_platform->renderFinishedSemaphore)
                 .setSwapchains(*m_display.swapchain())
-                .setImageIndices(m_curImageIndex));
+                .setImageIndices(m_platform->curImageIndex));
         if(res == vk::Result::eSuboptimalKHR)
             Log::debug<Log::graphics>("Image presented on suboptimal surface");
     } catch(const std::exception& e) {
