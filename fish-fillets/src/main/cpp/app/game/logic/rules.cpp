@@ -471,7 +471,9 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
                         queue.push_back(below);
             }
         } else {
-            ret.set(other->supportType());
+            auto otherSupp = calcSupport(other);
+            if(otherSupp.any())
+                ret.set(other->supportType());
         }
     }
     ret.reset(Model::SupportType::none);
