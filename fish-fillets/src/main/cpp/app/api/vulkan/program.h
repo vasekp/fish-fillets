@@ -8,7 +8,7 @@ class Shader {
     vk::raii::ShaderModule m_module;
 
 public:
-    Shader(const vulkan::Display& display, const std::string& code);
+    Shader(Display& display, const std::string& code);
 
     operator const vk::ShaderModule&() const { return *m_module; }
 
@@ -21,14 +21,14 @@ class Program {
     vk::raii::Pipeline m_pipeline;
 
 public:
-    Program(const vulkan::Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule);
+    Program(Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule);
 
     operator const vk::Pipeline&() const { return *m_pipeline; }
     const vk::PipelineLayout& pipelineLayout() const { return *m_pipelineLayout; }
 
 private:
-    vk::raii::PipelineLayout createPipelineLayout(const vulkan::Display& display);
-    vk::raii::Pipeline createPipeline(const vulkan::Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule);
+    vk::raii::PipelineLayout createPipelineLayout(Display& display);
+    vk::raii::Pipeline createPipeline(Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule);
 };
 
 }

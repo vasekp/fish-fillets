@@ -13,7 +13,7 @@
 
 namespace vulkan {
 
-Shader::Shader(const vulkan::Display& display, const std::string& code) :
+Shader::Shader(Display& display, const std::string& code) :
     m_code(code),
     m_module{display.device(), vk::ShaderModuleCreateInfo{}
         .setCodeSize(m_code.size())
@@ -21,21 +21,21 @@ Shader::Shader(const vulkan::Display& display, const std::string& code) :
 { }
 
 
-Program::Program(const vulkan::Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule) :
+Program::Program(Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule) :
     m_pipelineLayout(createPipelineLayout(display)),
     m_pipeline(createPipeline(display, vertModule, fragModule))
 { }
 
-vk::raii::PipelineLayout Program::createPipelineLayout(const vulkan::Display& display) {
+vk::raii::PipelineLayout Program::createPipelineLayout(Display& display) {
     auto pushConstantRange = vk::PushConstantRange{}
             .setSize(sizeof(PushConstants))
             .setStageFlags(vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment);
     return {display.device(), vk::PipelineLayoutCreateInfo{}
-            .setSetLayouts(display.descriptorSetLayout()) // TODO
+            .setSetLayouts(display.descriptors().descriptorSetLayout()) // TODO
             .setPushConstantRanges(pushConstantRange)};
 }
 
-vk::raii::Pipeline Program::createPipeline(const vulkan::Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule) {
+vk::raii::Pipeline Program::createPipeline(Display& display, const vk::ShaderModule& vertModule, const vk::ShaderModule& fragModule) {
     static constexpr auto vertexInputInfo = vk::PipelineVertexInputStateCreateInfo{};
     static constexpr auto inputAssemblyInfo = vk::PipelineInputAssemblyStateCreateInfo{}
             .setTopology(vk::PrimitiveTopology::eTriangleStrip);

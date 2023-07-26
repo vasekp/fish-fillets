@@ -11,8 +11,8 @@ class Texture {
     std::uint32_t m_height;
 
 public:
-    static Texture empty(const Display& display, std::uint32_t width, std::uint32_t height);
-    static Texture fromImageData(const Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data);
+    static Texture empty(vulkan::Display& display, std::uint32_t width, std::uint32_t height);
+    static Texture fromImageData(vulkan::Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data);
 
     Texture(Texture&&);
     Texture& operator=(Texture&&);
@@ -27,9 +27,8 @@ public:
     const vk::DescriptorSet& descriptorSet() const;
 
 private:
-    Texture(const vulkan::Display&, std::uint32_t width, std::uint32_t height,
-        vk::raii::Image&& image, vk::raii::DeviceMemory&& memory, vk::raii::ImageView&& imageView,
-        std::size_t descriptorSetIndex);
+    Texture(vulkan::Display& display, std::uint32_t width, std::uint32_t height,
+        vk::raii::Image&& image, vk::raii::DeviceMemory&& memory, vk::raii::ImageView&& imageView);
 };
 
 }

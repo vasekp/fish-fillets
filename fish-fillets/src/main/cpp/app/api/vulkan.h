@@ -23,6 +23,7 @@ namespace vulkan {
 }
 
 #include "vulkan/display.h"
+#include "vulkan/descriptorpool.h"
 #include "vulkan/texture.h"
 #include "vulkan/framebuffer.h"
 #include "vulkan/program.h"

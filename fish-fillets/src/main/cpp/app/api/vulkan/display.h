@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_VULKAN_DISPLAY_H
 #define FISH_FILLETS_VULKAN_DISPLAY_H
 
+#include "descriptorpool.h"
+
 namespace vulkan {
 
 class Display {
@@ -13,23 +15,14 @@ class Display {
     std::uint32_t m_queueFamily;
     vk::raii::Device m_device;
     vk::raii::Queue m_queue;
-    // TODO cut here, move to another class
     vk::raii::CommandPool m_commandPool;
     vk::raii::CommandBuffers m_commandBuffers;
-    const vk::CommandBuffer* m_commandBuffer; // TODO ref
-    vk::raii::DescriptorPool m_descriptorPool;
-    vk::raii::DescriptorSetLayout m_descriptorSetLayout;
-    vk::raii::DescriptorSets m_descriptorSets;
     vk::raii::RenderPass m_renderPass;
+    DescriptorPool m_descriptorPool;
     vk::raii::Sampler m_samplerLinear;
-    // TODO cut here, move to another class
     vk::SwapchainCreateInfoKHR m_swapchainInfo;
     vk::raii::SwapchainKHR m_swapchain;
     std::vector<vk::Image> m_swapchainImages;
-
-    constexpr static std::size_t maxDescriptors = 500;
-    mutable std::bitset<maxDescriptors> m_usedDescriptors{};
-    mutable std::size_t m_lastDescriptorIndex = 0;
 
 public:
     template<typename... NativeArgs>
@@ -45,11 +38,8 @@ public:
         m_queue{m_device, m_queueFamily, 0},
         m_commandPool{createCommandPool()},
         m_commandBuffers{createCommandBuffers()},
-        m_commandBuffer{&*m_commandBuffers[0]},
-        m_descriptorPool{createDescriptorPool()},
-        m_descriptorSetLayout{createDescriptorSetLayout()},
-        m_descriptorSets{createDescriptorSets()},
         m_renderPass{createRenderPass()},
+        m_descriptorPool{m_device},
         m_samplerLinear{createSamplerLinear()},
         m_swapchainInfo{createSwapchainInfo()},
         m_swapchain{m_device, m_swapchainInfo},
@@ -65,16 +55,12 @@ public:
 
     const auto& device() const { return m_device; }
     const auto& queue() const { return *m_queue; }
-    const auto& commandBuffer() const { return *m_commandBuffer; }
+    const auto& commandBuffer() const { return *m_commandBuffers[0]; }
     const auto& renderPass() const { return *m_renderPass; }
     const auto& samplerLinear() const { return *m_samplerLinear; }
-    const auto& descriptorSetLayout() const { return *m_descriptorSetLayout; }
+    auto& descriptors() { return m_descriptorPool; }
     const auto& swapchain() const { return m_swapchain; }
     const auto& swapchainImages() const { return m_swapchainImages; }
-
-    std::size_t allocDescriptorSet() const;
-    void freeDescriptorSet(std::size_t index) const;
-    const vk::DescriptorSet& getDescriptorSet(std::size_t index) const { return *m_descriptorSets[index]; }
 
     auto width() const { return m_swapchainInfo.imageExtent.width; }
     auto height() const { return m_swapchainInfo.imageExtent.height; }
@@ -90,9 +76,6 @@ private:
     vk::raii::Device createLogicalDevice();
     vk::raii::CommandPool createCommandPool();
     vk::raii::CommandBuffers createCommandBuffers();
-    vk::raii::DescriptorPool createDescriptorPool();
-    vk::raii::DescriptorSetLayout createDescriptorSetLayout();
-    vk::raii::DescriptorSets createDescriptorSets();
     vk::raii::RenderPass createRenderPass();
     vk::raii::Sampler createSamplerLinear();
     vk::SwapchainCreateInfoKHR createSwapchainInfo(vk::SwapchainKHR old = nullptr);

@@ -3,27 +3,25 @@
 namespace vulkan {
 
 struct TextureImpl {
-    const vulkan::Display& display;
+    Display& display;
     const vk::raii::Image image;
     const vk::raii::DeviceMemory memory;
     const vk::raii::ImageView imageView;
-    std::size_t descriptorSetIndex;
-    const vk::DescriptorSet& descriptorSet;
+    const vk::DescriptorSet* descriptorSet;
 };
 
-Texture::Texture(const vulkan::Display& display, std::uint32_t width, std::uint32_t height,
+Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height,
         vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
-        vk::raii::ImageView&& imageView, std::size_t descriptorSetIndex) :
+        vk::raii::ImageView&& imageView) :
     pImpl{std::make_unique<TextureImpl>(
         display,
         std::move(image),
         std::move(memory),
         std::move(imageView),
-        descriptorSetIndex,
-        display.getDescriptorSet(descriptorSetIndex))},
+        display.descriptors().allocDescriptorSet())},
     m_width(width), m_height(height)
 {
-    const auto& descriptorSet = pImpl->descriptorSet;
+    const auto& descriptorSet = *pImpl->descriptorSet;
     auto imageInfo = vk::DescriptorImageInfo{}
         .setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal)
         .setImageView(*pImpl->imageView)
@@ -49,14 +47,14 @@ Texture& Texture::operator=(Texture&& other) {
 
 Texture::~Texture() {
     if(pImpl)
-        pImpl->display.freeDescriptorSet(pImpl->descriptorSetIndex);
+        pImpl->display.descriptors().freeDescriptorSet(pImpl->descriptorSet);
 }
 
-Texture Texture::empty(const Display& display, std::uint32_t width, std::uint32_t height) {
+Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t height) {
     return fromImageData(display, width, height, 4, nullptr);
 }
 
-Texture Texture::fromImageData(const Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data) {
+Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data) {
     auto format = channels == 4 ? vk::Format::eR8G8B8A8Srgb : vk::Format::eR8Srgb;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
@@ -146,8 +144,7 @@ Texture Texture::fromImageData(const Display& display, std::uint32_t width, std:
         display.queue().waitIdle();
     }
 
-    const auto descriptorSetIndex = display.allocDescriptorSet();
-    return Texture{display, width, height, std::move(image), std::move(deviceMemory), std::move(imageView), descriptorSetIndex};
+    return Texture{display, width, height, std::move(image), std::move(deviceMemory), std::move(imageView)};
 }
 
 const vk::Image& Texture::image() const {
@@ -159,7 +156,7 @@ const vk::ImageView& Texture::imageView() const {
 }
 
 const vk::DescriptorSet& Texture::descriptorSet() const {
-    return pImpl->descriptorSet;
+    return *pImpl->descriptorSet;
 }
 
 }

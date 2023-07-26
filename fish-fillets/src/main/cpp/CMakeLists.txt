@@ -21,6 +21,7 @@ set(fillets_sources
         "${FILLETS_DIR}/api/vulkan/texture.cpp"
         "${FILLETS_DIR}/api/vulkan/framebuffer.cpp"
         "${FILLETS_DIR}/api/vulkan/program.cpp"
+        "${FILLETS_DIR}/api/vulkan/descriptorpool.cpp"
         "${FILLETS_DIR}/api/ogg/lowlevel.cpp"
         "${FILLETS_DIR}/api/ogg/video.cpp"
         "${FILLETS_DIR}/subsystem/audio.cpp"
