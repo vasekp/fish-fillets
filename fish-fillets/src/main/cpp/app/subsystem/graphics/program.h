@@ -28,14 +28,14 @@ public:
         triangle
     };
 
-#ifdef FISH_FILLETS_USE_VULKAN
+#ifdef FISH_FILLETS_USE_VULKAN // TODO copy from api/vulkan/program.cpp
     struct PushConstants {
         std::array<float, 2> uSrcOffset;
         std::array<float, 2> uSrcSize;
         std::array<float, 2> uDstOffset;
         std::array<float, 2> uDstSize;
+        std::array<float, 2> uArea;
         alignas(16) std::array<float, 3> uCoords;
-        alignas(8) std::array<float, 2> uSigns;
         alignas(16) std::array<float, 4> uColor; // TODO flat
     };
 #endif

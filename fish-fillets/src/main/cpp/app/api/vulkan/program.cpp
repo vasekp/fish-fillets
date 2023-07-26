@@ -6,8 +6,8 @@
         std::array<float, 2> uSrcSize;
         std::array<float, 2> uDstOffset;
         std::array<float, 2> uDstSize;
+        std::array<float, 2> uArea;
         alignas(16) std::array<float, 3> uCoords;
-        alignas(8) std::array<float, 2> uSigns;
         alignas(16) std::array<float, 4> uColor; // TODO flat
     };
 

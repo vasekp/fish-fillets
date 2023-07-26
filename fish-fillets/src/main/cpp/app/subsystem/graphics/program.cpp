@@ -12,8 +12,8 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
         {params.srcSize.fx(), params.srcSize.fy()},
         {params.dest.fx(), params.dest.fy()},
         {params.dstSize.fx(), params.dstSize.fy()},
+        {params.area.fx(), params.area.fy()},
         {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale},
-        {1.f, params.flipY ? -1.f : 1.f}, // TODO not needed in Vulkan
         {1.f, 1.f, 1.f, 1.f}
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);

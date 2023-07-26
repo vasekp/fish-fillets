@@ -8,8 +8,8 @@ layout(push_constant) uniform constants {
     vec2 uSrcSize;
     vec2 uDstOffset;
     vec2 uDstSize;
+    vec2 uArea;
     vec3 uCoords;
-    vec2 uSigns;
     vec4 uColor;
 } pc;
 
