@@ -36,6 +36,9 @@ Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
+        auto now = std::chrono::steady_clock::now();
+        if(now - m_dirpad.touchTime < dirpadRepeatDelay)
+            return Key::none;
         Log::debug<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
@@ -102,6 +105,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
+                m_dirpad.touchTime = std::chrono::steady_clock::now();
                 m_dirpad.state = DirpadState::follow;
                 return true;
             } else
@@ -265,7 +269,7 @@ void LevelInput::drawDirpad(DrawTarget& target) {
         return;
 
     float baseAlpha;
-    if(m_dirpad.touchTime != absolutePast) {
+    if(m_dirpad.state == DirpadState::wait && m_dirpad.touchTime != absolutePast) {
         std::chrono::duration<float> dt = std::chrono::steady_clock::now() - m_dirpad.touchTime;
         float q = std::min(dt / dirpadAppearTime, 1.f);
         baseAlpha = 3*q*q - 2*q*q*q;

@@ -88,6 +88,7 @@ private:
     constexpr static float buttonFontSize = 40.f;
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = 300ms;
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = 100ms;
+    constexpr static std::chrono::steady_clock::duration dirpadRepeatDelay = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
     constexpr static Color colorSmall{255, 197, 102};
