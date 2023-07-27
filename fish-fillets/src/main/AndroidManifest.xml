@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="23071601"
-    android:versionName="1.1">
+    android:versionCode="23072701"
+    android:versionName="1.2">
 
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
