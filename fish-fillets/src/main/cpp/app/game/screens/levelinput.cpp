@@ -111,9 +111,9 @@ bool LevelInput::pointerMove(FCoords coords) {
             } else
                 return false;
         case DirpadState::follow:
-            if(small)
+            if(small && timeDiff > dirpadHistoryLength)
                 m_dirpad.lastDir = {};
-            else if(dir && dir != m_dirpad.lastDir) {
+            else if(!small && dir && dir != m_dirpad.lastDir) {
                 Log::debug<Log::input>("Input: sending from FOLLOW: ", dir, " (prev ", m_dirpad.lastDir, ")");
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;

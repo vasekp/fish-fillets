@@ -64,7 +64,7 @@ public:
     static constexpr inline Level video = Level::debug;
     static constexpr inline Level strings = Level::debug;
     static constexpr inline Level audio = Level::debug;
-    static constexpr inline Level input = Level::debug;
+    static constexpr inline Level input = Level::verbose;
     static constexpr inline Level motion = Level::debug;
     static constexpr inline Level gotos = Level::debug;
     static constexpr inline Level lua = Level::debug;
