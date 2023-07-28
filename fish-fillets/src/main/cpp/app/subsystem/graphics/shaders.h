@@ -59,7 +59,6 @@ public:
     struct WavyImageParams {
         float amplitude;
         float period;
-        float speed;
         float phase;
     };
 

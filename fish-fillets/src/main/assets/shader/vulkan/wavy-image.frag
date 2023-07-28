@@ -11,8 +11,8 @@ layout(push_constant) uniform constants {
     vec2 uArea;
     vec4 uCoords;
     float uAmplitude;
-    float uPhase;
     float uPeriod;
+    float uPhase;
 } pc;
 
 layout(binding = 0) uniform sampler2D uSrcTexture;

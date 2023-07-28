@@ -3,8 +3,8 @@ precision highp float;
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
 uniform float uAmplitude;
-uniform float uPhase;
 uniform float uPeriod;
+uniform float uPhase;
 
 varying vec2 vSrcCoords;
 

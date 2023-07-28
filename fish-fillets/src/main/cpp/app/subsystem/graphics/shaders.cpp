@@ -182,20 +182,17 @@ void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSyst
     const auto& commandBuffer = system.display().commandBuffer();
     struct PushConstants {
         float uAmplitude;
-        float uPhase; // TODO order
         float uPeriod;
-        float uSpeed;
+        float uPhase;
     } constants = {
         m_params.amplitude,
-        m_params.phase,
         m_params.period,
-        m_params.speed
+        m_params.phase
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
-    glUniform1f(m_native.uniform("uSpeed"), m_params.speed);
     glUniform1f(m_native.uniform("uPhase"), m_params.phase);
 #endif
 }
