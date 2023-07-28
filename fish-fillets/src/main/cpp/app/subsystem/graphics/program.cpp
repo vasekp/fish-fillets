@@ -24,7 +24,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
     own_params(system);
 
-    commandBuffer.draw(4, 1, 0, 0);
+    commandBuffer.draw(shape == Shape::rect ? 4 : 3, 1, 0, 0);
 #else
     if(params.texture)
         params.texture->bind();

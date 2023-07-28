@@ -33,8 +33,9 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
     m_button{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/button.spv")->read()}},
-    m_arrow{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}} // TODO
+    m_arrow{system.display(),
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/arrow.vert.spv")->read()},
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/arrow.frag.spv")->read()}}
 { }
 #else
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) {

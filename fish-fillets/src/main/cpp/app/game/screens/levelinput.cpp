@@ -264,7 +264,7 @@ void LevelInput::drawDirpad(DrawTarget& target) {
     if(m_dirpad.state != DirpadState::wait && m_dirpad.state != DirpadState::follow && m_dirpad.state != DirpadState::goTo)
         return;
 
-    [[maybe_unused]] float baseAlpha; // TODO
+    float baseAlpha;
     if(m_dirpad.touchTime != absolutePast) {
         std::chrono::duration<float> dt = std::chrono::steady_clock::now() - m_dirpad.touchTime;
         float q = std::min(dt / dirpadAppearTime, 1.f);
@@ -282,10 +282,8 @@ void LevelInput::drawDirpad(DrawTarget& target) {
     });
 
     for([[maybe_unused]] auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
-#ifndef FISH_FILLETS_USE_VULKAN // TODO
         program.params().direction = FCoords{dir};
         program.params().alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
-#endif
         target.draw(program, coords, {}, BaseProgram::Shape::triangle);
     }
 }
