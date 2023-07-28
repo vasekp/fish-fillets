@@ -6,9 +6,20 @@ private:
 #ifdef FISH_FILLETS_USE_VULKAN
     vulkan::Shader m_vert;
     vulkan::Program m_copy;
+    vulkan::Program m_maskCopy;
     vulkan::Program m_alpha;
+    vulkan::Program m_reverse;
+    vulkan::Program m_mirror;
     vulkan::Program m_flat;
-    // TODO
+    vulkan::Program m_blur;
+    vulkan::Program m_disintegrate;
+    vulkan::Program m_wavyImage;
+    vulkan::Program m_wavyText;
+    vulkan::Program m_titleText;
+    vulkan::Program m_zx;
+    vulkan::Program m_ycbcr;
+    vulkan::Program m_button;
+    vulkan::Program m_arrow;
 #else
     ogl::Program m_copy;
     ogl::Program m_alpha;
@@ -103,37 +114,6 @@ public:
         float alpha = 1.f;
     };
 
-#ifdef FISH_FILLETS_USE_VULKAN
-    BaseProgram copy() { return {m_copy}; }
-    BaseProgram maskCopy(MaskCopyParams params) { return {m_flat}; }
-    BaseProgram reverse() { return {m_flat}; }
-    BaseProgram mirror(MirrorParams params) { return {m_flat}; }
-    Program<AlphaParams> alpha(AlphaParams params) { return {m_alpha, params}; }
-    Program<FlatParams> flat(FlatParams params) { return {m_flat, params}; }
-    BaseProgram blur(BlurParams params) { return {m_flat}; }
-    BaseProgram disintegrate(DisintegrateParams params) { return {m_flat}; }
-    BaseProgram wavyImage(WavyImageParams params) { return {m_flat}; }
-    BaseProgram wavyText(WavyTextParams params) { return {m_flat}; }
-    BaseProgram titleText(TitleTextParams params) { return {m_flat}; }
-    BaseProgram ZX(ZXParams params) { return {m_flat}; }
-    BaseProgram YCbCr(YCbCrParams params) { return {m_flat}; }
-    BaseProgram button(ButtonParams params) { return {m_flat}; }
-    BaseProgram arrow(ArrowParams params) { return {m_flat}; }
-    /*Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {params}; }
-    BaseProgram reverse() { return {}; }
-    Program<MirrorParams> mirror(MirrorParams params) { return {params}; }
-    Program<AlphaParams> alpha(AlphaParams params) { return {params}; }
-    Program<FlatParams> flat(FlatParams params) { return {params}; }
-    Program<BlurParams> blur(BlurParams params) { return {params}; }
-    Program<DisintegrateParams> disintegrate(DisintegrateParams params) { return {params}; }
-    Program<WavyImageParams> wavyImage(WavyImageParams params) { return {params}; }
-    Program<WavyTextParams> wavyText(WavyTextParams params) { return {params}; }
-    Program<TitleTextParams> titleText(TitleTextParams params) { return {params}; }
-    Program<ZXParams> ZX(ZXParams params) { return {params}; }
-    Program<YCbCrParams> YCbCr(YCbCrParams params) { return {params}; }
-    Program<ButtonParams> button(ButtonParams params) { return {params}; }
-    Program<ArrowParams> arrow(ArrowParams params) { return {params}; }*/
-#else
     BaseProgram copy() { return {m_copy}; }
     Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }
     BaseProgram reverse() { return {m_reverse}; }
@@ -149,7 +129,6 @@ public:
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
     Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
-#endif
 
 private:
     constexpr static GLint texImage_shader = 0;

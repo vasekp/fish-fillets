@@ -7,10 +7,34 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
     m_copy{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/copy.spv")->read()}},
+    m_maskCopy{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
     m_alpha{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/alpha.spv")->read()}},
+    m_reverse{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/reverse.spv")->read()}},
+    m_mirror{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
     m_flat{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}},
+    m_blur{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+    m_disintegrate{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/disintegrate.spv")->read()}},
+    m_wavyImage{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/wavy-image.spv")->read()}},
+    m_wavyText{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/wavy-text.spv")->read()}},
+    m_titleText{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/title.spv")->read()}},
+    m_zx{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/zx.spv")->read()}},
+    m_ycbcr{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+    m_button{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/button.spv")->read()}},
+    m_arrow{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}} // TODO
 { }
 #else
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
@@ -121,7 +145,11 @@ void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsSystem& s
 template<>
 void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        float uTime;
+    } constants = { m_params.time };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform1f(m_native.uniform("uTime"), m_params.time);
 #endif
@@ -130,7 +158,19 @@ void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsS
 template<>
 void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        float uAmplitude;
+        float uPhase; // TODO order
+        float uPeriod;
+        float uSpeed;
+    } constants = {
+        m_params.amplitude,
+        m_params.phase,
+        m_params.period,
+        m_params.speed
+    };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
@@ -142,7 +182,17 @@ void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSyst
 template<>
 void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(16) std::array<float, 4> uColor1;
+        alignas(16) std::array<float, 4> uColor2;
+        float uTime;
+    } constants = {
+        m_params.color1.gl(),
+        m_params.color2.gl(),
+        m_params.time
+    };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
@@ -153,9 +203,13 @@ void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSyste
 template<>
 void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(16) std::array<float, 4> uColor;
+    } constants = { m_params.color.gl(m_params.alpha) };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy());
+    glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy()); // TODO
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 #endif
 }
@@ -163,7 +217,19 @@ void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSyst
 template<>
 void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(16) std::array<float, 4> uColor1;
+        alignas(16) std::array<float, 4> uColor2;
+        float uPeriod;
+        float uOffset;
+    } constants = {
+        m_params.color1.gl(),
+        m_params.color2.gl(),
+        m_params.period,
+        m_params.offset
+    };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
@@ -189,7 +255,15 @@ void Program<Shaders::YCbCrParams>::own_params([[maybe_unused]] GraphicsSystem& 
 template<>
 void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(16) std::array<float, 4> uColor;
+        alignas(8) std::array<float, 2> uTexSize;
+    } constants = {
+        m_params.color.gl(m_params.alpha),
+        {m_params.texSize.fx(), m_params.texSize.fy()} // TODO
+    };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
     glUniform2f(m_native.uniform("uTexSize"), m_params.texSize.fx(), m_params.texSize.fy());
@@ -199,7 +273,21 @@ void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem&
 template<>
 void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(8) std::array<float, 2> uPosition;
+        float uSize;
+        alignas(8) std::array<float, 2> uDirection;
+        float uSign;
+        alignas(16) std::array<float, 4> uColor;
+    } constants = {
+        {m_params.position.fx(), m_params.position.fy()}, // TODO
+        m_params.size,
+        {m_params.direction.fx(), m_params.direction.fy()},
+        m_params.inwards ? -1.f : 1.f,
+        m_params.color.gl(m_params.alpha)
+    };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform2f(m_native.uniform("uPosition"), m_params.position.fx(), m_params.position.fy());
     glUniform1f(m_native.uniform("uSize"), m_params.size);

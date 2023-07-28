@@ -51,9 +51,7 @@ void LevelTitle::draw(DrawTarget& target) {
         .area = rect
     });
 
-#ifndef FISH_FILLETS_USE_VULKAN // TODO
     program.params().color = colorFg;
-#endif
     target.draw(&m_image.value(), program, coords, {
         .dest = offset,
         .srcSize = spoofSize,
