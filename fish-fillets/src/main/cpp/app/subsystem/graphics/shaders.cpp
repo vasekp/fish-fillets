@@ -134,30 +134,25 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     glUniform2f(m_native.uniform("uDstSize"), params.dstSize.fx(), params.dstSize.fy());
     glUniform2f(m_native.uniform("uSrcOffset"), params.src.fx(), params.src.fy());
     glUniform2f(m_native.uniform("uDstOffset"), params.dest.fx(), params.dest.fy());
+    glUniform2f(m_native.uniform("uArea"), params.area.fx(), params.area.fy());
     glUniform3f(m_native.uniform("uCoords"), params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale);
     glUniform2f(m_native.uniform("uSigns"), 1.f, params.flipY ? -1.f : 1.f);
 
     own_params(system);
 
+    constexpr static float rect[4][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
+    constexpr static float triangle[3][3] = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1} };
+
     switch(shape) {
         case Shape::rect: {
-            float vertices[4][2] = {
-                {0, 0},
-                {0, params.area.fy()},
-                {params.area.fx(), 0},
-                {params.area.fx(), params.area.fy()}
-            };
-            glVertexAttribPointer(ogl::Program::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &vertices[0][0]);
+            glVertexAttribPointer(ogl::Program::aPosition, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), &rect[0][0]);
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            break;
         }
         case Shape::triangle: {
-            float vertices[3][3] = {
-                {1, 0, 0},
-                {0, 1, 0},
-                {0, 0, 1}
-            };
-            glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &vertices[0][0]);
+            glVertexAttribPointer(ogl::Program::aPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), &triangle[0][0]);
             glDrawArrays(GL_TRIANGLES, 0, 3);
+            break;
         }
     }
 #endif
@@ -289,7 +284,6 @@ void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSyst
     } constants = { m_params.color.gl(m_params.alpha) };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform2f(m_native.uniform("uBlitSize"), m_params.blitSize.fx(), m_params.blitSize.fy()); // TODO
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 #endif
 }

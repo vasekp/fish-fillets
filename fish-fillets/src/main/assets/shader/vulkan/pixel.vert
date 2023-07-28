@@ -20,9 +20,9 @@ const vec2 rect[4] = vec2[](
 );
 
 void main() {
-    vec2 aPosition = rect[gl_VertexIndex] * pc.uArea;
-    vSrcCoords = pc.uSrcOffset + aPosition;
-    vDstCoords = (pc.uDstOffset + aPosition) * pc.uCoords.z + pc.uCoords.xy;
+    vec2 lPosition = rect[gl_VertexIndex] * pc.uArea;
+    vSrcCoords = pc.uSrcOffset + lPosition;
+    vDstCoords = (pc.uDstOffset + lPosition) * pc.uCoords.z + pc.uCoords.xy;
     vec2 lClipCoords = vDstCoords / pc.uDstSize * 2.0 - vec2(1.0, 1.0);
     gl_Position = vec4(lClipCoords, 0.0, 1.0);
 }

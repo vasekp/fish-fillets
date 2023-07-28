@@ -2,13 +2,13 @@ precision highp float;
 
 uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
-uniform vec2 uBlitSize;
+uniform vec2 uArea;
 uniform vec4 uColor;
 
 varying vec2 vSrcCoords;
 
 void main(void) {
-    vec2 frac = vec2(vSrcCoords.x - uBlitSize.x / 2.0, uBlitSize.y - vSrcCoords.y);
+    vec2 frac = vec2(vSrcCoords.x - uArea.x / 2.0, uArea.y - vSrcCoords.y);
     float radius = 500.0;
     vec2 rel = vec2(frac.x, radius - frac.y) / radius;
     vec2 polar = vec2(atan(rel.x, rel.y), length(rel));
