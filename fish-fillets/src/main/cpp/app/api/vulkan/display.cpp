@@ -186,7 +186,7 @@ vk::raii::CommandBuffers Display::createCommandBuffers() {
 
 vk::raii::RenderPass Display::createRenderPass() {
     auto colorAttachment = vk::AttachmentDescription{}
-            .setFormat(vk::Format::eR8G8B8A8Srgb)
+            .setFormat(vk::Format::eR8G8B8A8Unorm)
             .setSamples(vk::SampleCountFlagBits::e1)
             .setLoadOp(vk::AttachmentLoadOp::eLoad)
             .setStoreOp(vk::AttachmentStoreOp::eStore)
@@ -246,7 +246,7 @@ vk::SwapchainCreateInfoKHR Display::createSwapchainInfo(vk::SwapchainKHR old) {
     Log::debug<Log::graphics>("Framebuffer extent: ", swapchainInfo.imageExtent.width, "×", swapchainInfo.imageExtent.height, ", format: ", vk::to_string(swapchainInfo.imageFormat));
 
     for(const auto& format : surfaceFormats)
-        if(format.format == vk::Format::eB8G8R8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
+        if(format.format == vk::Format::eB8G8R8A8Unorm && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
             swapchainInfo.setImageFormat(format.format).setImageColorSpace(format.colorSpace);
             break;
         }

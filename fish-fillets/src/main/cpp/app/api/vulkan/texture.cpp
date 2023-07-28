@@ -55,7 +55,7 @@ Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t heig
 }
 
 Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data) {
-    auto format = channels == 4 ? vk::Format::eR8G8B8A8Srgb : vk::Format::eR8Srgb;
+    auto format = channels == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
         .setExtent({width, height, 1})
