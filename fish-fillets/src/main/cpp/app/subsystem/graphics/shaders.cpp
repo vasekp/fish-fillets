@@ -14,6 +14,7 @@ namespace TexUnits {
 };
 #endif
 
+// NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
 #ifdef FISH_FILLETS_USE_VULKAN
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
@@ -50,33 +51,40 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/arrow.frag.spv")->read()}}
 { }
 #else
-Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
-    // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
-    auto& display = system.display();
-
-    auto vertCommon = ogl::Shader(display, GL_VERTEX_SHADER, instance.files().system("shader/opengl/pixel.vert")->read());
-
-    m_copy = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/copy.frag")->read()});
-    m_maskCopy = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mask-copy.frag")->read()});
-    m_alpha = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/alpha.frag")->read()});
-    m_blur = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/blur.frag")->read()});
-    m_wavyImage = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-image.frag")->read()});
-    m_wavyText = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-text.frag")->read()});
-    m_titleText = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/title.frag")->read()});
-    m_disintegrate = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/disintegrate.frag")->read()});
-    m_mirror = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mirror.frag")->read()});
-    m_reverse = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/reverse.frag")->read()});
-    m_flat = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/flat.frag")->read()});
-    m_zx = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/zx.frag")->read()});
-    m_ycbcr = ogl::Program(display, vertCommon, {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/ycbcr.frag")->read()});
-
-    m_arrow = ogl::Program(display,
-            {display, GL_VERTEX_SHADER, instance.files().system("shader/opengl/arrow.vert")->read()},
-            {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/arrow.frag")->read()});
-    m_button = ogl::Program(display,
-            vertCommon,
-            {display, GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/button.frag")->read()});
-
+Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
+    m_vert{system.display(), GL_VERTEX_SHADER, instance.files().system("shader/opengl/pixel.vert")->read()},
+    m_copy{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/copy.frag")->read()}},
+    m_maskCopy{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mask-copy.frag")->read()}},
+    m_alpha{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/alpha.frag")->read()}},
+    m_reverse{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/reverse.frag")->read()}},
+    m_mirror{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mirror.frag")->read()}},
+    m_flat{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/flat.frag")->read()}},
+    m_blur{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/blur.frag")->read()}},
+    m_disintegrate{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/disintegrate.frag")->read()}},
+    m_wavyImage{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-image.frag")->read()}},
+    m_wavyText{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-text.frag")->read()}},
+    m_titleText{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/title.frag")->read()}},
+    m_zx{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/zx.frag")->read()}},
+    m_ycbcr{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/ycbcr.frag")->read()}},
+    m_button{system.display(), m_vert,
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/button.frag")->read()}},
+    m_arrow{system.display(),
+        ogl::Shader{system.display(), GL_VERTEX_SHADER, instance.files().system("shader/opengl/arrow.vert")->read()},
+        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/arrow.frag")->read()}}
+{
     for(const auto* program : {&m_copy, &m_maskCopy, &m_alpha, &m_blur, &m_wavyImage, &m_wavyText, &m_titleText, &m_disintegrate, &m_mirror, &m_zx, &m_button}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uSrcTexture"), TexUnits::image_shader);

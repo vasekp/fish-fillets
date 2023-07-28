@@ -6,10 +6,11 @@ class DrawTarget;
 class BaseProgram {
 protected:
 #ifdef FISH_FILLETS_USE_VULKAN
-    const vulkan::Program& m_native;
+    using PlatformType = vulkan::Program;
 #else
-    const ogl::Program& m_native;
+    using PlatformType = ogl::Program;
 #endif
+    const PlatformType& m_native;
 
 public:
     struct Params {
@@ -42,11 +43,7 @@ public:
     constexpr static auto ownPushConstantOffset = basePushConstantSize;
 #endif
 
-#ifdef FISH_FILLETS_USE_VULKAN
-    BaseProgram(const vulkan::Program& native) : m_native(native) { }
-#else
-    BaseProgram(const ogl::Program& native) : m_native(native) { }
-#endif
+    BaseProgram(const PlatformType& native) : m_native(native) { }
 
     void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape) const;
 
@@ -59,11 +56,7 @@ class Program : public BaseProgram {
     SpecParams m_params;
 
 public:
-#ifdef FISH_FILLETS_USE_VULKAN
-    Program(const vulkan::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
-#else
-    Program(const ogl::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
-#endif
+    Program(const PlatformType& native, SpecParams params) : BaseProgram(native), m_params(params) { }
 
     SpecParams& params() { return m_params; }
 

@@ -4,39 +4,28 @@
 class Shaders {
 private:
 #ifdef FISH_FILLETS_USE_VULKAN
-    vulkan::Shader m_vert;
-    vulkan::Program m_copy;
-    vulkan::Program m_maskCopy;
-    vulkan::Program m_alpha;
-    vulkan::Program m_reverse;
-    vulkan::Program m_mirror;
-    vulkan::Program m_flat;
-    vulkan::Program m_blur;
-    vulkan::Program m_disintegrate;
-    vulkan::Program m_wavyImage;
-    vulkan::Program m_wavyText;
-    vulkan::Program m_titleText;
-    vulkan::Program m_zx;
-    vulkan::Program m_ycbcr;
-    vulkan::Program m_button;
-    vulkan::Program m_arrow;
+    using PlatformShader = vulkan::Shader;
+    using PlatformProgram = vulkan::Program;
 #else
-    ogl::Program m_copy;
-    ogl::Program m_alpha;
-    ogl::Program m_maskCopy;
-    ogl::Program m_reverse;
-    ogl::Program m_mirror;
-    ogl::Program m_flat;
-    ogl::Program m_blur;
-    ogl::Program m_disintegrate;
-    ogl::Program m_wavyImage;
-    ogl::Program m_wavyText;
-    ogl::Program m_titleText;
-    ogl::Program m_zx;
-    ogl::Program m_ycbcr;
-    ogl::Program m_button;
-    ogl::Program m_arrow;
+    using PlatformShader = ogl::Shader;
+    using PlatformProgram = ogl::Program;
 #endif
+    PlatformShader m_vert;
+    PlatformProgram m_copy;
+    PlatformProgram m_maskCopy;
+    PlatformProgram m_alpha;
+    PlatformProgram m_reverse;
+    PlatformProgram m_mirror;
+    PlatformProgram m_flat;
+    PlatformProgram m_blur;
+    PlatformProgram m_disintegrate;
+    PlatformProgram m_wavyImage;
+    PlatformProgram m_wavyText;
+    PlatformProgram m_titleText;
+    PlatformProgram m_zx;
+    PlatformProgram m_ycbcr;
+    PlatformProgram m_button;
+    PlatformProgram m_arrow;
 
 public:
     Shaders(Instance& instance, GraphicsSystem& system);
