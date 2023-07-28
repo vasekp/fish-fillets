@@ -12,7 +12,6 @@
 #include "graphics/texture.h"
 #include "graphics/image.h"
 #include "graphics/coords.h"
-#include "graphics/program.h"
 #include "graphics/shaders.h"
 #include "graphics/ifont.h"
 #include "graphics/drawtarget.h"
