@@ -21,8 +21,8 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug<Log::platform>("APP_CMD_INIT_WINDOW");
             if(app->window != nullptr) {
                 instance.live = true;
-                auto gsystem = std::make_unique<GraphicsSystem>(instance, app->window);
-                instance.graphics().activate(std::move(gsystem));
+                auto display = GraphicsSystem::PlatformDisplay(app->window);
+                instance.graphics().activate(std::move(display));
                 instance.oboe().open();
                 instance.screens().resize();
                 instance.screens().drawFrame();

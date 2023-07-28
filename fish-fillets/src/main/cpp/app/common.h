@@ -43,4 +43,7 @@ namespace std {
 }
 #endif
 
+template<auto V>
+constexpr auto single = V;
+
 #endif //FISH_FILLETS_COMMON_H

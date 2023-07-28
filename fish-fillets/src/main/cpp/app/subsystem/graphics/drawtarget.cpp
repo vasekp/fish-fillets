@@ -10,7 +10,7 @@ void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProg
     params.dstSize = size();
     params.coords = coords;
     params.flipY = flipY();
-    program.run(*this, params, shape);
+    program.run(m_system, *this, params, shape);
 }
 
 void DrawTarget::draw(const Texture& texture, const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape) {

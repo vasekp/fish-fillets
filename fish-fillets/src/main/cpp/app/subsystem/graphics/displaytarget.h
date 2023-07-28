@@ -1,8 +1,7 @@
 #ifndef FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
 #define FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
 
-#include "drawtarget.h"
-
+#ifndef FISH_FILLETS_USE_VULKAN
 class DisplayTarget : public DrawTarget {
     const ogl::Display& m_display;
     FCoords m_origin;
@@ -19,5 +18,6 @@ public:
 private:
     bool flipY() const override { return true; }
 };
+#endif
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H

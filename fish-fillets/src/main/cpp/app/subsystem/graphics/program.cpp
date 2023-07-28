@@ -1,6 +1,31 @@
 #include "subsystem/graphics.h"
 
-void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
+void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
+#ifdef FISH_FILLETS_USE_VULKAN
+    const auto& display = system.display();
+    const auto& commandBuffer = display.commandBuffer();
+
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
+
+    BasePushConstants constants{
+        {params.src.fx(), params.src.fy()},
+        {params.srcSize.fx(), params.srcSize.fy()},
+        {params.dest.fx(), params.dest.fy()},
+        {params.dstSize.fx(), params.dstSize.fy()},
+        {params.area.fx(), params.area.fy()},
+        {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale}
+    };
+    commandBuffer.pushConstants<BasePushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
+
+    if(params.texture) {
+        const auto& descriptorSet = params.texture->native().descriptorSet();
+        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, {descriptorSet}, {});
+    }
+
+    own_params(system);
+
+    commandBuffer.draw(shape == Shape::rect ? 4 : 3, 1, 0, 0);
+#else
     if(params.texture)
         params.texture->bind();
     glUseProgram(m_native);
@@ -11,7 +36,7 @@ void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Sha
     glUniform3f(m_native.uniform("uCoords"), params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale);
     glUniform2f(m_native.uniform("uSigns"), 1.f, params.flipY ? -1.f : 1.f);
 
-    own_params();
+    own_params(system);
 
     switch(shape) {
         case Shape::rect: {
@@ -34,4 +59,5 @@ void BaseProgram::run(DrawTarget& target, const BaseProgram::Params& params, Sha
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
+#endif
 }

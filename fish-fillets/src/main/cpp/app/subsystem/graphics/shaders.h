@@ -3,6 +3,24 @@
 
 class Shaders {
 private:
+#ifdef FISH_FILLETS_USE_VULKAN
+    vulkan::Shader m_vert;
+    vulkan::Program m_copy;
+    vulkan::Program m_maskCopy;
+    vulkan::Program m_alpha;
+    vulkan::Program m_reverse;
+    vulkan::Program m_mirror;
+    vulkan::Program m_flat;
+    vulkan::Program m_blur;
+    vulkan::Program m_disintegrate;
+    vulkan::Program m_wavyImage;
+    vulkan::Program m_wavyText;
+    vulkan::Program m_titleText;
+    vulkan::Program m_zx;
+    vulkan::Program m_ycbcr;
+    vulkan::Program m_button;
+    vulkan::Program m_arrow;
+#else
     ogl::Program m_copy;
     ogl::Program m_alpha;
     ogl::Program m_maskCopy;
@@ -18,6 +36,7 @@ private:
     ogl::Program m_ycbcr;
     ogl::Program m_button;
     ogl::Program m_arrow;
+#endif
 
 public:
     Shaders(Instance& instance, GraphicsSystem& system);
@@ -110,19 +129,6 @@ public:
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
     Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
-
-private:
-    constexpr static GLint texImage_shader = 0;
-    constexpr static GLint texMask_shader = 1;
-    constexpr static GLint texCb_shader = 1;
-    constexpr static GLint texCr_shader = 2;
-    constexpr static GLint texImage_gl = GL_TEXTURE0;
-    constexpr static GLint texMask_gl = GL_TEXTURE1;
-    constexpr static GLint texCb_gl = GL_TEXTURE1;
-    constexpr static GLint texCr_gl = GL_TEXTURE2;
-
-    template<typename SpecParams>
-    friend class Program;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SHADERS_H

@@ -68,7 +68,7 @@ public:
     static constexpr inline Level motion = Level::debug;
     static constexpr inline Level gotos = Level::debug;
     static constexpr inline Level lua = Level::debug;
-    static constexpr inline Level graphics = Level::debug;
+    static constexpr inline Level graphics = Level::verbose;
     static constexpr inline Level lifecycle = Level::debug;
     static constexpr inline Level platform = Level::debug;
     static constexpr inline Level persist = Level::debug;

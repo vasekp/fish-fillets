@@ -1,26 +1,28 @@
 #ifndef FISH_FILLETS_GRAPHICS_SYSTEM_H
 #define FISH_FILLETS_GRAPHICS_SYSTEM_H
 
+struct PlatformDetail;
+
 class GraphicsSystem {
+public:
+#ifdef FISH_FILLETS_USE_VULKAN
+    using PlatformDisplay = vulkan::Display;
+#else
+    using PlatformDisplay = ogl::Display;
+#endif
+
 private:
     Graphics& m_graphics;
-    ogl::Display m_display;
+    PlatformDisplay m_display;
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
-    DisplayTarget* m_curTarget;
+    DrawTarget* m_curTarget;
+    std::unique_ptr<PlatformDetail> m_platform;
 
 public:
-    template<typename... NativeArgs>
-    GraphicsSystem(Instance& instance, const NativeArgs& ... nativeArgs) :
-            m_graphics(instance.graphics()),
-            m_display{nativeArgs...},
-            m_blurTargets{*this, *this},
-            m_offscreenTarget(*this),
-            m_shaders(instance, *this)
-    {
-        resizeBuffers();
-    }
+    GraphicsSystem(Instance& instance, PlatformDisplay&& display);
+    ~GraphicsSystem();
 
     auto& display() { return m_display; }
 
@@ -34,6 +36,9 @@ public:
     void resizeBuffers();
 
     friend class Graphics;
+
+private:
+    std::unique_ptr<PlatformDetail> platformDetail();
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SYSTEM_H

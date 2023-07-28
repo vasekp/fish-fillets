@@ -5,7 +5,11 @@ class DrawTarget;
 
 class BaseProgram {
 protected:
+#ifdef FISH_FILLETS_USE_VULKAN
+    const vulkan::Program& m_native;
+#else
     const ogl::Program& m_native;
+#endif
 
 public:
     struct Params {
@@ -24,13 +28,30 @@ public:
         triangle
     };
 
-public:
-    BaseProgram(const ogl::Program& native) : m_native(native) { }
+#ifdef FISH_FILLETS_USE_VULKAN
+    struct BasePushConstants {
+        std::array<float, 2> uSrcOffset;
+        std::array<float, 2> uSrcSize;
+        std::array<float, 2> uDstOffset;
+        std::array<float, 2> uDstSize;
+        std::array<float, 2> uArea;
+        alignas(16) std::array<float, 4> uCoords;
+    };
 
-    void run(DrawTarget& target, const Params& params, Shape shape) const;
+    constexpr static auto basePushConstantSize = sizeof(BasePushConstants);
+    constexpr static auto ownPushConstantOffset = basePushConstantSize;
+#endif
+
+#ifdef FISH_FILLETS_USE_VULKAN
+    BaseProgram(const vulkan::Program& native) : m_native(native) { }
+#else
+    BaseProgram(const ogl::Program& native) : m_native(native) { }
+#endif
+
+    void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape) const;
 
 protected:
-    virtual void own_params() const { }
+    virtual void own_params(GraphicsSystem& system) const { }
 };
 
 template<typename SpecParams>
@@ -38,12 +59,16 @@ class Program : public BaseProgram {
     SpecParams m_params;
 
 public:
-    Program(ogl::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+#ifdef FISH_FILLETS_USE_VULKAN
+    Program(const vulkan::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+#else
+    Program(const ogl::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+#endif
 
     SpecParams& params() { return m_params; }
 
 private:
-    void own_params() const override;
+    void own_params(GraphicsSystem& system) const override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_PROGRAM_H
