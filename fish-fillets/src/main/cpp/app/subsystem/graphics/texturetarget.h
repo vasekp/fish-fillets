@@ -1,8 +1,6 @@
 #ifndef FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 #define FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 
-#include "drawtarget.h"
-
 class TextureTarget : public DrawTarget {
 #ifdef FISH_FILLETS_USE_VULKAN
     using PlatformType = vulkan::Framebuffer;

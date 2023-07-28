@@ -129,19 +129,6 @@ public:
     Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
     Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
-
-private:
-    constexpr static GLint texImage_shader = 0;
-    constexpr static GLint texMask_shader = 1;
-    constexpr static GLint texCb_shader = 1;
-    constexpr static GLint texCr_shader = 2;
-    constexpr static GLint texImage_gl = GL_TEXTURE0;
-    constexpr static GLint texMask_gl = GL_TEXTURE1;
-    constexpr static GLint texCb_gl = GL_TEXTURE1;
-    constexpr static GLint texCr_gl = GL_TEXTURE2;
-
-    template<typename SpecParams>
-    friend class Program;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SHADERS_H

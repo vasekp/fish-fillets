@@ -51,7 +51,7 @@ public:
     void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape) const;
 
 protected:
-    virtual void own_params([[maybe_unused]] GraphicsSystem& system) const { }
+    virtual void own_params(GraphicsSystem& system) const { }
 };
 
 template<typename SpecParams>
@@ -68,7 +68,7 @@ public:
     SpecParams& params() { return m_params; }
 
 private:
-    void own_params([[maybe_unused]] GraphicsSystem& system) const override;
+    void own_params(GraphicsSystem& system) const override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_PROGRAM_H

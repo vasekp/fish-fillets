@@ -36,7 +36,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     glUniform3f(m_native.uniform("uCoords"), params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale);
     glUniform2f(m_native.uniform("uSigns"), 1.f, params.flipY ? -1.f : 1.f);
 
-    own_params();
+    own_params(system);
 
     switch(shape) {
         case Shape::rect: {

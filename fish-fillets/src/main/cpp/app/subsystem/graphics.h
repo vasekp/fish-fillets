@@ -2,8 +2,12 @@
 #define FISH_FILLETS_GRAPHICS_H
 
 #include "instance.h"
-#include "api/ogl.h"
+
+#ifdef FISH_FILLETS_USE_VULKAN
 #include "api/vulkan.h"
+#else
+#include "api/ogl.h"
+#endif
 
 #include "graphics/texture.h"
 #include "graphics/image.h"
@@ -11,6 +15,7 @@
 #include "graphics/program.h"
 #include "graphics/shaders.h"
 #include "graphics/ifont.h"
+#include "graphics/drawtarget.h"
 #include "graphics/displaytarget.h"
 #include "graphics/texturetarget.h"
 #include "graphics/graphicssystem.h"

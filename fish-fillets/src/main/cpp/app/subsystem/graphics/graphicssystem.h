@@ -17,7 +17,7 @@ private:
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
-    DisplayTarget* m_curTarget;
+    DrawTarget* m_curTarget;
     std::unique_ptr<PlatformDetail> m_platform;
 
 public:

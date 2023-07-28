@@ -10,18 +10,10 @@ set(VORBIS_DIR deps/vorbis)
 set(THEORA_DIR deps/theora)
 set(LUA_DIR deps/lua)
 
+set(GRAPHICS OpenGL)
+
 set(fillets_sources
         "${FILLETS_DIR}/instance.cpp"
-        "${FILLETS_DIR}/api/ogl/display.cpp"
-        "${FILLETS_DIR}/api/ogl/framebuffer.cpp"
-        "${FILLETS_DIR}/api/ogl/program.cpp"
-        "${FILLETS_DIR}/api/ogl/shader.cpp"
-        "${FILLETS_DIR}/api/ogl/texture.cpp"
-        "${FILLETS_DIR}/api/vulkan/display.cpp"
-        "${FILLETS_DIR}/api/vulkan/texture.cpp"
-        "${FILLETS_DIR}/api/vulkan/framebuffer.cpp"
-        "${FILLETS_DIR}/api/vulkan/program.cpp"
-        "${FILLETS_DIR}/api/vulkan/descriptorpool.cpp"
         "${FILLETS_DIR}/api/ogg/lowlevel.cpp"
         "${FILLETS_DIR}/api/ogg/video.cpp"
         "${FILLETS_DIR}/subsystem/audio.cpp"
@@ -66,8 +58,22 @@ set(fillets_sources
         "${FILLETS_DIR}/game/screens/poster.cpp"
         "${FILLETS_DIR}/game/screens/options.cpp")
 
+set(fillets_sources_vulkan
+        "${FILLETS_DIR}/api/vulkan/display.cpp"
+        "${FILLETS_DIR}/api/vulkan/texture.cpp"
+        "${FILLETS_DIR}/api/vulkan/framebuffer.cpp"
+        "${FILLETS_DIR}/api/vulkan/program.cpp"
+        "${FILLETS_DIR}/api/vulkan/descriptorpool.cpp")
+
+set(fillets_sources_opengl
+        "${FILLETS_DIR}/api/ogl/texture.cpp"
+        "${FILLETS_DIR}/api/ogl/display.cpp"
+        "${FILLETS_DIR}/api/ogl/framebuffer.cpp"
+        "${FILLETS_DIR}/api/ogl/program.cpp"
+        "${FILLETS_DIR}/api/ogl/shader.cpp")
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    set(fillets_android
+    list(APPEND fillets_sources
             "${FILLETS_DIR}/platform/android/afont.cpp"
             "${FILLETS_DIR}/platform/android/ainstance.cpp"
             "${FILLETS_DIR}/platform/android/decoders.cpp"
@@ -79,10 +85,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             "${FILLETS_DIR}/platform/android/main.cpp"
             "${FILLETS_DIR}/platform/android/oboestream.cpp"
             "${FILLETS_DIR}/api/jni.cpp")
-
-    add_library(fillets SHARED ${fillets_sources} ${fillets_android})
 else()
-    set(fillets_linux
+    list(APPEND fillets_sources
             "${FILLETS_DIR}/platform/linux/alsasink.cpp"
             "${FILLETS_DIR}/platform/linux/files.cpp"
             "${FILLETS_DIR}/platform/linux/files/system.cpp"
@@ -93,13 +97,19 @@ else()
             "${FILLETS_DIR}/platform/linux/loadpng.cpp"
             "${FILLETS_DIR}/platform/linux/log.cpp"
             "${FILLETS_DIR}/platform/linux/main.cpp"
-            "${FILLETS_DIR}/platform/linux/xinstance.cpp"
+            "${FILLETS_DIR}/platform/linux/xinstance.cpp")
+
+    list(APPEND fillets_sources_vulkan
             "${FILLETS_DIR}/api/vulkan/display_xlib.cpp")
-
-    add_executable(fillets ${fillets_sources} ${fillets_linux})
-
-    target_compile_definitions(fillets PRIVATE "FISH_FILLETS_USE_VULKAN=1" "VK_USE_PLATFORM_XLIB_KHR")
 endif()
+
+if(GRAPHICS STREQUAL "Vulkan")
+    list(APPEND fillets_sources ${fillets_sources_vulkan})
+else()
+    list(APPEND fillets_sources ${fillets_sources_opengl})
+endif()
+
+add_executable(fillets ${fillets_sources})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(native_app_glue STATIC
@@ -212,10 +222,15 @@ endif()
 
 target_include_directories(fillets PRIVATE ${FILLETS_DIR})
 
+if(GRAPHICS STREQUAL "Vulkan")
+    target_compile_definitions(fillets PRIVATE "FISH_FILLETS_USE_VULKAN=1" "VK_USE_PLATFORM_XLIB_KHR")
+
+    target_link_libraries(fillets vulkan)
+else()
+    target_link_libraries(fillets EGL GLESv2)
+endif()
+
 target_link_libraries(fillets
-        EGL
-        vulkan
-        GLESv2
         lua
         ogg
         vorbis
