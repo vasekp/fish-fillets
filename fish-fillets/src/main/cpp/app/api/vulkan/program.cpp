@@ -1,15 +1,6 @@
 #include "../vulkan.h"
 
-// TODO
-    struct PushConstants {
-        std::array<float, 2> uSrcOffset;
-        std::array<float, 2> uSrcSize;
-        std::array<float, 2> uDstOffset;
-        std::array<float, 2> uDstSize;
-        std::array<float, 2> uArea;
-        alignas(16) std::array<float, 3> uCoords;
-        alignas(16) std::array<float, 4> uColor; // TODO flat
-    };
+constexpr std::size_t maxPushConstantSize = 128;
 
 namespace vulkan {
 
@@ -28,7 +19,7 @@ Program::Program(Display& display, const vk::ShaderModule& vertModule, const vk:
 
 vk::raii::PipelineLayout Program::createPipelineLayout(Display& display) {
     auto pushConstantRange = vk::PushConstantRange{}
-            .setSize(sizeof(PushConstants))
+            .setSize(maxPushConstantSize)
             .setStageFlags(vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment);
     return {display.device(), vk::PipelineLayoutCreateInfo{}
             .setSetLayouts(display.descriptors().descriptorSetLayout()) // TODO

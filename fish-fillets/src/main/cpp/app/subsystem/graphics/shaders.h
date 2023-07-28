@@ -6,6 +6,7 @@ private:
 #ifdef FISH_FILLETS_USE_VULKAN
     vulkan::Shader m_vert;
     vulkan::Program m_copy;
+    vulkan::Program m_alpha;
     vulkan::Program m_flat;
     // TODO
 #else
@@ -107,8 +108,8 @@ public:
     BaseProgram maskCopy(MaskCopyParams params) { return {m_flat}; }
     BaseProgram reverse() { return {m_flat}; }
     BaseProgram mirror(MirrorParams params) { return {m_flat}; }
-    BaseProgram alpha(AlphaParams params) { return {m_flat}; }
-    BaseProgram flat(FlatParams params) { return {m_flat}; }
+    Program<AlphaParams> alpha(AlphaParams params) { return {m_alpha, params}; }
+    Program<FlatParams> flat(FlatParams params) { return {m_flat, params}; }
     BaseProgram blur(BlurParams params) { return {m_flat}; }
     BaseProgram disintegrate(DisintegrateParams params) { return {m_flat}; }
     BaseProgram wavyImage(WavyImageParams params) { return {m_flat}; }

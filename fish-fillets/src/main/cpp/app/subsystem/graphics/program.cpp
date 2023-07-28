@@ -7,21 +7,22 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
 
-    PushConstants constants{
+    BasePushConstants constants{
         {params.src.fx(), params.src.fy()},
         {params.srcSize.fx(), params.srcSize.fy()},
         {params.dest.fx(), params.dest.fy()},
         {params.dstSize.fx(), params.dstSize.fy()},
         {params.area.fx(), params.area.fy()},
-        {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale},
-        {1.f, 1.f, 1.f, 1.f}
+        {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale}
     };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
+    commandBuffer.pushConstants<BasePushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
 
     if(params.texture) {
         const auto& descriptorSet = params.texture->native().descriptorSet();
         commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, {descriptorSet}, {});
     }
+
+    own_params(system);
 
     commandBuffer.draw(4, 1, 0, 0);
 #else

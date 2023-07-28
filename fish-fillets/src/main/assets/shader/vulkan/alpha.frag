@@ -10,10 +10,11 @@ layout(push_constant) uniform constants {
     vec2 uDstSize;
     vec2 uArea;
     vec4 uCoords;
-    vec4 uColor;
+    float uAlpha;
 } pc;
 
+layout(binding = 0) uniform sampler2D uSrcTexture;
+
 void main() {
-    //fragColor = vec4(vSrcCoords / pc.uSrcSize, 1, 1);
-    fragColor = pc.uColor;
+    fragColor = pc.uAlpha * texture(uSrcTexture, vSrcCoords / pc.uSrcSize);
 }

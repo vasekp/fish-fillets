@@ -7,6 +7,8 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
     m_copy{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/copy.spv")->read()}},
+    m_alpha{system.display(), m_vert,
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/alpha.spv")->read()}},
     m_flat{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}
 { }
@@ -55,16 +57,20 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
 #endif
 
 template<>
-void Program<Shaders::AlphaParams>::own_params() const {
+void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        float uAlpha;
+    } constants = { m_params.alpha };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
 #endif
 }
 
 template<>
-void Program<Shaders::MaskCopyParams>::own_params() const {
+void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -78,7 +84,7 @@ void Program<Shaders::MaskCopyParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::MirrorParams>::own_params() const {
+void Program<Shaders::MirrorParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -91,16 +97,20 @@ void Program<Shaders::MirrorParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::FlatParams>::own_params() const {
+void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = system.display().commandBuffer();
+    struct PushConstants {
+        alignas(16) std::array<float, 4> uColor;
+    } constants = { m_params.color.gl(m_params.alpha) };
+    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
 #endif
 }
 
 template<>
-void Program<Shaders::BlurParams>::own_params() const {
+void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -109,7 +119,7 @@ void Program<Shaders::BlurParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::DisintegrateParams>::own_params() const {
+void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -118,7 +128,7 @@ void Program<Shaders::DisintegrateParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::WavyImageParams>::own_params() const {
+void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -130,7 +140,7 @@ void Program<Shaders::WavyImageParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::WavyTextParams>::own_params() const {
+void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -141,7 +151,7 @@ void Program<Shaders::WavyTextParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::TitleTextParams>::own_params() const {
+void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -151,7 +161,7 @@ void Program<Shaders::TitleTextParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::ZXParams>::own_params() const {
+void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -163,7 +173,7 @@ void Program<Shaders::ZXParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::YCbCrParams>::own_params() const {
+void Program<Shaders::YCbCrParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -177,7 +187,7 @@ void Program<Shaders::YCbCrParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::ButtonParams>::own_params() const {
+void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
@@ -187,7 +197,7 @@ void Program<Shaders::ButtonParams>::own_params() const {
 }
 
 template<>
-void Program<Shaders::ArrowParams>::own_params() const {
+void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
