@@ -277,7 +277,7 @@ bool Level::savePossible() const {
 }
 
 bool Level::loadPossible() const {
-    return saveFile()->exists() && !inDemo();
+    return saveFile()->exists() && !inDemo() && !inReplay();
 }
 
 std::unique_ptr<IFile> Level::saveFile() const {
