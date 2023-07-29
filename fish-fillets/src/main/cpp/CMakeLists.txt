@@ -108,7 +108,11 @@ else()
     list(APPEND fillets_sources ${fillets_sources_opengl})
 endif()
 
-add_executable(fillets ${fillets_sources})
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    add_library(fillets SHARED ${fillets_sources})
+else()
+    add_executable(fillets ${fillets_sources})
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(native_app_glue STATIC
