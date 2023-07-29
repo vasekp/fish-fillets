@@ -3,6 +3,8 @@
 #include "subsystem/input.h"
 #include "screenmanager.h"
 
+constexpr FCoords offset{0.5f, 0.5f};
+
 Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
         m_instance(instance),
         m_record(level),
@@ -37,7 +39,7 @@ void Pedometer::draw(DrawTarget& target, float time) {
     if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {
         auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
         for(const auto& button : m_buttons)
-            if(hcoords.within(button.origin, button.origin + Button::size))
+            if(hcoords.within(button.origin + offset, button.origin + Button::size - offset))
                 target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
     }
     float yBase = (time - m_createTime) * digitSpeed;
@@ -53,7 +55,7 @@ void Pedometer::draw(DrawTarget& target, float time) {
 
 Pedometer::Buttons Pedometer::findButton(FCoords coords) {
     for(const auto& button : m_buttons)
-        if(coords.within(button.origin, button.origin + Button::size))
+        if(coords.within(button.origin + offset, button.origin + Button::size - offset))
             return button.type;
     return Buttons::none;
 }
