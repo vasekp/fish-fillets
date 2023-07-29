@@ -34,7 +34,6 @@ public:
     void keyInput(Key key);
     void enqueue(const std::string& chars, bool fixed);
     void enqueue(const std::vector<Direction>& chars, bool fixed);
-    void enqueue(char c);
     void clearQueue();
     void update();
     bool ready();
@@ -52,6 +51,7 @@ public:
     void bonusSwitch(bool value);
 
 private:
+    void enqueue(char c);
     void processKey(Key key);
     void moveFish(Model::Fish which, Direction d);
     void moveFish(Direction d);

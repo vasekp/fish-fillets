@@ -116,6 +116,9 @@ void LevelRules::processKey(Key key) {
         case Key::bigRight:
             moveFish(Model::Fish::big, Direction::right);
             break;
+        case Key::special:
+            bonusSwitch(!m_vintage);
+            break;
         default:
             ;
     }
@@ -250,8 +253,11 @@ char LevelRules::dirToChar(Direction d) {
 
 void LevelRules::enqueue(char c) {
     for(const auto& entry : m_vintage ? dirChars_normal : dirChars_vintage)
-        if(c == entry.first)
-            bonusSwitch(!m_vintage);
+        if(c == entry.first) {
+            m_vintage = !m_vintage; // Provisional, only for the purpose of enqueue()
+            keyInput(Key::special);
+            break;
+        }
     for(const auto& [ch, key] : m_vintage ? dirChars_vintage : dirChars_normal)
         if(c == ch) {
             keyInput(key);
@@ -262,8 +268,10 @@ void LevelRules::enqueue(char c) {
 
 void LevelRules::enqueue(const std::string& chars, bool fixed) {
     m_queueFixed = fixed;
+    auto vintage = m_vintage; // Save value; see enqueue(char)
     for(char c : chars)
         enqueue(c);
+    m_vintage = vintage;
 }
 
 void LevelRules::enqueue(const std::vector<Direction>& dirs, bool fixed) {
