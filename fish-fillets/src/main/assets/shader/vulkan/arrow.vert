@@ -10,8 +10,8 @@ layout(push_constant) uniform constants {
     vec2 uArea;
     vec4 uCoords;
     vec2 uPosition;
-    float uSize;
     vec2 uDirection;
+    float uSize;
     float uSign;
     vec4 uColor;
 } pc;

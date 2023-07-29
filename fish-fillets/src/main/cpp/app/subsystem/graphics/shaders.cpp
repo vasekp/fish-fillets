@@ -1,6 +1,10 @@
 #include "subsystem/graphics.h"
 #include "subsystem/files.h"
 
+#ifdef FISH_FILLETS_USE_VULKAN
+constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
+#endif
+
 // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
 #ifdef FISH_FILLETS_USE_VULKAN
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
@@ -96,15 +100,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
 
-    BasePushConstants constants{
-        {params.src.fx(), params.src.fy()},
-        {params.srcSize.fx(), params.srcSize.fy()},
-        {params.dest.fx(), params.dest.fy()},
-        {params.dstSize.fx(), params.dstSize.fy()},
-        {params.area.fx(), params.area.fy()},
-        {params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale}
-    };
-    commandBuffer.pushConstants<BasePushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
+    commandBuffer.pushConstants<Params>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, params);
 
     if(textures.size() == 1) { // TODO
         const auto& descriptorSet = textures.begin()->get().native().descriptorSet();
@@ -155,10 +151,7 @@ template<>
 void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        float uAlpha;
-    } constants = { m_params.alpha };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::AlphaParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
 #endif
@@ -195,10 +188,7 @@ template<>
 void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(16) std::array<float, 4> uColor;
-    } constants = { m_params.color.gl(m_params.alpha) };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::FlatParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 #endif
@@ -217,10 +207,7 @@ template<>
 void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        float uTime;
-    } constants = { m_params.time };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::DisintegrateParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform1f(m_native.uniform("uTime"), m_params.time);
 #endif
@@ -230,16 +217,7 @@ template<>
 void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        float uAmplitude;
-        float uPeriod;
-        float uPhase;
-    } constants = {
-        m_params.amplitude,
-        m_params.period,
-        m_params.phase
-    };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::WavyImageParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
@@ -251,16 +229,7 @@ template<>
 void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(16) std::array<float, 4> uColor1;
-        alignas(16) std::array<float, 4> uColor2;
-        float uTime;
-    } constants = {
-        m_params.color1.gl(),
-        m_params.color2.gl(),
-        m_params.time
-    };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::WavyTextParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
@@ -272,10 +241,7 @@ template<>
 void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(16) std::array<float, 4> uColor;
-    } constants = { m_params.color.gl(m_params.alpha) };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::TitleTextParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 #endif
@@ -285,18 +251,7 @@ template<>
 void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(16) std::array<float, 4> uColor1;
-        alignas(16) std::array<float, 4> uColor2;
-        float uPeriod;
-        float uOffset;
-    } constants = {
-        m_params.color1.gl(),
-        m_params.color2.gl(),
-        m_params.period,
-        m_params.offset
-    };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::ZXParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
@@ -309,14 +264,7 @@ template<>
 void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(16) std::array<float, 4> uColor;
-        alignas(8) std::array<float, 2> uTexSize;
-    } constants = {
-        m_params.color.gl(m_params.alpha),
-        {m_params.texSize.fx(), m_params.texSize.fy()} // TODO
-    };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::ButtonParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
     glUniform2fv(m_native.uniform("uTexSize"), 1, m_params.texSize.data());
@@ -327,20 +275,7 @@ template<>
 void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = system.display().commandBuffer();
-    struct PushConstants {
-        alignas(8) std::array<float, 2> uPosition;
-        float uSize;
-        alignas(8) std::array<float, 2> uDirection;
-        float uSign;
-        alignas(16) std::array<float, 4> uColor;
-    } constants = {
-        {m_params.position.fx(), m_params.position.fy()}, // TODO
-        m_params.size,
-        {m_params.direction.fx(), m_params.direction.fy()},
-        m_params.inwards ? -1.f : 1.f,
-        m_params.color.gl(m_params.alpha)
-    };
-    commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
+    commandBuffer.pushConstants<Shaders::ArrowParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 #else
     glUniform2fv(m_native.uniform("uPosition"), 1, m_params.position.data());
     glUniform2fv(m_native.uniform("uDirection"), 1, m_params.direction.data());

@@ -245,7 +245,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
             .texSize = button.image.size(),
             .color = colorButtons.gl(button.alpha)
         });
-        target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .srcSize = button.coordsTo - button.coordsFrom });
+        target.draw(&button.image, program, coords, { .srcSize = button.coordsTo - button.coordsFrom, .dest = button.coordsFrom });
     }
     if(m_activeFish != Model::Fish::none) {
         const auto& button = keyButton(Key::space);
@@ -259,7 +259,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
         float scale = std::min(extent.fx() / imgSize.fx(), extent.fy() / imgSize.fy());
         FCoords from = center - scale / 2.f * imgSize;
         FCoords to = center + scale / 2.f * imgSize;
-        target.draw(&image, alphaProgram, coords, { .dest = from, .srcSize = to - from });
+        target.draw(&image, alphaProgram, coords, { .srcSize = to - from, .dest = from });
     }
 }
 

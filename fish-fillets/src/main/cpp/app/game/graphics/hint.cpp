@@ -20,7 +20,7 @@ void Hint::draw(DrawTarget& target) {
         auto size = line.size() / coords.scale;
         FCoords dest0{(coords.size.fx() - size.fx()) / 2.f, y};
         FCoords dest = coords.out2in(coords.in2out(dest0).round());
-        target.draw(line.texture(), program, coords, { .dest = dest, .srcSize = size });
+        target.draw(line.texture(), program, coords, { .srcSize = size, .dest = dest }); // TODO logSize
         y += size.fy();
     }
 }

@@ -40,20 +40,17 @@ void LevelTitle::draw(DrawTarget& target) {
     constexpr FCoords rect{maxWidth, endY - startY};
     FCoords spoofSize = m_image->size() / coords.scale;
 
-    auto program = m_instance.graphics().shaders().titleText({
-        .blitSize = rect,
-        .color = colorBg.gl(m_opacity)
-    });
+    auto program = m_instance.graphics().shaders().titleText({ .color = colorBg.gl(m_opacity) });
     target.draw(&m_image.value(), program, coords, {
+        .srcSize = spoofSize, // TODO logSize
         .dest = offset + shadow,
-        .srcSize = spoofSize,
         .area = rect
     });
 
     program.params().color = colorFg.gl(m_opacity);
     target.draw(&m_image.value(), program, coords, {
-        .dest = offset,
         .srcSize = spoofSize,
+        .dest = offset,
         .area = rect
     });
 }

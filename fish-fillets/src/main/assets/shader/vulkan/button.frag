@@ -10,8 +10,8 @@ layout(push_constant) uniform constants {
     vec2 uDstSize;
     vec2 uArea;
     vec4 uCoords;
-    vec4 uColor;
     vec2 uTexSize;
+    vec4 uColor;
 } pc;
 
 layout(binding = 0) uniform sampler2D uSrcTexture;

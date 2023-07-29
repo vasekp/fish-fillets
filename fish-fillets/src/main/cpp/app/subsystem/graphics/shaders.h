@@ -14,8 +14,8 @@ protected:
 public:
     struct Params {
         vec2 src{};
-        vec2 dest{};
         vec2 srcSize{};
+        vec2 dest{};
         vec2 dstSize{};
         vec2 area{};
         vec4 coords{};
@@ -27,20 +27,6 @@ public:
     };
 
     using Textures = std::initializer_list<std::reference_wrapper<const Texture>>;
-
-#ifdef FISH_FILLETS_USE_VULKAN
-    struct BasePushConstants {
-        std::array<float, 2> uSrcOffset;
-        std::array<float, 2> uSrcSize;
-        std::array<float, 2> uDstOffset;
-        std::array<float, 2> uDstSize;
-        std::array<float, 2> uArea;
-        alignas(16) std::array<float, 4> uCoords;
-    };
-
-    constexpr static auto basePushConstantSize = sizeof(BasePushConstants);
-    constexpr static auto ownPushConstantOffset = basePushConstantSize;
-#endif
 
     BaseProgram(const PlatformType& native) : m_native(native) { }
 
@@ -125,7 +111,6 @@ public:
     };
 
     struct TitleTextParams {
-        vec2 blitSize;
         vec4 color;
     };
 
