@@ -407,7 +407,7 @@ void LevelRules::checkEscape(Model* model) {
             if(model == m_curFish)
                 if(!switchFish()) {
                     setFish(Model::Fish::none);
-                    if(!m_vintage)
+                    if(m_goals.empty())
                         m_level.success();
                 }
             model->disappear();
