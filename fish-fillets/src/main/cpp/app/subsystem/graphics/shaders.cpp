@@ -1,19 +1,6 @@
 #include "subsystem/graphics.h"
 #include "subsystem/files.h"
 
-#ifndef FISH_FILLETS_USE_VULKAN
-namespace TexUnits {
-    constexpr GLint image_shader = 0;
-    constexpr GLint mask_shader = 1;
-    constexpr GLint cb_shader = 1;
-    constexpr GLint cr_shader = 2;
-    constexpr GLint image_gl = GL_TEXTURE0;
-    constexpr GLint mask_gl = GL_TEXTURE1;
-    constexpr GLint cb_gl = GL_TEXTURE1;
-    constexpr GLint cr_gl = GL_TEXTURE2;
-};
-#endif
-
 // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
 #ifdef FISH_FILLETS_USE_VULKAN
 Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
@@ -87,21 +74,22 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
 {
     for(const auto* program : {&m_copy, &m_maskCopy, &m_alpha, &m_blur, &m_wavyImage, &m_wavyText, &m_titleText, &m_disintegrate, &m_mirror, &m_zx, &m_button}) {
         glUseProgram(*program);
-        glUniform1i(program->uniform("uSrcTexture"), TexUnits::image_shader);
+        glUniform1i(program->uniform("uSrcTexture"), 0);
     }
 
     for(const auto* program : {&m_maskCopy, &m_mirror}) {
         glUseProgram(*program);
-        glUniform1i(program->uniform("uMaskTexture"), TexUnits::mask_shader);
+        glUniform1i(program->uniform("uMaskTexture"), 1);
     }
 
     glUseProgram(m_ycbcr);
-    glUniform1i(m_ycbcr.uniform("uCbTexture"), TexUnits::cb_shader);
-    glUniform1i(m_ycbcr.uniform("uCrTexture"), TexUnits::cr_shader);
+    glUniform1i(m_ycbcr.uniform("uCbTexture"), 1);
+    glUniform1i(m_ycbcr.uniform("uCrTexture"), 2);
 }
 #endif
 
-void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& target, const BaseProgram::Params& params, Shape shape) const {
+void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
+    const BaseProgram::Textures& textures) const {
 #ifdef FISH_FILLETS_USE_VULKAN
     const auto& display = system.display();
     const auto& commandBuffer = display.commandBuffer();
@@ -118,8 +106,8 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     };
     commandBuffer.pushConstants<BasePushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, constants);
 
-    if(params.texture) {
-        const auto& descriptorSet = params.texture->native().descriptorSet();
+    if(textures.size() == 1) { // TODO
+        const auto& descriptorSet = textures.begin()->get().native().descriptorSet();
         commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, {descriptorSet}, {});
     }
 
@@ -127,8 +115,14 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
     commandBuffer.draw(shape == Shape::rect ? 4 : 3, 1, 0, 0);
 #else
-    if(params.texture)
-        params.texture->bind();
+    int texIndex = 0;
+    for(auto ref : textures) {
+        glActiveTexture(GL_TEXTURE0 + texIndex);
+        glBindTexture(GL_TEXTURE_2D, ref.get().native());
+        texIndex++;
+    }
+    glActiveTexture(GL_TEXTURE0);
+
     glUseProgram(m_native);
     glUniform2f(m_native.uniform("uSrcSize"), params.srcSize.fx(), params.srcSize.fy());
     glUniform2f(m_native.uniform("uDstSize"), params.dstSize.fx(), params.dstSize.fy());
@@ -177,26 +171,26 @@ void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsSyste
     // TODO
 #else
     glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.gl().data());
-    glActiveTexture(TexUnits::mask_gl);
-    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glActiveTexture(TexUnits::image_gl);
+//    glActiveTexture(TexUnits::mask_gl);
+//    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // TODO
+//    glActiveTexture(TexUnits::image_gl);
 #endif
 }
 
-template<>
-void Program<Shaders::MirrorParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
-    glActiveTexture(TexUnits::mask_gl);
-    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glActiveTexture(TexUnits::image_gl);
-#endif
-}
+//template<>
+//void Program<Shaders::MirrorParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+//#ifdef FISH_FILLETS_USE_VULKAN
+//    // TODO
+//#else
+//    glActiveTexture(TexUnits::mask_gl);
+//    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // TODO
+//    glActiveTexture(TexUnits::image_gl);
+//#endif
+//}
 
 template<>
 void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
@@ -309,20 +303,6 @@ void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& sys
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uOffset"), m_params.offset);
-#endif
-}
-
-template<>
-void Program<Shaders::YCbCrParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
-    glActiveTexture(TexUnits::cb_gl);
-    glBindTexture(GL_TEXTURE_2D, m_params.texCb.native());
-    glActiveTexture(TexUnits::cr_gl);
-    glBindTexture(GL_TEXTURE_2D, m_params.texCr.native());
-    glActiveTexture(TexUnits::image_gl);
-    glBindTexture(GL_TEXTURE_2D, m_params.texY.native());
 #endif
 }
 

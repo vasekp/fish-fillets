@@ -168,11 +168,12 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 .src = FCoords{topLeft.fx() - size.fx(), topLeft.fy()},
                 .area = size
             });
-        const auto program = m_instance.graphics().shaders().mirror({
-            .maskImage = m_mirrorTarget->texture()
-        });
-        target.draw(mirror->anim().get(mirror->orientation())[0],
-            program, coords, { .dest = mirror->fxy() * size_unit });
+        const auto program = m_instance.graphics().shaders().mirror();
+        const auto* image = mirror->anim().get(mirror->orientation())[0];
+        target.draw({
+                image->texture(),
+                m_mirrorTarget->texture()
+            }, program, coords, { .dest = mirror->fxy() * size_unit });
     }
 }
 

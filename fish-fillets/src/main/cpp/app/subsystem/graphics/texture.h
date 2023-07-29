@@ -27,7 +27,6 @@ public:
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }
     const PlatformType& native() const { return m_native; }
-    void bind() const;
 };
 
 #endif //FISH_FILLETS_TEXTURE_H

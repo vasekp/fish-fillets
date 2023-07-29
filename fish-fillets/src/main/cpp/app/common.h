@@ -18,6 +18,7 @@
 #include <set>
 #include <tuple>
 #include <utility>
+#include <initializer_list>
 #include <memory>
 #include <algorithm>
 #include <numeric>

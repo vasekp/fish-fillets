@@ -190,11 +190,11 @@ bool WorldMap::own_key(Key key) {
 
 void WorldMap::drawMasked(DrawTarget& target, Color maskColor) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    const auto maskProgram = m_instance.graphics().shaders().maskCopy({
-        .maskColor = maskColor,
-        .maskImage = getImage("mask")->texture()
-    });
-    target.draw(getImage("masked"), maskProgram, coords);
+    const auto maskProgram = m_instance.graphics().shaders().maskCopy({ .maskColor = maskColor });
+    target.draw({
+        getImage("masked")->texture(),
+        getImage("mask")->texture()
+    }, maskProgram, coords);
 }
 
 void WorldMap::own_resume() {

@@ -19,11 +19,3 @@ Texture::Texture(GraphicsSystem& system, ICoords size) :
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
     Texture(PlatformType::fromImageData(system.display(), size.x, size.y, channels, data))
 { }
-
-void Texture::bind() const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
-    m_native.bind();
-#endif
-}

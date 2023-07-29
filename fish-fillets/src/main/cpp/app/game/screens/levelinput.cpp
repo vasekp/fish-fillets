@@ -288,7 +288,7 @@ void LevelInput::drawDirpad(DrawTarget& target) {
     for([[maybe_unused]] auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         program.params().direction = FCoords{dir};
         program.params().alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
-        target.draw(program, coords, {}, BaseProgram::Shape::triangle);
+        target.draw(BaseProgram::Shape::triangle, program, coords);
     }
 }
 

@@ -82,12 +82,10 @@ void IntroScreen::own_update() {
 void IntroScreen::own_draw(DrawTarget& target) {
     Log::verbose<Log::video>("drawing frame ", m_imgTime, " @ ", timeAlive());
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    const auto program = m_instance.graphics().shaders().YCbCr({
-        .texY = m_imgY.texture(),
-        .texCb = m_imgCb.texture(),
-        .texCr = m_imgCr.texture(),
-    });
-    target.draw(program, coords, { .area = Graphics::baseDim });
+    const auto program = m_instance.graphics().shaders().YCbCr();
+    target.draw({
+        m_imgY.texture(), m_imgCb.texture(), m_imgCr.texture()
+    }, program, coords);
 }
 
 bool IntroScreen::own_pointer(FCoords coords) {

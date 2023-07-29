@@ -11,10 +11,8 @@ protected:
     using PlatformType = ogl::Program;
 #endif
     const PlatformType& m_native;
-
 public:
     struct Params {
-        const Texture* texture{};
         FCoords src{};
         FCoords dest{};
         FCoords srcSize{};
@@ -28,6 +26,8 @@ public:
         rect,
         triangle
     };
+
+    using Textures = std::initializer_list<std::reference_wrapper<const Texture>>;
 
 #ifdef FISH_FILLETS_USE_VULKAN
     struct BasePushConstants {
@@ -45,7 +45,7 @@ public:
 
     BaseProgram(const PlatformType& native) : m_native(native) { }
 
-    void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape) const;
+    void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape, const Textures& textures) const;
 
 protected:
     virtual void own_params(GraphicsSystem& system) const { }
@@ -99,11 +99,6 @@ public:
 
     struct MaskCopyParams {
         Color maskColor;
-        const Texture& maskImage;
-    };
-
-    struct MirrorParams {
-        const Texture& maskImage;
     };
 
     struct FlatParams {
@@ -144,12 +139,6 @@ public:
         float offset;
     };
 
-    struct YCbCrParams {
-        const Texture& texY;
-        const Texture& texCb;
-        const Texture& texCr;
-    };
-
     struct ButtonParams {
         FCoords texSize;
         Color color;
@@ -168,7 +157,7 @@ public:
     BaseProgram copy() { return {m_copy}; }
     Program<MaskCopyParams> maskCopy(MaskCopyParams params) { return {m_maskCopy, params}; }
     BaseProgram reverse() { return {m_reverse}; }
-    Program<MirrorParams> mirror(MirrorParams params) { return {m_mirror, params}; }
+    BaseProgram mirror() { return {m_mirror}; }
     Program<AlphaParams> alpha(AlphaParams params) { return {m_alpha, params}; }
     Program<FlatParams> flat(FlatParams params) { return {m_flat, params}; }
     Program<BlurParams> blur(BlurParams params) { return {m_blur, params}; }
@@ -177,7 +166,7 @@ public:
     Program<WavyTextParams> wavyText(WavyTextParams params) { return {m_wavyText, params}; }
     Program<TitleTextParams> titleText(TitleTextParams params) { return {m_titleText, params}; }
     Program<ZXParams> ZX(ZXParams params) { return {m_zx, params}; }
-    Program<YCbCrParams> YCbCr(YCbCrParams params) { return {m_ycbcr, params}; }
+    BaseProgram YCbCr() { return {m_ycbcr}; }
     Program<ButtonParams> button(ButtonParams params) { return {m_button, params}; }
     Program<ArrowParams> arrow(ArrowParams params) { return {m_arrow, params}; }
 };

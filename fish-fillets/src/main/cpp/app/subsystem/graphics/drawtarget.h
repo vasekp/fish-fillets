@@ -15,13 +15,21 @@ public:
 
     void clear();
 
-    void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape = BaseProgram::Shape::rect);
-    void draw(const Texture& image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {}, BaseProgram::Shape shape = BaseProgram::Shape::rect);
-    void draw(const Image* image, const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {}, BaseProgram::Shape shape = BaseProgram::Shape::rect);
+    void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
+    void draw(BaseProgram::Shape shape,
+        const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
+    void draw(const Texture& image,
+        const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
+    void draw(const Image* image,
+        const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
+    void draw(BaseProgram::Textures textures,
+        const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
 
     virtual void bind() = 0;
 
 protected:
+    void drawMain(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape, const BaseProgram::Textures& textures);
+
     virtual bool flipY() const { return false; }
 };
 
