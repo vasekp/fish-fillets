@@ -4,46 +4,21 @@
 #include <ostream>
 #include <charconv>
 
-struct Color {
-    std::uint8_t r;
-    std::uint8_t g;
-    std::uint8_t b;
+struct alignas(8) vec2 {
+    std::array<float, 2> array;
 
-    template<typename T>
-    constexpr Color(T r, T g, T b) : r(r), g(g), b(b) { }
+    bool operator!() const { return array[0] == 0 && array[1] == 0; }
 
-    constexpr Color(std::uint32_t rgb) :
-            r(rgb >> 16),
-            g((rgb >> 8) & 0xFF),
-            b(rgb & 0xFF)
-    { }
-
-    constexpr std::uint32_t rgb() const {
-        return (r << 16) + (g << 8) + b;
-    }
-
-    constexpr float rf() const { return (float)r / 255.f; }
-    constexpr float rg() const { return (float)g / 255.f; }
-    constexpr float rb() const { return (float)b / 255.f; }
-
-    std::array<float, 4> gl(float alpha = 1.f) const {
-        return {alpha * rf(), alpha * rg(), alpha * rb(), alpha};
-    }
-
-    friend constexpr bool operator==(const Color& x, const Color& y) {
-        return x.r == y.r && x.g == y.g && x.b == y.b;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Color& color) {
-        std::array<char, 8> str{0, 0, 0, 0, 0, 0, 0, 0};
-        std::to_chars(str.begin(), &str[7], 0x1000000 + color.rgb(), 16);
-        return os << &str[1];
-    }
-
-    static const Color white;
+    operator const std::array<float, 2>&() const { return array; }
+    const float* data() const { return array.data(); }
 };
 
-inline constexpr Color Color::white{255, 255, 255};
+struct alignas(16) vec4 {
+    std::array<float, 4> array;
+
+    operator const std::array<float, 4>&() const { return array; }
+    const float* data() const { return array.data(); }
+};
 
 struct ICoords {
     int x;
@@ -105,6 +80,7 @@ public:
     constexpr float fx() const { return m_fx; }
     constexpr float fy() const { return m_fy; }
     operator std::pair<float, float>() const { return {m_fx, m_fy}; }
+    operator vec2() const { return {m_fx, m_fy}; }
 
     constexpr float norm2() const { return m_fx * m_fx + m_fy * m_fy; }
     constexpr float length() const { return std::sqrt(norm2()); }
@@ -134,7 +110,47 @@ public:
     explicit constexpr operator bool() const { return !!*this; }
 
     friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.m_fx << "," << coords.m_fy << "]"; }
-    std::array<float, 2> gl() const { return {m_fx, m_fy}; }
 };
+
+struct Color {
+    std::uint8_t r;
+    std::uint8_t g;
+    std::uint8_t b;
+
+    template<typename T>
+    constexpr Color(T r, T g, T b) : r(r), g(g), b(b) { }
+
+    constexpr Color(std::uint32_t rgb) :
+            r(rgb >> 16),
+            g((rgb >> 8) & 0xFF),
+            b(rgb & 0xFF)
+    { }
+
+    constexpr std::uint32_t rgb() const {
+        return (r << 16) + (g << 8) + b;
+    }
+
+    constexpr float rf() const { return (float)r / 255.f; }
+    constexpr float rg() const { return (float)g / 255.f; }
+    constexpr float rb() const { return (float)b / 255.f; }
+
+    vec4 gl(float alpha = 1.f) const {
+        return {alpha * rf(), alpha * rg(), alpha * rb(), alpha};
+    }
+
+    friend constexpr bool operator==(const Color& x, const Color& y) {
+        return x.r == y.r && x.g == y.g && x.b == y.b;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Color& color) {
+        std::array<char, 8> str{0, 0, 0, 0, 0, 0, 0, 0};
+        std::to_chars(str.begin(), &str[7], 0x1000000 + color.rgb(), 16);
+        return os << &str[1];
+    }
+
+    static const Color white;
+};
+
+inline constexpr Color Color::white{255, 255, 255};
 
 #endif //FISH_FILLETS_TYPES_H

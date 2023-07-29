@@ -124,11 +124,11 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     glActiveTexture(GL_TEXTURE0);
 
     glUseProgram(m_native);
-    glUniform2f(m_native.uniform("uSrcSize"), params.srcSize.fx(), params.srcSize.fy());
-    glUniform2f(m_native.uniform("uDstSize"), params.dstSize.fx(), params.dstSize.fy());
-    glUniform2f(m_native.uniform("uSrcOffset"), params.src.fx(), params.src.fy());
-    glUniform2f(m_native.uniform("uDstOffset"), params.dest.fx(), params.dest.fy());
-    glUniform2f(m_native.uniform("uArea"), params.area.fx(), params.area.fy());
+    glUniform2fv(m_native.uniform("uSrcSize"), 1, params.srcSize.data());
+    glUniform2fv(m_native.uniform("uDstSize"), 1, params.dstSize.data());
+    glUniform2fv(m_native.uniform("uSrcOffset"), 1, params.src.data());
+    glUniform2fv(m_native.uniform("uDstOffset"), 1, params.dest.data());
+    glUniform2fv(m_native.uniform("uArea"), 1, params.area.data());
     glUniform3f(m_native.uniform("uCoords"), params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale);
     glUniform2f(m_native.uniform("uSigns"), 1.f, params.flipY ? -1.f : 1.f);
 

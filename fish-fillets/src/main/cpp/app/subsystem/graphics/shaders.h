@@ -13,11 +13,11 @@ protected:
     const PlatformType& m_native;
 public:
     struct Params {
-        FCoords src{};
-        FCoords dest{};
-        FCoords srcSize{};
-        FCoords dstSize{};
-        FCoords area{};
+        vec2 src{};
+        vec2 dest{};
+        vec2 srcSize{};
+        vec2 dstSize{};
+        vec2 area{};
         Coords coords{};
         bool flipY{false};
     };
