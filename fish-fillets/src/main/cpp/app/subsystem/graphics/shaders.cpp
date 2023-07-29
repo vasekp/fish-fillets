@@ -169,7 +169,7 @@ void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsSyste
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
-    glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.gl().data());
+    glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.data());
 //    glActiveTexture(TexUnits::mask_gl);
 //    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
 //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO
@@ -200,7 +200,7 @@ void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& s
     } constants = { m_params.color.gl(m_params.alpha) };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 #endif
 }
 
@@ -209,7 +209,7 @@ void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsSystem& s
 #ifdef FISH_FILLETS_USE_VULKAN
     // TODO
 #else
-    glUniform2f(m_native.uniform("uDelta"), m_params.dir.fx(), m_params.dir.fy());
+    glUniform2fv(m_native.uniform("uDelta"), 1, m_params.dir.data());
 #endif
 }
 
@@ -262,8 +262,8 @@ void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSyste
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
-    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
+    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
+    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uTime"), m_params.time);
 #endif
 }
@@ -277,7 +277,7 @@ void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSyst
     } constants = { m_params.color.gl(m_params.alpha) };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 #endif
 }
 
@@ -298,8 +298,8 @@ void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& sys
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.gl().data());
-    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.gl().data());
+    glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
+    glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uOffset"), m_params.offset);
 #endif
@@ -318,8 +318,8 @@ void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem&
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
-    glUniform2f(m_native.uniform("uTexSize"), m_params.texSize.fx(), m_params.texSize.fy());
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
+    glUniform2fv(m_native.uniform("uTexSize"), 1, m_params.texSize.data());
 #endif
 }
 
@@ -342,10 +342,10 @@ void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& 
     };
     commandBuffer.pushConstants<PushConstants>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, constants);
 #else
-    glUniform2f(m_native.uniform("uPosition"), m_params.position.fx(), m_params.position.fy());
+    glUniform2fv(m_native.uniform("uPosition"), 1, m_params.position.data());
+    glUniform2fv(m_native.uniform("uDirection"), 1, m_params.direction.data());
     glUniform1f(m_native.uniform("uSize"), m_params.size);
-    glUniform2f(m_native.uniform("uDirection"), m_params.direction.fx(), m_params.direction.fy());
-    glUniform1f(m_native.uniform("uSign"), m_params.inwards ? -1.f : 1.f);
-    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.gl(m_params.alpha).data());
+    glUniform1f(m_native.uniform("uSign"), m_params.sign);
+    glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 #endif
 }

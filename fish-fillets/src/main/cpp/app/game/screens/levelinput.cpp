@@ -243,8 +243,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
     for(const auto& button : m_buttons) {
         const auto program = m_instance.graphics().shaders().button({
             .texSize = button.image.size(),
-            .color = colorButtons,
-            .alpha = button.alpha
+            .color = colorButtons.gl(button.alpha)
         });
         target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .srcSize = button.coordsTo - button.coordsFrom });
     }
@@ -278,16 +277,19 @@ void LevelInput::drawDirpad(DrawTarget& target) {
 
     auto& graphics = m_instance.graphics();
     const auto& coords = graphics.coords(Graphics::CoordSystems::buttons);
+    bool inwards = m_dirpad.state == DirpadState::goTo;
     auto program = graphics.shaders().arrow({
         .position = m_dirpad.state == DirpadState::goTo ? m_dirpad.gotoPos : m_dirpad.history.front().second,
         .size = arrowSize * coords.scale,
-        .inwards = m_dirpad.state == DirpadState::goTo,
-        .color = m_activeFish == Model::Fish::small ? colorSmall : colorBig,
+        .sign = inwards ? -1.f : 1.f
     });
+    auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
 
     for([[maybe_unused]] auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         program.params().direction = FCoords{dir};
-        program.params().alpha = ((m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo ? alphaActive : alphaBase) * baseAlpha;
+        bool active = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo;
+        float alpha = (active ? alphaActive : alphaBase) * baseAlpha;
+        program.params().color = color.gl(alpha);
         target.draw(BaseProgram::Shape::triangle, program, coords);
     }
 }

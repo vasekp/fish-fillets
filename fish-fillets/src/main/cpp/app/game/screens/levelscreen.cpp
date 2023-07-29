@@ -76,7 +76,7 @@ void LevelScreen::own_draw(DrawTarget& target) {
     drawLevel(target);
 
     if(m_flashAlpha > 0) {
-        const auto program = m_instance.graphics().shaders().flat({ .color = Color::white, .alpha = m_flashAlpha });
+        const auto program = m_instance.graphics().shaders().flat({ .color = Color::white.gl(m_flashAlpha) });
         const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
         target.draw(program, coords, { .area = m_winSize });
     }
@@ -109,7 +109,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
 
     target.draw(getImage("background"), wavyProgram, coords);
 
-    const auto ropeProgram = m_instance.graphics().shaders().flat({ .color = ropeColor });
+    const auto ropeProgram = m_instance.graphics().shaders().flat({ .color = ropeColor.gl() });
     for(const auto& rope : m_level.layout().getRopes()) {
         FCoords c1 = rope.m1->fxy() * size_unit + rope.d1;
         FCoords c2 = rope.m2->fxy() * size_unit + rope.d2;

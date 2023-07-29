@@ -66,8 +66,8 @@ void Subtitles::draw(DrawTarget& target, float time) {
     for(const auto& line : m_lines)
         if(line.live) {
             const auto program = m_instance.graphics().shaders().wavyText({
-                .color1 = line.color1,
-                .color2 = line.color2,
+                .color1 = line.color1.gl(),
+                .color2 = line.color2.gl(),
                 .time = time - line.addTime
             });
             auto size = line.image.size() / coords.scale;

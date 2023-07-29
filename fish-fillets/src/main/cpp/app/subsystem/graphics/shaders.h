@@ -97,16 +97,15 @@ public:
     };
 
     struct MaskCopyParams {
-        Color maskColor;
+        vec4 maskColor;
     };
 
     struct FlatParams {
-        Color color;
-        float alpha = 1.f;
+        vec4 color;
     };
 
     struct BlurParams {
-        FCoords dir;
+        vec2 dir;
     };
 
     struct DisintegrateParams {
@@ -120,37 +119,34 @@ public:
     };
 
     struct WavyTextParams {
-        Color color1;
-        Color color2;
+        vec4 color1;
+        vec4 color2;
         float time;
     };
 
     struct TitleTextParams {
-        FCoords blitSize;
-        Color color;
-        float alpha;
+        vec2 blitSize;
+        vec4 color;
     };
 
     struct ZXParams {
-        Color color1;
-        Color color2;
+        vec4 color1;
+        vec4 color2;
         float period;
         float offset;
     };
 
     struct ButtonParams {
-        FCoords texSize;
-        Color color;
-        float alpha;
+        vec2 texSize;
+        vec4 color;
     };
 
     struct ArrowParams {
-        FCoords position;
+        vec2 position;
+        vec2 direction = {};
         float size;
-        FCoords direction = {};
-        bool inwards;
-        Color color;
-        float alpha = 1.f;
+        float sign;
+        vec4 color;
     };
 
     BaseProgram copy() { return {m_copy}; }

@@ -13,8 +13,8 @@ ZXEffect::ZXEffect(Instance& instance) :
 
 void ZXEffect::render(DrawTarget& target, const Image* image) {
     const auto program = m_instance.graphics().shaders().ZX({
-        .color1 = colors[m_colors].first,
-        .color2 = colors[m_colors].second,
+        .color1 = colors[m_colors].first.gl(),
+        .color2 = colors[m_colors].second.gl(),
         .period = 2.f * m_stripHeight,
         .offset = m_stripOffset
     });
