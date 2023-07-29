@@ -12,8 +12,7 @@ void DrawTarget::drawMain(const BaseProgram& program,
     else if(!params.area)
         params.area = params.srcSize;
     params.dstSize = size();
-    params.coords = coords;
-    params.flipY = flipY();
+    params.coords = {coords.origin.fx(), coords.origin.fy(), coords.scale, flipY() ? -1.f : 1.f};
     program.run(m_system, *this, params, shape, textures);
 }
 

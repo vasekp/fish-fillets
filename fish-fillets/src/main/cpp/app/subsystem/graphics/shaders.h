@@ -18,8 +18,7 @@ public:
         vec2 srcSize{};
         vec2 dstSize{};
         vec2 area{};
-        Coords coords{};
-        bool flipY{false};
+        vec4 coords{};
     };
 
     enum class Shape {

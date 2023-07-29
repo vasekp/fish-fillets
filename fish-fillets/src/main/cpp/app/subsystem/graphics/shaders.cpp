@@ -129,8 +129,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     glUniform2fv(m_native.uniform("uSrcOffset"), 1, params.src.data());
     glUniform2fv(m_native.uniform("uDstOffset"), 1, params.dest.data());
     glUniform2fv(m_native.uniform("uArea"), 1, params.area.data());
-    glUniform3f(m_native.uniform("uCoords"), params.coords.origin.fx(), params.coords.origin.fy(), params.coords.scale);
-    glUniform2f(m_native.uniform("uSigns"), 1.f, params.flipY ? -1.f : 1.f);
+    glUniform4fv(m_native.uniform("uCoords"), 1, params.coords.data());
 
     own_params(system);
 

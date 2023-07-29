@@ -4,7 +4,7 @@ uniform sampler2D uSrcTexture;
 uniform vec2 uSrcSize;
 uniform vec4 uColor1;
 uniform vec4 uColor2;
-uniform vec3 uCoords;
+uniform vec4 uCoords;
 uniform float uTime;
 
 varying vec2 vDstCoords;
