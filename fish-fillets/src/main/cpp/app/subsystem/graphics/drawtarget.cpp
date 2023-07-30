@@ -27,7 +27,7 @@ void DrawTarget::draw(const Image* image,
 
 void DrawTarget::draw(const Texture& texture,
         const BaseProgram& program, const Coords& coords, BaseProgram::Params params) {
-    draw({texture}, program, coords, params);
+    draw(BaseProgram::Textures{texture}, program, coords, params);
 }
 
 void DrawTarget::draw(BaseProgram::Textures textures,

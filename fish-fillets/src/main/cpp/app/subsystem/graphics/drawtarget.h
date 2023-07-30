@@ -13,8 +13,6 @@ public:
     DrawTarget(GraphicsSystem& system) : m_system(system) { }
     virtual FCoords size() const = 0;
 
-    void clear();
-
     void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
     void draw(BaseProgram::Shape shape,
         const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});
