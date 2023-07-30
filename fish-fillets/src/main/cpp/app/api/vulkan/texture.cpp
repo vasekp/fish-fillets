@@ -7,6 +7,7 @@ struct TextureImpl {
     const vk::raii::Image image;
     const vk::raii::DeviceMemory memory;
     const vk::raii::ImageView imageView;
+    TextureType type;
     const vk::DescriptorSet* descriptorSet;
 };
 
@@ -18,7 +19,8 @@ Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, Te
         std::move(image),
         std::move(memory),
         std::move(imageView),
-        display.descriptors().allocDescriptorSet())},
+        type,
+        display.descriptors().allocDescriptorSet(type.binding()))},
     m_width(width), m_height(height)
 {
     const auto& sampler = type == TextureType::mask ? display.samplerNearest() : display.samplerLinear();
@@ -48,7 +50,7 @@ Texture& Texture::operator=(Texture&& other) {
 
 Texture::~Texture() {
     if(pImpl)
-        pImpl->display.descriptors().freeDescriptorSet(pImpl->descriptorSet);
+        pImpl->display.descriptors().freeDescriptorSet(pImpl->type.binding(), pImpl->descriptorSet);
 }
 
 Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t height) {

@@ -12,7 +12,7 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_copy{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/copy.spv")->read()}},
     m_maskCopy{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/mask-copy.spv")->read()}},
     m_alpha{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/alpha.spv")->read()}},
     m_reverse{system.display(), m_vert,
@@ -34,7 +34,7 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_zx{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/zx.spv")->read()}},
     m_ycbcr{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/ycbcr.spv")->read()}},
     m_button{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/button.spv")->read()}},
     m_arrow{system.display(),
@@ -102,10 +102,10 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
     commandBuffer.pushConstants<Params>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, params);
 
-    if(textures.size() == 1) { // TODO
-        const auto& descriptorSet = textures.begin()->get().native().descriptorSet();
-        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, {descriptorSet}, {});
-    }
+    std::vector<vk::DescriptorSet> descriptorSets{};
+    for(const auto texture : textures)
+        descriptorSets.push_back(texture.get().native().descriptorSet());
+    commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, descriptorSets, {});
 
     own_params(system);
 

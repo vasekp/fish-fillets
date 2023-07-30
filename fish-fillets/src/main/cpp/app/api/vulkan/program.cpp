@@ -21,8 +21,13 @@ vk::raii::PipelineLayout Program::createPipelineLayout(Display& display) {
     auto pushConstantRange = vk::PushConstantRange{}
             .setSize(maxPushConstantSize)
             .setStageFlags(vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment);
+    std::vector<vk::DescriptorSetLayout> setLayouts{{
+        display.descriptors().descriptorSetLayout(),
+        display.descriptors().descriptorSetLayout(),
+        display.descriptors().descriptorSetLayout()
+    }};
     return {display.device(), vk::PipelineLayoutCreateInfo{}
-            .setSetLayouts(display.descriptors().descriptorSetLayout()) // TODO
+            .setSetLayouts(setLayouts)
             .setPushConstantRanges(pushConstantRange)};
 }
 

@@ -28,6 +28,23 @@ struct TextureType {
                 std::unreachable();
         }
     }
+
+    int binding() const {
+        switch(type) {
+            case image:
+                return 0;
+            case mask:
+                return 1;
+            case channelY:
+                return 0;
+            case channelCb:
+                return 1;
+            case channelCr:
+                return 2;
+            default:
+                std::unreachable();
+        }
+    }
 };
 
 #endif //FISH_FILLETS_TEXTURE_TYPE_H
