@@ -147,140 +147,90 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 #endif
 }
 
+#ifdef FISH_FILLETS_USE_VULKAN
+template<typename SpecParams>
+void Program<SpecParams>::own_params(GraphicsSystem& system) const {
+    const auto& commandBuffer = system.display().commandBuffer();
+    commandBuffer.pushConstants<SpecParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
+}
+
+template class Program<Shaders::MaskCopyParams>;
+template class Program<Shaders::AlphaParams>;
+template class Program<Shaders::FlatParams>;
+template class Program<Shaders::BlurParams>;
+template class Program<Shaders::DisintegrateParams>;
+template class Program<Shaders::WavyImageParams>;
+template class Program<Shaders::WavyTextParams>;
+template class Program<Shaders::TitleTextParams>;
+template class Program<Shaders::ZXParams>;
+template class Program<Shaders::ButtonParams>;
+template class Program<Shaders::ArrowParams>;
+#else
+
 template<>
 void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::AlphaParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
-#endif
 }
 
 template<>
 void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
     glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.data());
-//    glActiveTexture(TexUnits::mask_gl);
-//    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // TODO
-//    glActiveTexture(TexUnits::image_gl);
-#endif
 }
-
-//template<>
-//void Program<Shaders::MirrorParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-//#ifdef FISH_FILLETS_USE_VULKAN
-//    // TODO
-//#else
-//    glActiveTexture(TexUnits::mask_gl);
-//    glBindTexture(GL_TEXTURE_2D, m_params.maskImage.native());
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // TODO
-//    glActiveTexture(TexUnits::image_gl);
-//#endif
-//}
 
 template<>
 void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::FlatParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
-#endif
 }
 
 template<>
 void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
     glUniform2fv(m_native.uniform("uDelta"), 1, m_params.dir.data());
-#endif
 }
 
 template<>
 void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::DisintegrateParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform1f(m_native.uniform("uTime"), m_params.time);
-#endif
 }
 
 template<>
 void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::WavyImageParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uPhase"), m_params.phase);
-#endif
 }
 
 template<>
 void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::WavyTextParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uTime"), m_params.time);
-#endif
 }
 
 template<>
 void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::TitleTextParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
-#endif
 }
 
 template<>
 void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::ZXParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uOffset"), m_params.offset);
-#endif
 }
 
 template<>
 void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::ButtonParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
     glUniform2fv(m_native.uniform("uTexSize"), 1, m_params.texSize.data());
-#endif
 }
 
 template<>
 void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& commandBuffer = system.display().commandBuffer();
-    commandBuffer.pushConstants<Shaders::ArrowParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-#else
     glUniform2fv(m_native.uniform("uPosition"), 1, m_params.position.data());
     glUniform2fv(m_native.uniform("uDirection"), 1, m_params.direction.data());
     glUniform1f(m_native.uniform("uSize"), m_params.size);
     glUniform1f(m_native.uniform("uSign"), m_params.sign);
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
-#endif
 }
+#endif
