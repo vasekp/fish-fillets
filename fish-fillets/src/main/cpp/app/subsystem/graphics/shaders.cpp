@@ -105,7 +105,8 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     std::vector<vk::DescriptorSet> descriptorSets{};
     for(const auto texture : textures)
         descriptorSets.push_back(texture.get().native().descriptorSet());
-    commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, descriptorSets, {});
+    if(!descriptorSets.empty())
+        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, descriptorSets, {});
 
     own_params(system);
 
