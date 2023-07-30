@@ -205,10 +205,10 @@ vk::raii::RenderPass Display::createRenderPass() {
             .setSubpasses(subpass)};
 }
 
-vk::raii::Sampler Display::createSamplerLinear() {
+vk::raii::Sampler Display::createSampler(vk::Filter filter) {
     return {m_device, vk::SamplerCreateInfo{}
-            .setMagFilter(vk::Filter::eLinear)
-            .setMinFilter(vk::Filter::eLinear)
+            .setMagFilter(filter)
+            .setMinFilter(filter)
             .setAddressModeU(vk::SamplerAddressMode::eClampToEdge)
             .setAddressModeV(vk::SamplerAddressMode::eClampToEdge)
             .setAnisotropyEnable(vk::False)

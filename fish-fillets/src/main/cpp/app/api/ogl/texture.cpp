@@ -2,12 +2,13 @@
 
 namespace ogl {
 
-    Texture::Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height) : m_ref(ref), m_width(width), m_height(height) {
+    Texture::Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height, TextureType type) : m_ref(ref), m_width(width), m_height(height) {
         glGenTextures(1, &m_name);
         Log::verbose<Log::graphics>("texture: generate ", m_name);
         bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        auto format = type == TextureType::mask ? GL_NEAREST : GL_LINEAR;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, format);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, format);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
@@ -19,10 +20,9 @@ namespace ogl {
         }
     }
 
-    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, int channels, void *data) {
-        assert(channels == 1 || channels == 4);
-        auto format = channels == 4 ? GL_RGBA : GL_LUMINANCE;
-        Texture ret{display.ref(), width, height};
+    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, TextureType type, void *data) {
+        auto format = type.channels() == 4 ? GL_RGBA : GL_LUMINANCE;
+        Texture ret{display.ref(), width, height, type};
         ret.bind();
         glTexImage2D(GL_TEXTURE_2D, 0, format, (GLsizei) width, (GLsizei) height, 0, format,
                      GL_UNSIGNED_BYTE, data);
@@ -30,7 +30,7 @@ namespace ogl {
     }
 
     Texture Texture::empty(const ogl::Display& display, GLuint width, GLuint height) {
-        Texture ret{display.ref(), width, height};
+        Texture ret{display.ref(), width, height, TextureType::image};
         ret.bind();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei) width, (GLsizei) height, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, nullptr);

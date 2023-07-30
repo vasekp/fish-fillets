@@ -10,7 +10,7 @@ WorldMap::WorldMap(Instance& instance) :
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
     addImage("images/menu/map.png", "background");
-    addImage("images/menu/map_mask.png", "mask");
+    addImage("images/menu/map_mask.png", "mask", TextureType::mask);
     addImage("images/menu/map_lower.png", "masked");
     addImage("images/menu/loading.png", "loading");
     for(int i = 0; i < 5; i++) {

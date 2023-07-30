@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_OGL_TEXTURE_H
 #define FISH_FILLETS_OGL_TEXTURE_H
 
+#include "subsystem/graphics/texturetype.h"
+
 namespace ogl {
 
     class Texture {
@@ -10,7 +12,7 @@ namespace ogl {
         GLuint m_height;
 
     public:
-        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, int channels, void *data);
+        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, TextureType type, void *data);
         static Texture empty(const ogl::Display& display, GLuint width, GLuint height);
 
         Texture() = default;
@@ -27,7 +29,7 @@ namespace ogl {
         void bind() const;
 
     private:
-        Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height);
+        Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height, TextureType type);
     };
 
 }

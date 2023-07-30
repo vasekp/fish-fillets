@@ -35,7 +35,7 @@ public:
 protected:
     GameScreen(Instance& instance);
 
-    const Image* addImage(const std::string& path, const std::string& name = "");
+    const Image* addImage(const std::string& path, const std::string& name = "", TextureType type = TextureType::image);
     const Image* replaceImage(const std::string& name, const std::string& path);
     const Image* getImage(const std::string& name);
 

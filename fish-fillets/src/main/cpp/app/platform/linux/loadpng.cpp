@@ -5,7 +5,7 @@
 #include <csetjmp>
 
 namespace decoders {
-    Texture png(Instance& instance, const std::string& filename) {
+    Texture png(Instance& instance, const std::string& filename, TextureType type) {
         auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
         std::array<png_byte, 8> header;
 
@@ -64,6 +64,6 @@ namespace decoders {
             data_rgba[p] = std::array{r, g, b, a};
         }
 
-        return Texture(instance.graphics().system(), data.get(), {(int)width, (int)height});
+        return Texture(instance.graphics().system(), data.get(), {(int)width, (int)height}, type);
     }
 }

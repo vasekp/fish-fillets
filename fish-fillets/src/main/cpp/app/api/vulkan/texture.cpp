@@ -10,7 +10,7 @@ struct TextureImpl {
     const vk::DescriptorSet* descriptorSet;
 };
 
-Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height,
+Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, TextureType type,
         vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
         vk::raii::ImageView&& imageView) :
     pImpl{std::make_unique<TextureImpl>(
@@ -21,11 +21,12 @@ Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height,
         display.descriptors().allocDescriptorSet())},
     m_width(width), m_height(height)
 {
-    const auto& descriptorSet = *pImpl->descriptorSet;
+    const auto& sampler = type == TextureType::mask ? display.samplerNearest() : display.samplerLinear();
     auto imageInfo = vk::DescriptorImageInfo{}
         .setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal)
         .setImageView(*pImpl->imageView)
-        .setSampler(display.samplerLinear()); // TODO
+        .setSampler(sampler);
+    const auto& descriptorSet = *pImpl->descriptorSet;
     auto dWrite = vk::WriteDescriptorSet{}
         .setDstSet(descriptorSet)
         .setDstBinding(0)
@@ -51,11 +52,11 @@ Texture::~Texture() {
 }
 
 Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t height) {
-    return fromImageData(display, width, height, 4, nullptr);
+    return fromImageData(display, width, height, TextureType::image, nullptr);
 }
 
-Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data) {
-    auto format = channels == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
+Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, void *data) {
+    auto format = type.channels() == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
         .setExtent({width, height, 1})
@@ -81,7 +82,7 @@ Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint3
     auto& commandBuffer = display.commandBuffer();
 
     if(data) {
-        auto byteSize = width * height * channels;
+        auto byteSize = width * height * type.channels();
 
         vk::raii::Buffer stagingBuffer{display.device(), vk::BufferCreateInfo{}
                 .setUsage(vk::BufferUsageFlagBits::eTransferSrc)
@@ -144,7 +145,7 @@ Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint3
         display.queue().waitIdle();
     }
 
-    return Texture{display, width, height, std::move(image), std::move(deviceMemory), std::move(imageView)};
+    return Texture{display, width, height, type, std::move(image), std::move(deviceMemory), std::move(imageView)};
 }
 
 const vk::Image& Texture::image() const {

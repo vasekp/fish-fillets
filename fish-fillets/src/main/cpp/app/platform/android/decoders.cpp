@@ -10,7 +10,7 @@
 static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename);
 
 namespace decoders {
-    Texture png(Instance& instance, const std::string& filename0) {
+    Texture png(Instance& instance, const std::string& filename0, TextureType type) {
         auto filename = dynamic_cast<SystemFile&>(*instance.files().system(filename0)).path();
         Log::debug<Log::graphics>("Load PNG ", filename);
         auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
@@ -27,7 +27,7 @@ namespace decoders {
             Log::fatal("bitmap data null (", filename, ")");
         if(stride != 4 * width)
             Log::error("PNG: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
-        auto ret = Texture(instance.graphics().system(), pixels, {width, height});
+        auto ret = Texture(instance.graphics().system(), pixels, {width, height}, type);
         AndroidBitmap_unlockPixels(jni, jBitmap);
         jni->DeleteLocalRef(jPath);
         jni->DeleteLocalRef(jBitmap);

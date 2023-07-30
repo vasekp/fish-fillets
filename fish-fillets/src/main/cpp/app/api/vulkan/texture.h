@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_VULKAN_TEXTURE_H
 #define FISH_FILLETS_VULKAN_TEXTURE_H
 
+#include "subsystem/graphics/texturetype.h"
+
 namespace vulkan {
 
 struct TextureImpl;
@@ -12,7 +14,7 @@ class Texture {
 
 public:
     static Texture empty(vulkan::Display& display, std::uint32_t width, std::uint32_t height);
-    static Texture fromImageData(vulkan::Display& display, std::uint32_t width, std::uint32_t height, int channels, void *data);
+    static Texture fromImageData(vulkan::Display& display, std::uint32_t width, std::uint32_t height, TextureType type, void *data);
 
     Texture(Texture&&);
     Texture& operator=(Texture&&);
@@ -27,7 +29,7 @@ public:
     const vk::DescriptorSet& descriptorSet() const;
 
 private:
-    Texture(vulkan::Display& display, std::uint32_t width, std::uint32_t height,
+    Texture(vulkan::Display& display, std::uint32_t width, std::uint32_t height, TextureType type,
         vk::raii::Image&& image, vk::raii::DeviceMemory&& memory, vk::raii::ImageView&& imageView);
 };
 

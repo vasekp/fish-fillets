@@ -20,12 +20,14 @@ Image::~Image() noexcept {
     m_instance.get().graphics().unregImage(this);
 }
 
-PNGImage::PNGImage(Instance& instance, std::string filename) : Image(instance), m_filename(std::move(filename)) {
+PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
+    Image(instance), m_filename(std::move(filename)), m_type(type)
+{
     init();
 }
 
 void PNGImage::render() {
-    m_texture = decoders::png(m_instance, m_filename);
+    m_texture = decoders::png(m_instance, m_filename, m_type);
 }
 
 TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
@@ -38,10 +40,10 @@ void TextImage::render() {
     m_texture = m_font.get().renderText(m_text);
 }
 
-BufferImage::BufferImage(Instance& instance, ICoords size, int channels, void* data) :
-    Image(instance), m_size(size), m_channels(channels)
+BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, void* data) :
+    Image(instance), m_size(size), m_type(type)
 {
-    auto byteSize = size.x * size.y * channels;
+    auto byteSize = size.x * size.y * type.channels();
     m_data.resize(byteSize);
     if(data)
         std::memcpy(m_data.data(), data, byteSize);
@@ -49,7 +51,7 @@ BufferImage::BufferImage(Instance& instance, ICoords size, int channels, void* d
 }
 
 void BufferImage::render() {
-    m_texture = Texture(m_instance.get().graphics().system(), m_data.data(), m_size, m_channels);
+    m_texture = Texture(m_instance.get().graphics().system(), m_data.data(), m_size, m_type);
 }
 
 void BufferImage::replace(void* data) {

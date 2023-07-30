@@ -5,12 +5,12 @@ GameScreen::GameScreen(Instance &instance) :
     m_running(false)
 { }
 
-const Image* GameScreen::addImage(const std::string& filename, const std::string& name) {
+const Image* GameScreen::addImage(const std::string& filename, const std::string& name, TextureType type) {
     const std::string key = name.empty() ? filename : name;
     if(m_images.contains(key))
         return &m_images.at(key);
     else {
-        auto[iterator, _] = m_images.try_emplace(key, m_instance, filename);
+        auto[iterator, _] = m_images.try_emplace(key, m_instance, filename, type);
         return &iterator->second;
     }
 }

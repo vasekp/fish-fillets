@@ -9,9 +9,9 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_vorbis(m_ogg),
     m_theora(m_ogg),
     m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music)),
-    m_imgY(instance, {640, 480}, 1, nullptr),
-    m_imgCb(instance, {320, 240}, 1, nullptr),
-    m_imgCr(instance, {320, 240}, 1, nullptr),
+    m_imgY(instance, {640, 480}, TextureType::channelY, nullptr),
+    m_imgCb(instance, {320, 240}, TextureType::channelCb, nullptr),
+    m_imgCr(instance, {320, 240}, TextureType::channelCr, nullptr),
     m_imgTime(-1.f)
 {
     auto& info = m_theora.info();

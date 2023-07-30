@@ -16,6 +16,6 @@ Texture::Texture(GraphicsSystem& system, ICoords size) :
     Texture(system, size, size)
 { }
 
-Texture::Texture(GraphicsSystem& system, void *data, ICoords size, int channels) :
-    Texture(PlatformType::fromImageData(system.display(), size.x, size.y, channels, data))
+Texture::Texture(GraphicsSystem& system, void *data, ICoords size, TextureType type) :
+    Texture(PlatformType::fromImageData(system.display(), size.x, size.y, type, data))
 { }

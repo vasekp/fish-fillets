@@ -9,6 +9,7 @@
 #include "api/ogl.h"
 #endif
 
+#include "graphics/texturetype.h"
 #include "graphics/texture.h"
 #include "graphics/image.h"
 #include "graphics/coords.h"
@@ -69,7 +70,7 @@ private:
 };
 
 namespace decoders {
-    Texture png(Instance& instance, const std::string& filename);
+    Texture png(Instance& instance, const std::string& filename, TextureType type);
     std::unique_ptr<IFont> ttf(Instance& instance, const std::string& filename);
 }
 

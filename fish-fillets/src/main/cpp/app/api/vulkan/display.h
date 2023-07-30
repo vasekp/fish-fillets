@@ -20,6 +20,7 @@ class Display {
     vk::raii::RenderPass m_renderPass;
     DescriptorPool m_descriptorPool;
     vk::raii::Sampler m_samplerLinear;
+    vk::raii::Sampler m_samplerNearest;
     vk::SwapchainCreateInfoKHR m_swapchainInfo;
     vk::raii::SwapchainKHR m_swapchain;
     std::vector<vk::Image> m_swapchainImages;
@@ -40,7 +41,8 @@ public:
         m_commandBuffers{createCommandBuffers()},
         m_renderPass{createRenderPass()},
         m_descriptorPool{m_device},
-        m_samplerLinear{createSamplerLinear()},
+        m_samplerLinear{createSampler(vk::Filter::eLinear)},
+        m_samplerNearest{createSampler(vk::Filter::eNearest)},
         m_swapchainInfo{createSwapchainInfo()},
         m_swapchain{m_device, m_swapchainInfo},
         m_swapchainImages{m_swapchain.getImages()}
@@ -58,6 +60,7 @@ public:
     const auto& commandBuffer() const { return *m_commandBuffers[0]; }
     const auto& renderPass() const { return *m_renderPass; }
     const auto& samplerLinear() const { return *m_samplerLinear; }
+    const auto& samplerNearest() const { return *m_samplerNearest; }
     auto& descriptors() { return m_descriptorPool; }
     const auto& swapchain() const { return m_swapchain; }
     const auto& swapchainImages() const { return m_swapchainImages; }
@@ -77,7 +80,7 @@ private:
     vk::raii::CommandPool createCommandPool();
     vk::raii::CommandBuffers createCommandBuffers();
     vk::raii::RenderPass createRenderPass();
-    vk::raii::Sampler createSamplerLinear();
+    vk::raii::Sampler createSampler(vk::Filter filter);
     vk::SwapchainCreateInfoKHR createSwapchainInfo(vk::SwapchainKHR old = nullptr);
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

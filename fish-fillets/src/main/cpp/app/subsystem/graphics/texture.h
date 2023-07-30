@@ -22,7 +22,7 @@ public:
     Texture(PlatformType&& texture);
     Texture(GraphicsSystem& system, ICoords size);
     Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize);
-    Texture(GraphicsSystem& system, void *data, ICoords size, int channels = 4);
+    Texture(GraphicsSystem& system, void *data, ICoords size, TextureType = TextureType::image);
 
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }

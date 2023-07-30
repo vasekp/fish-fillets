@@ -24,9 +24,10 @@ private:
 
 class PNGImage : public Image {
     std::string m_filename;
+    TextureType m_type;
 
 public:
-    PNGImage(Instance& instance, std::string filename);
+    PNGImage(Instance& instance, std::string filename, TextureType type = TextureType::image);
     PNGImage(PNGImage&&) = default;
     PNGImage& operator=(PNGImage&&) = default;
 
@@ -52,11 +53,11 @@ public:
 
 class BufferImage : public Image {
     ICoords m_size;
-    int m_channels;
+    TextureType m_type;
     std::vector<std::byte> m_data;
 
 public:
-    BufferImage(Instance& instance, ICoords size, int channels, void* data);
+    BufferImage(Instance& instance, ICoords size, TextureType type, void* data);
     BufferImage(BufferImage&&) = default;
     BufferImage& operator=(BufferImage&&) = default;
 
