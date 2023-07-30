@@ -6,7 +6,7 @@
 #include <vulkan/vulkan_raii.hpp>
 
 namespace vulkan {
-    constexpr bool useValidation = true;
+    constexpr bool useValidation = false;
 
     constexpr auto baseRange = vk::ImageSubresourceRange{}
         .setAspectMask(vk::ImageAspectFlagBits::eColor)

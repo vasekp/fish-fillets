@@ -24,23 +24,6 @@ static const std::vector<const char*> layers = useValidation
         ? std::vector<const char*>{"VK_LAYER_KHRONOS_validation"}
         : std::vector<const char*>{};
 
-// from constructor
-#if 0
-    vk::raii::Queue graphicsQueue{device, inst.queueFamily, 0};
-    vk::raii::Queue presentationQueue{device, inst.queueFamily, 0};
-#endif
-
-// from constructor
-#if 0
-    for(auto i = 0u; i < m_memoryProperties.memoryTypeCount; i++) {
-        const auto& memoryType = m_memoryProperties.memoryTypes[i];
-        auto j = memoryType.heapIndex;
-        const auto& heap = m_memoryProperties.memoryHeaps[j];
-        Log::info<Log::graphics>("Memory type ", i, ": ", vk::to_string(memoryType.propertyFlags),
-            ", heap index ", j, " (", heap.size/1024./1024./1024., "GB, ", vk::to_string(heap.flags), ")");
-    }
-#endif
-
 vk::raii::Instance Display::createInstance() {
     for(const auto& layerName : layers)
         if(!contains(m_context.enumerateInstanceLayerProperties(), layerName))
@@ -57,7 +40,7 @@ vk::raii::Instance Display::createInstance() {
                     .setPEnabledExtensionNames(extensions),
             debugUtilsInfo};
     if constexpr(!useValidation)
-        instanceInfo.unlink<decltype(debugUtilsInfo)>();
+        instanceInfo.unlink<std::remove_const_t<decltype(debugUtilsInfo)>>();
     return {m_context, instanceInfo.get<vk::InstanceCreateInfo>()};
 }
 
@@ -286,17 +269,6 @@ vk::raii::DeviceMemory Display::allocMemory(const Target& target, vk::MemoryProp
 
 template vk::raii::DeviceMemory Display::allocMemory(const vk::raii::Buffer&, vk::MemoryPropertyFlags) const;
 template vk::raii::DeviceMemory Display::allocMemory(const vk::raii::Image&, vk::MemoryPropertyFlags) const;
-
-#if 0
-template<typename Target, typename Data>
-vk::raii::DeviceMemory Display::allocFillMemory(const Target& target, const Data& data) {
-    auto memory = allocMemory(target, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-    auto mmap = memory.mapMemory(0, sizeof(data), {});
-    std::memcpy(mmap, data.data(), sizeof(data));
-    memory.unmapMemory();
-    return memory;
-}
-#endif
 
 VKAPI_ATTR VkBool32 VKAPI_CALL Display::debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
