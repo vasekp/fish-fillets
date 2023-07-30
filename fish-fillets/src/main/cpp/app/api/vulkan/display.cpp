@@ -197,12 +197,20 @@ vk::raii::RenderPass Display::createRenderPass() {
     auto colorAttachmentRef = vk::AttachmentReference{}
             .setAttachment(0)
             .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
+    auto dependency = vk::SubpassDependency{}
+            .setSrcSubpass(vk::SubpassExternal)
+            .setDstSubpass(0)
+            .setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput)
+            .setDstStageMask(vk::PipelineStageFlagBits::eFragmentShader)
+            .setSrcAccessMask(vk::AccessFlagBits::eColorAttachmentWrite)
+            .setDstAccessMask(vk::AccessFlagBits::eShaderRead);
     auto subpass = vk::SubpassDescription{}
             .setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
             .setColorAttachments(colorAttachmentRef);
     return {m_device, vk::RenderPassCreateInfo{}
             .setAttachments(colorAttachment)
-            .setSubpasses(subpass)};
+            .setSubpasses(subpass)
+            .setDependencies(dependency)};
 }
 
 vk::raii::Sampler Display::createSampler(vk::Filter filter) {
