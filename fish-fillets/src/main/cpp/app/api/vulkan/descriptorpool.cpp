@@ -2,6 +2,8 @@
 
 namespace vulkan {
 
+static constexpr std::array<std::size_t, 3> maxDescriptors = {500, 2, 1};
+
 DescriptorPool::DescriptorPool(const vk::raii::Device& device) :
     m_descriptorPool{createDescriptorPool(device)},
     m_descriptorSetLayout{createDescriptorSetLayout(device)},

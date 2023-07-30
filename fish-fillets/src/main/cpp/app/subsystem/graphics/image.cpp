@@ -56,5 +56,6 @@ void BufferImage::render() {
 
 void BufferImage::replace(void* data) {
     std::memcpy(m_data.data(), data, m_data.size());
-    render();
+    if(m_texture)
+        m_texture->replaceData(data);
 }

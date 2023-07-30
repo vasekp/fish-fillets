@@ -15,7 +15,7 @@ struct TextureType {
     TextureType(Type t) : type(t) { }
     operator Type() const { return type; }
 
-    int channels() const {
+    unsigned channels() const {
         switch(type) {
             case image:
             case mask:

@@ -19,3 +19,7 @@ Texture::Texture(GraphicsSystem& system, ICoords size) :
 Texture::Texture(GraphicsSystem& system, void *data, ICoords size, TextureType type) :
     Texture(PlatformType::fromImageData(system.display(), size.x, size.y, type, data))
 { }
+
+void Texture::replaceData(void* data) {
+    m_native.replaceData(data);
+}

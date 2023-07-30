@@ -22,11 +22,13 @@ public:
     Texture(PlatformType&& texture);
     Texture(GraphicsSystem& system, ICoords size);
     Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize);
-    Texture(GraphicsSystem& system, void *data, ICoords size, TextureType = TextureType::image);
+    Texture(GraphicsSystem& system, void* data, ICoords size, TextureType = TextureType::image);
 
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }
     const PlatformType& native() const { return m_native; }
+
+    void replaceData(void* data);
 };
 
 #endif //FISH_FILLETS_TEXTURE_H

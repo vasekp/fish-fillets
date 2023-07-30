@@ -10,7 +10,7 @@ set(VORBIS_DIR deps/vorbis)
 set(THEORA_DIR deps/theora)
 set(LUA_DIR deps/lua)
 
-set(GRAPHICS Vulkan)
+set(GRAPHICS OpenGL)
 
 set(fillets_sources
         "${FILLETS_DIR}/instance.cpp"

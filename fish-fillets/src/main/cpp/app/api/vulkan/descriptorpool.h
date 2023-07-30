@@ -4,8 +4,6 @@
 namespace vulkan {
 
 class DescriptorPool {
-    static constexpr std::array<std::size_t, 3> maxDescriptors = {500, 2, 2};
-
     vk::raii::DescriptorPool m_descriptorPool;
     vk::raii::DescriptorSetLayout m_descriptorSetLayout;
     std::array<vk::raii::DescriptorSets, 3> m_descriptorSets;
