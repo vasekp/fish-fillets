@@ -88,15 +88,32 @@ void GraphicsSystem::newFrame() {
     m_offscreenTarget.bind();
     glClear(GL_COLOR_BUFFER_BIT);
 #endif
+    m_curTarget = &m_offscreenTarget;
 }
 
 void GraphicsSystem::bind(DrawTarget* target) {
+    if(target == m_curTarget)
+        return;
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = m_display.commandBuffer();
+    commandBuffer.endRenderPass();
+
+    TextureTarget* ttarget = dynamic_cast<TextureTarget*>(target);
+
+    auto size = FCoords{ttarget->texture().physSize()};
+    commandBuffer.beginRenderPass(vk::RenderPassBeginInfo{}
+                .setRenderPass(m_display.renderPass())
+                .setFramebuffer(ttarget->framebuffer())
+                .setRenderArea({{}, {(std::uint32_t)size.x(), (std::uint32_t)size.y()}}),
+            vk::SubpassContents::eInline);
+    vk::Viewport viewport{0.f, 0.f, size.fx(), size.fy(), 0.f, 1.f};
+    vk::Rect2D fullRect{{}, {(std::uint32_t)size.x(), (std::uint32_t)size.y()}};
+    commandBuffer.setViewport(0, viewport);
+    commandBuffer.setScissor(0, fullRect);
 #else
-    if(target != m_curTarget)
-        target->bind();
+    target->bind();
 #endif
+    m_curTarget = target;
 }
 
 void GraphicsSystem::setViewport(ICoords origin, ICoords size) {
@@ -173,7 +190,7 @@ void GraphicsSystem::present(TextureTarget& target) {
             {}, {}, {}, {frameT2Pbarrier, offscreenT2Sbarrier});
     commandBuffer.end();
 
-    vk::PipelineStageFlags waitStage = vk::PipelineStageFlagBits::eTopOfPipe; // TODO "Subpass Dependencies"
+    vk::PipelineStageFlags waitStage = vk::PipelineStageFlagBits::eTopOfPipe;
     auto submitInfo = vk::SubmitInfo{}
             .setWaitSemaphores(*m_platform->imageAvailableSemaphore)
             .setWaitDstStageMask(waitStage)

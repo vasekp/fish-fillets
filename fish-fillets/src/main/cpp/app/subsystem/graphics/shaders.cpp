@@ -18,11 +18,11 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
     m_reverse{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/reverse.spv")->read()}},
     m_mirror{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/mirror.spv")->read()}},
     m_flat{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}},
     m_blur{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}}, // TODO
+        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/blur.spv")->read()}},
     m_disintegrate{system.display(), m_vert,
         vulkan::Shader{system.display(), instance.files().system("shader/vulkan/disintegrate.spv")->read()}},
     m_wavyImage{system.display(), m_vert,
