@@ -8,7 +8,7 @@ Framebuffer::Framebuffer(const vulkan::Display& display, const Texture& texture)
 { }
 
 void Framebuffer::bind() {
-    // TODO
+    std::unreachable();
 }
 
 void Framebuffer::texture(const Texture& texture) {

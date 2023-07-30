@@ -99,7 +99,6 @@ void GraphicsSystem::bind(DrawTarget* target) {
     commandBuffer.endRenderPass();
 
     TextureTarget* ttarget = dynamic_cast<TextureTarget*>(target);
-
     auto size = FCoords{ttarget->texture().physSize()};
     commandBuffer.beginRenderPass(vk::RenderPassBeginInfo{}
                 .setRenderPass(m_display.renderPass())
@@ -118,17 +117,19 @@ void GraphicsSystem::bind(DrawTarget* target) {
 
 void GraphicsSystem::setViewport(ICoords origin, ICoords size) {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    // not needed
 #else
     m_display.setViewport(origin, size);
 #endif
 }
 
 void GraphicsSystem::setScissor(ICoords from, ICoords to) {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
-#else
     ICoords size = to - from;
+#ifdef FISH_FILLETS_USE_VULKAN
+    const auto& commandBuffer = m_display.commandBuffer();
+    vk::Rect2D rect{{from.x, from.y}, {(std::uint32_t)size.x, (std::uint32_t)size.y}};
+    commandBuffer.setScissor(0, rect);
+#else
     glScissor(from.x, from.y, size.x, size.y);
     glEnable(GL_SCISSOR_TEST);
 #endif
@@ -136,7 +137,9 @@ void GraphicsSystem::setScissor(ICoords from, ICoords to) {
 
 void GraphicsSystem::releaseScissor() {
 #ifdef FISH_FILLETS_USE_VULKAN
-    // TODO
+    const auto& commandBuffer = m_display.commandBuffer();
+    vk::Rect2D fullRect{{}, {m_display.width(), m_display.height()}};
+    commandBuffer.setScissor(0, fullRect);
 #else
     glDisable(GL_SCISSOR_TEST);
 #endif
