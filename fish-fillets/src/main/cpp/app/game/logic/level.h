@@ -121,7 +121,7 @@ private:
     bool demo_state();
     void slideshow_enter();
     void slideshow_exit();
-    void slide_display(const std::string& filename);
+    void slide_display(const std::string& filename, int x, int y);
     void game_setRoomWaves(float amplitude, float period, float speed);
     int game_addModel(const std::string& type, int x, int y, const std::string& shape);
     int game_getCycles();

@@ -39,7 +39,8 @@ namespace ogl {
         m_ref(std::move(other.m_ref)),
         m_name(other.m_name),
         m_width(other.m_width),
-        m_height(other.m_height)
+        m_height(other.m_height),
+        m_channels(other.m_channels)
     {
         other.m_name = 0;
     }
@@ -49,6 +50,7 @@ namespace ogl {
         std::swap(m_name, other.m_name);
         m_width = other.m_width;
         m_height = other.m_height;
+        m_channels = other.m_channels;
         return *this;
     }
 

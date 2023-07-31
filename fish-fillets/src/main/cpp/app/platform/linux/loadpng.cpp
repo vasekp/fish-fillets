@@ -5,7 +5,7 @@
 #include <csetjmp>
 
 namespace decoders {
-    Texture png(Instance& instance, const std::string& filename, TextureType type) {
+    ImageData png(Instance& instance, const std::string& filename) {
         auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
         std::array<png_byte, 8> header;
 
@@ -45,11 +45,11 @@ namespace decoders {
         auto stride = png_get_rowbytes(png_ptr, info_ptr);
         if(stride != 4 * width)
             Log::error(filename, ": width = ", width, " but stride = ", stride);
-        auto data = std::make_unique<png_byte[]>(height * stride);
+        auto data = std::make_unique<std::byte[]>(height * stride);
 
         auto row_pointers = std::make_unique<png_bytep[]>(height);
         for(auto y = 0u; y < height; y++)
-            row_pointers[y] = data.get() + y * stride;
+            row_pointers[y] = reinterpret_cast<png_bytep>(data.get() + y * stride);
 
         png_read_image(png_ptr, row_pointers.get());
         std::fclose(fp);
@@ -64,6 +64,6 @@ namespace decoders {
             data_rgba[p] = std::array{r, g, b, a};
         }
 
-        return Texture(instance.graphics().system(), data.get(), {(int)width, (int)height}, type);
+        return {width, height, std::move(data)};
     }
 }

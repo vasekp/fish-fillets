@@ -27,7 +27,8 @@ PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
 }
 
 void PNGImage::render() {
-    m_texture = decoders::png(m_instance, m_filename, m_type);
+    auto [width, height, data] = decoders::png(m_instance, m_filename);
+    m_texture = Texture{m_instance.get().graphics().system(), data.get(), {(int)width, (int)height}, m_type};
 }
 
 TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
@@ -57,5 +58,32 @@ void BufferImage::render() {
 void BufferImage::replace(void* data) {
     std::memcpy(m_data.data(), data, m_data.size());
     if(m_texture)
-        m_texture->replaceData(data);
+        m_texture->replaceData(m_data.data());
+}
+
+void BufferImage::compose(ImageData& picture, ICoords origin) {
+    assert(m_type == TextureType::image);
+    auto corner = origin + ICoords{(int)picture.width, (int)picture.height};
+    if(corner.x > m_size.x || corner.y > m_size.y) {
+        Log::error("BufferImage::compose picture does not fit");
+        return;
+    }
+    using rgba = std::array<std::uint8_t, 4>;
+    auto src = reinterpret_cast<rgba*>(picture.data.get());
+    auto dst = reinterpret_cast<rgba*>(m_data.data());
+    rgba *srcStart = src;
+    rgba *dstStart = dst + origin.y * m_size.x + origin.x;
+    for(auto y = 0u; y < picture.height; y++) {
+        rgba *srcPtr = srcStart, *dstPtr = dstStart;
+        for(auto x = 0u; x < picture.width; x++) {
+            if((*srcPtr)[3] != 0)
+                *dstPtr = *srcPtr;
+            srcPtr++;
+            dstPtr++;
+        }
+        dstStart += m_size.x;
+        srcStart += picture.width;
+    }
+    if(m_texture)
+        m_texture->replaceData(m_data.data());
 }

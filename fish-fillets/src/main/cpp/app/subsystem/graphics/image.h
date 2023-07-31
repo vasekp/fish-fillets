@@ -9,10 +9,11 @@ protected:
     Image(Instance& instance) : m_instance(instance), m_texture() { }
     Image(Image&&) noexcept;
     Image& operator=(Image&&) noexcept;
-    virtual ~Image() noexcept;
     void init(); // Must be called at the end of derived classes' constructors.
 
 public:
+    virtual ~Image() noexcept;
+
     const auto& texture() const { return *m_texture; }
     FCoords size() const { return m_texture->logSize(); }
 
@@ -51,6 +52,12 @@ public:
     void render() override;
 };
 
+struct ImageData {
+    unsigned width;
+    unsigned height;
+    std::unique_ptr<std::byte[]> data;
+};
+
 class BufferImage : public Image {
     ICoords m_size;
     TextureType m_type;
@@ -63,6 +70,7 @@ public:
 
     void render() override;
     void replace(void* data);
+    void compose(ImageData& picture, ICoords origin);
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

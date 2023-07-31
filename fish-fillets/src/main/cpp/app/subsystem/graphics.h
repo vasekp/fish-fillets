@@ -70,7 +70,7 @@ private:
 };
 
 namespace decoders {
-    Texture png(Instance& instance, const std::string& filename, TextureType type);
+    ImageData png(Instance& instance, const std::string& filename);
     std::unique_ptr<IFont> ttf(Instance& instance, const std::string& filename);
 }
 

@@ -92,7 +92,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
-        target.draw(&m_display.value(), copyProgram, coords);
+        target.draw(m_display.get(), copyProgram, coords);
         return;
     }
 
@@ -321,11 +321,8 @@ bool LevelScreen::own_key(Key key) {
     }
 }
 
-void LevelScreen::display(const std::string& filename) {
-    if(!filename.empty())
-        m_display = PNGImage(m_instance, filename);
-    else
-        m_display.reset();
+void LevelScreen::display(std::unique_ptr<Image>&& image) {
+    m_display = std::move(image);
 }
 
 void LevelScreen::saveEffect() {

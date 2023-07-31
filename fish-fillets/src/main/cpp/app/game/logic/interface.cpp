@@ -141,17 +141,20 @@ void Level::slideshow_enter() {
 }
 
 void Level::slideshow_exit() {
-    m_screen.display("");
+    m_screen.display({});
     m_screen.subs().clear();
     setBusy(BusyReason::slideshow, false);
 }
 
-void Level::slide_display(const std::string& filename) {
-    /* NOTE: Lua also passes int x, int y, expecting us to compose the images.
-     * These were replaced by pre-composed graphics so everything is drawn at (0,0).
-     * The original assets are 10 times smaller, but they would require either storing the intermediate textures
-     * (and rewriting all code relying on images loadable from filename) or drawing all previous frames on each draw(). */
-    m_screen.display(filename);
+void Level::slide_display(const std::string& filename, int x, int y) {
+    auto data = decoders::png(m_instance, filename);
+    if(x == 0 && y == 0) {
+        auto image = std::make_unique<BufferImage>(m_instance, ICoords{(int)data.width, (int)data.height}, TextureType::image, data.data.get());
+        m_screen.display(std::move(image));
+    } else {
+        auto image = dynamic_cast<BufferImage*>(m_screen.display());
+        image->compose(data, {x, y});
+    }
 }
 
 void Level::demo_enter() {
