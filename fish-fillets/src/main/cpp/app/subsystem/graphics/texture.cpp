@@ -16,10 +16,10 @@ Texture::Texture(GraphicsSystem& system, ICoords size) :
     Texture(system, size, size)
 { }
 
-Texture::Texture(GraphicsSystem& system, void *data, ICoords size, TextureType type) :
+Texture::Texture(GraphicsSystem& system, std::uint8_t* data, ICoords size, TextureType type) :
     Texture(PlatformType::fromImageData(system.display(), size.x, size.y, type, data))
 { }
 
-void Texture::replaceData(void* data) {
+void Texture::replaceData(std::uint8_t* data) {
     m_native.replaceData(data);
 }

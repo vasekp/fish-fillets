@@ -72,9 +72,9 @@ void IntroScreen::own_update() {
     if(frame.time == m_imgTime)
         return;
     Log::verbose<Log::video>("uploading frame ", frame.time);
-    m_imgY.replace(frame.yData.data());
-    m_imgCb.replace(frame.cbData.data());
-    m_imgCr.replace(frame.crData.data());
+    m_imgY.replace(std::move(frame.yData));
+    m_imgCb.replace(std::move(frame.cbData));
+    m_imgCr.replace(std::move(frame.crData));
     m_imgTime = frame.time;
     fill_buffers();
 }

@@ -41,24 +41,20 @@ void TextImage::render() {
     m_texture = m_font.get().renderText(m_text);
 }
 
-BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, void* data) :
-    Image(instance), m_size(size), m_type(type)
+BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
+    Image(instance), m_size(size), m_type(type), m_data(std::move(data))
 {
-    auto byteSize = size.x * size.y * type.channels();
-    m_data.resize(byteSize);
-    if(data)
-        std::memcpy(m_data.data(), data, byteSize);
     init();
 }
 
 void BufferImage::render() {
-    m_texture = Texture(m_instance.get().graphics().system(), m_data.data(), m_size, m_type);
+    m_texture = Texture(m_instance.get().graphics().system(), m_data.get(), m_size, m_type);
 }
 
-void BufferImage::replace(void* data) {
-    std::memcpy(m_data.data(), data, m_data.size());
+void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {
+    swap(m_data, data);
     if(m_texture)
-        m_texture->replaceData(m_data.data());
+        m_texture->replaceData(m_data.get());
 }
 
 void BufferImage::compose(ImageData& picture, ICoords origin) {
@@ -70,7 +66,7 @@ void BufferImage::compose(ImageData& picture, ICoords origin) {
     }
     using rgba = std::array<std::uint8_t, 4>;
     auto src = reinterpret_cast<rgba*>(picture.data.get());
-    auto dst = reinterpret_cast<rgba*>(m_data.data());
+    auto dst = reinterpret_cast<rgba*>(m_data.get());
     rgba *srcStart = src;
     rgba *dstStart = dst + origin.y * m_size.x + origin.x;
     for(auto y = 0u; y < picture.height; y++) {
@@ -85,5 +81,5 @@ void BufferImage::compose(ImageData& picture, ICoords origin) {
         srcStart += picture.width;
     }
     if(m_texture)
-        m_texture->replaceData(m_data.data());
+        m_texture->replaceData(m_data.get());
 }

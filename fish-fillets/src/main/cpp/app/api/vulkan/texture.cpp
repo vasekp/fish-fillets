@@ -13,7 +13,7 @@ struct TextureImpl {
 
 Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, TextureType type,
         vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
-        vk::raii::ImageView&& imageView, void* data) :
+        vk::raii::ImageView&& imageView, std::uint8_t* data) :
     pImpl{std::make_unique<TextureImpl>(
         display,
         std::move(image),
@@ -79,7 +79,7 @@ Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t heig
     return fromImageData(display, width, height, TextureType::image, nullptr);
 }
 
-Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, void *data) {
+Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, std::uint8_t* data) {
     auto format = type.channels() == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
@@ -118,7 +118,7 @@ const vk::DescriptorSet& Texture::descriptorSet() const {
     return *pImpl->descriptorSet;
 }
 
-void Texture::replaceData(void* data) {
+void Texture::replaceData(std::uint8_t* data) {
     auto& display = pImpl->display;
     auto& commandBuffer = display.commandBuffer();
     auto byteSize = m_width * m_height * pImpl->type.channels();

@@ -66,9 +66,9 @@ namespace ogg {
 
     public:
         struct Frame {
-            std::vector<unsigned char> yData;
-            std::vector<unsigned char> cbData;
-            std::vector<unsigned char> crData;
+            std::unique_ptr<std::uint8_t[]> yData;
+            std::unique_ptr<std::uint8_t[]> cbData;
+            std::unique_ptr<std::uint8_t[]> crData;
             float time;
         };
 
@@ -82,7 +82,7 @@ namespace ogg {
         void skipToKey();
 
     private:
-        void copy(std::vector<unsigned char>& dst, th_img_plane& src, int width, int height);
+        void copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, int width, int height);
     };
 
 }

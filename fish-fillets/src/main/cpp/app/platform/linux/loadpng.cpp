@@ -45,7 +45,7 @@ namespace decoders {
         auto stride = png_get_rowbytes(png_ptr, info_ptr);
         if(stride != 4 * width)
             Log::error(filename, ": width = ", width, " but stride = ", stride);
-        auto data = std::make_unique<std::byte[]>(height * stride);
+        auto data = std::make_unique<std::uint8_t[]>(height * stride);
 
         auto row_pointers = std::make_unique<png_bytep[]>(height);
         for(auto y = 0u; y < height; y++)

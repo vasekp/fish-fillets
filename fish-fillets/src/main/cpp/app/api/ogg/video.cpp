@@ -149,13 +149,13 @@ namespace ogg {
         return true;
     }
 
-    void TheoraDecoder::copy(std::vector<unsigned char>& dst, th_img_plane& src, int width, int height) {
-        dst.resize(width * height);
+    void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, int width, int height) {
+        dst = std::make_unique<std::uint8_t[]>(width * height);
         if(src.stride == width)
-            std::memcpy(dst.data(), src.data, width * height);
+            std::memcpy(dst.get(), src.data, width * height);
         else {
-            unsigned char* srcp = src.data;
-            unsigned char* dstp = dst.data();
+            std::uint8_t* srcp = src.data;
+            std::uint8_t* dstp = dst.get();
             for(int y = 0; y < height; y++) {
                 std::memcpy(dstp, srcp, width);
                 srcp += src.stride;

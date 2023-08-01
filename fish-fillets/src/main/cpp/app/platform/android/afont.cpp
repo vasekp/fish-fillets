@@ -22,7 +22,7 @@ std::vector<std::string> AndroidFont::breakLines(const std::string& text, float 
     auto jArray = (jobjectArray)jni->CallObjectMethod(jni.object(), jni.getMethod("breakLines"),
             jText, jFilename, m_fontSize, (int)width);
     auto length = jni->GetArrayLength(jArray);
-    std::vector <std::string> ret{};
+    std::vector<std::string> ret{};
     ret.reserve(length);
     for(auto i = 0u ; i < length ; i++) {
         auto jLine = (jstring)jni->GetObjectArrayElement(jArray, (int)i);
@@ -47,13 +47,13 @@ Texture AndroidFont::renderText(const std::string& text) const {
     int width = info.width;
     int height = info.height;
     std::size_t stride = info.stride;
-    void *pixels;
+    void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     if (!jBitmap)
         Log::fatal("bitmap data null (renderText)");
     if(stride != 4 * width)
         Log::error("renderText: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
-    auto ret = Texture(m_instance.graphics().system(), pixels, {width, height});
+    auto ret = Texture(m_instance.graphics().system(), (std::uint8_t*)pixels, {width, height});
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);

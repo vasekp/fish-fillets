@@ -13,7 +13,7 @@ namespace ogl {
         unsigned m_channels;
 
     public:
-        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, TextureType type, void* data);
+        static Texture fromImageData(const ogl::Display& display, GLuint width, GLuint height, TextureType type, std::uint8_t* data);
         static Texture empty(const ogl::Display& display, GLuint width, GLuint height);
 
         Texture() = default;
@@ -28,10 +28,10 @@ namespace ogl {
         auto height() const { return m_height; }
 
         void bind() const;
-        void replaceData(void* data);
+        void replaceData(std::uint8_t* data);
 
     private:
-        Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height, TextureType type, void* data);
+        Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height, TextureType type, std::uint8_t* data);
     };
 
 }

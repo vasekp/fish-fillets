@@ -18,9 +18,9 @@ namespace decoders {
         jobject jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("loadBitmap"), jPath);
         AndroidBitmapInfo info;
         AndroidBitmap_getInfo(jni, jBitmap, &info);
-        int width = info.width;
-        int height = info.height;
-        std::size_t stride = info.stride;
+        auto width = info.width;
+        auto height = info.height;
+        auto stride = info.stride;
         void* pixels;
         AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
         if(!jBitmap)
@@ -28,12 +28,12 @@ namespace decoders {
         if(stride != 4 * width)
             Log::error("PNG: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
         auto dataSize = width * height * 4;
-        auto data = std::make_unique<std::byte[]>(dataSize);
+        auto data = std::make_unique<std::uint8_t[]>(dataSize);
         std::memcpy(data.get(), pixels, dataSize);
         AndroidBitmap_unlockPixels(jni, jBitmap);
         jni->DeleteLocalRef(jPath);
         jni->DeleteLocalRef(jBitmap);
-        return {(unsigned)width, (unsigned)height, std::move(data)};
+        return {width, height, std::move(data)};
     }
 
     AudioData::Ref ogg(Instance& instance, const std::string& filename) {
@@ -144,8 +144,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 oboe::convertPcm16ToFloat(reinterpret_cast<std::int16_t*>(outBuffer), &data[curSample], samplesRead);
                 if(doubleSample) {
                     for(auto i = samplesRead - 1 ; i >= 0 ; i--) {
-                        float curr = data[curSample + i];
-                        float prev = i > 0 ? data[curSample + i - 1] :
+                        auto curr = data[curSample + i];
+                        auto prev = i > 0 ? data[curSample + i - 1] :
                                      curSample > 0 ? data[curSample - 2] : 0.f;
                         data[curSample + 2 * i + 1] = curr;
                         data[curSample + 2 * i] = (curr + prev) / 2.f;

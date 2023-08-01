@@ -55,21 +55,21 @@ public:
 struct ImageData {
     unsigned width;
     unsigned height;
-    std::unique_ptr<std::byte[]> data;
+    std::unique_ptr<std::uint8_t[]> data;
 };
 
 class BufferImage : public Image {
     ICoords m_size;
     TextureType m_type;
-    std::vector<std::byte> m_data;
+    std::unique_ptr<std::uint8_t[]> m_data;
 
 public:
-    BufferImage(Instance& instance, ICoords size, TextureType type, void* data);
+    BufferImage(Instance& instance, ICoords size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
     BufferImage(BufferImage&&) = default;
     BufferImage& operator=(BufferImage&&) = default;
 
     void render() override;
-    void replace(void* data);
+    void replace(std::unique_ptr<std::uint8_t[]>&& data);
     void compose(ImageData& picture, ICoords origin);
 };
 

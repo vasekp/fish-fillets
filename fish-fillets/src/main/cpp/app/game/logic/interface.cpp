@@ -149,7 +149,7 @@ void Level::slideshow_exit() {
 void Level::slide_display(const std::string& filename, int x, int y) {
     auto data = decoders::png(m_instance, filename);
     if(x == 0 && y == 0) {
-        auto image = std::make_unique<BufferImage>(m_instance, ICoords{(int)data.width, (int)data.height}, TextureType::image, data.data.get());
+        auto image = std::make_unique<BufferImage>(m_instance, ICoords{(int)data.width, (int)data.height}, TextureType::image, std::move(data.data));
         m_screen.display(std::move(image));
     } else {
         auto image = dynamic_cast<BufferImage*>(m_screen.display());

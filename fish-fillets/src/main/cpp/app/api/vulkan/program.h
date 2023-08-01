@@ -11,9 +11,6 @@ public:
     Shader(Display& display, const std::string& code);
 
     operator const vk::ShaderModule&() const { return *m_module; }
-
-private:
-    std::vector<std::byte> fromString(const std::string& code);
 };
 
 class Program {
