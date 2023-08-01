@@ -13,6 +13,8 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
         m_fishBig(instance, "images/fishes/big/right/body_rest_00.png")
 {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
+    m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load });
@@ -183,9 +185,9 @@ bool LevelInput::longPress(FCoords coords) {
 
 void LevelInput::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
+    m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
     {
         auto buttonCount = m_buttons.size();
-        m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
         FCoords extent = {buttonSize, buttonSize};
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
