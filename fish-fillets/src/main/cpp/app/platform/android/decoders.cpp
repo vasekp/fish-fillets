@@ -29,11 +29,11 @@ namespace decoders {
             Log::error("PNG: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
         auto dataSize = width * height * 4;
         auto data = std::make_unique<std::byte[]>(dataSize);
-        std::memcpy(data.data(), pixels, dataSize);
+        std::memcpy(data.get(), pixels, dataSize);
         AndroidBitmap_unlockPixels(jni, jBitmap);
         jni->DeleteLocalRef(jPath);
         jni->DeleteLocalRef(jBitmap);
-        return {width, height, std::move(data)};
+        return {(unsigned)width, (unsigned)height, std::move(data)};
     }
 
     AudioData::Ref ogg(Instance& instance, const std::string& filename) {
