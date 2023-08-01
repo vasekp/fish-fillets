@@ -57,3 +57,5 @@ dialog_add("kuf-m-nezvednu", "small", {
 dialog_add("kuf-m-kousek", "small", {
   cs="Ještě kousek, ať pod tebou můžu projet.",
   en="Just a little bit higher so I can swim underneath you."})
+
+file_include("script/"..codename.."/tutorial_dialogs.lua")

@@ -28,8 +28,6 @@ local function planPushingAnim(delay)
     end)
 end
 
-file_include("script/"..codename.."/tutorial_dialogs.lua")
-
 demo_enter()
 addm(0, "help1") -- Teď na nic nesahej
 planMoveAction(3, function() return level_action_showMoves("llll") end)
