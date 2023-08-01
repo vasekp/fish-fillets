@@ -123,8 +123,9 @@ bool LevelInput::pointerMove(FCoords coords) {
             return true;
         case DirpadState::button: // handled earlier
             return true;
+        default:
+            std::unreachable();
     }
-    std::unreachable();
 }
 
 bool LevelInput::pointerUp(bool empty) {

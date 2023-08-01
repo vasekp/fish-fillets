@@ -14,8 +14,9 @@ static auto prefix(Log::Level level) {
         case Log::Level::error:
         case Log::Level::fatal:
             return 'E';
+        default:
+            std::unreachable();
     }
-    std::unreachable();
 }
 
 void Log::log(Level level, const std::string& message) {

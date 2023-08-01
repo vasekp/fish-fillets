@@ -131,10 +131,11 @@ std::uint32_t Display::findQueueFamily(const vk::raii::PhysicalDevice& device) {
 }
 
 vk::raii::Device Display::createLogicalDevice() {
+    float priority = 1.f;
     auto queueInfo = vk::DeviceQueueCreateInfo{}
             .setQueueFamilyIndex(m_queueFamily)
             .setQueueCount(1)
-            .setPQueuePriorities(&single<1.f>);
+            .setPQueuePriorities(&priority);
 #if 0
     std::vector<std::uint32_t> uniqueFamilies = {queueFamilies.graphics, queueFamilies.presentation};
     std::sort(uniqueFamilies.begin(), uniqueFamilies.end());
@@ -142,7 +143,7 @@ vk::raii::Device Display::createLogicalDevice() {
     std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
     queueCreateInfos.reserve(uniqueFamilies.size());
     for(auto family : uniqueFamilies)
-        queueCreateInfos.push_back({{}, family, 1, &single<1.f>});
+        queueCreateInfos.push_back({{}, family, 1, &priority});
 #endif
     vk::PhysicalDeviceFeatures features{};
     std::vector<const char*> deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME};
