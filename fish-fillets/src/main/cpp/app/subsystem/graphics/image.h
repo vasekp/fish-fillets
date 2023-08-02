@@ -52,12 +52,6 @@ public:
     void render() override;
 };
 
-struct ImageData {
-    unsigned width;
-    unsigned height;
-    std::unique_ptr<std::uint8_t[]> data;
-};
-
 class BufferImage : public Image {
     ICoords m_size;
     TextureType m_type;

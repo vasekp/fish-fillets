@@ -37,26 +37,28 @@ std::vector<std::string> AndroidFont::breakLines(const std::string& text, float 
     return ret;
 }
 
-Texture AndroidFont::renderText(const std::string& text) const {
+ImageData AndroidFont::renderText(const std::string& text) const {
     auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
     auto jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("renderText"), jText, jFilename, m_fontSize, m_outline);
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);
-    int width = info.width;
-    int height = info.height;
-    std::size_t stride = info.stride;
+    auto width = info.width;
+    auto height = info.height;
+    auto stride = info.stride;
     void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
-    if (!jBitmap)
+    if(!jBitmap)
         Log::fatal("bitmap data null (renderText)");
     if(stride != 4 * width)
         Log::error("renderText: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
-    auto ret = Texture(m_instance.graphics().system(), (std::uint8_t*)pixels, {width, height});
+    auto dataSize = width * height * 4;
+    auto data = std::make_unique<std::uint8_t[]>(dataSize);
+    std::memcpy(data.get(), pixels, dataSize);
     AndroidBitmap_unlockPixels(jni, jBitmap);
     jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);
     jni->DeleteLocalRef(jText);
-    return ret;
+    return {width, height, std::move(data)};
 }

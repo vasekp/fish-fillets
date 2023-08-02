@@ -11,6 +11,7 @@
 
 #include "graphics/texturetype.h"
 #include "graphics/texture.h"
+#include "graphics/imagedata.h"
 #include "graphics/image.h"
 #include "graphics/coords.h"
 #include "graphics/shaders.h"

@@ -7,7 +7,7 @@ public:
 
     virtual void setSizes(float fontSize, float outline) = 0;
     virtual std::vector<std::string> breakLines(const std::string& text, float width) = 0;
-    virtual Texture renderText(const std::string& text) const = 0;
+    virtual ImageData renderText(const std::string& text) const = 0;
 };
 
 inline IFont::~IFont() { }

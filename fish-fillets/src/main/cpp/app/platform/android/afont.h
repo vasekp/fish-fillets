@@ -14,7 +14,7 @@ public:
 
     void setSizes(float fontSize, float outline) override;
     std::vector<std::string> breakLines(const std::string& text, float width) override;
-    Texture renderText(const std::string& text) const override;
+    ImageData renderText(const std::string& text) const override;
 };
 
 namespace decoders {

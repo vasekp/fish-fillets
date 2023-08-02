@@ -54,11 +54,11 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
         }
         auto slot = m_face->glyph;
         fwidth += from266(slot->advance.x);
-        if(c == L' ' || c == '\n') {
+        if(c == L' ' || c == L'\n') {
             lastBreak = i;
             lastBreakX = fwidth;
         }
-        if(c == '\n' || fwidth > width) {
+        if(c == L'\n' || fwidth > width) {
             breaks.push_back(lastBreak);
             fwidth -= lastBreakX;
         }
@@ -74,7 +74,7 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
     return ret;
 }
 
-Texture FTFont::renderText(const std::string& text) const {
+ImageData FTFont::renderText(const std::string& text) const {
     float asc = from266(m_face->size->metrics.ascender);
     float desc = -from266(m_face->size->metrics.descender);
 
@@ -91,17 +91,16 @@ Texture FTFont::renderText(const std::string& text) const {
         fwidth += from266(slot->advance.x);
     }
 
-    auto width = (int)(fwidth + 2.f * m_outline) + 2;
-    auto height = (int)(asc + desc + 2.f * m_outline) + 2;
+    auto width = (unsigned)(fwidth + 2.f * m_outline) + 2;
+    auto height = (unsigned)(asc + desc + 2.f * m_outline) + 2;
     Log::verbose<Log::graphics>("bitmap size ", width, "x", height);
-    auto pixels = std::make_unique<std::array<std::uint8_t, 4>[]>(width * height);
-    auto data = pixels.get();
+    auto data = std::make_unique<std::uint8_t[]>(width * height * 4);
+    auto pixels = reinterpret_cast<std::array<std::uint8_t, 4>*>(data.get());
 
     auto blend = [&](const FT_Bitmap& bitmap, int x0, int y0, bool white) {
-        int x, y, sx, sy;
-        for(y = std::max(y0, 1), sy = -std::min(y0, 0); y < height - 1 && sy < (int)bitmap.rows; y++, sy++)
-            for(x = std::max(x0, 1), sx = -std::min(x0, 0); x < width - 1 && sx < (int)bitmap.width; x++, sx++) {
-                auto& out = data[y * width + x];
+        for(unsigned y = std::max(y0, 1), sy = -std::min(y0, 0); y < height - 1 && sy < bitmap.rows; y++, sy++)
+            for(unsigned x = std::max(x0, 1), sx = -std::min(x0, 0); x < width - 1 && sx < bitmap.width; x++, sx++) {
+                auto& out = pixels[y * width + x];
                 if(white)
                     for(int i = 0; i < 4; i++)
                         out[i] = std::max(out[i], bitmap.buffer[sy * bitmap.pitch + sx]);
@@ -156,5 +155,5 @@ Texture FTFont::renderText(const std::string& text) const {
         }
     }
 
-    return Texture(m_instance.graphics().system(), reinterpret_cast<std::uint8_t*>(data), {width, height});
+    return {width, height, std::move(data)};
 }
