@@ -38,8 +38,7 @@ TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
 }
 
 void TextImage::render() {
-    auto [width, height, data] = m_font.get().renderText(m_text);
-    m_texture = Texture{m_instance.get().graphics().system(), data.get(), {(int)width, (int)height}};
+    m_texture = m_font.get().renderText(m_instance, m_text);
 }
 
 BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :

@@ -4,18 +4,14 @@
 #include <android/bitmap.h>
 
 AndroidFont::AndroidFont(Instance& instance, const std::string& filename) :
-        m_instance(instance),
-        m_fontSize(), m_outline()
+    m_instance(instance)
 {
     m_filename = dynamic_cast<SystemFile&>(*instance.files().system(filename)).path();
 }
 
-void AndroidFont::setSizes(float fontSize, float outline) {
-    m_fontSize = fontSize;
-    m_outline = outline;
-}
+void AndroidFont::own_setSizes() { }
 
-std::vector<std::string> AndroidFont::breakLines(const std::string& text, float width) {
+std::vector<std::string> AndroidFont::own_breakLines(const std::string& text, float width) {
     auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
@@ -37,7 +33,7 @@ std::vector<std::string> AndroidFont::breakLines(const std::string& text, float 
     return ret;
 }
 
-ImageData AndroidFont::renderText(const std::string& text) const {
+ImageData AndroidFont::own_renderText(const std::string& text) const {
     auto& jni = dynamic_cast<AndroidInstance&>(m_instance).jni;
     auto jFilename = jni->NewStringUTF(m_filename.c_str());
     auto jText = jni->NewStringUTF(text.c_str());
@@ -47,10 +43,11 @@ ImageData AndroidFont::renderText(const std::string& text) const {
     auto width = info.width;
     auto height = info.height;
     auto stride = info.stride;
+    Log::debug<Log::graphics>("renderText: bitmap size ", width, "x", height);
     void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
     if(!jBitmap)
-        Log::fatal("bitmap data null (renderText)");
+        Log::fatal("renderText: bitmap data null");
     if(stride != 4 * width)
         Log::error("renderText: system-provided stride ", stride, " ≠ 4*width ", 4 * width);
     auto dataSize = width * height * 4;

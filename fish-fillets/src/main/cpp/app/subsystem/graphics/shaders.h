@@ -122,7 +122,6 @@ public:
     };
 
     struct ButtonParams {
-        vec2 texSize;
         vec4 color;
     };
 

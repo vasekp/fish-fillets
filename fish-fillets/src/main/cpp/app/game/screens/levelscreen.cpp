@@ -189,7 +189,7 @@ void LevelScreen::addSubtitle(const std::string &text, const std::string& colors
 }
 
 void LevelScreen::showHint(const std::string &text) {
-    m_hint.emplace(m_instance, text);
+    m_hint.emplace(m_instance, text, false);
 }
 
 void LevelScreen::hideHint() {

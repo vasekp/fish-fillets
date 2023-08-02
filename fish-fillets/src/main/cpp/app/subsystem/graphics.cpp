@@ -49,7 +49,7 @@ void Graphics::recalc() {
     FCoords reduceBase = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
     FCoords reduceDim = displayDim - reduceBase;
     float scale3 = std::min(reduceDim.fx() / baseDim.fx(), reduceDim.fy() / baseDim.fy());
-    m_coords[reduced] = { reduceBase + (reduceDim - scale3 * baseDim) / 2.f, scale3, reduceDim};
+    m_coords[reduced] = { reduceBase + (reduceDim - scale3 * baseDim) / 2.f, scale3, baseDim};
     m_coords[window0] = {(displayDim - reduceBase - scale * m_windowDim) / 2.f + reduceBase, scale, m_windowDim};
     m_coords[window] = m_coords[window0];
     m_coords[window].origin += m_windowShift;

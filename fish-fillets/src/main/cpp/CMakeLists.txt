@@ -22,6 +22,7 @@ set(fillets_sources
         "${FILLETS_DIR}/subsystem/graphics.cpp"
         "${FILLETS_DIR}/subsystem/graphics/texture.cpp"
         "${FILLETS_DIR}/subsystem/graphics/image.cpp"
+        "${FILLETS_DIR}/subsystem/graphics/ifont.cpp"
         "${FILLETS_DIR}/subsystem/graphics/shaders.cpp"
         "${FILLETS_DIR}/subsystem/graphics/drawtarget.cpp"
         "${FILLETS_DIR}/subsystem/graphics/texturetarget.cpp"

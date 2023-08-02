@@ -7,9 +7,10 @@ class Hint {
     Instance& m_instance;
     std::unique_ptr<IFont> m_font;
     std::vector<TextImage> m_lines;
+    Graphics::CoordSystems m_coords;
 
 public:
-    Hint(Instance& instance, const std::string& text);
+    Hint(Instance& instance, const std::string& text, bool fullWidth);
 
     void draw(DrawTarget& target);
     void resize();

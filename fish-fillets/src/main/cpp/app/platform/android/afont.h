@@ -6,15 +6,14 @@
 class AndroidFont : public IFont {
     Instance& m_instance;
     std::string m_filename;
-    float m_fontSize;
-    float m_outline;
 
 public:
     AndroidFont(Instance& instance, const std::string& filename);
 
-    void setSizes(float fontSize, float outline) override;
-    std::vector<std::string> breakLines(const std::string& text, float width) override;
-    ImageData renderText(const std::string& text) const override;
+private:
+    void own_setSizes() override;
+    std::vector<std::string> own_breakLines(const std::string& text, float width) override;
+    ImageData own_renderText(const std::string& text) const override;
 };
 
 namespace decoders {

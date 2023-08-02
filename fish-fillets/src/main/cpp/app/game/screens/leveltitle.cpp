@@ -38,18 +38,15 @@ void LevelTitle::draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     constexpr FCoords offset{Graphics::baseDim.fx() / 2.f - maxWidth / 2.f, startY};
     constexpr FCoords rect{maxWidth, endY - startY};
-    FCoords spoofSize = m_image->size() / coords.scale;
 
     auto program = m_instance.graphics().shaders().titleText({ .color = colorBg.gl(m_opacity) });
     target.draw(&m_image.value(), program, coords, {
-        .srcSize = spoofSize, // TODO logSize
         .dest = offset + shadow,
         .area = rect
     });
 
     program.params().color = colorFg.gl(m_opacity);
     target.draw(&m_image.value(), program, coords, {
-        .srcSize = spoofSize,
         .dest = offset,
         .area = rect
     });
@@ -57,7 +54,7 @@ void LevelTitle::draw(DrawTarget& target) {
 
 void LevelTitle::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    m_font->setSizes(fontSize * coords.scale, 0.f);
+    m_font->setSizes(fontSize, 0.f, coords.scale);
     if(m_image)
         m_image->render();
 }

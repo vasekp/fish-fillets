@@ -23,6 +23,6 @@ void main() {
     const float ampl = 0.5;
     float p = min(pc.uTime - vSrcCoords.x / fullWidth, 1.0);
     float dy = (1.0 - p) * cos(freq * 3.1416 * p) * ampl;
-    vec2 texCoords = vSrcCoords * pc.uCoords.z / pc.uSrcSize - vec2(0.0, 1.0 + dy);
+    vec2 texCoords = vSrcCoords / pc.uSrcSize - vec2(0.0, 1.0 + dy);
     fragColor = texture(uSrcTexture, texCoords) * mix(pc.uColor1, pc.uColor2, smoothstep(0.3, 0.8, texCoords.y));
 }

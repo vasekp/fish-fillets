@@ -10,8 +10,7 @@ void Subtitles::defineColors(const std::string& name, Color color1, Color color2
 }
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto lines = m_font->breakLines(text, Graphics::baseDim.fx() * coords.scale);
+    auto lines = m_font->breakLines(text, Graphics::baseDim.fx());
     auto countLines = lines.size();
     for(const auto& line : lines) {
         auto duration = std::max((int)text.length() * timePerChar, minTimePerLine);
@@ -70,16 +69,19 @@ void Subtitles::draw(DrawTarget& target, float time) {
                 .color2 = line.color2.gl(),
                 .time = time - line.addTime
             });
-            auto size = line.image.size() / coords.scale;
+            auto size = line.image.size();
             FCoords dest0{320.f - size.fx() / 2.f, bottomY - size.fy() * (2.5f + line.yOffset)};
             FCoords dest = coords.out2in(coords.in2out(dest0).round());
-            target.draw(line.image.texture(), program, coords, { .dest = dest, .area = FCoords{size.fx(), 3.f * size.fy()} });
+            target.draw(line.image.texture(), program, coords, {
+                .dest = dest,
+                .area = FCoords{size.fx(), 3.f * size.fy()}
+            });
         }
 }
 
 void Subtitles::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    m_font->setSizes(fontSize * coords.scale, outline * coords.scale);
+    m_font->setSizes(fontSize, outline, coords.scale);
     for(auto& line : m_lines)
         line.image.render();
 }

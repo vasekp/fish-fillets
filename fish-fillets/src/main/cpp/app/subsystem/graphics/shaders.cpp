@@ -223,7 +223,6 @@ void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& sys
 template<>
 void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
-    glUniform2fv(m_native.uniform("uTexSize"), 1, m_params.texSize.data());
 }
 
 template<>

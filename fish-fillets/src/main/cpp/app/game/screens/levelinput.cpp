@@ -13,8 +13,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
         m_fishBig(instance, "images/fishes/big/right/body_rest_00.png")
 {
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
-    m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
+    resize();
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
     m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load });
@@ -186,14 +185,14 @@ bool LevelInput::longPress(FCoords coords) {
 
 void LevelInput::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
-    m_buttonsFont->setSizes(buttonFontSize * coords.scale, 0);
+    m_buttonsFont->setSizes(buttonFontSize, 0.f, coords.scale);
     {
         auto buttonCount = m_buttons.size();
         FCoords extent = {buttonSize, buttonSize};
         for(auto i = 0u; i < buttonCount; i++) {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
-            m_buttons[i].coordsFrom = coords.in2out(center - extent / 2.f);
-            m_buttons[i].coordsTo = coords.in2out(center + extent / 2.f);
+            m_buttons[i].coordsFrom = center - extent / 2.f;
+            m_buttons[i].coordsTo = center + extent / 2.f;
             m_buttons[i].image.render();
         }
     }
@@ -242,13 +241,10 @@ void LevelInput::draw(DrawTarget& target) {
 }
 
 void LevelInput::drawButtons(DrawTarget& target) {
-    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::null);
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
     for(const auto& button : m_buttons) {
-        const auto program = m_instance.graphics().shaders().button({
-            .texSize = button.image.size(),
-            .color = colorButtons.gl(button.alpha)
-        });
-        target.draw(&button.image, program, coords, { .srcSize = button.coordsTo - button.coordsFrom, .dest = button.coordsFrom });
+        const auto program = m_instance.graphics().shaders().button({ .color = colorButtons.gl(button.alpha) });
+        target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .area = button.coordsTo - button.coordsFrom });
     }
     if(m_activeFish != Model::Fish::none) {
         const auto& button = keyButton(Key::space);
@@ -298,8 +294,10 @@ void LevelInput::drawDirpad(DrawTarget& target) {
 }
 
 const LevelInput::Button* LevelInput::findButton(FCoords pos) {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
+    auto pos1 = coords.out2in(pos);
     for(const auto& button : m_buttons)
-        if(pos.within(button.coordsFrom, button.coordsTo))
+        if(pos1.within(button.coordsFrom, button.coordsTo))
             return &button;
     return nullptr;
 }

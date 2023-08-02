@@ -13,8 +13,7 @@ static float from266(FT_F26Dot6 x) {
 }
 
 FTFont::FTFont(Instance& instance, const std::string& filename) :
-        m_instance(instance),
-        m_fontSize(), m_outline()
+    m_instance(instance)
 {
     auto fnFull = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
     if(FT_Init_FreeType(&m_ft) != 0)
@@ -24,20 +23,15 @@ FTFont::FTFont(Instance& instance, const std::string& filename) :
         Log::fatal("Error loading font ", fnFull);
 }
 
-void FTFont::setSizes(float fontSize, float outline) {
-    m_fontSize = fontSize;
-    m_outline = outline;
-    if(FT_Set_Char_Size(m_face, to266(fontSize), 0, 72, 0) != 0)
+void FTFont::own_setSizes() {
+    if(FT_Set_Char_Size(m_face, to266(m_fontSize), 0, 72, 0) != 0)
         Log::fatal("FT_Set_Char_Size failed");
-    m_fontSize = fontSize;
-    m_outline = outline;
-    Log::debug<Log::graphics>("fontSize ", m_fontSize, " outline ", m_outline);
     Log::debug<Log::graphics>("EM ", m_face->size->metrics.y_ppem,
             " asc ", from266(m_face->size->metrics.ascender),
             " desc ", -from266(m_face->size->metrics.descender));
 }
 
-std::vector<std::string> FTFont::breakLines(const std::string& text, float width) {
+std::vector<std::string> FTFont::own_breakLines(const std::string& text, float width) {
     std::vector<std::size_t> breaks{};
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter{};
     auto wtext = converter.from_bytes(text);
@@ -74,7 +68,7 @@ std::vector<std::string> FTFont::breakLines(const std::string& text, float width
     return ret;
 }
 
-ImageData FTFont::renderText(const std::string& text) const {
+ImageData FTFont::own_renderText(const std::string& text) const {
     float asc = from266(m_face->size->metrics.ascender);
     float desc = -from266(m_face->size->metrics.descender);
 
@@ -93,7 +87,7 @@ ImageData FTFont::renderText(const std::string& text) const {
 
     auto width = (unsigned)(fwidth + 2.f * m_outline) + 2;
     auto height = (unsigned)(asc + desc + 2.f * m_outline) + 2;
-    Log::verbose<Log::graphics>("bitmap size ", width, "x", height);
+    Log::debug<Log::graphics>("bitmap size ", width, "x", height);
     auto data = std::make_unique<std::uint8_t[]>(width * height * 4);
     auto pixels = reinterpret_cast<std::array<std::uint8_t, 4>*>(data.get());
 
