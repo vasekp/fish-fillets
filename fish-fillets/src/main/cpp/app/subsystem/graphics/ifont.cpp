@@ -1,8 +1,15 @@
 #include "subsystem/graphics.h"
 
+constexpr float upsampleThreshold = 20.f;
+
 void IFont::setSizes(float fontSize, float outline, float scale) {
     fontSize *= scale;
     outline *= scale;
+    if(fontSize < upsampleThreshold) {
+        fontSize *= 2;
+        outline *= 2;
+        scale *= 2;
+    }
     if(fontSize == m_fontSize && outline == m_outline && scale == m_scale)
         return;
     Log::debug<Log::graphics>("fontSize ", fontSize, " outline ", outline, " scale ", scale);
