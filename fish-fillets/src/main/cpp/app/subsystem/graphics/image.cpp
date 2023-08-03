@@ -28,7 +28,7 @@ PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
 
 void PNGImage::render() {
     auto [width, height, data] = decoders::png(m_instance, m_filename);
-    m_texture = Texture{m_instance.get().graphics().system(), data.get(), {(int)width, (int)height}, m_type};
+    m_texture = Texture{m_instance.get().graphics().system(), m_type, ICoords{(int)width, (int)height}, data.get()};
 }
 
 TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
@@ -48,7 +48,7 @@ BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, std
 }
 
 void BufferImage::render() {
-    m_texture = Texture(m_instance.get().graphics().system(), m_data.get(), m_size, m_type);
+    m_texture = Texture(m_instance.get().graphics().system(), m_type, m_size, m_data.get());
 }
 
 void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {

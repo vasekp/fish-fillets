@@ -27,5 +27,5 @@ Texture IFont::renderText(Instance& instance, const std::string& text) const {
     auto [width, height, data] = own_renderText(text);
     ICoords physSize = {(int)width, (int)height};
     FCoords logSize = FCoords{physSize} / m_scale;
-    return Texture{instance.graphics().system(), data.get(), logSize, physSize};
+    return Texture{instance.graphics().system(), TextureType::image, physSize, logSize, data.get()};
 }

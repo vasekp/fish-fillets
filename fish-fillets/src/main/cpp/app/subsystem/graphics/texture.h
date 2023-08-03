@@ -19,10 +19,8 @@ public:
     Texture(Texture&& other) = default;
     Texture& operator=(Texture&& other) = default;
 
-    Texture(GraphicsSystem& system, ICoords size);
-    Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize);
-    Texture(GraphicsSystem& system, std::uint8_t* data, ICoords size, TextureType = TextureType::image);
-    Texture(GraphicsSystem& system, std::uint8_t* data, FCoords logSize, ICoords physSize, TextureType = TextureType::image);
+    Texture(GraphicsSystem& system, TextureType type, ICoords size, std::uint8_t* data);
+    Texture(GraphicsSystem& system, TextureType type, ICoords physSize, FCoords logSize, std::uint8_t* data);
 
     FCoords logSize() const { return m_logSize; }
     ICoords physSize() const { return m_physSize; }

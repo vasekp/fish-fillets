@@ -6,22 +6,12 @@ Texture::Texture(PlatformType&& native, FCoords logSize) :
     m_logSize(logSize)
 { }
 
-Texture::Texture(GraphicsSystem& system, FCoords logSize, ICoords physSize) :
-    m_native(PlatformType::empty(system.display(), physSize.x, physSize.y)),
-    m_physSize(physSize),
-    m_logSize(logSize)
+Texture::Texture(GraphicsSystem& system, TextureType type, ICoords physSize, FCoords logSize, std::uint8_t* data) :
+    Texture{PlatformType(system.display(), physSize.x, physSize.y, type, data), logSize}
 { }
 
-Texture::Texture(GraphicsSystem& system, ICoords size) :
-    Texture{system, size, size}
-{ }
-
-Texture::Texture(GraphicsSystem& system, std::uint8_t* data, ICoords size, TextureType type) :
-    Texture{system, data, size, size, type}
-{ }
-
-Texture::Texture(GraphicsSystem& system, std::uint8_t* data, FCoords logSize, ICoords physSize, TextureType type) :
-    Texture{PlatformType::fromImageData(system.display(), physSize.x, physSize.y, type, data), logSize}
+Texture::Texture(GraphicsSystem& system, TextureType type, ICoords size, std::uint8_t* data) :
+    Texture(system, type, size, size, data)
 { }
 
 void Texture::replaceData(std::uint8_t* data) {

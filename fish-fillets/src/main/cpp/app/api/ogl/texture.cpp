@@ -2,8 +2,8 @@
 
 namespace ogl {
 
-    Texture::Texture(const std::weak_ptr<int>& ref, GLuint width, GLuint height, TextureType type, std::uint8_t* data) :
-        m_ref(ref), m_width(width), m_height(height), m_channels(type.channels())
+    Texture::Texture(const ogl::Display& display, GLuint width, GLuint height, TextureType type, std::uint8_t* data) :
+        m_ref(display.ref()), m_width(width), m_height(height), m_channels(type.channels())
     {
         glGenTextures(1, &m_name);
         Log::verbose<Log::graphics>("texture: generate ", m_name);
@@ -25,14 +25,6 @@ namespace ogl {
             Log::verbose<Log::graphics>("texture: delete ", m_name);
             glDeleteTextures(1, &m_name);
         }
-    }
-
-    Texture Texture::fromImageData(const ogl::Display& display, GLuint width, GLuint height, TextureType type, std::uint8_t* data) {
-        return {display.ref(), width, height, type, data};
-    }
-
-    Texture Texture::empty(const ogl::Display& display, GLuint width, GLuint height) {
-        return {display.ref(), width, height, TextureType::image, nullptr};
     }
 
     Texture::Texture(Texture&& other) noexcept :

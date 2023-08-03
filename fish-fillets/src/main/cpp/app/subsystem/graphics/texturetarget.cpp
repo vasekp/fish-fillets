@@ -2,7 +2,7 @@
 
 TextureTarget::TextureTarget(GraphicsSystem& system) :
     DrawTarget(system),
-    m_texture{system, system.display().size()},
+    m_texture{system, TextureType::image, system.display().size(), nullptr},
     m_framebuffer{system.display(), m_texture.native()},
     m_size()
 { }
@@ -15,6 +15,6 @@ void TextureTarget::resize(unsigned width, unsigned height, float scale) { // TO
     m_size = {width, height};
     auto texSize = (scale * m_size).round();
     if(texSize != m_texture.physSize())
-        m_texture = Texture(m_system, m_size, texSize);
+        m_texture = Texture(m_system, TextureType::image, texSize, m_size, nullptr);
     m_framebuffer.texture(m_texture.native());
 }

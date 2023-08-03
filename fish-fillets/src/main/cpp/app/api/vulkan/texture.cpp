@@ -11,18 +11,41 @@ struct TextureImpl {
     const vk::DescriptorSet* descriptorSet;
 };
 
-Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, TextureType type,
-        vk::raii::Image&& image, vk::raii::DeviceMemory&& memory,
-        vk::raii::ImageView&& imageView, std::uint8_t* data) :
-    pImpl{std::make_unique<TextureImpl>(
-        display,
-        std::move(image),
-        std::move(memory),
-        std::move(imageView),
-        type,
-        display.descriptors().allocDescriptorSet(type.binding()))},
+Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, std::uint8_t* data) :
+    pImpl{},
     m_width(width), m_height(height)
 {
+    auto format = type.channels() == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
+    vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
+        .setImageType(vk::ImageType::e2D)
+        .setExtent({width, height, 1})
+        .setMipLevels(1)
+        .setArrayLayers(1)
+        .setFormat(format)
+        .setTiling(vk::ImageTiling::eOptimal)
+        .setInitialLayout(vk::ImageLayout::eUndefined)
+        .setUsage(data
+                ? vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eTransferDst
+                : vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eTransferSrc)
+        .setSharingMode(vk::SharingMode::eExclusive)
+        .setSamples(vk::SampleCountFlagBits::e1)};
+
+    vk::raii::DeviceMemory deviceMemory{display.allocMemory(image, vk::MemoryPropertyFlagBits::eDeviceLocal)};
+
+    vk::raii::ImageView imageView{display.device(), vk::ImageViewCreateInfo{}
+            .setImage(*image)
+            .setViewType(vk::ImageViewType::e2D)
+            .setFormat(format)
+            .setSubresourceRange(baseRange)};
+
+    pImpl = std::make_unique<TextureImpl>(
+        display,
+        std::move(image),
+        std::move(deviceMemory),
+        std::move(imageView),
+        type,
+        display.descriptors().allocDescriptorSet(type.binding()));
+
     if(data) {
         replaceData(data);
     } else {
@@ -73,37 +96,6 @@ Texture& Texture::operator=(Texture&& other) {
 Texture::~Texture() {
     if(pImpl)
         pImpl->display.descriptors().freeDescriptorSet(pImpl->type.binding(), pImpl->descriptorSet);
-}
-
-Texture Texture::empty(Display& display, std::uint32_t width, std::uint32_t height) {
-    return fromImageData(display, width, height, TextureType::image, nullptr);
-}
-
-Texture Texture::fromImageData(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, std::uint8_t* data) {
-    auto format = type.channels() == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
-    vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
-        .setImageType(vk::ImageType::e2D)
-        .setExtent({width, height, 1})
-        .setMipLevels(1)
-        .setArrayLayers(1)
-        .setFormat(format)
-        .setTiling(vk::ImageTiling::eOptimal)
-        .setInitialLayout(vk::ImageLayout::eUndefined)
-        .setUsage(data
-                ? vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eTransferDst
-                : vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eTransferSrc)
-        .setSharingMode(vk::SharingMode::eExclusive)
-        .setSamples(vk::SampleCountFlagBits::e1)};
-
-    vk::raii::DeviceMemory deviceMemory{display.allocMemory(image, vk::MemoryPropertyFlagBits::eDeviceLocal)};
-
-    vk::raii::ImageView imageView{display.device(), vk::ImageViewCreateInfo{}
-            .setImage(*image)
-            .setViewType(vk::ImageViewType::e2D)
-            .setFormat(format)
-            .setSubresourceRange(baseRange)};
-
-    return Texture{display, width, height, type, std::move(image), std::move(deviceMemory), std::move(imageView), data};
 }
 
 const vk::Image& Texture::image() const {
