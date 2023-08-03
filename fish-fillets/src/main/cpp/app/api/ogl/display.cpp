@@ -60,8 +60,10 @@ namespace ogl {
             std::int32_t height;
             eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
             eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
+            m_origin = {};
+            m_size = {width, height};
 
-            Log::debug<Log::graphics>("display: opened ", (void*)m_display, " ", ICoords{width, height});
+            Log::debug<Log::graphics>("display: opened ", (void*)m_display, " ", m_size);
         }
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
         for (auto name : opengl_info) {
