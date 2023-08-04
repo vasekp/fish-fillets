@@ -19,9 +19,8 @@ void Hint::draw(DrawTarget& target) {
     float y = 0;
     for(const auto& line : m_lines) {
         auto size = line.size();
-        FCoords dest0{(coords.size.fx() - size.fx()) / 2.f, y};
-        FCoords dest = coords.out2in(coords.in2out(dest0).round());
-        target.draw(line.texture(), program, coords, { .dest = dest });
+        FCoords dest{(coords.size.fx() - size.fx()) / 2.f, y};
+        target.draw(line.texture(), program, coords, { .dest = coords.pixelAlign(dest) });
         y += size.fy();
     }
 }

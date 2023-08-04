@@ -70,10 +70,9 @@ void Subtitles::draw(DrawTarget& target, float time) {
                 .time = time - line.addTime
             });
             auto size = line.image.size();
-            FCoords dest0{320.f - size.fx() / 2.f, bottomY - size.fy() * (2.5f + line.yOffset)};
-            FCoords dest = coords.out2in(coords.in2out(dest0).round());
+            FCoords dest{320.f - size.fx() / 2.f, bottomY - size.fy() * (2.5f + line.yOffset)};
             target.draw(line.image.texture(), program, coords, {
-                .dest = dest,
+                .dest = coords.pixelAlign(dest),
                 .area = FCoords{size.fx(), 3.f * size.fy()}
             });
         }

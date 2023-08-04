@@ -13,6 +13,7 @@ struct Coords {
     auto in2out_dim(float in) const { return scale * in; }
     auto out2in_dim(FCoords out) const { return out / scale; }
     auto out2in_dim(float out) const { return out / scale; }
+    FCoords pixelAlign(FCoords in) const { return out2in(in2out(in).round()); }
 
     Coords shifted(FCoords shift) const { return {origin + scale * shift, scale}; }
 };
