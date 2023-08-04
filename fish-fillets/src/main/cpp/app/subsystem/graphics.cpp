@@ -28,7 +28,7 @@ void Graphics::setWindowShift(FCoords shift) {
 
 void Graphics::setViewport(FCoords origin, FCoords size) {
     Log::debug<Log::graphics>("viewport origin ", origin, " size ", size);
-    m_system->setViewport(origin.round(), size.round());
+    m_system->setViewport(origin.round(), size.round()); // TODO check no-op
     recalc();
     m_system->resizeBuffers();
     m_instance.screens().resize();

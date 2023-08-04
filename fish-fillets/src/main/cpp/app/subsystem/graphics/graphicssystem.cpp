@@ -34,8 +34,8 @@ GraphicsSystem::GraphicsSystem(Instance& instance, GraphicsSystem::PlatformDispl
     m_graphics(instance.graphics()),
     m_display(std::move(display)),
     m_blurTargets{{
-        TextureTarget{*this, Graphics::baseDim.round(), m_display.size()},
-        TextureTarget{*this, Graphics::baseDim.round(), m_display.size()}}},
+        TextureTarget{*this, blurTargetDims(), m_display.size()},
+        TextureTarget{*this, blurTargetDims(), m_display.size()}}},
     m_offscreenTarget{*this, m_display.size()},
     m_shaders{instance, *this},
     m_platform{platformDetail()}
@@ -49,8 +49,16 @@ void GraphicsSystem::resizeBuffers() {
 #endif
     auto dispSize = m_display.size();
     m_offscreenTarget.resize(dispSize);
-    m_blurTargets[0].resize(Graphics::baseDim.round(), dispSize);
-    m_blurTargets[1].resize(Graphics::baseDim.round(), dispSize);
+    auto blurSize = blurTargetDims();
+    m_blurTargets[0].resize(blurSize, dispSize);
+    m_blurTargets[1].resize(blurSize, dispSize);
+}
+
+ICoords GraphicsSystem::blurTargetDims() {
+    auto dispSize = FCoords{m_display.size()};
+    auto scale = std::max(Graphics::baseDim.x / dispSize.x, Graphics::baseDim.y / dispSize.y);
+    Log::debug<Log::graphics>("Blur dims: ", (scale * dispSize).round());
+    return (scale * dispSize).round();
 }
 
 void GraphicsSystem::newFrame() {
