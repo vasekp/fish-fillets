@@ -36,19 +36,19 @@ void Graphics::setViewport(FCoords origin, FCoords size) {
 
 void Graphics::recalc() {
     FCoords displayDim = m_system->display().size();
-    float scale0 = std::min(displayDim.fx() / baseDim.fx(), displayDim.fy() / baseDim.fy());
+    float scale0 = std::min(displayDim.x / baseDim.x, displayDim.y / baseDim.y);
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     float stripSize = 64 * scale0; // TODO
-    float scale1 = std::min((displayDim.fx() - stripSize) / m_windowDim.fx(), displayDim.fy() / m_windowDim.fy());
-    float scale2 = std::min(displayDim.fx() / m_windowDim.fx(), (displayDim.fy() - stripSize) / m_windowDim.fy());
+    float scale1 = std::min((displayDim.x - stripSize) / m_windowDim.x, displayDim.y / m_windowDim.y);
+    float scale2 = std::min(displayDim.x / m_windowDim.x, (displayDim.y - stripSize) / m_windowDim.y);
     float scale = std::max(scale1, scale2);
     bool vert = scale1 > scale2;
-    FCoords center = vert ? FCoords{stripSize / 2.f, displayDim.fy() / 2.f} : FCoords{displayDim.fx() / 2.f, stripSize / 2.f};
+    FCoords center = vert ? FCoords{stripSize / 2.f, displayDim.y / 2.f} : FCoords{displayDim.x / 2.f, stripSize / 2.f};
     FCoords principal = vert ? FCoords{0.f, 1.f} : FCoords{1.f, 0.f};
     m_coords[buttons] = {center, scale0, {}, principal};
     FCoords reduceBase = vert ? FCoords{stripSize, 0.f} : FCoords{0.f, stripSize};
     FCoords reduceDim = displayDim - reduceBase;
-    float scale3 = std::min(reduceDim.fx() / baseDim.fx(), reduceDim.fy() / baseDim.fy());
+    float scale3 = std::min(reduceDim.x / baseDim.x, reduceDim.y / baseDim.y);
     m_coords[reduced] = { reduceBase + (reduceDim - scale3 * baseDim) / 2.f, scale3, baseDim};
     m_coords[window0] = {(displayDim - reduceBase - scale * m_windowDim) / 2.f + reduceBase, scale, m_windowDim};
     m_coords[window] = m_coords[window0];

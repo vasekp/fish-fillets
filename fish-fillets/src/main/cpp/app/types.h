@@ -62,54 +62,46 @@ inline constexpr Direction Direction::left = {-1, 0};
 inline constexpr Direction Direction::right = {+1, 0};
 inline constexpr Direction Direction::none = {0, 0};
 
-class FCoords {
-    int m_x;
-    int m_y;
-    float m_fx;
-    float m_fy;
+struct FCoords {
+    float x;
+    float y;
 
-public:
     template<typename T>
-    constexpr FCoords(T x, T y) : m_x(x), m_y(y), m_fx(x), m_fy(y) { }
+    constexpr FCoords(T x_, T y_) : x(x_), y(y_) { }
+    constexpr FCoords(ICoords ic) : FCoords{(float)ic.x, (float)ic.y} { }
+    constexpr FCoords() : FCoords{0.f, 0.f} { }
 
-    constexpr FCoords(ICoords ic) : FCoords(ic.x, ic.y) { }
-    constexpr FCoords() : FCoords(0, 0) { }
+    operator std::pair<float, float>() const { return {x, y}; }
+    operator vec2() const { return {x, y}; }
 
-    constexpr int x() const { return m_x; }
-    constexpr int y() const { return m_y; }
-    constexpr float fx() const { return m_fx; }
-    constexpr float fy() const { return m_fy; }
-    operator std::pair<float, float>() const { return {m_fx, m_fy}; }
-    operator vec2() const { return {m_fx, m_fy}; }
-
-    constexpr float norm2() const { return m_fx * m_fx + m_fy * m_fy; }
+    constexpr float norm2() const { return x * x + y * y; }
     constexpr float length() const { return std::sqrt(norm2()); }
     constexpr friend float length(FCoords coords) { return coords.length(); }
-    constexpr float dot(const FCoords other) const { return m_fx * other.m_fx + m_fy * other.m_fy; }
-    constexpr FCoords clamp(float maxAbs) const { return {std::clamp(m_fx, -maxAbs, maxAbs), std::clamp(m_fy, -maxAbs, maxAbs)}; }
+    constexpr float dot(const FCoords other) const { return x * other.x + y * other.y; }
+    constexpr FCoords clamp(float maxAbs) const { return {std::clamp(x, -maxAbs, maxAbs), std::clamp(y, -maxAbs, maxAbs)}; }
     constexpr FCoords project(FCoords other) const { return dot(other) / other.norm2() * other; }
-    constexpr bool within(FCoords from, FCoords to) const { return m_fx >= from.m_fx && m_fx <= to.m_fx && m_fy >= from.m_fy && m_fy <= to.m_fy; }
-    constexpr ICoords round() const { return {(int)m_fx, (int)m_fy}; }
+    constexpr bool within(FCoords from, FCoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
+    constexpr ICoords round() const { return {(int)x, (int)y}; }
     constexpr friend ICoords round(FCoords coords) { return coords.round(); }
 
-    friend constexpr FCoords operator+(FCoords a, FCoords b) { return {a.m_fx + b.m_fx, a.m_fy + b.m_fy}; }
-    friend constexpr FCoords operator-(FCoords a, FCoords b) { return {a.m_fx - b.m_fx, a.m_fy - b.m_fy}; }
+    friend constexpr FCoords operator+(FCoords a, FCoords b) { return {a.x + b.x, a.y + b.y}; }
+    friend constexpr FCoords operator-(FCoords a, FCoords b) { return {a.x - b.x, a.y - b.y}; }
     friend FCoords& operator+=(FCoords& a, FCoords b) { return a = a + b; }
     friend FCoords& operator-=(FCoords& a, FCoords b) { return a = a - b; }
-    friend constexpr FCoords operator*(float f, FCoords c) { return {f * c.m_fx, f * c.m_fy}; }
-    friend constexpr FCoords operator*(FCoords c, float f) { return {f * c.m_fx, f * c.m_fy}; }
-    friend constexpr FCoords operator/(FCoords c, float f) { return {c.m_fx / f, c.m_fy / f}; }
+    friend constexpr FCoords operator*(float f, FCoords c) { return {f * c.x, f * c.y}; }
+    friend constexpr FCoords operator*(FCoords c, float f) { return {f * c.x, f * c.y}; }
+    friend constexpr FCoords operator/(FCoords c, float f) { return {c.x / f, c.y / f}; }
 
-    friend constexpr bool operator==(FCoords a, FCoords b) { return a.m_fx == b.m_fx && a.m_fy == b.m_fy; }
-    friend constexpr bool operator>(FCoords a, FCoords b) { return std::abs(a.m_fx) > std::abs(b.m_fx) || std::abs(a.m_fy) > std::abs(b.m_fy); }
+    friend constexpr bool operator==(FCoords a, FCoords b) { return a.x == b.x && a.y == b.y; }
+    friend constexpr bool operator>(FCoords a, FCoords b) { return std::abs(a.x) > std::abs(b.x) || std::abs(a.y) > std::abs(b.y); }
     friend constexpr bool operator>=(FCoords a, FCoords b) { return a > b || a == b; }
     friend constexpr bool operator||(FCoords a, FCoords b) {
-        return (a.m_fx == 0 && b.m_fx == 0 && a.m_fy * b.m_fy > 0) || (a.m_fy == 0 && b.m_fy == 0 && a.m_fx * b.m_fx > 0);
+        return (a.x == 0 && b.x == 0 && a.y * b.y > 0) || (a.y == 0 && b.y == 0 && a.x * b.x > 0);
     }
-    bool constexpr operator!() const { return m_fx == 0 && m_fy == 0; }
+    bool constexpr operator!() const { return x == 0 && y == 0; }
     explicit constexpr operator bool() const { return !!*this; }
 
-    friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.m_fx << "," << coords.m_fy << "]"; }
+    friend std::ostream& operator<<(std::ostream& os, FCoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
 };
 
 struct Color {

@@ -10,7 +10,7 @@ void Subtitles::defineColors(const std::string& name, Color color1, Color color2
 }
 
 void Subtitles::add(const std::string& text, const std::string& colors) {
-    auto lines = m_font->breakLines(text, Graphics::baseDim.fx());
+    auto lines = m_font->breakLines(text, Graphics::baseDim.x);
     auto countLines = lines.size();
     for(const auto& line : lines) {
         auto duration = std::max((int)text.length() * timePerChar, minTimePerLine);
@@ -61,7 +61,7 @@ void Subtitles::draw(DrawTarget& target, float time) {
     if(m_lines.empty())
         return;
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
-    auto bottomY = coords.out2in(target.size()).fy();
+    auto bottomY = coords.out2in(target.size()).y;
     for(const auto& line : m_lines)
         if(line.live) {
             const auto program = m_instance.graphics().shaders().wavyText({
@@ -70,10 +70,10 @@ void Subtitles::draw(DrawTarget& target, float time) {
                 .time = time - line.addTime
             });
             auto size = line.image.size();
-            FCoords dest{320.f - size.fx() / 2.f, bottomY - size.fy() * (2.5f + line.yOffset)};
+            FCoords dest{320.f - size.x / 2.f, bottomY - size.y * (2.5f + line.yOffset)};
             target.draw(line.image.texture(), program, coords, {
                 .dest = coords.pixelAlign(dest),
-                .area = FCoords{size.fx(), 3.f * size.fy()}
+                .area = FCoords{size.x, 3.f * size.y}
             });
         }
 }

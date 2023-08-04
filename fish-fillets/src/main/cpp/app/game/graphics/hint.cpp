@@ -8,7 +8,7 @@ Hint::Hint(Instance& instance, const std::string& text, bool fullWidth) :
 {
     resize();
     const auto& coords = m_instance.graphics().coords(m_coords);
-    auto lines = m_font->breakLines(text, coords.size.fx());
+    auto lines = m_font->breakLines(text, coords.size.x);
     for(const auto& line : lines)
         m_lines.push_back(TextImage(m_instance, *m_font, line));
 }
@@ -19,9 +19,9 @@ void Hint::draw(DrawTarget& target) {
     float y = 0;
     for(const auto& line : m_lines) {
         auto size = line.size();
-        FCoords dest{(coords.size.fx() - size.fx()) / 2.f, y};
+        FCoords dest{(coords.size.x - size.x) / 2.f, y};
         target.draw(line.texture(), program, coords, { .dest = coords.pixelAlign(dest) });
-        y += size.fy();
+        y += size.y;
     }
 }
 

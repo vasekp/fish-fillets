@@ -8,7 +8,7 @@ CreditsScreen::CreditsScreen(Instance& instance) :
     auto* cImage = addImage("images/menu/credits.png", "credits");
     addImage("images/menu/credits-header.png", "header");
     m_music = m_instance.audio().loadMusic("music/kufrik.ogg");
-    m_totalHeight = cImage->size().y();
+    m_totalHeight = cImage->size().y;
 }
 
 void CreditsScreen::own_start() {
@@ -17,11 +17,11 @@ void CreditsScreen::own_start() {
 }
 
 void CreditsScreen::own_draw(DrawTarget& target) {
-    float offset = std::min(timeAlive() / 50.0f, 1.0f) * (float) m_totalHeight;
+    float offset = std::min(timeAlive() / 50.0f, 1.0f) * m_totalHeight;
     const auto program = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.draw(getImage("credits"), program, coords, {
-        .src = FCoords{0.f, offset - Graphics::baseDim.fy()},
+        .src = FCoords{0.f, offset - Graphics::baseDim.y},
         .area = Graphics::baseDim
     });
     target.draw(getImage("header"), program, coords);

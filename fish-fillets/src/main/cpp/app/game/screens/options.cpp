@@ -38,7 +38,7 @@ void OptionsOverlay::draw(DrawTarget& target) {
 
     for(const auto& bar : m_volbars)
         target.draw(&m_slider, copyProgram, coords, {
-            .dest = FCoords{bar.origin.fx() + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.fy() - volSliderOffset}
+            .dest = FCoords{bar.origin.x + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.y - volSliderOffset}
         });
 }
 
@@ -82,7 +82,7 @@ bool OptionsOverlay::pointerMove(FCoords coords) {
         return false;
     const auto& bar = *m_sliding;
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
-    float volume = exp(std::clamp((lcoords.fx() - bar.origin.fx()) / volLength, 0.f, 1.f));
+    float volume = exp(std::clamp((lcoords.x - bar.origin.x) / volLength, 0.f, 1.f));
     m_instance.audio().setVolume(bar.type, volume);
     m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100));
     return true;

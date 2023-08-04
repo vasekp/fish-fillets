@@ -46,8 +46,8 @@ void Pedometer::draw(DrawTarget& target, float time) {
     for(auto x = 0u; x < m_digits.size(); x++) {
         float y = std::min((float)m_digits[x], yBase);
         target.draw(&m_digImage, copyProgram, coords, {
-           .src = FCoords{0.f, (9.f - y) * digitSize.fy()},
-           .dest = digitArray + FCoords{x * digitSize.fx(), 0.f},
+           .src = FCoords{0.f, (9.f - y) * digitSize.y},
+           .dest = digitArray + FCoords{x * digitSize.x, 0.f},
            .area = digitSize
         });
     }

@@ -78,13 +78,13 @@ bool LevelInput::pointerMove(FCoords coords) {
     if(timeDiff > dirpadHistoryLength)
         m_dirpad.history.pop_back();
     ICoords dir{};
-    if(diff.fx() > 2.f * std::abs(diff.fy()))
+    if(diff.x > 2.f * std::abs(diff.y))
         dir = Direction::right;
-    else if(diff.fx() < -2.f * std::abs(diff.fy()))
+    else if(diff.x < -2.f * std::abs(diff.y))
         dir = Direction::left;
-    else if(diff.fy() > 2.f * std::abs(diff.fx()))
+    else if(diff.y > 2.f * std::abs(diff.x))
         dir = Direction::down;
-    else if(diff.fy() < -2.f * std::abs(diff.fx()))
+    else if(diff.y < -2.f * std::abs(diff.x))
         dir = Direction::up;
     Log::verbose<Log::input>("move state=", (int)m_dirpad.state, " length=", diff.length(), " dir=", dir,
             " timediff=", std::chrono::duration<float>(timeDiff).count());
@@ -255,7 +255,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
         FCoords imgSize = image.size();
-        float scale = std::min(extent.fx() / imgSize.fx(), extent.fy() / imgSize.fy());
+        float scale = std::min(extent.x / imgSize.x, extent.y / imgSize.y);
         FCoords from = center - scale / 2.f * imgSize;
         FCoords to = center + scale / 2.f * imgSize;
         target.draw(&image, alphaProgram, coords, { .srcSize = to - from, .dest = from });

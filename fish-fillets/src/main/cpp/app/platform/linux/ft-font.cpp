@@ -129,7 +129,7 @@ ImageData FTFont::own_renderText(const std::string& text) const {
                     " at ", pen, " ", bmpGlyph->left, " ", bmpGlyph->top,
                     " ", bmpGlyph->bitmap.width, "x", bmpGlyph->bitmap.rows,
                     " advance ", from266(slot->advance.x), ", ", from266(slot->advance.y));
-            blend(bmpGlyph->bitmap, pen.x() + bmpGlyph->left, pen.y() - bmpGlyph->top, false);
+            blend(bmpGlyph->bitmap, (int)pen.x + bmpGlyph->left, (int)pen.y - bmpGlyph->top, false);
             FT_Done_Glyph(glyph);
             pen += FCoords{from266(slot->advance.x), from266(slot->advance.y)};
         }
@@ -144,7 +144,7 @@ ImageData FTFont::own_renderText(const std::string& text) const {
                 continue;
             }
             auto slot = m_face->glyph;
-            blend(slot->bitmap, pen.x() + slot->bitmap_left, pen.y() - slot->bitmap_top, true);
+            blend(slot->bitmap, (int)pen.x + slot->bitmap_left, (int)pen.y - slot->bitmap_top, true);
             pen += FCoords{from266(slot->advance.x), from266(slot->advance.y)};
         }
     }

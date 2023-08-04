@@ -8,7 +8,7 @@
 class CreditsScreen : public GameScreen {
     BaseInput m_input;
     AudioSource::Ref m_music;
-    unsigned m_totalHeight;
+    float m_totalHeight;
 
 public:
     CreditsScreen(Instance &);

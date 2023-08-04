@@ -11,10 +11,11 @@ void TextureTarget::bind() {
     m_framebuffer.bind();
 }
 
-void TextureTarget::resize(unsigned width, unsigned height, float scale) { // TODO log, phys?
-    m_size = {width, height};
-    auto texSize = (scale * m_size).round();
-    if(texSize != m_texture.physSize())
-        m_texture = Texture(m_system, TextureType::image, texSize, m_size, nullptr);
+void TextureTarget::resize(ICoords physSize, FCoords logSize) {
+    if(!logSize)
+        logSize = physSize;
+    m_size = logSize;
+    if(physSize != m_texture.physSize())
+        m_texture = Texture(m_system, TextureType::image, physSize, logSize, nullptr);
     m_framebuffer.texture(m_texture.native());
 }

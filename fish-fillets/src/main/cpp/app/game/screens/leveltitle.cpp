@@ -36,7 +36,7 @@ void LevelTitle::draw(DrawTarget& target) {
         return;
 
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    constexpr FCoords offset{Graphics::baseDim.fx() / 2.f - maxWidth / 2.f, startY};
+    constexpr FCoords offset{Graphics::baseDim.x / 2.f - maxWidth / 2.f, startY};
     constexpr FCoords rect{maxWidth, endY - startY};
 
     auto program = m_instance.graphics().shaders().titleText({ .color = colorBg.gl(m_opacity) });

@@ -47,11 +47,10 @@ void GraphicsSystem::resizeBuffers() {
 #ifdef FISH_FILLETS_USE_VULKAN
     m_display.recreateSwapchain();
 #endif
-    auto size = m_display.size();
-    m_offscreenTarget.resize(size.x, size.y);
-    auto scale = 1 / m_graphics.coords(Graphics::CoordSystems::base).scale;
-    m_blurTargets[0].resize(size.x, size.y, scale);
-    m_blurTargets[1].resize(size.x, size.y, scale);
+    auto dispSize = m_display.size();
+    m_offscreenTarget.resize(dispSize);
+    m_blurTargets[0].resize(Graphics::baseDim.round(), dispSize);
+    m_blurTargets[1].resize(Graphics::baseDim.round(), dispSize);
 }
 
 void GraphicsSystem::newFrame() {
@@ -103,10 +102,10 @@ void GraphicsSystem::bind(DrawTarget* target) {
     commandBuffer.beginRenderPass(vk::RenderPassBeginInfo{}
                 .setRenderPass(m_display.renderPass())
                 .setFramebuffer(ttarget->framebuffer())
-                .setRenderArea({{}, {(std::uint32_t)size.x(), (std::uint32_t)size.y()}}),
+                .setRenderArea({{}, {(std::uint32_t)size.x, (std::uint32_t)size.y}}),
             vk::SubpassContents::eInline);
-    vk::Viewport viewport{0.f, 0.f, size.fx(), size.fy(), 0.f, 1.f};
-    vk::Rect2D fullRect{{}, {(std::uint32_t)size.x(), (std::uint32_t)size.y()}};
+    vk::Viewport viewport{0.f, 0.f, size.x, size.y, 0.f, 1.f};
+    vk::Rect2D fullRect{{}, {(std::uint32_t)size.x, (std::uint32_t)size.y}};
     commandBuffer.setViewport(0, viewport);
     commandBuffer.setScissor(0, fullRect);
 #else
