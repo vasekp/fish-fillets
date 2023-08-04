@@ -59,7 +59,7 @@ public:
     std::vector<Direction> findPath(const Model* unit, ICoords target);
     std::vector<Direction> randomPath(const Model* unit, int minDistance);
 
-    void animate(float dt, float speed = speed_normal);
+    void animate(std::chrono::duration<float> dt, float speed = speed_normal);
 
 private:
     constexpr static unsigned maxDim = Shape::maxSize;

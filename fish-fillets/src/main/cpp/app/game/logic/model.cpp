@@ -60,9 +60,9 @@ bool Model::syncFall(const Model* other) {
         return false;
 }
 
-void Model::deltaMove(float dt, float speed) {
+void Model::deltaMove(std::chrono::duration<float> dt, float speed) {
     if(m_move && m_action != Action::busy) {
-        m_delta += (falling() ? fallSpeed : baseSpeed) * dt * speed * m_warp * FCoords(m_move);
+        m_delta += dt / baseTime * speed * m_warp * FCoords(m_move);
         if (m_delta >= m_move) {
             m_position += m_move;
             m_delta -= m_move;

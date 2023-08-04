@@ -55,7 +55,7 @@ void Level::reinit(bool fromScript) {
 }
 
 
-void Level::update(float dt) {
+void Level::update(std::chrono::duration<float> dt) {
     layout().animate(dt, isBusy(BusyReason::loading)
             ? LevelLayout::speed_loading
             : rules().isVintage()
@@ -160,7 +160,7 @@ void Level::dispatchMoveQueue() {
         for(auto& transition : m_transitions)
             transition.callback();
         m_transitions.clear();
-        layout().animate(0.f, LevelLayout::speed_instant);
+        layout().animate({}, LevelLayout::speed_instant);
         rules().update();
     }
 }

@@ -64,7 +64,7 @@ public:
 
     void init();
     void reinit(bool fromScript = false);
-    void update(float dt);
+    void update(std::chrono::duration<float> dt);
     void tick();
     void save(bool fromScript = false);
     void load(bool fromScript = false);

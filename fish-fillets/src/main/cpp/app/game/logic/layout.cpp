@@ -75,7 +75,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
     return ret;
 }
 
-void LevelLayout::animate(float dt, float speed) {
+void LevelLayout::animate(std::chrono::duration<float> dt, float speed) {
     for (auto* model: m_models_adapted) {
         if (model->moving()) {
             auto d = model->movingDir();
@@ -87,7 +87,7 @@ void LevelLayout::animate(float dt, float speed) {
                 m_level.rules().registerMotion(model, d);
         }
         if(auto [shift, speed] = model->viewShift(); speed)
-            shift += dt * speed;
+            shift += dt.count() * speed;
     }
 }
 

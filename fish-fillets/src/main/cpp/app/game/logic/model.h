@@ -139,7 +139,7 @@ public:
     void turn();
     void displace(ICoords d, bool pushing = false);
     bool syncFall(const Model* other);
-    void deltaMove(float dt, float speed = 1.f);
+    void deltaMove(std::chrono::duration<float> dt, float speed = 1.f);
     void instaMove();
     void deltaStop();
     void die();
@@ -151,8 +151,7 @@ public:
 
     static Effect readEffect(const std::string& name);
 
-    constexpr static float baseSpeed = 2.f/.6f; // Ideally such that 6 frames (0.6s) are displayed, but that would be too slow, so take half of that.
-    constexpr static float fallSpeed = baseSpeed;
+    constexpr static auto baseTime = 300ms; // 3 frames at 10 FPS. Swimming animations have 6 frames, but that would be too slow. Only half will be seen unless motion continues in the same direction.
     constexpr static float warpIncrement = .2f;
 };
 
