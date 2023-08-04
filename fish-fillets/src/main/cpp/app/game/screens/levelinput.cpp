@@ -33,13 +33,13 @@ bool LevelInput::keyDown(Key key) {
     return m_screen.keypress(key);
 }
 
-Key LevelInput::pool() {
-    if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
+Key LevelInput::poll() {
+    if(auto key = m_instance.inputSourceMasked().pollKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
         if(std::chrono::steady_clock::now() - m_dirpad.touchTime < dirpadRepeatDelay)
             return Key::none;
-        Log::debug<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
+        Log::debug<Log::input>("Input: sending from POLL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
     } else
         return Key::none;

@@ -70,7 +70,7 @@ public:
     void resize();
     void update();
     void draw(DrawTarget& target);
-    Key pool();
+    Key poll();
 
 private:
     const Button* findButton(FCoords pos);

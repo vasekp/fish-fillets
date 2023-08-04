@@ -128,7 +128,7 @@ void XInput::ping() {
     }
 }
 
-Key XInput::poolKey() {
+Key XInput::pollKey() {
     return m_lastKey;
 }
 

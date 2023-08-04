@@ -307,7 +307,7 @@ void LevelRules::update() {
             m_keyQueue.pop_front();
             if(m_keyQueue.empty())
                 m_queueFixed = false;
-        } else if(auto key = m_level.input().pool(); key != Key::none && m_level.accepting() && !m_vintage)
+        } else if(auto key = m_level.input().poll(); key != Key::none && m_level.accepting() && !m_vintage)
             processKey(key);
     }
 

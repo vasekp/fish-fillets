@@ -156,7 +156,7 @@ void AndroidInput::ping() {
     }
 }
 
-Key AndroidInput::poolKey() {
+Key AndroidInput::pollKey() {
     return m_lastKey;
 }
 

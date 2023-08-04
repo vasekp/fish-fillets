@@ -28,7 +28,7 @@ public:
 
     bool processEvent(AInputEvent* event);
     void ping() override;
-    Key poolKey() override;
+    Key pollKey() override;
     void reset() override;
     FCoords hover() override;
 };
