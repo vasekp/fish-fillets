@@ -33,13 +33,13 @@ std::unique_ptr<PlatformDetail> GraphicsSystem::platformDetail() {
 GraphicsSystem::GraphicsSystem(Instance& instance, GraphicsSystem::PlatformDisplay&& display) :
     m_graphics(instance.graphics()),
     m_display(std::move(display)),
-    m_blurTargets{*this, *this},
-    m_offscreenTarget(*this),
-    m_shaders(instance, *this),
+    m_blurTargets{{
+        TextureTarget{*this, Graphics::baseDim.round(), m_display.size()},
+        TextureTarget{*this, Graphics::baseDim.round(), m_display.size()}}},
+    m_offscreenTarget{*this, m_display.size()},
+    m_shaders{instance, *this},
     m_platform{platformDetail()}
-{
-    resizeBuffers();
-}
+{ }
 
 GraphicsSystem::~GraphicsSystem() = default;
 

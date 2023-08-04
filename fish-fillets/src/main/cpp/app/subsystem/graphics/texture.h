@@ -23,6 +23,7 @@ public:
     Texture(GraphicsSystem& system, TextureType type, ICoords physSize, FCoords logSize, std::uint8_t* data);
 
     FCoords logSize() const { return m_logSize; }
+    FCoords& logSize() { return m_logSize; }
     ICoords physSize() const { return m_physSize; }
     const PlatformType& native() const { return m_native; }
 

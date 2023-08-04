@@ -3,11 +3,11 @@
 namespace ogl {
 
     Framebuffer::Framebuffer(const ogl::Display& display, const ogl::Texture& texture) :
-        m_ref(display.ref()),
-        m_texture(&texture)
+        m_ref(display.ref())
     {
         glGenFramebuffers(1, &m_name);
         Log::verbose<Log::graphics>("framebuffer: generate ", m_name);
+        this->texture(texture);
     }
 
     Framebuffer::~Framebuffer() {
