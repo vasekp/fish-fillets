@@ -27,7 +27,7 @@ Model* LevelLayout::getModel(int index) const {
 
 Model* LevelLayout::modelAt(ICoords coords) const {
     auto [x, y] = coords;
-    if(x < 0 || x >= width() || y < 0 || y >= height())
+    if(x < 0 || x >= m_width || y < 0 || y >= m_height)
         return nullptr;
     auto it = std::find_if(models().begin(), models().end(), [coords](const Model* model) {
         return model->shape().covers(coords - model->xy());
@@ -134,21 +134,23 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
         if(model == unit || model->hidden() || model->driven())
             continue;
         auto [x, y] = model->xy();
-        for(auto dx = 0u; dx < model->shape().width(); dx++)
-            for(auto dy = 0u; dy < model->shape().height(); dy++)
+        auto width = model->shape().width(),
+             height = model->shape().height();
+        for(auto dx = 0u; dx < width; dx++)
+            for(auto dy = 0u; dy < height; dy++)
                 occupied[y + dy][x + dx] = occupied[y + dy][x + dx] || model->shape()[dy][dx];
     }
     /* Also avoid borders */
     if(unit->goal() == Model::Goal::escape) {
-      for(auto x = 0; x < width(); x++)
-          occupied[0][x] = occupied[height() - 1][x] = true;
-      for(auto y = 0; y < height(); y++)
-          occupied[y][0] = occupied[y][width() - 1] = true;
+      for(auto x = 0; x < m_width; x++)
+          occupied[0][x] = occupied[m_height - 1][x] = true;
+      for(auto y = 0; y < m_height; y++)
+          occupied[y][0] = occupied[y][m_width - 1] = true;
     } else {
-      for(auto x = 0; x < width(); x++)
-          occupied[height()][x] = true;
-      for(auto y = 0; y < height(); y++)
-          occupied[y][width()] = true;
+      for(auto x = 0; x < m_width; x++)
+          occupied[m_height][x] = true;
+      for(auto y = 0; y < m_height; y++)
+          occupied[y][m_width] = true;
     }
     /* Extend occupied fields to the left and above, as unit covers [x, x+unitWidth) × [y, y + unitHeight)
      * and thus can't start where it could clash with an occupied field due to its nonunit size */
@@ -164,7 +166,7 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
 }
 
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
-    if(target.x < 0 || target.x >= width() || target.y < 0 || target.y > height())
+    if(target.x < 0 || target.x >= m_width || target.y < 0 || target.y > m_height)
         return {};
     ICoords start = unit->xyFinal();
     Log::debug<Log::gotos>("path from ", start, " to ", target, ":");
@@ -197,7 +199,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     while(!queue.empty()) {
         auto [coords, dir] = queue.front();
         queue.pop_front();
-        if(coords.x < 0 || coords.x >= width() || coords.y < 0 || coords.y >= height() || occupied[coords.y][coords.x]) {
+        if(coords.x < 0 || coords.x >= m_width || coords.y < 0 || coords.y >= m_height || occupied[coords.y][coords.x]) {
             Log::verbose<Log::gotos>(coords, " inaccessible");
             continue;
         }
@@ -244,7 +246,7 @@ std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistanc
         auto [coords, pair] = queue.front();
         auto [dir, dist] = pair;
         queue.pop_front();
-        if(coords.x < 0 || coords.x >= width() || coords.y < 0 || coords.y >= height() || occupied[coords.y][coords.x]) {
+        if(coords.x < 0 || coords.x >= m_width || coords.y < 0 || coords.y >= m_height || occupied[coords.y][coords.x]) {
             Log::verbose<Log::gotos>(coords, " inaccessible");
             continue;
         }

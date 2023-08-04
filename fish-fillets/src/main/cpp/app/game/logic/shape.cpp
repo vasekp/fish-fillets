@@ -37,10 +37,10 @@ bool lineIntersect(const std::bitset<Shape::maxSize>& a, const std::bitset<Shape
 }
 
 bool Shape::intersects(const Shape& other, ICoords d) const {
-    if(d.x > (int)width() || d.y > (int)height() || -d.x > (int)other.width() || -d.y > (int)other.height())
+    if(d.x > (int)m_width || d.y > (int)m_height || -d.x > (int)other.width() || -d.y > (int)other.height())
         return false;
     if(d.y >= 0) {
-        for(auto i = (unsigned)d.y; i < height(); i++) {
+        for(auto i = (unsigned)d.y; i < m_height; i++) {
             if(i - d.y >= other.height())
                 break;
             const auto& bits1 = m_bits[i];
@@ -50,7 +50,7 @@ bool Shape::intersects(const Shape& other, ICoords d) const {
         }
     } else {
         for(auto i2 = (unsigned)(-d.y); i2 < other.height(); i2++) {
-            if(i2 + d.y >= height())
+            if(i2 + d.y >= m_height)
                 break;
             const auto& bits1 = m_bits[i2 + d.y];
             const auto& bits2 = other.m_bits[i2];
@@ -62,7 +62,7 @@ bool Shape::intersects(const Shape& other, ICoords d) const {
 }
 
 bool Shape::covers(ICoords xy) const {
-    if(xy.x < 0 || xy.y < 0 || xy.x >= (int)width() || xy.y >= (int)height())
+    if(xy.x < 0 || xy.y < 0 || xy.x >= (int)m_width || xy.y >= (int)m_height)
         return false;
     else
         return m_bits[xy.y][xy.x];
