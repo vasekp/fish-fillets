@@ -14,10 +14,10 @@ std::pair<Display*, Window> initWindow() {
 
     XSetWindowAttributes swa;
     swa.event_mask = ButtonPressMask | ButtonReleaseMask | PointerMotionMask 
-        |
-        KeyPressMask | KeyReleaseMask | StructureNotifyMask;
+        | KeyPressMask | KeyReleaseMask
+        | StructureNotifyMask | PropertyChangeMask;
     Window win = XCreateWindow(dpy, root, 0, 0, 600, 600, 0,
-            CopyFromParent, InputOutput, CopyFromParent, CWEventMask, 
+            CopyFromParent, InputOutput, CopyFromParent, CWEventMask,
             &swa);
 
     XSetWindowAttributes xattr;

@@ -40,18 +40,18 @@ void GameScreen::own_resize() {
 }
 
 void GameScreen::pause() {
-    Log::debug<Log::lifecycle>("screen: pause");
     if(!m_running)
-        throw std::logic_error("pause() while not running");
+        return;
+    Log::debug<Log::lifecycle>("screen: pause");
     m_pauseTime = std::chrono::steady_clock::now();
     m_running = false;
     own_pause();
 }
 
 void GameScreen::resume() {
-    Log::debug<Log::lifecycle>("screen: resume");
     if(m_running)
-        throw std::logic_error("resume() while already running");
+        return;
+    Log::debug<Log::lifecycle>("screen: resume");
     m_relStartTime = std::chrono::steady_clock::now() - (m_pauseTime - m_relStartTime);
     m_running = true;
     own_resume();

@@ -1,16 +1,19 @@
 #include "xinstance.h"
 #include "subsystem/graphics.h"
+#include "game/screens/screenmanager.h"
 
 #include <locale>
 
 XInstance::XInstance(Display* dpy, Window win) :
     Instance(std::make_unique<LinuxFiles>()),
+    m_display(dpy),
+    m_window(win),
     m_input(*this),
     m_sink(audio())
 {
-    auto wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-    XSetWMProtocols(dpy, win, &wmDeleteMessage, 1);
-    m_deleteAtom = wmDeleteMessage;
+    m_atoms["WM_DELETE_WINDOW"] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+    m_atoms["WM_STATE"] = XInternAtom(dpy, "WM_STATE", False);
+    XSetWMProtocols(dpy, win, &m_atoms["WM_DELETE_WINDOW"], 1);
     init();
 
 #ifdef FISH_FILLETS_USE_VULKAN
@@ -53,9 +56,32 @@ void XInstance::dispatchEvent(const XEvent& event) {
                 break;
             }
         case ClientMessage:
-            if((Atom)event.xclient.data.l[0] == m_deleteAtom) {
+            if((Atom)event.xclient.data.l[0] == m_atoms["WM_DELETE_WINDOW"]) {
                 Log::info<Log::lifecycle>("Quitting");
                 running = false;
+            }
+            break;
+        case PropertyNotify:
+            {
+                if(event.xproperty.atom != m_atoms["WM_STATE"])
+                    break;
+                Atom type;
+                int format;
+                unsigned long* state;
+                unsigned long after;
+                unsigned long length;
+                do {
+                    auto status = XGetWindowProperty(m_display, m_window, event.xproperty.atom,
+                                                0, 1, 0,
+                                                m_atoms["WM_STATE"], &type, &format,
+                                                &length, &after, (unsigned char**)&state);
+                } while(!length);
+                Log::debug<Log::platform>("X window state: ", *state);
+                if(*state == IconicState)
+                    screens().pause();
+                else
+                    screens().resume();
+                XFree(state);
             }
             break;
         default:

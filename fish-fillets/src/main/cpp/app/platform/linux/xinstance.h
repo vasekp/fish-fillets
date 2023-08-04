@@ -12,11 +12,13 @@
 #include <X11/XKBlib.h>
 
 class XInstance : public Instance {
+    Display* m_display;
+    Window m_window;
     LinuxFiles m_files;
     XInput m_input;
     AlsaSink m_sink;
     ICoords m_lastSize;
-    Atom m_deleteAtom;
+    std::map<std::string, Atom> m_atoms;
 
 public:
     XInstance(Display* dpy, Window window);
