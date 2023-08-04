@@ -347,9 +347,10 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         if(!param.empty()) {
             auto string = dialog.texts.at(lang);
             auto ix = string.find("%1");
-            if(ix == std::string::npos)
-                throw std::runtime_error("replacement required but dialog text does not contain '%1'");
-            string.replace(ix, 2, param);
+            if(ix != std::string::npos)
+                string.replace(ix, 2, param);
+            else
+                Log::error("replacement required but dialog text does not contain '%1'");
             m_screen.addSubtitle(string, dialog.colors);
         } else
             m_screen.addSubtitle(dialog.texts.at(lang), dialog.colors);
