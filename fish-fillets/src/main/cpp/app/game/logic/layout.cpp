@@ -71,7 +71,7 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
         }
         queue.pop_front();
     }
-    Log::verbose<Log::motion>("Obstacles: ", (int)ret.size());
+    Log::verbose<Log::motion>("Obstacles: ", ret.size());
     return ret;
 }
 

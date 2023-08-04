@@ -84,7 +84,7 @@ bool OptionsOverlay::pointerMove(FCoords coords) {
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
     float volume = exp(std::clamp((lcoords.x - bar.origin.x) / volLength, 0.f, 1.f));
     m_instance.audio().setVolume(bar.type, volume);
-    m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100));
+    m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100.f));
     return true;
 }
 
