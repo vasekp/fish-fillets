@@ -103,8 +103,6 @@ public:
 
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
 
-    int x() const { return m_position.x; }
-    int y() const { return m_position.y; }
     ICoords xy() const { return m_position; }
     FCoords fxy() const;
     ICoords xyFinal() const { return m_position + m_move; }

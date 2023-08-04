@@ -92,9 +92,8 @@ void LevelLayout::animate(float dt, float speed) {
 }
 
 Direction LevelLayout::borderDir(const Model* model) const {
-    auto x = model->x(), y = model->y(),
-        width = (int)model->shape().width(),
-        height = (int)model->shape().height();
+    auto [x, y] = model->xy();
+    auto [width, height] = model->size();
     if(isOut(model))
         return Direction::none;
     else if(x <= 0)
@@ -110,9 +109,8 @@ Direction LevelLayout::borderDir(const Model* model) const {
 }
 
 bool LevelLayout::isOut(const Model* model) const {
-    auto x = model->x(), y = model->y(),
-        width = (int)model->shape().width(),
-        height = (int)model->shape().height();
+    auto [x, y] = model->xy();
+    auto [width, height] = model->size();
     return x + width <= 0 || y + height <= 0 || x >= m_width || y >= m_height;
 }
 
