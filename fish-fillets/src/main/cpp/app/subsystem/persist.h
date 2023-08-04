@@ -32,7 +32,7 @@ private:
     void save();
 
     constexpr static const char* filename = "./persist.lua";
-    constexpr static std::chrono::duration interval = 3000ms;
+    constexpr static auto interval = 3s;
 };
 
 #endif //FISH_FILLETS_PERSIST_H

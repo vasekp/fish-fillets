@@ -29,8 +29,8 @@ private:
     constexpr static Color colorFg{255, 210, 40};
     constexpr static Color colorBg{40, 20, 6};
     constexpr static FCoords shadow{2.f, 2.f};
-    constexpr static std::chrono::steady_clock::duration lingerTime = 1200ms;
-    constexpr static std::chrono::steady_clock::duration fadeoutTime = 300ms;
+    constexpr static auto lingerTime = 1200ms;
+    constexpr static auto fadeoutTime = 300ms;
 };
 
 #endif //FISH_FILLETS_LEVEL_TITLE_H

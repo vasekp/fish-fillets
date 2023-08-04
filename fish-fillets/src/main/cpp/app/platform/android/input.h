@@ -19,8 +19,8 @@ class AndroidInput : public IInputSource {
     bool m_pointerHandled;
     FCoords m_lastHover;
 
-    constexpr static std::chrono::steady_clock::duration doubletapTime = 300ms;
-    constexpr static std::chrono::steady_clock::duration longpressTime = 500ms;
+    constexpr static auto doubletapTime = 300ms;
+    constexpr static auto longpressTime = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
 public:

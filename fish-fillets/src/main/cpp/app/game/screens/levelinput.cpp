@@ -37,8 +37,7 @@ Key LevelInput::pool() {
     if(auto key = m_instance.inputSourceMasked().poolKey(); key != Key::none)
         return key;
     else if(m_dirpad.state == DirpadState::follow) {
-        auto now = std::chrono::steady_clock::now();
-        if(now - m_dirpad.touchTime < dirpadRepeatDelay)
+        if(std::chrono::steady_clock::now() - m_dirpad.touchTime < dirpadRepeatDelay)
             return Key::none;
         Log::debug<Log::input>("Input: sending from POOL: ", m_dirpad.lastNonzeroDir);
         return Input::toKey(m_dirpad.lastNonzeroDir);
@@ -106,7 +105,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastDir = dir;
                 m_dirpad.lastNonzeroDir = dir;
-                m_dirpad.touchTime = std::chrono::steady_clock::now();
+                m_dirpad.touchTime = now;
                 m_dirpad.state = DirpadState::follow;
                 return true;
             } else
@@ -158,9 +157,10 @@ bool LevelInput::doubleTap(FCoords coords) {
         m_dirpad.state = DirpadState::ignore;
         return ret;
     }
-    m_dirpad.touchTime = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
+    m_dirpad.touchTime = now;
     m_dirpad.history.clear();
-    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
+    m_dirpad.history.emplace_front(now, coords);
     m_dirpad.state = DirpadState::wait;
     return true;
 }
@@ -217,15 +217,15 @@ void LevelInput::flashButton(Key which) {
 
 void LevelInput::update() {
     // update buttons
-    auto time = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
     for(auto& button : m_buttons) {
         if(button.flashing) {
             if(button.flashTime == absolutePast)
-                button.flashTime = time;
-            else if(button.flashTime + flashDuration < time)
+                button.flashTime = now;
+            else if(button.flashTime + flashDuration < now)
                 button.flashing = false;
         }
-        if(button.flashing && ((int)((time - button.flashTime) * 5 / flashDuration) & 1) == 0)
+        if(button.flashing && ((int)((now - button.flashTime) * 5 / flashDuration) & 1) == 0)
             button.alpha = alphaFlash;
         else if(!button.enabled)
             button.alpha = alphaDisabled;

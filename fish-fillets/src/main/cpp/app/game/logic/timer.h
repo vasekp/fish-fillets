@@ -24,7 +24,7 @@ public:
 private:
     void worker();
 
-    constexpr static std::chrono::duration interval = 100ms;
+    constexpr static auto interval = 100ms;
 };
 
 #endif //FISH_FILLETS_TIMER_H

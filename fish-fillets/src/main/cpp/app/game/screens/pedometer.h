@@ -41,7 +41,7 @@ private:
     static constexpr ICoords pos{193, 141};
     static constexpr FCoords digitArray{275, 177};
     static constexpr FCoords digitSize{19, 24};
-    static constexpr std::chrono::steady_clock::duration digitTime = 250ms;
+    static constexpr auto digitTime = 250ms;
 };
 
 #endif //FISH_FILLETS_GAME_PEDOMETER_H

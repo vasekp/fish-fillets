@@ -86,9 +86,9 @@ private:
     constexpr static float arrowSize = 64.f;
     constexpr static float buttonSize = 48.f;
     constexpr static float buttonFontSize = 40.f;
-    constexpr static std::chrono::steady_clock::duration dirpadAppearTime = 300ms;
-    constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = 100ms;
-    constexpr static std::chrono::steady_clock::duration dirpadRepeatDelay = 500ms;
+    constexpr static auto dirpadAppearTime = 300ms;
+    constexpr static auto dirpadHistoryLength = 100ms;
+    constexpr static auto dirpadRepeatDelay = 500ms;
     constexpr static auto flashDuration = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
