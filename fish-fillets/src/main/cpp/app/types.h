@@ -24,6 +24,11 @@ struct ICoords {
     int x;
     int y;
 
+    template<typename T> // TODO concept
+    constexpr ICoords(T x_, T y_) : x(x_), y(y_) { }
+
+    ICoords() : x(0), y(0) { }
+
     static const ICoords up;
     static const ICoords down;
     static const ICoords left;
@@ -35,6 +40,8 @@ struct ICoords {
     friend ICoords operator-(ICoords a, ICoords b) { return {a.x - b.x, a.y - b.y}; }
     friend ICoords& operator+=(ICoords& a, ICoords b) { a.x += b.x; a.y += b.y; return a; }
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
+    friend ICoords operator*(ICoords a, int s) { return {s*a.x, s*a.y}; }
+    friend ICoords operator*(int s, ICoords a) { return {s*a.x, s*a.y}; }
     bool within(ICoords from, ICoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
 
     bool operator!() const { return x == 0 && y == 0; }

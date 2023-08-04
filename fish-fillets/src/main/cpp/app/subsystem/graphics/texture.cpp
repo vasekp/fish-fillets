@@ -2,7 +2,7 @@
 
 Texture::Texture(PlatformType&& native, FCoords logSize) :
     m_native(std::move(native)),
-    m_physSize{(int)m_native.width(), (int)m_native.height()},
+    m_physSize{m_native.width(), m_native.height()},
     m_logSize(logSize)
 { }
 

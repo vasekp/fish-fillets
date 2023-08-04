@@ -25,7 +25,7 @@ std::vector<std::string> IFont::breakLines(const std::string& text, float width)
 
 Texture IFont::renderText(Instance& instance, const std::string& text) const {
     auto [width, height, data] = own_renderText(text);
-    ICoords physSize = {(int)width, (int)height};
+    ICoords physSize = {width, height};
     FCoords logSize = FCoords{physSize} / m_scale;
     return Texture{instance.graphics().system(), TextureType::image, physSize, logSize, data.get()};
 }

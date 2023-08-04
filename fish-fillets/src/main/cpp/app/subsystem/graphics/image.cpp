@@ -28,7 +28,7 @@ PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
 
 void PNGImage::render() {
     auto [width, height, data] = decoders::png(m_instance, m_filename);
-    m_texture = Texture{m_instance.get().graphics().system(), m_type, ICoords{(int)width, (int)height}, data.get()};
+    m_texture = Texture{m_instance.get().graphics().system(), m_type, ICoords{width, height}, data.get()};
 }
 
 TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
@@ -59,7 +59,7 @@ void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {
 
 void BufferImage::compose(ImageData& picture, ICoords origin) {
     assert(m_type == TextureType::image);
-    auto corner = origin + ICoords{(int)picture.width, (int)picture.height};
+    auto corner = origin + ICoords{picture.width, picture.height};
     if(corner.x > m_size.x || corner.y > m_size.y) {
         Log::error("BufferImage::compose picture does not fit");
         return;

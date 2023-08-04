@@ -108,7 +108,7 @@ public:
     ICoords xy() const { return m_position; }
     FCoords fxy() const;
     ICoords xyFinal() const { return m_position + m_move; }
-    FCoords size() const { return {shape().width(), shape().height()}; }
+    ICoords size() const { return {shape().width(), shape().height()}; }
 
     Type type() const { return m_type; }
     SupportType supportType() const { return m_supportType; };

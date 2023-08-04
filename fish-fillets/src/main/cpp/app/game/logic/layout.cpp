@@ -195,7 +195,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right})
         queue.emplace_back(start + dir, dir);
     ICoords end{};
-    ICoords accept{(int)unitWidth - 1, (int)unitHeight - 1};
+    ICoords accept{unitWidth - 1, unitHeight - 1};
     while(!queue.empty()) {
         auto [coords, dir] = queue.front();
         queue.pop_front();

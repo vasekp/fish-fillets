@@ -67,7 +67,7 @@ public:
 
     auto width() const { return m_swapchainInfo.imageExtent.width; }
     auto height() const { return m_swapchainInfo.imageExtent.height; }
-    ICoords size() const { return {(int)width(), (int)height()}; }
+    ICoords size() const { return {width(), height()}; }
 
 private:
     vk::raii::Instance createInstance();
