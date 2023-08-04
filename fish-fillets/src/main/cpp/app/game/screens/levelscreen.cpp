@@ -100,7 +100,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
 
     auto [amplitude, period, speed] = m_waves;
 
-    float phase = std::fmod(timeAlive() * speed * 10, (float)(2 * M_PI));
+    float phase = std::fmod(timeAlive() * speed * 10.f, 2.f * std::numbers::pi_v<float>);
     const auto wavyProgram = m_instance.graphics().shaders().wavyImage({
         .amplitude = amplitude,
         .period = period,

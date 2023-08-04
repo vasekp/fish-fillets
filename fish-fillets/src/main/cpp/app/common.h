@@ -28,6 +28,7 @@
 #include <functional>
 #include <atomic>
 #include <limits>
+#include <numbers>
 
 #include "types.h"
 #include "utils.h"

@@ -71,7 +71,7 @@ void WorldMap::own_draw(DrawTarget& target) {
             if(record.solved)
                 target.draw(m_nodeImages[0], copyProgram, coords, { .dest = record.coords - nodeOffset });
         float phase = std::fmod(timeAlive(), 10.f);
-        float sin2 = 3.f * std::pow(std::sin((float)M_PI * phase), 2.f);
+        float sin2 = 3.f * std::pow(std::sin(std::numbers::pi_v<float> * phase), 2.f);
         auto base = std::min((int)sin2, 2);
         const auto alphaProgram = m_instance.graphics().shaders().alpha({ .alpha = sin2 - (float)base });
         for(const auto& record : m_open) {
