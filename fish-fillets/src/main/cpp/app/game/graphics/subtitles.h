@@ -2,14 +2,15 @@
 #define FISH_FILLETS_GAME_SUBTITLES_H
 
 #include "subsystem/graphics.h"
+#include "game/screens/liveclock.h"
 
 class Subtitles {
     struct Title {
         TextImage image;
         bool live;
         float yOffset;
-        float addTime;
-        std::chrono::duration<float> duration;
+        LiveClock::time_point addTime;
+        LiveClock::duration duration;
         unsigned groupSize;
         Color color1;
         Color color2;
@@ -19,14 +20,15 @@ class Subtitles {
     std::unique_ptr<IFont> m_font;
     std::deque<Title> m_lines;
     std::map<std::string, std::pair<Color, Color>> m_colors;
+    LiveClock::time_point m_lastUpdate;
 
 public:
     Subtitles(Instance& instance);
 
     void add(const std::string& text, const std::string& colors);
     void defineColors(const std::string& name, Color color1, Color color2);
-    void update(float absTime, float dTime);
-    void draw(DrawTarget& target, float time);
+    void update(LiveClock::time_point time);
+    void draw(DrawTarget& target, LiveClock::time_point time);
     void resize();
     void clear();
 
@@ -35,7 +37,7 @@ public:
     constexpr static float outline = 2.f;
     constexpr static auto timePerChar = 90ms;
     constexpr static auto minTimePerLine = 2500ms;
-    constexpr static float speed = 1.f; // lines per second
+    constexpr static auto newLineTime = 1s;
 };
 
 #endif //FISH_FILLETS_GAME_SUBTITLES_H

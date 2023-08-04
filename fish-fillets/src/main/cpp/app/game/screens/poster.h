@@ -31,7 +31,7 @@ private:
     void poster_display(const std::string& filename);
     void poster_translation(const std::string& text);
 
-    constexpr static float minTime = 3.f;
+    constexpr static std::chrono::steady_clock::duration minTime = 3s;
 };
 
 #endif //FISH_FILLETS_GAME_POSTER_H

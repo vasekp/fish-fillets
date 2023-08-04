@@ -27,7 +27,7 @@ void PosterScreen::own_draw(DrawTarget& target) {
 }
 
 bool PosterScreen::own_pointer(FCoords) {
-    if(timeAlive() > minTime) {
+    if(liveTime().time_since_epoch() > minTime) {
         quit();
         return true;
     } else
@@ -35,7 +35,7 @@ bool PosterScreen::own_pointer(FCoords) {
 }
 
 bool PosterScreen::own_key(Key) {
-    if(timeAlive() > minTime) {
+    if(liveTime().time_since_epoch() > minTime) {
         quit();
         return true;
     } else

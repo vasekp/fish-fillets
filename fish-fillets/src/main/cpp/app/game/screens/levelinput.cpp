@@ -212,19 +212,20 @@ void LevelInput::setRestartPossible(bool possible) {
 
 void LevelInput::flashButton(Key which) {
     keyButton(which).flashing = true;
-    keyButton(which).flashTime = 0.f;
+    keyButton(which).flashTime = absolutePast;
 }
 
-void LevelInput::update(float time) {
+void LevelInput::update() {
     // update buttons
+    auto time = std::chrono::steady_clock::now();
     for(auto& button : m_buttons) {
         if(button.flashing) {
-            if(!button.flashTime)
+            if(button.flashTime == absolutePast)
                 button.flashTime = time;
             else if(button.flashTime + flashDuration < time)
                 button.flashing = false;
         }
-        if(button.flashing && std::fmod(time - button.flashTime, flashDuration * 2 / 5) < flashDuration / 5)
+        if(button.flashing && ((int)((time - button.flashTime) * 5 / flashDuration) & 1) == 0)
             button.alpha = alphaFlash;
         else if(!button.enabled)
             button.alpha = alphaDisabled;

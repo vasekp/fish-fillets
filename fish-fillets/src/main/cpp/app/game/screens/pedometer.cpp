@@ -5,7 +5,7 @@
 
 constexpr FCoords offset{0.5f, 0.5f};
 
-Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
+Pedometer::Pedometer(Instance& instance, LevelRecord& level, LiveClock::time_point time):
         m_instance(instance),
         m_record(level),
         m_pmImage{instance, "images/menu/pedometer.png"},
@@ -32,7 +32,7 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level, float time):
     }
 }
 
-void Pedometer::draw(DrawTarget& target, float time) {
+void Pedometer::draw(DrawTarget& target, LiveClock::time_point time) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     target.draw(&m_pmImage, copyProgram, coords, { .dest = FCoords{pos} });
@@ -42,7 +42,7 @@ void Pedometer::draw(DrawTarget& target, float time) {
             if(hcoords.within(button.origin + offset, button.origin + Button::size - offset))
                 target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
     }
-    float yBase = (time - m_createTime) * digitSpeed;
+    float yBase = (time - m_createTime) / digitTime;
     for(auto x = 0u; x < m_digits.size(); x++) {
         float y = std::min((float)m_digits[x], yBase);
         target.draw(&m_digImage, copyProgram, coords, {

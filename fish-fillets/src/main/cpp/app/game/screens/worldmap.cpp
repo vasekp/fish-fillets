@@ -92,7 +92,7 @@ void WorldMap::own_draw(DrawTarget& target) {
         drawMasked(target, m_maskColors.at(Frames::options));
 
     if(m_pm && m_staticFrame != Frames::loading)
-        m_pm->draw(target, timeAlive());
+        m_pm->draw(target, liveTime());
 
     switch(m_staticFrame) {
         case Frames::loading:
@@ -164,7 +164,7 @@ bool WorldMap::own_pointer(FCoords coords) {
             lang = "cs"s;
         m_instance.screens().announceLevel(it->second.title.at(lang));
         if(record.state() == LevelState::solved)
-            m_pm.emplace(m_instance, it->second, timeAlive());
+            m_pm.emplace(m_instance, it->second, liveTime());
         else {
             staticFrame(WorldMap::Frames::loading, [this, it]() {
                 m_instance.screens().startLevel(it->second);

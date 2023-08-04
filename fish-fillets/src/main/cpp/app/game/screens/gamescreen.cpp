@@ -28,7 +28,6 @@ void GameScreen::start() {
     Log::debug<Log::lifecycle>("screen: start");
     own_start();
     resize();
-    m_relStartTime = m_pauseTime = std::chrono::steady_clock::now();
 }
 
 void GameScreen::resize() {
@@ -43,8 +42,8 @@ void GameScreen::pause() {
     if(!m_running)
         return;
     Log::debug<Log::lifecycle>("screen: pause");
-    m_pauseTime = std::chrono::steady_clock::now();
     m_running = false;
+    m_clock.pause();
     own_pause();
 }
 
@@ -52,15 +51,17 @@ void GameScreen::resume() {
     if(m_running)
         return;
     Log::debug<Log::lifecycle>("screen: resume");
-    m_relStartTime = std::chrono::steady_clock::now() - (m_pauseTime - m_relStartTime);
     m_running = true;
+    m_clock.resume();
     own_resume();
 }
 
 float GameScreen::timeAlive() {
-    return m_running
-        ? std::chrono::duration<float>(std::chrono::steady_clock::now() - m_relStartTime).count()
-        : 0;
+    return liveTime().time_since_epoch().count();
+}
+
+LiveClock::time_point GameScreen::liveTime() {
+    return m_clock.now();
 }
 
 void GameScreen::update() {

@@ -39,7 +39,7 @@ class LevelInput : public IInputSink {
         Key key;
         bool enabled = true;
         bool flashing = false;
-        float flashTime;
+        std::chrono::steady_clock::time_point flashTime;
         float alpha;
     };
     std::unique_ptr<IFont> m_buttonsFont;
@@ -68,7 +68,7 @@ public:
     bool twoPointTap() override;
 
     void resize();
-    void update(float time);
+    void update();
     void draw(DrawTarget& target);
     Key pool();
 
@@ -89,12 +89,12 @@ private:
     constexpr static std::chrono::steady_clock::duration dirpadAppearTime = 300ms;
     constexpr static std::chrono::steady_clock::duration dirpadHistoryLength = 100ms;
     constexpr static std::chrono::steady_clock::duration dirpadRepeatDelay = 500ms;
+    constexpr static auto flashDuration = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
 
     constexpr static Color colorSmall{255, 197, 102};
     constexpr static Color colorBig{162, 244, 255};
     constexpr static Color colorButtons{128, 128, 128};
-    constexpr static float flashDuration = 0.5f;
     constexpr static float alphaBase = 0.5f;
     constexpr static float alphaActive = 1.0f;
     constexpr static float alphaDisabled = 0.25f;

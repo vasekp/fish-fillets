@@ -10,7 +10,7 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         m_waves(),
         m_winSize(),
         m_subs(instance),
-        m_lastUpdate(0),
+        m_lastUpdate(),
         m_flashAlpha(0),
         m_replay(replay)
 { }
@@ -56,18 +56,18 @@ std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model)
 }
 
 void LevelScreen::own_update() {
-    auto liveTime = timeAlive();
-    auto dt = liveTime - m_lastUpdate;
+    auto time = liveTime();
+    auto dt = time - m_lastUpdate;
 
-    m_level.update(dt);
+    m_level.update(dt.count()); // TODO
 
     if(m_flashAlpha > 0)
-        m_flashAlpha = std::max(m_flashAlpha - flashDecay * dt, 0.f);
+        m_flashAlpha = std::max(m_flashAlpha - dt / flashDecay * flashInit, 0.f);
 
-    m_subs.update(liveTime, dt);
-    m_input.update(liveTime);
+    m_subs.update(time);
+    m_input.update();
 
-    m_lastUpdate = liveTime;
+    m_lastUpdate = time;
 }
 
 void LevelScreen::own_draw(DrawTarget& target) {
@@ -79,7 +79,7 @@ void LevelScreen::own_draw(DrawTarget& target) {
         target.draw(program, coords, { .area = m_winSize });
     }
 
-    m_subs.draw(target, timeAlive());
+    m_subs.draw(target, liveTime());
     if(m_hint)
         m_hint->draw(target);
     m_input.draw(target);

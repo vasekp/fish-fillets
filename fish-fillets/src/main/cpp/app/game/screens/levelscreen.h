@@ -22,7 +22,7 @@ class LevelScreen : public GameScreen {
     std::unique_ptr<Image> m_display;
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
-    float m_lastUpdate;
+    LiveClock::time_point m_lastUpdate;
     float m_flashAlpha;
     bool m_replay;
 
@@ -71,7 +71,7 @@ private:
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
 
     constexpr static float flashInit = 0.5f;
-    constexpr static float flashDecay = 1.5f; // decay speed: time = flashInit / flashDecay [s]
+    constexpr static auto flashDecay = 500ms;
     constexpr static Color ropeColor{0x30404E};
 };
 

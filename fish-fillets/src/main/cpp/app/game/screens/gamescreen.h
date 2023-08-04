@@ -5,13 +5,13 @@
 #include "subsystem/graphics.h"
 #include "subsystem/script.h"
 #include "subsystem/input.h"
+#include "liveclock.h"
 
 class GameScreen {
 protected:
     Instance& m_instance;
-    std::chrono::steady_clock::time_point m_relStartTime;
-    std::chrono::steady_clock::time_point m_pauseTime;
     bool m_running;
+    LiveClock m_clock;
 
 private:
     std::map<std::string, PNGImage> m_images;
@@ -31,6 +31,7 @@ public:
     bool keypress(Key key) { return own_key(key); }
 
     float timeAlive();
+    LiveClock::time_point liveTime();
 
 protected:
     GameScreen(Instance& instance);
