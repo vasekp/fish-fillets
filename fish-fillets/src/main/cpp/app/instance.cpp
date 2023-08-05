@@ -34,7 +34,7 @@ IInputSource& Instance::inputSourceMasked() {
 }
 
 void Instance::init() {
-    if(persist().get("subtitles", ""s).empty()) {
+    if(persist().get("subtitles", "undef"s) == "undef") {
         auto sysLang = lang();
         Log::info<Log::platform>("Lang empty, system: ", sysLang);
         persist().set("subtitles", sysLang == "cs" || sysLang == "sk" ? "cs"s : "en"s);
