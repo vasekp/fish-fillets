@@ -5,7 +5,7 @@ extern "C" {
 #include <alsa/asoundlib.h>
 }
 
-AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
+AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_pause(false), m_quit(false) {
     snd_pcm_t* alsa;
     snd_pcm_hw_params_t* hw_params;
     snd_pcm_sw_params_t* sw_params;
@@ -65,16 +65,29 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
     if(int err = snd_pcm_sw_params(alsa, sw_params); err < 0)
         Log::fatal("snd_pcm_sw_params failed: ", snd_strerror(err));
 
+    std::unique_lock lock(m_mutex);
+    m_pause.store(true, std::memory_order::release);
     m_thread = std::thread([=, this]() {
         Log::debug<Log::audio>("Audio thread started.");
-        auto buffer = std::make_unique<float[]>(bufSize);
+        m_pause.store(false, std::memory_order::release);
+        m_cond.notify_one();
 
         if(int err = snd_pcm_prepare(alsa); err < 0)
             Log::fatal("snd_pcm_prepare failed: ", snd_strerror(err));
 
+        auto buffer = std::make_unique<float[]>(bufSize);
         snd_pcm_sframes_t numFrames;
 
         while(!m_quit.load(std::memory_order::relaxed)) {
+            if(m_pause.load(std::memory_order::relaxed)) {
+                Log::debug<Log::audio>("Audio: pausing");
+                snd_pcm_pause(alsa, 1);
+                std::unique_lock lock(m_mutex);
+                m_cond.wait(lock, [this] { return !m_pause.load(std::memory_order::relaxed) || m_quit.load(std::memory_order::relaxed); });
+                Log::debug<Log::audio>("Audio: resuming");
+                snd_pcm_pause(alsa, 0);
+            }
+
             if(int err = snd_pcm_wait(alsa, millisRefresh); err < 0) {
                 Log::error("snd_pcm_wait failed: ", strerror(errno));
                 break;
@@ -94,9 +107,20 @@ AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_quit(false) {
         Log::debug<Log::audio>("Audio thread exiting.");
         snd_pcm_close(alsa);
     });
+    m_cond.wait(lock, [this] { return !m_pause.load(std::memory_order::acquire); });
 }
 
 AlsaSink::~AlsaSink() {
     m_quit.store(true, std::memory_order::relaxed);
+    m_cond.notify_one();
     m_thread.join();
+}
+
+void AlsaSink::pause() {
+    m_pause.store(true, std::memory_order::relaxed);
+}
+
+void AlsaSink::resume() {
+    m_pause.store(false, std::memory_order::relaxed);
+    m_cond.notify_one();
 }

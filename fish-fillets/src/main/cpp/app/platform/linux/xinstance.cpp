@@ -77,10 +77,13 @@ void XInstance::dispatchEvent(const XEvent& event) {
                                                 &length, &after, (unsigned char**)&state);
                 } while(!length);
                 Log::debug<Log::platform>("X window state: ", *state);
-                if(*state == IconicState)
+                if(*state == IconicState) {
                     screens().pause();
-                else
+                    m_sink.pause();
+                } else {
                     screens().resume();
+                    m_sink.resume();
+                }
                 XFree(state);
             }
             break;
