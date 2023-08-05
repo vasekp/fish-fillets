@@ -411,14 +411,12 @@ void LevelRules::checkEscape(Model* model) {
             model->displace(dir);
         }
         if(out || (m_bonusExit && model->intersects(m_bonusExit))) {
-            std::erase(m_goals, model);
             if(model == m_curFish)
-                if(!switchFish()) {
+                if(!switchFish())
                     setFish(Model::Fish::none);
-                    if(m_goals.empty())
-                        m_level.success();
-                }
             model->disappear();
+            if(solved())
+                m_level.success();
         }
     }
 }
@@ -519,7 +517,9 @@ bool LevelRules::solvable() const {
 }
 
 bool LevelRules::solved() const {
-    return std::all_of(m_goals.begin(),  m_goals.end(), [](const Model* model) {
-        return (model->goal() == Model::Goal::alive && model->alive()) || model->goal() == Model::Goal::none;
+    return std::all_of(m_goals.begin(),  m_goals.end(), [this](const Model* model) {
+        return (model->goal() == Model::Goal::escape && m_layout.isOut(model))
+            || (model->goal() == Model::Goal::alive && model->alive())
+            || (model->goal() == Model::Goal::none);
     });
 }
