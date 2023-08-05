@@ -8,6 +8,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <cmath>
+#include <version>
 
 #include <string>
 #include <vector>
@@ -28,7 +29,15 @@
 #include <functional>
 #include <atomic>
 #include <limits>
+
+#ifdef __cpp_lib_math_constants
 #include <numbers>
+#else
+namespace std::numbers {
+    template<typename T>
+    inline constexpr T pi_v = (T)3.141592653589793238462643383279502884L;
+}
+#endif
 
 #include "types.h"
 #include "utils.h"
