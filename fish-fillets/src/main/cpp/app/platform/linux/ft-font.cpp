@@ -36,6 +36,8 @@ std::vector<std::string> FTFont::own_breakLines(const std::string& text, float w
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter{};
     auto wtext = converter.from_bytes(text);
 
+    width *= 0.98; // leave some legroom
+
     float fwidth = 0.f;
     std::size_t lastBreak = 0;
     float lastBreakX = 0;
