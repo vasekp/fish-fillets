@@ -24,7 +24,8 @@ struct ICoords {
     int x;
     int y;
 
-    template<typename T> // TODO concept
+    template<typename T>
+    requires std::is_integral_v<T>
     constexpr ICoords(T x_, T y_) : x(x_), y(y_) { }
 
     ICoords() : x(0), y(0) { }
@@ -46,20 +47,10 @@ struct ICoords {
 
     bool operator!() const { return x == 0 && y == 0; }
     explicit operator bool() const { return !!*this; }
-    operator std::pair<int, int>() const { return {x, y}; }
+    friend bool operator<(const ICoords& a, const ICoords& b) { return (a.x < b.x) || (a.x == b.x && a.y < b.y); }
 
     friend std::ostream& operator<<(std::ostream& os, ICoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
 };
-
-namespace std {
-    /* Specialization for std::map<ICoords, ...> */
-    template<>
-    struct less<ICoords> {
-        bool operator() (const ICoords& a, const ICoords& b) const {
-            return less<std::pair<int, int>>{}(a, b);
-        }
-    };
-}
 
 using Direction = ICoords;
 
@@ -78,7 +69,6 @@ struct FCoords {
     constexpr FCoords(ICoords ic) : FCoords{(float)ic.x, (float)ic.y} { }
     constexpr FCoords() : FCoords{0.f, 0.f} { }
 
-    operator std::pair<float, float>() const { return {x, y}; }
     operator vec2() const { return {x, y}; }
 
     constexpr float norm2() const { return x * x + y * y; }

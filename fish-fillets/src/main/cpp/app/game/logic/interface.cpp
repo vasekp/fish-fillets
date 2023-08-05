@@ -212,7 +212,8 @@ void Level::setModelEffect(Model* model, const std::string& name) {
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    return layout().getModel(index)->xy();
+    auto [x, y] = layout().getModel(index)->xy();
+    return {x, y};
 }
 
 std::string Level::model_getAction(int index) {
@@ -316,7 +317,7 @@ void Level::model_setViewShift(int index, float dx, float dy, std::optional<floa
 
 std::pair<float, float> Level::model_getViewShift(int index) {
     auto [shift, speed] = layout().getModel(index)->viewShift();
-    return shift;
+    return {shift.x, shift.y};
 }
 
 void Level::model_setBusy(int index, bool busy) {
