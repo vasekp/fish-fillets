@@ -159,9 +159,9 @@ bool WorldMap::own_pointer(FCoords coords) {
         const auto& record = it->second;
         if(record.state() == LevelState::locked || (record.ending() && !m_showEnding))
             return false;
-        auto lang = m_instance.persist().get("subtitles", "cs"s);
+        auto lang = m_instance.persist().get("subtitles", ""s);
         if(lang.empty())
-            lang = "cs"s;
+            lang = "cs";
         m_instance.screens().announceLevel(it->second.title.at(lang));
         if(record.state() == LevelState::solved)
             m_pm.emplace(m_instance, it->second, liveTime());

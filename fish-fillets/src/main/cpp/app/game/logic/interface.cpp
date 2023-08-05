@@ -343,7 +343,7 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
         name = name.substr(0, at);
     }
     auto& dialog = m_dialogs.at(name);
-    auto lang = m_instance.persist().get("subtitles", "cs"s);
+    auto lang = m_instance.persist().get("subtitles", ""s);
     if(dialog.texts.contains(lang)) {
         if(!param.empty()) {
             auto string = dialog.texts.at(lang);
@@ -501,7 +501,9 @@ int Level::options_getInt(const std::string& name) {
 void Level::game_hint(const std::string& dialogName) {
     if(!dialogName.empty()) {
         auto& dialog = m_dialogs.at(dialogName);
-        auto lang = m_instance.persist().get("subtitles", "cs"s);
+        auto lang = m_instance.persist().get("subtitles", ""s);
+        if(lang.empty())
+            lang = "cs";
         if(dialog.texts.contains(lang))
             m_screen.showHint(dialog.texts.at(lang));
     } else

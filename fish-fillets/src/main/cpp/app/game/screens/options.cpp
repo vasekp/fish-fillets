@@ -45,7 +45,7 @@ void OptionsOverlay::draw(DrawTarget& target) {
 void OptionsOverlay::show() {
     m_visible = true;
     m_instance.inputSource().reset();
-    m_currSubs = m_instance.persist().get("subtitles", "cs"s);
+    m_currSubs = m_instance.persist().get("subtitles", ""s);
 }
 
 void OptionsOverlay::hide() {

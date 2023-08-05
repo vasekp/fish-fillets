@@ -56,7 +56,7 @@ void PosterScreen::poster_display(const std::string& filename) {
 }
 
 void PosterScreen::poster_translation(const std::string& text) {
-    auto lang = m_instance.persist().get("subtitles", "cs"s);
-    if(lang != "cs")
+    auto lang = m_instance.persist().get("subtitles", ""s);
+    if(lang == "en")
         m_hint.emplace(m_instance, text, true);
 }
