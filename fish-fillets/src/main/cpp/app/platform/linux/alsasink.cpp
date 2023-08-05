@@ -104,21 +104,62 @@ void AlsaSink::worker() {
         }
 
         if(int err = snd_pcm_wait(m_pcm, millisRefresh); err < 0) {
-            Log::error("snd_pcm_wait failed: ", strerror(errno));
-            break;
+            if(tryRestart(err))
+                continue;
+            else {
+                Log::error("snd_pcm_wait failed: ", snd_strerror(err));
+                break;
+            }
         }
 
         numFrames = std::min(snd_pcm_avail_update(m_pcm), (snd_pcm_sframes_t)m_bufSize);
         if(numFrames < 0) {
-            Log::error("snd_pcm_avail_update failed: ", snd_strerror(numFrames));
-            break;
+            if(tryRestart(numFrames))
+                continue;
+            else {
+                Log::error("snd_pcm_avail_update failed: ", snd_strerror(numFrames));
+                break;
+            }
         }
 
         m_audio.mix(buffer.get(), numFrames);
-        if(int err = snd_pcm_writei(m_pcm, (void*)buffer.get(), numFrames); err < 0)
-            Log::error("snd_pcm_writei failed: ", snd_strerror(err));
+        if(int err = snd_pcm_writei(m_pcm, (void*)buffer.get(), numFrames); err < 0) {
+            if(tryRestart(err))
+                continue;
+            else {
+                Log::error("snd_pcm_writei failed: ", snd_strerror(err));
+                break;
+            }
+        }
     }
 
     Log::debug<Log::audio>("Audio thread exiting.");
     snd_pcm_close(m_pcm);
+}
+
+bool AlsaSink::tryRestart(int err) {
+    if(err == -EPIPE) {
+        Log::debug<Log::audio>("Audio underrun, trying to restart");
+        if(err = snd_pcm_prepare(m_pcm); err == 0) {
+            Log::debug<Log::audio>("snd_pcm_prepare successful");
+            return true;
+        } else {
+            Log::debug<Log::audio>("snd_pcm_prepare failed: ", snd_strerror(err));
+            return false;
+        }
+    } else if(err == -ESTRPIPE) {
+        while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
+            std::this_thread::sleep_for(100ms);
+        if(err == 0) {
+            Log::debug<Log::audio>("snd_pcm_resume successful");
+            return true;
+        } else if(err = snd_pcm_prepare(m_pcm); err == 0) {
+            Log::debug<Log::audio>("snd_pcm_prepare successful");
+            return true;
+        } else {
+            Log::debug<Log::audio>("snd_pcm_prepare failed: ", snd_strerror(err));
+            return false;
+        }
+    } else
+        return false;
 }

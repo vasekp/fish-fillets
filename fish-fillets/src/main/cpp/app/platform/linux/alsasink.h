@@ -31,6 +31,7 @@ public:
 
 private:
     void worker();
+    bool tryRestart(int error);
 };
 
 #endif //FISH_FILLETS_LINUX_AUDIO_SINK_H
