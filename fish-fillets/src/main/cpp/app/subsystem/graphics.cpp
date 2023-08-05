@@ -38,7 +38,7 @@ void Graphics::recalc() {
     FCoords displayDim = m_system->display().size();
     float scale0 = std::min(displayDim.x / baseDim.x, displayDim.y / baseDim.y);
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
-    float stripSize = 64 * scale0; // TODO
+    float stripSize = buttonStripWidth * scale0;
     float scale1 = std::min((displayDim.x - stripSize) / m_windowDim.x, displayDim.y / m_windowDim.y);
     float scale2 = std::min(displayDim.x / m_windowDim.x, (displayDim.y - stripSize) / m_windowDim.y);
     float scale = std::max(scale1, scale2);

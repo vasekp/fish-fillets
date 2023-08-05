@@ -68,6 +68,8 @@ public:
 
 private:
     void recalc();
+
+    static constexpr float buttonStripWidth = 64.f;
 };
 
 namespace decoders {

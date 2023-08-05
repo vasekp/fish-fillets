@@ -239,7 +239,7 @@ void LevelScreen::own_resume() {
     m_level.timer().start();
 }
 
-bool LevelScreen::longPress(FCoords coords) { // TODO rename semantically
+bool LevelScreen::input_goTo(FCoords coords) {
     if(!m_level.accepting())
         return false;
     ICoords iCoords = round(coords / size_unit);
@@ -247,7 +247,7 @@ bool LevelScreen::longPress(FCoords coords) { // TODO rename semantically
     return m_level.enqueueGoTo(iCoords);
 }
 
-bool LevelScreen::doubleTap(FCoords coords) { // TODO rename semantically
+bool LevelScreen::input_switchFish(FCoords coords) {
     if(!m_level.accepting())
         return false;
     // Try find and activate fish under pointer.

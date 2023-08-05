@@ -151,7 +151,7 @@ bool LevelInput::doubleTap(FCoords coords) {
     }
     auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
     bool ret = false;
-    if(!m_screen.doubleTap(windowCoords))
+    if(!m_screen.input_switchFish(windowCoords))
         ret = m_screen.keypress(Key::space);
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
@@ -173,7 +173,7 @@ bool LevelInput::twoPointTap() {
 bool LevelInput::longPress(FCoords coords) {
     if(m_dirpad.state == DirpadState::wait) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-        bool ret = m_screen.longPress(windowCoords);
+        bool ret = m_screen.input_goTo(windowCoords);
         if(ret) {
             m_dirpad.gotoPos = coords;
             m_dirpad.state = DirpadState::goTo;

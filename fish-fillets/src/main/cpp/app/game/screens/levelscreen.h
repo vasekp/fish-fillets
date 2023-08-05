@@ -36,8 +36,8 @@ public:
     void reset();
     void exit();
 
-    bool longPress(FCoords coords);
-    bool doubleTap(FCoords coords);
+    bool input_goTo(FCoords coords);
+    bool input_switchFish(FCoords coords);
 
     void setWaves(float amplitude, float period, float speed);
     AudioData::Ref addSound(const std::string& name, const std::string& filename, bool single = false);
