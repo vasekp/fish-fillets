@@ -199,7 +199,7 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
 }
 
 void LevelScreen::playMusic(const std::string &filename) {
-    if(m_music && m_music->filename() == filename)
+    if(m_music && m_music->name() == filename)
         return;
     stopMusic();
     m_music = m_instance.audio().loadMusic(filename);

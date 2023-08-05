@@ -1,20 +1,18 @@
-#include <utility>
-
 #include "subsystem/audio.h"
 
-AudioSource::AudioSource(AudioData::Ref data, AudioType type, Private) :
-    AudioSourceBase(type),
+AudioSource::Ref AudioSource::create(const AudioData::Ref& data, AudioType type) {
+    return std::make_shared<DataAudioSource>(data, type);
+}
+
+DataAudioSource::DataAudioSource(AudioData::Ref data, AudioType type) :
+    AudioSource(type),
     m_data(std::move(data)),
     m_samplesTotal(m_data->samples()),
     m_sampleIndex(),
     m_repeat(false)
 { }
 
-AudioSource::Ref AudioSource::create(const AudioData::Ref& data, AudioType type) {
-    return std::make_shared<AudioSource>(data, type, Private::tag);
-}
-
-void AudioSource::mixin(float *output, std::size_t numSamples, float refVolume) {
+void DataAudioSource::mixin(float *output, std::size_t numSamples, float refVolume) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);
     float volume = refVolume * m_volume;
     for (auto i = 0u; i < countRead; i++)
@@ -26,12 +24,12 @@ void AudioSource::mixin(float *output, std::size_t numSamples, float refVolume) 
     }
 }
 
-bool AudioSource::done() const {
+bool DataAudioSource::done() const {
     return m_sampleIndex == m_samplesTotal;
 }
 
 AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
-    AudioSourceBase(type),
+    AudioSource(type),
     m_start(), m_last(),
     m_curIndex(0), m_total(0),
     m_name(std::move(name))

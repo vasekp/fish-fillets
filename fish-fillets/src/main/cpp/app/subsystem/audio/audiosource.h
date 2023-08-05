@@ -7,51 +7,48 @@ enum class AudioType {
     talk
 };
 
-class AudioSourceBase { // TODO rename
+class AudioSource {
 protected:
     AudioType m_type;
     float m_volume = 1.0f;
     float m_dialog = false;
 
 public:
-    AudioSourceBase(AudioType type) : m_type(type) { }
-    virtual ~AudioSourceBase() { }
+    AudioSource(AudioType type) : m_type(type) { }
+    virtual ~AudioSource() { }
+
+    using Ref = std::shared_ptr<AudioSource>;
+    static Ref create(const AudioData::Ref&, AudioType type);
 
     void setVolume(float volume) { m_volume = volume; }
     void setDialog(bool isDialog) { m_dialog = isDialog; }
+    virtual void setRepeat(bool repeat) = 0;
     bool isDialog() const { return m_dialog; }
     AudioType type() const { return m_type; }
     virtual std::string_view name() const = 0;
     virtual void mixin(float output[], std::size_t numSamples, float refVolume) = 0;
     virtual bool done() const = 0;
-    using Ref = std::shared_ptr<AudioSourceBase>;
 };
 
-class AudioSource : public AudioSourceBase {
+class DataAudioSource : public AudioSource {
     AudioData::Ref m_data;
     std::size_t m_samplesTotal;
     std::size_t m_sampleIndex;
     bool m_repeat;
 
-    enum class Private { tag };
-
 public:
-    AudioSource(AudioData::Ref data, AudioType type, Private);
-    AudioSource(const AudioSource&) = delete;
-    AudioSource& operator=(const AudioSource&) = delete;
+    DataAudioSource(AudioData::Ref data, AudioType type);
+    DataAudioSource(const DataAudioSource&) = delete;
+    DataAudioSource& operator=(const DataAudioSource&) = delete;
 
-    using Ref = std::shared_ptr<AudioSource>;
-    static Ref create(const AudioData::Ref&, AudioType type);
-
-    const auto& filename() const { return m_data->filename(); }
-    std::string_view name() const override { return filename(); }
+    std::string_view name() const override { return m_data->filename(); }
     void mixin(float output[], std::size_t numSamples, float refVolume) override;
     bool done() const override;
 
-    void setRepeat(bool repeat) { m_repeat = repeat; }
+    void setRepeat(bool repeat) override { m_repeat = repeat; }
 };
 
-class AudioSourceQueue : public AudioSourceBase {
+class AudioSourceQueue : public AudioSource {
     struct Node {
         std::vector<float> data;
         std::unique_ptr<Node> next;
@@ -72,6 +69,7 @@ public:
     std::string_view name() const override { return m_name; }
     void mixin(float output[], std::size_t numSamples, float refVolume) override;
     bool done() const override;
+    void setRepeat(bool repeat) override { std::unreachable(); }
 
     std::size_t total() const { return m_total; }
 };

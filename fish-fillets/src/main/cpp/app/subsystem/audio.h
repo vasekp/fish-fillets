@@ -20,10 +20,10 @@ public:
     AudioData::Ref loadSound(const std::string& filename) const;
     AudioSource::Ref loadMusic(const std::string& filename, bool repeat = true) const;
 
-    void addSource(const AudioSourceBase::Ref& source);
-    void removeSource(const AudioSourceBase::Ref& source);
+    void addSource(const AudioSource::Ref& source);
+    void removeSource(const AudioSource::Ref& source);
     void clear();
-    void clearExcept(const AudioSourceBase::Ref& source);
+    void clearExcept(const AudioSource::Ref& source);
 
     void preload(const std::string& filename);
     bool isDialog() const;

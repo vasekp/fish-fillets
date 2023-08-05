@@ -30,14 +30,14 @@ Audio::Audio(Instance& instance) : m_instance(instance) {
     m_volumes[(int)AudioType::music] = (float)instance.persist().get("volume_music", 30) / 100.f;
 }
 
-void Audio::addSource(const AudioSourceBase::Ref& source) {
+void Audio::addSource(const AudioSource::Ref& source) {
     Log::debug<Log::audio>("adding audio source ", source.get(), " (", source->name(), ")");
     auto sources = m_sources.local();
     sources->push_back(source);
     sources.checkDialogs();
 }
 
-void Audio::removeSource(const AudioSourceBase::Ref& source) {
+void Audio::removeSource(const AudioSource::Ref& source) {
     auto sources = m_sources.local();
     auto it = std::find(sources->begin(), sources->end(), source);
     if(it == sources->end())
@@ -57,7 +57,7 @@ void Audio::clear() {
     sources.checkDialogs();
 }
 
-void Audio::clearExcept(const AudioSourceBase::Ref& source) {
+void Audio::clearExcept(const AudioSource::Ref& source) {
     auto sources = m_sources.local();
     std::erase_if(sources.vector(), [&source](const auto& other) { return other != source; });
     sources.checkDialogs();
