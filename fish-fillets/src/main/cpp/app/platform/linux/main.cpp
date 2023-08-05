@@ -24,6 +24,8 @@ std::pair<Display*, Window> initWindow() {
     xattr.override_redirect = False;
     XChangeWindowAttributes(dpy, win, CWOverrideRedirect, &xattr);
 
+    XStoreName(dpy, win, "Fish Fillets");
+
     int one = 1;
     XChangeProperty(dpy, win,
             XInternAtom(dpy, "_HILDON_NON_COMPOSITED_WINDOW", False),
