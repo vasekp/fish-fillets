@@ -41,7 +41,9 @@ local function prog_init()
                     room.tuseni = 1
                 end
                 room.pocitadlo = room.pocitadlo - 1
-            elseif isReady(small) and big:isOut() and room.jo == 0 and (small.X < 2 or small.X > 25) then
+            elseif isReady(small) and big:isOut() and room.jo == 0
+                and ((small.X == 1 and small.dir == dir_left)
+                    or (small.X == 26 and small.dir == dir_right)) then
                 small:setBusy(true)
                 switch(random(2)){
                     [0] = function()
