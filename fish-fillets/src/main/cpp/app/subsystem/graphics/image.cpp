@@ -1,12 +1,12 @@
 #include "subsystem/graphics.h"
 #include "image.h"
 
-PNGImage::PNGImage(std::string filename, TextureType type) :
+PNGImage::PNGImage(std::string filename, TextureType type, Private) :
     m_filename(std::move(filename)), m_type(type)
 { }
 
 ImageRef PNGImage::create(Instance& instance, std::string filename, TextureType type) {
-    auto ptr = std::make_unique<PNGImage>(std::move(filename), type);
+    auto ptr = std::make_unique<PNGImage>(std::move(filename), type, Private::tag);
     return instance.graphics().addImage(std::move(ptr));
 }
 
@@ -15,12 +15,12 @@ void PNGImage::render(Instance& instance) {
     m_texture = Texture{instance.graphics().system(), m_type, size, data.get()};
 }
 
-TextImage::TextImage(IFont& font, std::string text) :
+TextImage::TextImage(IFont& font, std::string text, Private) :
     m_font(font), m_text(std::move(text))
 { }
 
 ImageRef TextImage::create(Instance& instance, IFont& font, std::string text) {
-    auto ptr = std::make_unique<TextImage>(font, text);
+    auto ptr = std::make_unique<TextImage>(font, text, Private::tag);
     return instance.graphics().addImage(std::move(ptr));
 }
 
@@ -28,12 +28,12 @@ void TextImage::render(Instance& instance) {
     m_texture = m_font.get().renderText(instance, m_text);
 }
 
-BufferImage::BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
+BufferImage::BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data, Private) :
     m_size(size), m_type(type), m_data(std::move(data))
 { }
 
 ImageRef BufferImage::create(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) {
-    auto ptr = std::make_unique<BufferImage>(size, type, std::move(data));
+    auto ptr = std::make_unique<BufferImage>(size, type, std::move(data), Private::tag);
     return instance.graphics().addImage(std::move(ptr));
 }
 

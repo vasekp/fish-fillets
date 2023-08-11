@@ -11,15 +11,17 @@ protected:
     Image& operator=(const Image&) = delete;
     Image& operator=(Image&&) = delete;
 
+    enum class Private { tag };
+
 public:
     virtual ~Image() noexcept { }
 
-    const auto& texture() const { return *m_texture; }
+    const auto& texture() const { return m_texture.value(); }
     FCoords size() const { return m_texture->logSize(); }
 
+private:
     virtual void render(Instance& instance) = 0;
 
-private:
     friend class Graphics;
 };
 
@@ -46,9 +48,7 @@ class PNGImage : public Image {
     TextureType m_type;
 
 public:
-    PNGImage(std::string filename, TextureType type = TextureType::image);
-    PNGImage(PNGImage&&) = default;
-    PNGImage& operator=(PNGImage&&) = default;
+    PNGImage(std::string filename, TextureType type, Private);
 
     static ImageRef create(Instance& instance, std::string filename, TextureType type = TextureType::image);
 
@@ -63,9 +63,7 @@ class TextImage : public Image {
     std::string m_text;
 
 public:
-    TextImage(IFont& font, std::string text);
-    TextImage(TextImage&&) = default;
-    TextImage& operator=(TextImage&&) = default;
+    TextImage(IFont& font, std::string text, Private);
 
     static ImageRef create(Instance& instance, IFont& font, std::string text);
 
@@ -79,9 +77,7 @@ class BufferImage : public Image {
     std::unique_ptr<std::uint8_t[]> m_data;
 
 public:
-    BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
-    BufferImage(BufferImage&&) = default;
-    BufferImage& operator=(BufferImage&&) = default;
+    BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data, Private);
 
     static ImageRef create(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
 
