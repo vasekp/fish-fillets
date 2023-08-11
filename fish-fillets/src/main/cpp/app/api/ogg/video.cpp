@@ -142,25 +142,25 @@ namespace ogg {
             th_ycbcr_buffer ycbcr;
             th_decode_ycbcr_out(m_decoder, ycbcr);
             frame.time = time;
-            copy(frame.yData, ycbcr[0], {640, 480}); // TODO check true dims
-            copy(frame.cbData, ycbcr[1], {320, 240});
-            copy(frame.crData, ycbcr[2], {320, 240});
+            copy(frame.yData, ycbcr[0]);
+            copy(frame.cbData, ycbcr[1]);
+            copy(frame.crData, ycbcr[2]);
         }
         return true;
     }
 
-    void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, USize size) {
-        auto byteSize = size.width * size.height;
+    void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src) {
+        auto byteSize = src.width * src.height;
         dst = std::make_unique<std::uint8_t[]>(byteSize);
-        if(src.stride == (int)size.width)
+        if(src.stride == src.width)
             std::memcpy(dst.get(), src.data, byteSize);
         else {
             std::uint8_t* srcp = src.data;
             std::uint8_t* dstp = dst.get();
-            for(auto y = 0u; y < size.height; y++) {
-                std::memcpy(dstp, srcp, size.width);
+            for(auto y = 0; y < src.height; y++) {
+                std::memcpy(dstp, srcp, src.width);
                 srcp += src.stride;
-                dstp += size.width;
+                dstp += src.width;
             }
         }
     }
