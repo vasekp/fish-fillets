@@ -17,7 +17,13 @@ void PNGImage::render(Instance& instance) {
 
 TextImage::TextImage(IFont& font, std::string text, Private) :
     m_font(font), m_text(std::move(text))
-{ }
+{
+    m_font.regImage(this);
+}
+
+TextImage::~TextImage() {
+    m_font.unregImage(this);
+}
 
 ImageRef TextImage::create(Instance& instance, IFont& font, std::string text) {
     auto ptr = std::make_unique<TextImage>(font, text, Private::tag);
@@ -25,7 +31,7 @@ ImageRef TextImage::create(Instance& instance, IFont& font, std::string text) {
 }
 
 void TextImage::render(Instance& instance) {
-    m_texture = m_font.get().renderText(instance, m_text);
+    m_texture = m_font.renderText(instance, m_text);
 }
 
 BufferImage::BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data, Private) :

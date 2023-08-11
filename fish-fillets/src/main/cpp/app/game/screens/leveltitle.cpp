@@ -55,6 +55,4 @@ void LevelTitle::draw(DrawTarget& target) {
 void LevelTitle::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     m_font->setSizes(fontSize, 0.f, coords.scale);
-    /*if(m_image)
-        m_image->render(); TODO */
 }

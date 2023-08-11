@@ -7,7 +7,6 @@
 #include FT_STROKER_H
 
 class FTFont : public IFont {
-    Instance& m_instance;
     FT_Library m_ft;
     FT_Face m_face;
 

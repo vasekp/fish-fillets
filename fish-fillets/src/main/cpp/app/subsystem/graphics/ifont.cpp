@@ -17,6 +17,9 @@ void IFont::setSizes(float fontSize, float outline, float scale) {
     m_outline = outline;
     m_scale = scale;
     own_setSizes();
+
+    for(auto* image : m_images)
+        image->render(m_instance);
 }
 
 std::vector<std::string> IFont::breakLines(const std::string& text, float width) {
@@ -27,4 +30,12 @@ Texture IFont::renderText(Instance& instance, const std::string& text) const {
     auto [physSize, data] = own_renderText(text);
     FCoords logSize = FCoords{physSize} / m_scale;
     return Texture{instance.graphics().system(), TextureType::image, physSize, logSize, data.get()};
+}
+
+void IFont::regImage(TextImage* image) {
+    m_images.insert(image);
+}
+
+void IFont::unregImage(TextImage* image) {
+    m_images.erase(image);
 }

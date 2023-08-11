@@ -1,18 +1,27 @@
 #ifndef FISH_FILLETS_IFONT_H
 #define FISH_FILLETS_IFONT_H
 
+class TextImage;
+
 class IFont {
+    std::set<TextImage*> m_images;
+
 protected:
+    Instance& m_instance;
     float m_fontSize;
     float m_outline;
     float m_scale;
 
 public:
+    IFont(Instance& instance) : m_instance(instance) { }
     virtual ~IFont() = 0;
 
     void setSizes(float fontSize, float outline, float scale);
     std::vector<std::string> breakLines(const std::string& text, float width);
     Texture renderText(Instance& instance, const std::string& text) const;
+
+    void regImage(TextImage* image);
+    void unregImage(TextImage* image);
 
 private:
     virtual void own_setSizes() = 0;

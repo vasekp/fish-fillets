@@ -4,7 +4,6 @@
 #include "subsystem/graphics.h"
 
 class AndroidFont : public IFont {
-    Instance& m_instance;
     std::string m_filename;
 
 public:

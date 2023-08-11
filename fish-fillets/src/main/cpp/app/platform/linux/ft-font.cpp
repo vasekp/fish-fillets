@@ -13,7 +13,7 @@ static float from266(FT_F26Dot6 x) {
 }
 
 FTFont::FTFont(Instance& instance, const std::string& filename) :
-    m_instance(instance)
+    IFont(instance)
 {
     auto fnFull = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
     if(FT_Init_FreeType(&m_ft) != 0)

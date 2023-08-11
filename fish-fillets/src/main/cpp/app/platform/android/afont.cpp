@@ -4,7 +4,7 @@
 #include <android/bitmap.h>
 
 AndroidFont::AndroidFont(Instance& instance, const std::string& filename) :
-    m_instance(instance)
+    IFont(instance)
 {
     m_filename = dynamic_cast<SystemFile&>(*instance.files().system(filename)).path();
 }

@@ -19,10 +19,7 @@ public:
     const auto& texture() const { return m_texture.value(); }
     FCoords size() const { return m_texture->logSize(); }
 
-private:
     virtual void render(Instance& instance) = 0;
-
-    friend class Graphics;
 };
 
 class ImageRef {
@@ -52,22 +49,21 @@ public:
 
     static ImageRef create(Instance& instance, std::string filename, TextureType type = TextureType::image);
 
-protected:
     void render(Instance& instance) override;
 };
 
 class IFont;
 
 class TextImage : public Image {
-    std::reference_wrapper<IFont> m_font;
+    IFont& m_font;
     std::string m_text;
 
 public:
     TextImage(IFont& font, std::string text, Private);
+    ~TextImage();
 
     static ImageRef create(Instance& instance, IFont& font, std::string text);
 
-protected:
     void render(Instance& instance) override;
 };
 
@@ -84,7 +80,6 @@ public:
     void replace(std::unique_ptr<std::uint8_t[]>&& data);
     void compose(ImageData& picture, ICoords origin);
 
-protected:
     void render(Instance& instance) override;
 };
 

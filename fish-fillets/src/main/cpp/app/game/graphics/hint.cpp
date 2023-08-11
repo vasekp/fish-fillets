@@ -28,6 +28,4 @@ void Hint::draw(DrawTarget& target) {
 void Hint::resize() {
     const auto& coords = m_instance.graphics().coords(m_coords);
     m_font->setSizes(fontSize, outline, coords.scale);
-    /*for(auto& line : m_lines)
-        line.render(); TODO */
 }

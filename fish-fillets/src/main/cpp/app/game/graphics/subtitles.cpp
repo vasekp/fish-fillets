@@ -83,6 +83,4 @@ void Subtitles::draw(DrawTarget& target, LiveClock::time_point time) {
 void Subtitles::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
     m_font->setSizes(fontSize, outline, coords.scale);
-    /*for(auto& line : m_lines)
-        line.image.render(); TODO*/
 }

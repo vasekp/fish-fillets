@@ -193,7 +193,6 @@ void LevelInput::resize() {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
             m_buttons[i].coordsFrom = center - extent / 2.f;
             m_buttons[i].coordsTo = center + extent / 2.f;
-            /*m_buttons[i].image.render(); TODO */
         }
     }
 }
