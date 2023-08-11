@@ -57,14 +57,15 @@ void Graphics::recalc() {
 
 ImageRef Graphics::addImage(std::unique_ptr<Image>&& ptr) {
     ImageRef ref{m_instance, ptr};
-    m_images.push_back(std::move(ptr));
+    m_images.insert(std::move(ptr));
     if(m_system)
         ref->render(m_instance);
     return ref;
 }
 
-void Graphics::unrefImage(const ImageRef& ref) noexcept {
-    auto it = std::find_if(m_images.begin(), m_images.end(), [ptr = *ref](std::unique_ptr<Image>& entry) { return entry.get() == ptr; });
+void Graphics::deleteImage(const ImageRef& ref) noexcept {
+    auto it = std::find_if(m_images.begin(), m_images.end(),
+            [ptr = *ref](const std::unique_ptr<Image>& entry) { return entry.get() == ptr; });
     if(it != m_images.end())
         m_images.erase(it);
 }

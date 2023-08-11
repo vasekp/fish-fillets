@@ -95,5 +95,5 @@ ImageRef& ImageRef::operator=(ImageRef&& other) noexcept {
 
 ImageRef::~ImageRef() noexcept {
     if(m_image != nullptr)
-        m_instance.get().graphics().unrefImage(*this);
+        m_instance.get().graphics().deleteImage(*this);
 }

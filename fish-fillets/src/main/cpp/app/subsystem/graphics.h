@@ -24,7 +24,7 @@
 class Graphics {
     Instance& m_instance;
     std::unique_ptr<GraphicsSystem> m_system;
-    std::vector<std::unique_ptr<Image>> m_images;
+    std::set<std::unique_ptr<Image>> m_images;
     FCoords m_windowDim;
     FCoords m_windowShift;
 
@@ -61,7 +61,7 @@ public:
     void setViewport(FCoords origin, FCoords size);
 
     ImageRef addImage(std::unique_ptr<Image>&& ptr);
-    void unrefImage(const ImageRef& ref) noexcept;
+    void deleteImage(const ImageRef& ref) noexcept;
 
     static constexpr FCoords baseDim{640, 480};
 
