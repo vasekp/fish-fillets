@@ -260,11 +260,7 @@ std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistanc
     /* Filter on minDistance */
     auto maxDist = maxIt == dirs.end() ? 0 : maxIt->second.second;
     Log::debug<Log::gotos>("Max distance: ", maxDist);
-    /*std::remove_if(dirs.begin(), dirs.end(),
-        [minDistance](const auto& entry) { return entry.second.second < minDistance; });*/
     std::vector<ICoords> pool{};
-    /*std::transform(dirs.begin(), dirs.end(), std::back_inserter(pool),
-            [](const auto& entry) { return entry.first; });*/
     for(const auto& [coords, entry] : dirs)
         if(entry.second >= minDistance)
             pool.push_back(coords);
