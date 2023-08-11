@@ -18,7 +18,7 @@ public:
 
     void setSizes(float fontSize, float outline, float scale);
     std::vector<std::string> breakLines(const std::string& text, float width);
-    Texture renderText(Instance& instance, const std::string& text) const;
+    std::unique_ptr<Texture> renderText(Instance& instance, const std::string& text) const;
 
     void regImage(TextImage* image);
     void unregImage(TextImage* image);

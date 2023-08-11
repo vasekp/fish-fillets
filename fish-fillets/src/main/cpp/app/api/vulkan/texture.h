@@ -5,10 +5,9 @@
 
 namespace vulkan {
 
-struct TextureImpl;
-
 class Texture {
-    std::unique_ptr<TextureImpl> pImpl;
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
     USize m_size;
 
 public:

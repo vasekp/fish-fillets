@@ -1,4 +1,5 @@
 #include "subsystem/graphics.h"
+#include "graphicssystem.h"
 #include "drawtarget.h"
 
 void DrawTarget::drawMain(const BaseProgram& program,

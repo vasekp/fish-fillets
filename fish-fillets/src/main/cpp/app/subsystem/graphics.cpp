@@ -1,7 +1,13 @@
 #include "graphics.h"
+#include "graphics/platform-full.h"
+#include "graphics/graphicssystem.h"
 #include "game/screens/screenmanager.h"
 
-void Graphics::activate(GraphicsSystem::PlatformDisplay&& display) {
+Graphics::Graphics(Instance& instance) : m_instance(instance) { }
+
+Graphics::~Graphics() = default;
+
+void Graphics::activate(Platform::Display&& display) {
     Log::debug<Log::graphics>("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance, std::move(display));
     for(const auto& image : m_images)
@@ -32,6 +38,22 @@ void Graphics::setViewport(FCoords origin, FCoords size) {
     recalc();
     m_system->resizeBuffers();
     m_instance.screens().resize();
+}
+
+void Graphics::setScissor(ICoords from, ICoords to) {
+    m_system->setScissor(from, to);
+}
+
+void Graphics::releaseScissor() {
+    m_system->releaseScissor();
+}
+
+void Graphics::newFrame() {
+    m_system->newFrame();
+}
+
+void Graphics::present(TextureTarget& target) {
+    m_system->present(target);
 }
 
 void Graphics::recalc() {
@@ -68,4 +90,16 @@ void Graphics::deleteImage(const ImageRef& ref) noexcept {
             [ptr = *ref](const std::unique_ptr<Image>& entry) { return entry.get() == ptr; });
     if(it != m_images.end())
         m_images.erase(it);
+}
+
+std::array<TextureTarget, 2>& Graphics::blurTargets() const {
+    return m_system->m_blurTargets;
+}
+
+TextureTarget& Graphics::offscreenTarget() const {
+    return m_system->m_offscreenTarget;
+}
+
+Shaders& Graphics::shaders() const {
+    return m_system->m_shaders;
 }

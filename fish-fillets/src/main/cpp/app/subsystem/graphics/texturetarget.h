@@ -1,22 +1,19 @@
 #ifndef FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 #define FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 
-class TextureTarget : public DrawTarget {
-#ifdef FISH_FILLETS_USE_VULKAN
-    using PlatformType = vulkan::Framebuffer;
-#else
-    using PlatformType = ogl::Framebuffer;
-#endif
+#include "texture.h"
 
-    Texture m_texture;
-    PlatformType m_framebuffer;
+class TextureTarget : public DrawTarget {
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
 
 public:
     TextureTarget(GraphicsSystem& system, USize physSize, FCoords logSize = {});
+    ~TextureTarget();
 
-    const PlatformType& framebuffer() const { return m_framebuffer; }
-    const Texture& texture() const { return m_texture; }
-    FCoords size() const override { return m_texture.logSize(); }
+    const Platform::Framebuffer& framebuffer() const;
+    const Texture& texture() const;
+    FCoords size() const override;
     void resize(USize physSize, FCoords logSize = {});
     void bind() override;
 };

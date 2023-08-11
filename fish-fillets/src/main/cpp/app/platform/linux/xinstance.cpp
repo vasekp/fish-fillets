@@ -1,6 +1,7 @@
 #include "xinstance.h"
 #include "subsystem/graphics.h"
 #include "game/screens/screenmanager.h"
+#include "subsystem/graphics/graphicssystem.h"
 
 #include <locale>
 

@@ -3,23 +3,18 @@
 
 #include "instance.h"
 
-#ifdef FISH_FILLETS_USE_VULKAN
-#include "api/vulkan.h"
-#else
-#include "api/ogl.h"
-#endif
+#include "graphics/platform-fwd.h"
 
 #include "graphics/texturetype.h"
-#include "graphics/texture.h"
 #include "graphics/imagedata.h"
 #include "graphics/image.h"
 #include "graphics/coords.h"
 #include "graphics/shaders.h"
 #include "graphics/ifont.h"
 #include "graphics/drawtarget.h"
-#include "graphics/displaytarget.h"
 #include "graphics/texturetarget.h"
-#include "graphics/graphicssystem.h"
+
+class GraphicsSystem;
 
 class Graphics {
     Instance& m_instance;
@@ -43,15 +38,16 @@ private:
     std::array<Coords, SIZE> m_coords;
 
 public:
-    Graphics(Instance& instance) : m_instance(instance) { }
+    Graphics(Instance& instance);
+    ~Graphics();
 
-    void activate(GraphicsSystem::PlatformDisplay&& display);
+    void activate(Platform::Display&& display);
     void shutdown();
 
     auto& system() const { return *m_system; }
-    auto& blurTargets() { return m_system->m_blurTargets; }
-    auto& offscreenTarget() const { return m_system->m_offscreenTarget; }
-    auto& shaders() const { return m_system->m_shaders; }
+    std::array<TextureTarget, 2>& blurTargets() const;
+    TextureTarget& offscreenTarget() const;
+    Shaders& shaders() const;
     bool ready() const { return (bool)m_system; }
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
@@ -59,6 +55,10 @@ public:
     void setWindowSize(FCoords size);
     void setWindowShift(FCoords shift);
     void setViewport(FCoords origin, FCoords size);
+    void setScissor(ICoords from, ICoords to);
+    void releaseScissor();
+    void newFrame();
+    void present(TextureTarget& target);
 
     ImageRef addImage(std::unique_ptr<Image>&& ptr);
     void deleteImage(const ImageRef& ref) noexcept;

@@ -1,4 +1,5 @@
 #include "subsystem/graphics.h"
+#include "graphicssystem.h"
 
 #ifdef FISH_FILLETS_USE_VULKAN
 struct PlatformDetail {
@@ -30,7 +31,7 @@ std::unique_ptr<PlatformDetail> GraphicsSystem::platformDetail() {
 }
 #endif
 
-GraphicsSystem::GraphicsSystem(Instance& instance, GraphicsSystem::PlatformDisplay&& display) :
+GraphicsSystem::GraphicsSystem(Instance& instance, Platform::Display&& display) :
     m_graphics(instance.graphics()),
     m_display(std::move(display)),
     m_blurTargets{{

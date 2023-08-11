@@ -1,5 +1,16 @@
 #include "subsystem/graphics.h"
 #include "image.h"
+#include "texture.h"
+
+Image::~Image() = default;
+
+const Texture& Image::texture() const {
+    return *m_texture;
+}
+
+FCoords Image::size() const {
+    return m_texture->logSize();
+}
 
 PNGImage::PNGImage(std::string filename, TextureType type, Private) :
     m_filename(std::move(filename)), m_type(type)
@@ -12,7 +23,7 @@ ImageRef PNGImage::create(Instance& instance, std::string filename, TextureType 
 
 void PNGImage::render(Instance& instance) {
     auto [size, data] = decoders::png(instance, m_filename);
-    m_texture = Texture{instance.graphics().system(), m_type, size, data.get()};
+    m_texture = std::make_unique<Texture>(instance.graphics().system(), m_type, size, data.get());
 }
 
 TextImage::TextImage(IFont& font, std::string text, Private) :
@@ -44,7 +55,7 @@ ImageRef BufferImage::create(Instance& instance, USize size, TextureType type, s
 }
 
 void BufferImage::render(Instance& instance) {
-    m_texture = Texture(instance.graphics().system(), m_type, m_size, m_data.get());
+    m_texture = std::make_unique<Texture>(instance.graphics().system(), m_type, m_size, m_data.get());
 }
 
 void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {
@@ -93,7 +104,7 @@ ImageRef& ImageRef::operator=(ImageRef&& other) noexcept {
     return *this;
 }
 
-ImageRef::~ImageRef() noexcept {
+ImageRef::~ImageRef() {
     if(m_image != nullptr)
         m_instance.get().graphics().deleteImage(*this);
 }

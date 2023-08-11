@@ -1,9 +1,11 @@
 #ifndef FISH_FILLETS_GRAPHICS_IMAGE_H
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
+class Texture;
+
 class Image {
 protected:
-    std::optional<Texture> m_texture;
+    std::unique_ptr<Texture> m_texture;
 
     Image() = default;
     Image(const Image&) = delete;
@@ -14,10 +16,10 @@ protected:
     enum class Private { tag };
 
 public:
-    virtual ~Image() noexcept { }
+    virtual ~Image();
 
-    const auto& texture() const { return m_texture.value(); }
-    FCoords size() const { return m_texture->logSize(); }
+    const Texture& texture() const;
+    FCoords size() const;
 
     virtual void render(Instance& instance) = 0;
 };
@@ -32,7 +34,7 @@ public:
     ImageRef& operator=(const ImageRef&) = delete;
     ImageRef(ImageRef&&) noexcept;
     ImageRef& operator=(ImageRef&&) noexcept;
-    ~ImageRef() noexcept;
+    ~ImageRef();
 
     Image* operator*() const { return m_image; }
     Image* operator->() const { return m_image; }

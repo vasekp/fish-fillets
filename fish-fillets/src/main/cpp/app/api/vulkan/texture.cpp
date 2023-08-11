@@ -2,7 +2,7 @@
 
 namespace vulkan {
 
-struct TextureImpl {
+struct Texture::Impl {
     Display& display;
     const vk::raii::Image image;
     const vk::raii::DeviceMemory memory;
@@ -38,7 +38,7 @@ Texture::Texture(Display& display, USize size, TextureType type, std::uint8_t* d
             .setFormat(format)
             .setSubresourceRange(baseRange)};
 
-    pImpl = std::make_unique<TextureImpl>(
+    pImpl = std::make_unique<Impl>(
         display,
         std::move(image),
         std::move(deviceMemory),

@@ -1,94 +1,101 @@
 #include "subsystem/graphics.h"
+#include "graphicssystem.h"
 #include "subsystem/files.h"
 
 #ifdef FISH_FILLETS_USE_VULKAN
-constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
+static constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
 #endif
+
+struct Shaders::Impl {
+    Platform::Program copy;
+    Platform::Program maskCopy;
+    Platform::Program alpha;
+    Platform::Program reverse;
+    Platform::Program mirror;
+    Platform::Program flat;
+    Platform::Program blur;
+    Platform::Program disintegrate;
+    Platform::Program wavyImage;
+    Platform::Program wavyText;
+    Platform::Program titleText;
+    Platform::Program zx;
+    Platform::Program ycbcr;
+    Platform::Program button;
+    Platform::Program arrow;
+};
+
+Shaders::~Shaders() = default;
 
 // NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
 #ifdef FISH_FILLETS_USE_VULKAN
-Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
-    m_vert{system.display(), instance.files().system("shader/vulkan/pixel.spv")->read()},
-    m_copy{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/copy.spv")->read()}},
-    m_maskCopy{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/mask-copy.spv")->read()}},
-    m_alpha{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/alpha.spv")->read()}},
-    m_reverse{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/reverse.spv")->read()}},
-    m_mirror{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/mirror.spv")->read()}},
-    m_flat{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/flat.spv")->read()}},
-    m_blur{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/blur.spv")->read()}},
-    m_disintegrate{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/disintegrate.spv")->read()}},
-    m_wavyImage{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/wavy-image.spv")->read()}},
-    m_wavyText{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/wavy-text.spv")->read()}},
-    m_titleText{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/title.spv")->read()}},
-    m_zx{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/zx.spv")->read()}},
-    m_ycbcr{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/ycbcr.spv")->read()}},
-    m_button{system.display(), m_vert,
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/button.spv")->read()}},
-    m_arrow{system.display(),
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/arrow.vert.spv")->read()},
-        vulkan::Shader{system.display(), instance.files().system("shader/vulkan/arrow.frag.spv")->read()}}
-{ }
+Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
+    auto& display = system.display();
+    auto& files = instance.files();
+    auto spirv = [&](std::string filename) {
+        return vulkan::Shader{display, files.system("shader/vulkan/"s + filename)->read()};
+    };
+    vulkan::Shader pixelVert = spirv("pixel.spv");
+    pImpl = std::make_unique<Impl>(
+        vulkan::Program{display, pixelVert, spirv("copy.spv")},
+        vulkan::Program{display, pixelVert, spirv("mask-copy.spv")},
+        vulkan::Program{display, pixelVert, spirv("alpha.spv")},
+        vulkan::Program{display, pixelVert, spirv("reverse.spv")},
+        vulkan::Program{display, pixelVert, spirv("mirror.spv")},
+        vulkan::Program{display, pixelVert, spirv("flat.spv")},
+        vulkan::Program{display, pixelVert, spirv("blur.spv")},
+        vulkan::Program{display, pixelVert, spirv("disintegrate.spv")},
+        vulkan::Program{display, pixelVert, spirv("wavy-image.spv")},
+        vulkan::Program{display, pixelVert, spirv("wavy-text.spv")},
+        vulkan::Program{display, pixelVert, spirv("title.spv")},
+        vulkan::Program{display, pixelVert, spirv("zx.spv")},
+        vulkan::Program{display, pixelVert, spirv("ycbcr.spv")},
+        vulkan::Program{display, pixelVert, spirv("button.spv")},
+        vulkan::Program{display, spirv("arrow.vert.spv"), spirv("arrow.frag.spv")}
+    );
+}
 #else
-Shaders::Shaders(Instance& instance, GraphicsSystem& system) :
-    m_vert{system.display(), GL_VERTEX_SHADER, instance.files().system("shader/opengl/pixel.vert")->read()},
-    m_copy{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/copy.frag")->read()}},
-    m_maskCopy{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mask-copy.frag")->read()}},
-    m_alpha{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/alpha.frag")->read()}},
-    m_reverse{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/reverse.frag")->read()}},
-    m_mirror{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/mirror.frag")->read()}},
-    m_flat{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/flat.frag")->read()}},
-    m_blur{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/blur.frag")->read()}},
-    m_disintegrate{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/disintegrate.frag")->read()}},
-    m_wavyImage{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-image.frag")->read()}},
-    m_wavyText{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/wavy-text.frag")->read()}},
-    m_titleText{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/title.frag")->read()}},
-    m_zx{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/zx.frag")->read()}},
-    m_ycbcr{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/ycbcr.frag")->read()}},
-    m_button{system.display(), m_vert,
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/button.frag")->read()}},
-    m_arrow{system.display(),
-        ogl::Shader{system.display(), GL_VERTEX_SHADER, instance.files().system("shader/opengl/arrow.vert")->read()},
-        ogl::Shader{system.display(), GL_FRAGMENT_SHADER, instance.files().system("shader/opengl/arrow.frag")->read()}}
-{
-    for(const auto* program : {&m_copy, &m_maskCopy, &m_alpha, &m_blur, &m_wavyImage, &m_wavyText, &m_titleText, &m_disintegrate, &m_mirror, &m_zx, &m_button}) {
+Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
+    auto& display = system.display();
+    auto& files = instance.files();
+    auto shader = [&](std::string filename, GLenum type) {
+        return ogl::Shader{display, type, files.system("shader/opengl/"s + filename)->read()};
+    };
+    auto vert = [&](std::string filename) { return shader(filename, GL_VERTEX_SHADER); };
+    auto frag = [&](std::string filename) { return shader(filename, GL_FRAGMENT_SHADER); };
+    ogl::Shader pixelVert = vert("pixel.vert");
+    pImpl = std::make_unique<Impl>(
+        ogl::Program{display, pixelVert, frag("copy.frag")},
+        ogl::Program{display, pixelVert, frag("mask-copy.frag")},
+        ogl::Program{display, pixelVert, frag("alpha.frag")},
+        ogl::Program{display, pixelVert, frag("reverse.frag")},
+        ogl::Program{display, pixelVert, frag("mirror.frag")},
+        ogl::Program{display, pixelVert, frag("flat.frag")},
+        ogl::Program{display, pixelVert, frag("blur.frag")},
+        ogl::Program{display, pixelVert, frag("disintegrate.frag")},
+        ogl::Program{display, pixelVert, frag("wavy-image.frag")},
+        ogl::Program{display, pixelVert, frag("wavy-text.frag")},
+        ogl::Program{display, pixelVert, frag("title.frag")},
+        ogl::Program{display, pixelVert, frag("zx.frag")},
+        ogl::Program{display, pixelVert, frag("ycbcr.frag")},
+        ogl::Program{display, pixelVert, frag("button.frag")},
+        ogl::Program{display, vert("arrow.vert"), frag("arrow.frag")}
+    );
+
+    for(const auto* program : {&pImpl->copy, &pImpl->maskCopy, &pImpl->alpha, &pImpl->blur,
+            &pImpl->wavyImage, &pImpl->wavyText, &pImpl->titleText,
+            &pImpl->disintegrate, &pImpl->mirror, &pImpl->zx, &pImpl->button}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uSrcTexture"), 0);
     }
 
-    for(const auto* program : {&m_maskCopy, &m_mirror}) {
+    for(const auto* program : {&pImpl->maskCopy, &pImpl->mirror}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uMaskTexture"), 1);
     }
 
-    glUseProgram(m_ycbcr);
-    glUniform1i(m_ycbcr.uniform("uCbTexture"), 1);
-    glUniform1i(m_ycbcr.uniform("uCrTexture"), 2);
+    glUseProgram(pImpl->ycbcr);
+    glUniform1i(pImpl->ycbcr.uniform("uCbTexture"), 1);
+    glUniform1i(pImpl->ycbcr.uniform("uCrTexture"), 2);
 }
 #endif
 
@@ -234,3 +241,33 @@ void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& 
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 }
 #endif
+
+BaseProgram Shaders::copy() { return {pImpl->copy}; }
+
+Program<Shaders::MaskCopyParams> Shaders::maskCopy(MaskCopyParams params) { return {pImpl->maskCopy, params}; }
+
+BaseProgram Shaders::reverse() { return {pImpl->reverse}; }
+
+BaseProgram Shaders::mirror() { return {pImpl->mirror}; }
+
+Program<Shaders::AlphaParams> Shaders::alpha(AlphaParams params) { return {pImpl->alpha, params}; }
+
+Program<Shaders::FlatParams> Shaders::flat(FlatParams params) { return {pImpl->flat, params}; }
+
+Program<Shaders::BlurParams> Shaders::blur(BlurParams params) { return {pImpl->blur, params}; }
+
+Program<Shaders::DisintegrateParams> Shaders::disintegrate(DisintegrateParams params) { return {pImpl->disintegrate, params}; }
+
+Program<Shaders::WavyImageParams> Shaders::wavyImage(WavyImageParams params) { return {pImpl->wavyImage, params}; }
+
+Program<Shaders::WavyTextParams> Shaders::wavyText(WavyTextParams params) { return {pImpl->wavyText, params}; }
+
+Program<Shaders::TitleTextParams> Shaders::titleText(TitleTextParams params) { return {pImpl->titleText, params}; }
+
+Program<Shaders::ZXParams> Shaders::ZX(ZXParams params) { return {pImpl->zx, params}; }
+
+BaseProgram Shaders::YCbCr() { return {pImpl->ycbcr}; }
+
+Program<Shaders::ButtonParams> Shaders::button(ButtonParams params) { return {pImpl->button, params}; }
+
+Program<Shaders::ArrowParams> Shaders::arrow(ArrowParams params) { return {pImpl->arrow, params}; }

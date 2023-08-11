@@ -1,4 +1,5 @@
 #include "subsystem/graphics.h"
+#include "subsystem/graphics/texture.h"
 
 constexpr float upsampleThreshold = 20.f;
 
@@ -26,10 +27,10 @@ std::vector<std::string> IFont::breakLines(const std::string& text, float width)
     return own_breakLines(text, width * m_scale);
 }
 
-Texture IFont::renderText(Instance& instance, const std::string& text) const {
+std::unique_ptr<Texture> IFont::renderText(Instance& instance, const std::string& text) const {
     auto [physSize, data] = own_renderText(text);
     FCoords logSize = FCoords{physSize} / m_scale;
-    return Texture{instance.graphics().system(), TextureType::image, physSize, logSize, data.get()};
+    return std::make_unique<Texture>(instance.graphics().system(), TextureType::image, physSize, logSize, data.get());
 }
 
 void IFont::regImage(TextImage* image) {

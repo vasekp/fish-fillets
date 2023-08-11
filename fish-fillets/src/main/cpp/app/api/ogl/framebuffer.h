@@ -12,6 +12,8 @@ namespace ogl {
         Framebuffer(const ogl::Display& display, const ogl::Texture& texture);
         Framebuffer(const Framebuffer&) = delete;
         Framebuffer& operator=(const Framebuffer&) = delete;
+        Framebuffer(Framebuffer&&);
+        Framebuffer& operator=(Framebuffer&&);
         ~Framebuffer();
 
         operator GLuint() const { return m_name; }

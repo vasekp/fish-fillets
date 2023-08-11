@@ -15,6 +15,8 @@ LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         m_replay(replay)
 { }
 
+LevelScreen::~LevelScreen() = default;
+
 void LevelScreen::reset() {
     m_display.reset();
     m_instance.graphics().setWindowShift({});
@@ -94,7 +96,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         return;
     }
 
-    m_instance.graphics().system().setScissor(coords.in2out({0, 0}).round(), coords.in2out(m_winSize).round());
+    m_instance.graphics().setScissor(coords.in2out({0, 0}).round(), coords.in2out(m_winSize).round());
 
     auto [amplitude, period, speed] = m_waves;
 
@@ -155,7 +157,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         }
     }
 
-    m_instance.graphics().system().releaseScissor();
+    m_instance.graphics().releaseScissor();
 
     if(mirror) {
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);

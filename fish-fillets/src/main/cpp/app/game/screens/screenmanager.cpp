@@ -69,7 +69,7 @@ void ScreenManager::drawFrame() {
     const auto& coords = graphics.coords(Graphics::CoordSystems::null);
     auto& offscreen = graphics.offscreenTarget();
     const auto copyProgram = graphics.shaders().copy();
-    graphics.system().newFrame();
+    graphics.newFrame();
     curScreen().draw(offscreen);
     m_title.draw(offscreen);
     if(m_options.visible()) {
@@ -79,7 +79,7 @@ void ScreenManager::drawFrame() {
         offscreen.draw(blur2.texture(), graphics.shaders().blur({ .dir = FCoords{0.f, 1.f} }), coords);
         m_options.draw(offscreen);
     }
-    graphics.system().present(offscreen);
+    graphics.present(offscreen);
 }
 
 IInputSink& ScreenManager::input() {

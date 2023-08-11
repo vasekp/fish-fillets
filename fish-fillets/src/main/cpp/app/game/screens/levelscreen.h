@@ -28,6 +28,7 @@ class LevelScreen : public GameScreen {
 
 public:
     LevelScreen(Instance& instance, LevelRecord& record, bool replay);
+    ~LevelScreen();
 
     Level& level() { return m_level; }
     IInputSink& input() override { return m_input; }

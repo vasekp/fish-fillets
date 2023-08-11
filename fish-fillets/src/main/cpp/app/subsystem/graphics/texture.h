@@ -1,16 +1,12 @@
 #ifndef FISH_FILLETS_TEXTURE_H
 #define FISH_FILLETS_TEXTURE_H
 
+#include "platform-full.h"
+
 class GraphicsSystem;
 
 class Texture {
-#ifdef FISH_FILLETS_USE_VULKAN
-    using PlatformType = vulkan::Texture;
-#else
-    using PlatformType = ogl::Texture;
-#endif
-
-    PlatformType m_native;
+    Platform::Texture m_native;
     USize m_physSize;
     FCoords m_logSize;
 
@@ -25,12 +21,12 @@ public:
     FCoords logSize() const { return m_logSize; }
     FCoords& logSize() { return m_logSize; }
     USize physSize() const { return m_physSize; }
-    const PlatformType& native() const { return m_native; }
+    const Platform::Texture& native() const { return m_native; }
 
     void replaceData(std::uint8_t* data);
 
 private:
-    Texture(PlatformType&& texture, FCoords logSize);
+    Texture(Platform::Texture&& texture, FCoords logSize);
 };
 
 #endif //FISH_FILLETS_TEXTURE_H
