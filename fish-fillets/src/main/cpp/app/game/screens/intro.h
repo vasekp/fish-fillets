@@ -16,9 +16,9 @@ class IntroScreen : public GameScreen {
     AudioSourceQueue::Ref m_aBuffer;
     std::deque<ogg::TheoraDecoder::Frame> m_vBuffer;
 
-    BufferImage m_imgY;
-    BufferImage m_imgCb;
-    BufferImage m_imgCr;
+    ImageRef m_imgY;
+    ImageRef m_imgCb;
+    ImageRef m_imgCr;
     float m_imgTime;
 
 public:

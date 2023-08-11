@@ -8,14 +8,14 @@ constexpr FCoords offset{0.5f, 0.5f};
 Pedometer::Pedometer(Instance& instance, LevelRecord& level, LiveClock::time_point time):
         m_instance(instance),
         m_record(level),
-        m_pmImage{instance, "images/menu/pedometer.png"},
-        m_digImage{instance, "images/menu/numbers.png"},
+        m_pmImage(PNGImage::create(instance, "images/menu/pedometer.png")),
+        m_digImage(PNGImage::create(instance, "images/menu/numbers.png")),
         m_digits{},
         m_createTime(time),
         m_buttons{
-        {Buttons::retry, {instance, "images/menu/pm-retry.png"}, {259, 223}},
-        {Buttons::replay, {instance, "images/menu/pm-replay.png"}, {301, 223}},
-        {Buttons::close, {instance, "images/menu/pm-close.png"}, {343, 223}}
+        {Buttons::retry, PNGImage::create(instance, "images/menu/pm-retry.png"), {259, 223}},
+        {Buttons::replay, PNGImage::create(instance, "images/menu/pm-replay.png"), {301, 223}},
+        {Buttons::close, PNGImage::create(instance, "images/menu/pm-close.png"), {343, 223}}
     }
 {
     auto solve = m_instance.files().user(m_record.solveFilename())->read();
@@ -35,17 +35,17 @@ Pedometer::Pedometer(Instance& instance, LevelRecord& level, LiveClock::time_poi
 void Pedometer::draw(DrawTarget& target, LiveClock::time_point time) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
-    target.draw(&m_pmImage, copyProgram, coords, { .dest = FCoords{pos} });
+    target.draw(m_pmImage, copyProgram, coords, { .dest = FCoords{pos} });
     if(auto hover = m_instance.inputSourceMasked().hover(); hover != IInputSource::noHover) {
         auto hcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(hover);
         for(const auto& button : m_buttons)
             if(hcoords.within(button.origin + offset, button.origin + Button::size - offset))
-                target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
+                target.draw(button.image, copyProgram, coords, { .dest = button.origin });
     }
     float yBase = (time - m_createTime) / digitTime;
     for(auto x = 0u; x < m_digits.size(); x++) {
         float y = std::min((float)m_digits[x], yBase);
-        target.draw(&m_digImage, copyProgram, coords, {
+        target.draw(m_digImage, copyProgram, coords, {
            .src = FCoords{0.f, (9.f - y) * digitSize.y},
            .dest = digitArray + FCoords{x * digitSize.x, 0.f},
            .area = digitSize

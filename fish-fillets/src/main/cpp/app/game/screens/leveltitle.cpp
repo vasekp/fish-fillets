@@ -6,7 +6,7 @@ LevelTitle::LevelTitle(Instance& instance) :
 { }
 
 void LevelTitle::show(const std::string& text) {
-    m_image.emplace(m_instance, *m_font, text);
+    m_image.emplace(TextImage::create(m_instance, *m_font, text));
     m_hide.reset();
 }
 
@@ -40,13 +40,13 @@ void LevelTitle::draw(DrawTarget& target) {
     constexpr FCoords rect{maxWidth, endY - startY};
 
     auto program = m_instance.graphics().shaders().titleText({ .color = colorBg.gl(m_opacity) });
-    target.draw(&m_image.value(), program, coords, {
+    target.draw(m_image.value(), program, coords, {
         .dest = offset + shadow,
         .area = rect
     });
 
     program.params().color = colorFg.gl(m_opacity);
-    target.draw(&m_image.value(), program, coords, {
+    target.draw(m_image.value(), program, coords, {
         .dest = offset,
         .area = rect
     });
@@ -55,6 +55,6 @@ void LevelTitle::draw(DrawTarget& target) {
 void LevelTitle::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     m_font->setSizes(fontSize, 0.f, coords.scale);
-    if(m_image)
-        m_image->render();
+    /*if(m_image)
+        m_image->render(); TODO */
 }

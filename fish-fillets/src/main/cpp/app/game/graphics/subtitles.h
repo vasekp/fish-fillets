@@ -6,7 +6,7 @@
 
 class Subtitles {
     struct Title {
-        TextImage image;
+        ImageRef image;
         bool live;
         float yOffset;
         LiveClock::time_point addTime;

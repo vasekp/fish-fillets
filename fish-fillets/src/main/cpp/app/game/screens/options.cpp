@@ -3,14 +3,14 @@
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :
     m_instance(instance),
-    m_options(instance, "images/menu/options.png"),
-    m_slider(instance, "images/menu/cudlik.png"),
+    m_options(PNGImage::create(instance, "images/menu/options.png")),
+    m_slider(PNGImage::create(instance, "images/menu/cudlik.png")),
     m_origin((Graphics::baseDim - imgSize) / 2),
     m_visible(false),
     m_buttons{
-        {"cs"s, {instance, "images/menu/options-subs-cs.png"}, {25, 270}},
-        {"en"s, {instance, "images/menu/options-subs-en.png"}, {72, 270}},
-        {""s, {instance, "images/menu/options-subs-none.png"}, {120, 270}}},
+        {"cs"s, PNGImage::create(instance, "images/menu/options-subs-cs.png"), {25, 270}},
+        {"en"s, PNGImage::create(instance, "images/menu/options-subs-en.png"), {72, 270}},
+        {""s, PNGImage::create(instance, "images/menu/options-subs-none.png"), {120, 270}}},
     m_volbars{
         {AudioType::sound, "sound", {37, 105}},
         {AudioType::talk, "talk", {37, 154}},
@@ -30,14 +30,14 @@ void OptionsOverlay::draw(DrawTarget& target) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
     auto coords = m_instance.graphics().coords(Graphics::CoordSystems::base).shifted(m_origin);
 
-    target.draw(&m_options, copyProgram, coords);
+    target.draw(m_options, copyProgram, coords);
 
     for(const auto& button : m_buttons)
         if(button.value == m_currSubs)
-            target.draw(&button.image, copyProgram, coords, { .dest = button.origin });
+            target.draw(button.image, copyProgram, coords, { .dest = button.origin });
 
     for(const auto& bar : m_volbars)
-        target.draw(&m_slider, copyProgram, coords, {
+        target.draw(m_slider, copyProgram, coords, {
             .dest = FCoords{bar.origin.x + log(m_instance.audio().getVolume(bar.type)) * volLength - volSliderOffset, bar.origin.y - volSliderOffset}
         });
 }

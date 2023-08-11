@@ -1,54 +1,44 @@
 #include "subsystem/graphics.h"
 #include "image.h"
 
-void Image::init() {
-    m_instance.get().graphics().regImage(this);
+PNGImage::PNGImage(std::string filename, TextureType type) :
+    m_filename(std::move(filename)), m_type(type)
+{ }
+
+ImageRef PNGImage::create(Instance& instance, std::string filename, TextureType type) {
+    auto ptr = std::make_unique<PNGImage>(std::move(filename), type);
+    return instance.graphics().addImage(std::move(ptr));
 }
 
-Image::Image(Image&& other) noexcept : m_instance(other.m_instance), m_texture(std::move(other.m_texture)) {
-    m_instance.get().graphics().regImageMove(&other, this);
+void PNGImage::render(Instance& instance) {
+    auto [size, data] = decoders::png(instance, m_filename);
+    m_texture = Texture{instance.graphics().system(), m_type, size, data.get()};
 }
 
-Image& Image::operator=(Image&& other) noexcept {
-    m_instance = other.m_instance;
-    m_texture = std::move(other.m_texture);
-    m_instance.get().graphics().regImageMove(&other, this);
-    return *this;
+TextImage::TextImage(IFont& font, std::string text) :
+    m_font(font), m_text(std::move(text))
+{ }
+
+ImageRef TextImage::create(Instance& instance, IFont& font, std::string text) {
+    auto ptr = std::make_unique<TextImage>(font, text);
+    return instance.graphics().addImage(std::move(ptr));
 }
 
-Image::~Image() noexcept {
-    m_instance.get().graphics().unregImage(this);
+void TextImage::render(Instance& instance) {
+    m_texture = m_font.get().renderText(instance, m_text);
 }
 
-PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
-    Image(instance), m_filename(std::move(filename)), m_type(type)
-{
-    init();
+BufferImage::BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
+    m_size(size), m_type(type), m_data(std::move(data))
+{ }
+
+ImageRef BufferImage::create(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) {
+    auto ptr = std::make_unique<BufferImage>(size, type, std::move(data));
+    return instance.graphics().addImage(std::move(ptr));
 }
 
-void PNGImage::render() {
-    auto [size, data] = decoders::png(m_instance, m_filename);
-    m_texture = Texture{m_instance.get().graphics().system(), m_type, size, data.get()};
-}
-
-TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
-    Image(instance), m_font(font), m_text(std::move(text))
-{
-    init();
-}
-
-void TextImage::render() {
-    m_texture = m_font.get().renderText(m_instance, m_text);
-}
-
-BufferImage::BufferImage(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
-    Image(instance), m_size(size), m_type(type), m_data(std::move(data))
-{
-    init();
-}
-
-void BufferImage::render() {
-    m_texture = Texture(m_instance.get().graphics().system(), m_type, m_size, m_data.get());
+void BufferImage::render(Instance& instance) {
+    m_texture = Texture(instance.graphics().system(), m_type, m_size, m_data.get());
 }
 
 void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {
@@ -81,4 +71,23 @@ void BufferImage::compose(ImageData& picture, ICoords origin) {
     }
     if(m_texture)
         m_texture->replaceData(m_data.get());
+}
+
+ImageRef::ImageRef(Instance& instance, const std::unique_ptr<Image>& ptr) :
+    m_instance(instance), m_image(ptr.get())
+{ }
+
+ImageRef::ImageRef(ImageRef&& other) noexcept : m_instance(other.m_instance), m_image(other.m_image) {
+    other.m_image = nullptr;
+}
+
+ImageRef& ImageRef::operator=(ImageRef&& other) noexcept {
+    std::swap(m_instance, other.m_instance);
+    std::swap(m_image, other.m_image);
+    return *this;
+}
+
+ImageRef::~ImageRef() noexcept {
+    if(m_image != nullptr)
+        m_instance.get().graphics().unrefImage(*this);
 }

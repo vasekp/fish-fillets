@@ -7,14 +7,14 @@
 
 class OptionsOverlay : public IInputSink {
     Instance& m_instance;
-    PNGImage m_options;
-    PNGImage m_slider;
+    ImageRef m_options;
+    ImageRef m_slider;
     FCoords m_origin;
     bool m_visible;
 
     struct Button {
         std::string value;
-        PNGImage image;
+        ImageRef image;
         FCoords origin;
         static constexpr FCoords size{47, 33};
     } m_buttons[3];

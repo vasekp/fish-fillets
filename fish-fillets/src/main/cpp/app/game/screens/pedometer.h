@@ -8,8 +8,8 @@
 class Pedometer {
     Instance& m_instance;
     LevelRecord& m_record;
-    PNGImage m_pmImage;
-    PNGImage m_digImage;
+    ImageRef m_pmImage;
+    ImageRef m_digImage;
 
     std::array<int, 5> m_digits;
     LiveClock::time_point m_createTime;
@@ -25,7 +25,7 @@ public:
 private:
     struct Button {
         Buttons type;
-        PNGImage image;
+        ImageRef image;
         FCoords origin;
         static constexpr FCoords size{43, 44};
     } m_buttons[3];

@@ -14,7 +14,7 @@ protected:
     LiveClock m_clock;
 
 private:
-    std::map<std::string, PNGImage> m_images;
+    std::map<std::string, ImageRef> m_images;
 
 public:
     virtual ~GameScreen() { }

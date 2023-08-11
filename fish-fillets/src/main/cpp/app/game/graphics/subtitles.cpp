@@ -24,7 +24,7 @@ void Subtitles::add(const std::string& text, const std::string& colors) {
             }
         }();
         m_lines.push_back({
-                TextImage(m_instance, *m_font, line),
+                TextImage::create(m_instance, *m_font, line),
                 false, 0.f, {}, duration,
                 (unsigned)countLines, color1, color2
         });
@@ -47,7 +47,6 @@ void Subtitles::update(LiveClock::time_point time) {
         line.live = true;
         line.yOffset = -1.5f;
         line.addTime = time;
-        Log::verbose<Log::graphics>("subtitle live: ", line.image.text());
     }
     while(!m_lines.empty()) {
         const auto& front = m_lines.front();
@@ -72,9 +71,9 @@ void Subtitles::draw(DrawTarget& target, LiveClock::time_point time) {
                 .color2 = line.color2.gl(),
                 .time = (time - line.addTime).count()
             });
-            auto size = line.image.size();
+            auto size = line.image->size();
             FCoords dest{320.f - size.x / 2.f, bottomY - size.y * (2.5f + line.yOffset)};
-            target.draw(line.image.texture(), program, coords, {
+            target.draw(line.image, program, coords, {
                 .dest = coords.pixelAlign(dest),
                 .area = FCoords{size.x, 3.f * size.y}
             });
@@ -84,6 +83,6 @@ void Subtitles::draw(DrawTarget& target, LiveClock::time_point time) {
 void Subtitles::resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::reduced);
     m_font->setSizes(fontSize, outline, coords.scale);
-    for(auto& line : m_lines)
-        line.image.render();
+    /*for(auto& line : m_lines)
+        line.image.render(); TODO*/
 }

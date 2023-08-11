@@ -141,7 +141,7 @@ void Level::slideshow_enter() {
 }
 
 void Level::slideshow_exit() {
-    m_screen.display({});
+    m_screen.display();
     m_screen.subs().clear();
     setBusy(BusyReason::slideshow, false);
 }
@@ -149,10 +149,9 @@ void Level::slideshow_exit() {
 void Level::slide_display(const std::string& filename, int x, int y) {
     auto imgData = decoders::png(m_instance, filename);
     if(x == 0 && y == 0) {
-        auto image = std::make_unique<BufferImage>(m_instance, imgData.size, TextureType::image, std::move(imgData.data));
-        m_screen.display(std::move(image));
+        m_screen.display(BufferImage::create(m_instance, imgData.size, TextureType::image, std::move(imgData.data)));
     } else {
-        auto image = dynamic_cast<BufferImage*>(m_screen.display());
+        auto image = dynamic_cast<BufferImage*>(m_screen.displayed());
         image->compose(imgData, {x, y});
     }
 }

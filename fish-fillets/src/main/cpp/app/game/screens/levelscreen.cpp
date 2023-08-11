@@ -90,7 +90,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
-        target.draw(m_display.get(), copyProgram, coords);
+        target.draw(m_display.value(), copyProgram, coords);
         return;
     }
 
@@ -319,8 +319,16 @@ bool LevelScreen::own_key(Key key) {
     }
 }
 
-void LevelScreen::display(std::unique_ptr<Image>&& image) {
+void LevelScreen::display(ImageRef&& image) {
     m_display = std::move(image);
+}
+
+void LevelScreen::display() {
+    m_display = {};
+}
+
+Image* LevelScreen::displayed() {
+    return m_display.value();
 }
 
 void LevelScreen::saveEffect() {

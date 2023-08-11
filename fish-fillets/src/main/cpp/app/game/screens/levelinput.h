@@ -33,7 +33,7 @@ class LevelInput : public IInputSink {
     } m_dirpad;
 
     struct Button {
-        TextImage image;
+        ImageRef image;
         FCoords coordsFrom;
         FCoords coordsTo;
         Key key;
@@ -46,8 +46,8 @@ class LevelInput : public IInputSink {
     std::vector<Button> m_buttons;
     const Button* m_activeButton;
 
-    PNGImage m_fishSmall;
-    PNGImage m_fishBig;
+    ImageRef m_fishSmall;
+    ImageRef m_fishBig;
 
 public:
     LevelInput(Instance& instance, LevelScreen& screen);

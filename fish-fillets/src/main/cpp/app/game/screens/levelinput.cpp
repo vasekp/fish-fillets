@@ -10,16 +10,16 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_dirpad({DirpadState::ignore}),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_activeButton(nullptr),
-        m_fishSmall(instance, "images/fishes/small/right/body_rest_00.png"),
-        m_fishBig(instance, "images/fishes/big/right/body_rest_00.png")
+        m_fishSmall(PNGImage::create(instance, "images/fishes/small/right/body_rest_00.png")),
+        m_fishBig(PNGImage::create(instance, "images/fishes/big/right/body_rest_00.png"))
 {
     resize();
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, " "), {}, {}, Key::space });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "L"), {}, {}, Key::load });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "R"), {}, {}, Key::restart });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "O"), {}, {}, Key::options });
-    m_buttons.push_back({ TextImage(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, " "), {}, {}, Key::space });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, "S"), {}, {}, Key::save });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, "L"), {}, {}, Key::load });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, "R"), {}, {}, Key::restart });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, "O"), {}, {}, Key::options });
+    m_buttons.push_back({ TextImage::create(instance, *m_buttonsFont, "Q"), {}, {}, Key::exit });
 }
 
 void LevelInput::setFish(Model::Fish fish) {
@@ -193,7 +193,7 @@ void LevelInput::resize() {
             FCoords center = (buttonSize + buttonDistance) * ((float)i - (float)(buttonCount - 1) / 2.f) * coords.principal;
             m_buttons[i].coordsFrom = center - extent / 2.f;
             m_buttons[i].coordsTo = center + extent / 2.f;
-            m_buttons[i].image.render();
+            /*m_buttons[i].image.render(); TODO */
         }
     }
 }
@@ -245,7 +245,7 @@ void LevelInput::drawButtons(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::buttons);
     for(const auto& button : m_buttons) {
         const auto program = m_instance.graphics().shaders().button({ .color = colorButtons.gl(button.alpha) });
-        target.draw(&button.image, program, coords, { .dest = button.coordsFrom, .area = button.coordsTo - button.coordsFrom });
+        target.draw(button.image, program, coords, { .dest = button.coordsFrom, .area = button.coordsTo - button.coordsFrom });
     }
     if(m_activeFish != Model::Fish::none) {
         const auto& button = keyButton(Key::space);
@@ -255,11 +255,11 @@ void LevelInput::drawButtons(DrawTarget& target) {
         });
         FCoords center = (button.coordsFrom + button.coordsTo) / 2.f;
         FCoords extent = 0.8f * (button.coordsTo - button.coordsFrom);
-        FCoords imgSize = image.size();
+        FCoords imgSize = image->size();
         float scale = std::min(extent.x / imgSize.x, extent.y / imgSize.y);
         FCoords from = center - scale / 2.f * imgSize;
         FCoords to = center + scale / 2.f * imgSize;
-        target.draw(&image, alphaProgram, coords, { .srcSize = to - from, .dest = from });
+        target.draw(image, alphaProgram, coords, { .srcSize = to - from, .dest = from });
     }
 }
 

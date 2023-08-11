@@ -4,8 +4,8 @@
 void Graphics::activate(GraphicsSystem::PlatformDisplay&& display) {
     Log::debug<Log::graphics>("graphics: activate");
     m_system = std::make_unique<GraphicsSystem>(m_instance, std::move(display));
-    for(auto* image : m_images)
-        image->render();
+    for(const auto& image : m_images)
+        image->render(m_instance);
 }
 
 void Graphics::shutdown() {
@@ -55,18 +55,16 @@ void Graphics::recalc() {
     m_coords[window].origin += m_windowShift;
 }
 
-void Graphics::regImage(Image* image) {
-    m_images.push_back(image);
+ImageRef Graphics::addImage(std::unique_ptr<Image>&& ptr) {
+    ImageRef ref{m_instance, ptr};
+    m_images.push_back(std::move(ptr));
     if(m_system)
-        image->render();
+        ref->render(m_instance);
+    return ref;
 }
 
-void Graphics::regImageMove(Image* from, Image* to) noexcept {
-    *std::find(m_images.begin(), m_images.end(), from) = to;
-}
-
-void Graphics::unregImage(Image* image) noexcept {
-    auto it = std::find(m_images.begin(), m_images.end(), image);
+void Graphics::unrefImage(const ImageRef& ref) noexcept {
+    auto it = std::find_if(m_images.begin(), m_images.end(), [ptr = *ref](std::unique_ptr<Image>& entry) { return entry.get() == ptr; });
     if(it != m_images.end())
         m_images.erase(it);
 }

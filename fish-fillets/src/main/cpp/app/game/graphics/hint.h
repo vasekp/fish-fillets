@@ -6,7 +6,7 @@
 class Hint {
     Instance& m_instance;
     std::unique_ptr<IFont> m_font;
-    std::vector<TextImage> m_lines;
+    std::vector<ImageRef> m_lines;
     Graphics::CoordSystems m_coords;
 
 public:

@@ -3,24 +3,42 @@
 
 class Image {
 protected:
-    std::reference_wrapper<Instance> m_instance;
     std::optional<Texture> m_texture;
 
-    Image(Instance& instance) : m_instance(instance), m_texture() { }
-    Image(Image&&) noexcept;
-    Image& operator=(Image&&) noexcept;
-    void init(); // Must be called at the end of derived classes' constructors.
+    Image() = default;
+    Image(const Image&) = delete;
+    Image(Image&&) = delete;
+    Image& operator=(const Image&) = delete;
+    Image& operator=(Image&&) = delete;
 
 public:
-    virtual ~Image() noexcept;
+    virtual ~Image() noexcept { }
 
     const auto& texture() const { return *m_texture; }
     FCoords size() const { return m_texture->logSize(); }
 
-    virtual void render() = 0;
+    virtual void render(Instance& instance) = 0;
 
 private:
     friend class Graphics;
+};
+
+class ImageRef {
+    std::reference_wrapper<Instance> m_instance;
+    Image* m_image;
+
+public:
+    ImageRef(Instance& instance, const std::unique_ptr<Image>& ptr);
+    ImageRef(const ImageRef&) = delete;
+    ImageRef& operator=(const ImageRef&) = delete;
+    ImageRef(ImageRef&&) noexcept;
+    ImageRef& operator=(ImageRef&&) noexcept;
+    ~ImageRef() noexcept;
+
+    Image* operator*() const { return m_image; }
+    Image* operator->() const { return m_image; }
+    operator Image*() { return m_image; }
+    operator const Image*() const { return m_image; }
 };
 
 class PNGImage : public Image {
@@ -28,12 +46,14 @@ class PNGImage : public Image {
     TextureType m_type;
 
 public:
-    PNGImage(Instance& instance, std::string filename, TextureType type = TextureType::image);
+    PNGImage(std::string filename, TextureType type = TextureType::image);
     PNGImage(PNGImage&&) = default;
     PNGImage& operator=(PNGImage&&) = default;
 
-    auto filename() const { return m_filename; }
-    void render() override;
+    static ImageRef create(Instance& instance, std::string filename, TextureType type = TextureType::image);
+
+protected:
+    void render(Instance& instance) override;
 };
 
 class IFont;
@@ -43,13 +63,14 @@ class TextImage : public Image {
     std::string m_text;
 
 public:
-    TextImage(Instance& instance, IFont& font, std::string text);
+    TextImage(IFont& font, std::string text);
     TextImage(TextImage&&) = default;
     TextImage& operator=(TextImage&&) = default;
 
-    IFont& font() { return m_font.get(); }
-    const std::string& text() const { return m_text; }
-    void render() override;
+    static ImageRef create(Instance& instance, IFont& font, std::string text);
+
+protected:
+    void render(Instance& instance) override;
 };
 
 class BufferImage : public Image {
@@ -58,13 +79,17 @@ class BufferImage : public Image {
     std::unique_ptr<std::uint8_t[]> m_data;
 
 public:
-    BufferImage(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
+    BufferImage(USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
     BufferImage(BufferImage&&) = default;
     BufferImage& operator=(BufferImage&&) = default;
 
-    void render() override;
+    static ImageRef create(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
+
     void replace(std::unique_ptr<std::uint8_t[]>&& data);
     void compose(ImageData& picture, ICoords origin);
+
+protected:
+    void render(Instance& instance) override;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_IMAGE_H

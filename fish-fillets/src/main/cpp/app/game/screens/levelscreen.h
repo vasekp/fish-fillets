@@ -19,7 +19,7 @@ class LevelScreen : public GameScreen {
     FCoords m_winSize;
     Subtitles m_subs;
     std::optional<Hint> m_hint;
-    std::unique_ptr<Image> m_display;
+    std::optional<ImageRef> m_display;
     std::unique_ptr<TextureTarget> m_mirrorTarget;
     std::unique_ptr<ZXEffect> m_zxEffect;
     LiveClock::time_point m_lastUpdate;
@@ -52,8 +52,9 @@ public:
     void setShift(FCoords shift);
     void showHint(const std::string& text);
     void hideHint();
-    void display(std::unique_ptr<Image>&& image);
-    Image* display() { return m_display.get(); }
+    void display(ImageRef&& image);
+    void display();
+    Image* displayed();
 
     constexpr static int size_unit = 15;
 

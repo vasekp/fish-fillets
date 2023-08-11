@@ -9,9 +9,9 @@ IntroScreen::IntroScreen(Instance& instance) :
     m_vorbis(m_ogg),
     m_theora(m_ogg),
     m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music)),
-    m_imgY(instance, {640, 480}, TextureType::channelY, nullptr),
-    m_imgCb(instance, {320, 240}, TextureType::channelCb, nullptr),
-    m_imgCr(instance, {320, 240}, TextureType::channelCr, nullptr),
+    m_imgY(BufferImage::create(instance, {640, 480}, TextureType::channelY, nullptr)),
+    m_imgCb(BufferImage::create(instance, {320, 240}, TextureType::channelCb, nullptr)),
+    m_imgCr(BufferImage::create(instance, {320, 240}, TextureType::channelCr, nullptr)),
     m_imgTime(-1.f)
 {
     auto& info = m_theora.info();
@@ -72,9 +72,9 @@ void IntroScreen::own_update() {
     if(frame.time == m_imgTime)
         return;
     Log::verbose<Log::video>("uploading frame ", frame.time);
-    m_imgY.replace(std::move(frame.yData));
-    m_imgCb.replace(std::move(frame.cbData));
-    m_imgCr.replace(std::move(frame.crData));
+    dynamic_cast<BufferImage*>(*m_imgY)->replace(std::move(frame.yData));
+    dynamic_cast<BufferImage*>(*m_imgCb)->replace(std::move(frame.cbData));
+    dynamic_cast<BufferImage*>(*m_imgCr)->replace(std::move(frame.crData));
     m_imgTime = frame.time;
     fill_buffers();
 }
@@ -84,7 +84,7 @@ void IntroScreen::own_draw(DrawTarget& target) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     const auto program = m_instance.graphics().shaders().YCbCr();
     target.draw({
-        m_imgY.texture(), m_imgCb.texture(), m_imgCr.texture()
+        m_imgY->texture(), m_imgCb->texture(), m_imgCr->texture()
     }, program, coords);
 }
 
