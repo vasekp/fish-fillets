@@ -79,8 +79,8 @@ void Level::registerCallbacks() {
     m_script.registerFn("options_getInt", lua::wrap<&Level::options_getInt>);
 }
 
-void Level::level_createRoom(int width, int height, const std::string& bg) {
-    m_layout = std::make_unique<LevelLayout>(*this, width, height);
+void Level::level_createRoom(unsigned width, unsigned height, const std::string& bg) {
+    m_layout = std::make_unique<LevelLayout>(*this, USize{width, height});
     m_screen.addImage(bg, "background");
 }
 
@@ -147,13 +147,13 @@ void Level::slideshow_exit() {
 }
 
 void Level::slide_display(const std::string& filename, int x, int y) {
-    auto data = decoders::png(m_instance, filename);
+    auto imgData = decoders::png(m_instance, filename);
     if(x == 0 && y == 0) {
-        auto image = std::make_unique<BufferImage>(m_instance, ICoords{data.width, data.height}, TextureType::image, std::move(data.data));
+        auto image = std::make_unique<BufferImage>(m_instance, imgData.size, TextureType::image, std::move(imgData.data));
         m_screen.display(std::move(image));
     } else {
         auto image = dynamic_cast<BufferImage*>(m_screen.display());
-        image->compose(data, {x, y});
+        image->compose(imgData, {x, y});
     }
 }
 
@@ -285,11 +285,11 @@ bool Level::model_isLeft(int index) {
 }
 
 unsigned Level::model_getW(int index) {
-    return layout().getModel(index)->shape().width();
+    return layout().getModel(index)->size().width;
 }
 
 unsigned Level::model_getH(int index) {
-    return layout().getModel(index)->shape().height();
+    return layout().getModel(index)->size().height;
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
@@ -387,13 +387,14 @@ void Level::killModelSound(Model* model) {
 }
 
 bool Level::model_equals(int index, int x, int y) {
-    if(x < 0 || x >= layout().width() || y < 0 || y >= layout().height())
+    ICoords xy{x, y};
+    if(!xy.within({}, ICoords{layout().size(), 1}))
         return false;
     if(index != index_free_space) {
         const auto* model = layout().getModel(index);
-        return model->shape().covers(ICoords{x, y} - model->xy());
+        return model->shape().covers(xy - model->xy());
     } else
-        return layout().modelAt({x, y}) == nullptr;
+        return layout().modelAt(xy) == nullptr;
 }
 
 bool Level::model_goto(int index, int x, int y) {

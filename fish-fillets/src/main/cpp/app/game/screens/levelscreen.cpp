@@ -34,7 +34,7 @@ void LevelScreen::own_start() {
 }
 
 void LevelScreen::own_resize() {
-    m_winSize = FCoords{m_level.layout().width(), m_level.layout().height()} * size_unit;
+    m_winSize = FCoords{m_level.layout().size()} * size_unit;
     m_instance.graphics().setWindowSize(m_winSize);
     m_input.resize();
     m_subs.resize();
@@ -51,8 +51,8 @@ void LevelScreen::own_resize() {
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
-    FCoords modelSizePixel = coords.in2out_dim(model.size() * size_unit);
-    return std::make_unique<TextureTarget>(m_instance.graphics().system(), modelSizePixel.round());
+    auto modelSizePixel = coords.in2out_dim(FCoords{model.size()} * size_unit).toSize();
+    return std::make_unique<TextureTarget>(m_instance.graphics().system(), modelSizePixel);
 }
 
 void LevelScreen::own_update() {
@@ -159,7 +159,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
 
     if(mirror) {
         FCoords topLeft = coords.in2out(mirror->fxy() * size_unit);
-        FCoords size = coords.in2out_dim(mirror->size() * size_unit);
+        FCoords size = coords.in2out_dim(FCoords{mirror->size()} * size_unit);
         m_mirrorTarget->draw(m_instance.graphics().offscreenTarget().texture(),
             copyProgram, m_instance.graphics().coords(Graphics::CoordSystems::null),
             {

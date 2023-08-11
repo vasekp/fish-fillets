@@ -27,8 +27,8 @@ PNGImage::PNGImage(Instance& instance, std::string filename, TextureType type) :
 }
 
 void PNGImage::render() {
-    auto [width, height, data] = decoders::png(m_instance, m_filename);
-    m_texture = Texture{m_instance.get().graphics().system(), m_type, ICoords{width, height}, data.get()};
+    auto [size, data] = decoders::png(m_instance, m_filename);
+    m_texture = Texture{m_instance.get().graphics().system(), m_type, size, data.get()};
 }
 
 TextImage::TextImage(Instance& instance, IFont& font, std::string text) :
@@ -41,7 +41,7 @@ void TextImage::render() {
     m_texture = m_font.get().renderText(m_instance, m_text);
 }
 
-BufferImage::BufferImage(Instance& instance, ICoords size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
+BufferImage::BufferImage(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data) :
     Image(instance), m_size(size), m_type(type), m_data(std::move(data))
 {
     init();
@@ -59,8 +59,7 @@ void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {
 
 void BufferImage::compose(ImageData& picture, ICoords origin) {
     assert(m_type == TextureType::image);
-    auto corner = origin + ICoords{picture.width, picture.height};
-    if(corner.x > m_size.x || corner.y > m_size.y) {
+    if(!origin.within({}, ICoords{m_size, 1} - ICoords{picture.size})) {
         Log::error("BufferImage::compose picture does not fit");
         return;
     }
@@ -68,17 +67,17 @@ void BufferImage::compose(ImageData& picture, ICoords origin) {
     auto src = reinterpret_cast<rgba*>(picture.data.get());
     auto dst = reinterpret_cast<rgba*>(m_data.get());
     rgba *srcStart = src;
-    rgba *dstStart = dst + origin.y * m_size.x + origin.x;
-    for(auto y = 0u; y < picture.height; y++) {
+    rgba *dstStart = dst + origin.y * m_size.width + origin.x;
+    for(auto y = 0u; y < picture.size.height; y++) {
         rgba *srcPtr = srcStart, *dstPtr = dstStart;
-        for(auto x = 0u; x < picture.width; x++) {
+        for(auto x = 0u; x < picture.size.width; x++) {
             if((*srcPtr)[3] != 0)
                 *dstPtr = *srcPtr;
             srcPtr++;
             dstPtr++;
         }
-        dstStart += m_size.x;
-        srcStart += picture.width;
+        dstStart += m_size.width;
+        srcStart += picture.size.width;
     }
     if(m_texture)
         m_texture->replaceData(m_data.get());

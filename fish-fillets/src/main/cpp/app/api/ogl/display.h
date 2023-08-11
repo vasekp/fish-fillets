@@ -7,8 +7,9 @@ namespace ogl {
         EGLDisplay m_display;
         EGLSurface m_surface;
         EGLContext m_context;
+        USize m_size;
         ICoords m_origin;
-        ICoords m_size;
+        ICoords m_vpSize;
         std::shared_ptr<int> m_ref;
 
     public:
@@ -21,7 +22,7 @@ namespace ogl {
         ~Display();
 
         void setViewport(ICoords origin, ICoords size);
-        ICoords size() const { return m_size; }
+        USize size() const { return m_size; }
 
         std::weak_ptr<int> ref() const { return {m_ref}; }
 

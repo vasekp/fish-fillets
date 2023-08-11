@@ -11,7 +11,7 @@ class Texture {
 #endif
 
     PlatformType m_native;
-    ICoords m_physSize;
+    USize m_physSize;
     FCoords m_logSize;
 
 public:
@@ -19,12 +19,12 @@ public:
     Texture(Texture&& other) = default;
     Texture& operator=(Texture&& other) = default;
 
-    Texture(GraphicsSystem& system, TextureType type, ICoords size, std::uint8_t* data);
-    Texture(GraphicsSystem& system, TextureType type, ICoords physSize, FCoords logSize, std::uint8_t* data);
+    Texture(GraphicsSystem& system, TextureType type, USize size, std::uint8_t* data);
+    Texture(GraphicsSystem& system, TextureType type, USize physSize, FCoords logSize, std::uint8_t* data);
 
     FCoords logSize() const { return m_logSize; }
     FCoords& logSize() { return m_logSize; }
-    ICoords physSize() const { return m_physSize; }
+    USize physSize() const { return m_physSize; }
     const PlatformType& native() const { return m_native; }
 
     void replaceData(std::uint8_t* data);

@@ -35,7 +35,7 @@ void Graphics::setViewport(FCoords origin, FCoords size) {
 }
 
 void Graphics::recalc() {
-    FCoords displayDim = m_system->display().size();
+    auto displayDim = FCoords{m_system->display().size()};
     float scale0 = std::min(displayDim.x / baseDim.x, displayDim.y / baseDim.y);
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     float stripSize = buttonStripWidth * scale0;

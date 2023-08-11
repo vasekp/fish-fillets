@@ -37,13 +37,13 @@ namespace decoders {
         png_set_add_alpha(png_ptr, 0xFF, PNG_FILLER_AFTER);
         png_read_update_info(png_ptr, info_ptr);
 
-        auto width = png_get_image_width(png_ptr, info_ptr);
-        auto height = png_get_image_height(png_ptr, info_ptr);
+        unsigned width = png_get_image_width(png_ptr, info_ptr);
+        unsigned height = png_get_image_height(png_ptr, info_ptr);
 
         if(setjmp(png_jmpbuf(png_ptr)))
             Log::error("libpng: error during png_read_image");
 
-        auto stride = png_get_rowbytes(png_ptr, info_ptr);
+        unsigned stride = png_get_rowbytes(png_ptr, info_ptr);
         if(stride != 4 * width)
             Log::error(filename, ": width = ", width, " but stride = ", stride);
         auto data = std::make_unique<std::uint8_t[]>(height * stride);
@@ -65,6 +65,6 @@ namespace decoders {
             data_rgba[p] = std::array{r, g, b, a};
         }
 
-        return {width, height, std::move(data)};
+        return {{width, height}, std::move(data)};
     }
 }

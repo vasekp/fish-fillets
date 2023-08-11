@@ -47,11 +47,11 @@ void XInstance::dispatchEvent(const XEvent& event) {
             break;
         case ConfigureNotify:
             {
-                ICoords size{event.xconfigure.width, event.xconfigure.height};
+                USize size{(unsigned)event.xconfigure.width, (unsigned)event.xconfigure.height};
                 if(size == m_lastSize)
                     break;
                 Log::debug<Log::platform>("Resize: ", size);
-                graphics().setViewport({0, 0}, size);
+                graphics().setViewport({0, 0}, ICoords{size});
                 m_lastSize = size;
                 break;
             }

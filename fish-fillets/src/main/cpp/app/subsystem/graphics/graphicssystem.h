@@ -40,7 +40,7 @@ public:
 private:
     std::unique_ptr<PlatformDetail> platformDetail();
 
-    ICoords blurTargetDims();
+    USize blurTargetDims();
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SYSTEM_H

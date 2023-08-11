@@ -9,18 +9,16 @@ struct TextureImpl;
 
 class Texture {
     std::unique_ptr<TextureImpl> pImpl;
-    std::uint32_t m_width;
-    std::uint32_t m_height;
+    USize m_size;
 
 public:
-    Texture(vulkan::Display& display, std::uint32_t width, std::uint32_t height, TextureType type, std::uint8_t* data);
+    Texture(vulkan::Display& display, USize size, TextureType type, std::uint8_t* data);
 
     Texture(Texture&&);
     Texture& operator=(Texture&&);
     ~Texture();
 
-    auto width() const { return m_width; }
-    auto height() const { return m_height; }
+    auto size() const { return m_size; }
 
     const vk::Image& image() const;
     const vk::ImageView& imageView() const;

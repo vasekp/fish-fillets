@@ -61,7 +61,7 @@ namespace ogl {
             eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
             eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
             m_origin = {};
-            m_size = {width, height};
+            m_size = {(unsigned)width, (unsigned)height};
 
             Log::debug<Log::graphics>("display: opened ", (void*)m_display, " ", m_size);
         }
@@ -114,12 +114,12 @@ namespace ogl {
 
     void Display::setViewport(ICoords origin, ICoords size) {
         m_origin = origin;
-        m_size = size;
+        m_size = {(unsigned)size.x, (unsigned)size.y};
     }
 
     void Display::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(m_origin.x, m_origin.y, m_size.x, m_size.y);
+        glViewport(m_origin.x, m_origin.y, m_size.width, m_size.height);
     }
 
     void Display::swap() const {

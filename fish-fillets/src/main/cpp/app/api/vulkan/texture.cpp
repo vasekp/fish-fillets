@@ -11,14 +11,14 @@ struct TextureImpl {
     const vk::DescriptorSet* descriptorSet;
 };
 
-Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, TextureType type, std::uint8_t* data) :
+Texture::Texture(Display& display, USize size, TextureType type, std::uint8_t* data) :
     pImpl{},
-    m_width(width), m_height(height)
+    m_size(size)
 {
     auto format = type.channels() == 4 ? vk::Format::eR8G8B8A8Unorm : vk::Format::eR8Unorm;
     vk::raii::Image image{display.device(), vk::ImageCreateInfo{}
         .setImageType(vk::ImageType::e2D)
-        .setExtent({width, height, 1})
+        .setExtent({m_size.width, m_size.height, 1})
         .setMipLevels(1)
         .setArrayLayers(1)
         .setFormat(format)
@@ -87,8 +87,7 @@ Texture::Texture(Display& display, std::uint32_t width, std::uint32_t height, Te
 Texture::Texture(Texture&& other) = default;
 
 Texture& Texture::operator=(Texture&& other) {
-    m_width = other.m_width;
-    m_height = other.m_height;
+    m_size = other.m_size;
     std::swap(pImpl, other.pImpl); // so that the old one is properly freed
     return *this;
 }
@@ -113,7 +112,7 @@ const vk::DescriptorSet& Texture::descriptorSet() const {
 void Texture::replaceData(std::uint8_t* data) {
     auto& display = pImpl->display;
     auto& commandBuffer = display.commandBuffer();
-    auto byteSize = m_width * m_height * pImpl->type.channels();
+    auto byteSize = m_size.width * m_size.height * pImpl->type.channels();
 
     vk::raii::Buffer stagingBuffer{display.device(), vk::BufferCreateInfo{}
             .setUsage(vk::BufferUsageFlagBits::eTransferSrc)
@@ -127,7 +126,7 @@ void Texture::replaceData(std::uint8_t* data) {
 
     auto bufferImageCopy = vk::BufferImageCopy{}
         .setImageSubresource(baseLayers)
-        .setImageExtent({m_width, m_height, 1})
+        .setImageExtent({m_size.width, m_size.height, 1})
         .setBufferOffset(0);
 
     auto barrierU2T = vk::ImageMemoryBarrier{}

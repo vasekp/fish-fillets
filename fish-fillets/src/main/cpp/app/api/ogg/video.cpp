@@ -142,24 +142,25 @@ namespace ogg {
             th_ycbcr_buffer ycbcr;
             th_decode_ycbcr_out(m_decoder, ycbcr);
             frame.time = time;
-            copy(frame.yData, ycbcr[0], 640, 480);
-            copy(frame.cbData, ycbcr[1], 320, 240);
-            copy(frame.crData, ycbcr[2], 320, 240);
+            copy(frame.yData, ycbcr[0], {640, 480}); // TODO check true dims
+            copy(frame.cbData, ycbcr[1], {320, 240});
+            copy(frame.crData, ycbcr[2], {320, 240});
         }
         return true;
     }
 
-    void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, int width, int height) {
-        dst = std::make_unique<std::uint8_t[]>(width * height);
-        if(src.stride == width)
-            std::memcpy(dst.get(), src.data, width * height);
+    void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, USize size) {
+        auto byteSize = size.width * size.height;
+        dst = std::make_unique<std::uint8_t[]>(byteSize);
+        if(src.stride == (int)size.width)
+            std::memcpy(dst.get(), src.data, byteSize);
         else {
             std::uint8_t* srcp = src.data;
             std::uint8_t* dstp = dst.get();
-            for(int y = 0; y < height; y++) {
-                std::memcpy(dstp, srcp, width);
+            for(auto y = 0u; y < size.height; y++) {
+                std::memcpy(dstp, srcp, size.width);
                 srcp += src.stride;
-                dstp += width;
+                dstp += size.width;
             }
         }
     }

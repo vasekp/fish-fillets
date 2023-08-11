@@ -3,9 +3,9 @@
 #include "level.h"
 #include "subsystem/rng.h"
 
-LevelLayout::LevelLayout(Level& level, int width, int height) :
+LevelLayout::LevelLayout(Level& level, USize size) :
         m_level(level),
-        m_width(width), m_height(height),
+        m_size(size),
         m_models_adapted(m_models_internal)
 { }
 
@@ -26,8 +26,7 @@ Model* LevelLayout::getModel(int index) const {
 }
 
 Model* LevelLayout::modelAt(ICoords coords) const {
-    auto [x, y] = coords;
-    if(x < 0 || x >= m_width || y < 0 || y >= m_height)
+    if(!coords.within({}, ICoords{m_size, 1}))
         return nullptr;
     auto it = std::find_if(models().begin(), models().end(), [coords](const Model* model) {
         return model->shape().covers(coords - model->xy());
@@ -98,20 +97,18 @@ Direction LevelLayout::borderDir(const Model* model) const {
         return Direction::none;
     else if(x <= 0)
         return Direction::left;
-    else if(x + width >= m_width)
+    else if(x + width >= m_size.width)
         return Direction::right;
     else if(y <= 0)
         return Direction::up;
-    else if(y + height >= m_height)
+    else if(y + height >= m_size.height)
         return Direction::down;
     else
         return Direction::none;
 }
 
 bool LevelLayout::isOut(const Model* model) const {
-    auto [x, y] = model->xy();
-    auto [width, height] = model->size();
-    return x + width <= 0 || y + height <= 0 || x >= m_width || y >= m_height;
+    return !model->xy().within(-ICoords{model->size(), 1}, ICoords{m_size, 1});
 }
 
 static std::array<Direction, 3> nextDirs(Direction dir) {
@@ -134,39 +131,37 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
         if(model == unit || model->hidden() || model->driven())
             continue;
         auto [x, y] = model->xy();
-        auto width = model->shape().width(),
-             height = model->shape().height();
-        for(auto dx = 0u; dx < width; dx++)
-            for(auto dy = 0u; dy < height; dy++)
+        auto size = model->size();
+        for(auto dx = 0u; dx < size.width; dx++)
+            for(auto dy = 0u; dy < size.height; dy++)
                 occupied[y + dy][x + dx] = occupied[y + dy][x + dx] || model->shape()[dy][dx];
     }
     /* Also avoid borders */
     if(unit->goal() == Model::Goal::escape) {
-      for(auto x = 0; x < m_width; x++)
-          occupied[0][x] = occupied[m_height - 1][x] = true;
-      for(auto y = 0; y < m_height; y++)
-          occupied[y][0] = occupied[y][m_width - 1] = true;
+      for(auto x = 0u; x < m_size.width; x++)
+          occupied[0][x] = occupied[m_size.height - 1][x] = true;
+      for(auto y = 0u; y < m_size.height; y++)
+          occupied[y][0] = occupied[y][m_size.width - 1] = true;
     } else {
-      for(auto x = 0; x < m_width; x++)
-          occupied[m_height][x] = true;
-      for(auto y = 0; y < m_height; y++)
-          occupied[y][m_width] = true;
+      for(auto x = 0u; x < m_size.width; x++)
+          occupied[m_size.height][x] = true;
+      for(auto y = 0u; y < m_size.height; y++)
+          occupied[y][m_size.width] = true;
     }
     /* Extend occupied fields to the left and above, as unit covers [x, x+unitWidth) × [y, y + unitHeight)
      * and thus can't start where it could clash with an occupied field due to its nonunit size */
-    auto unitWidth = unit->shape().width();
-    auto unitHeight = unit->shape().height();
-    for(auto i = 0u; i < unitWidth - 1; i++)
+    auto unitSize = unit->size();
+    for(auto i = 0u; i < unitSize.width - 1; i++)
         for(auto y = 0u; y < maxDim; y++)
             occupied[y] |= occupied[y] >> 1;
-    for(auto i = 0u; i < unitHeight - 1; i++)
+    for(auto i = 0u; i < unitSize.height - 1; i++)
         for(auto y = 0u; y < maxDim - 1; y++)
             occupied[y] |= occupied[y + 1];
     return occupied;
 }
 
 std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
-    if(target.x < 0 || target.x >= m_width || target.y < 0 || target.y > m_height)
+    if(!target.within({}, ICoords{m_size, 1}))
         return {};
     ICoords start = unit->xyFinal();
     Log::debug<Log::gotos>("path from ", start, " to ", target, ":");
@@ -176,11 +171,10 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
         Log::error("Unit start field marked as occupied.");
         return {};
     }
-    auto unitWidth = unit->shape().width();
-    auto unitHeight = unit->shape().height();
+    auto unitSize = unit->size();
     bool found = false;
-    for(int dx = 0; !found && dx < std::min((int)unitWidth, target.x + 1); dx++)
-        for(int dy = 0; !found && dy < std::min((int)unitHeight, target.y + 1); dy++)
+    for(auto dx = 0u; !found && dx < std::min(unitSize.width, (unsigned)target.x + 1u); dx++)
+        for(auto dy = 0u; !found && dy < std::min(unitSize.height, (unsigned)target.y + 1u); dy++)
             if(occupied[target.y - dy][target.x - dx])
                 Log::verbose<Log::gotos>(target - ICoords{dx, dy}, " occupied");
             else
@@ -195,11 +189,11 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right})
         queue.emplace_back(start + dir, dir);
     ICoords end{};
-    ICoords accept{unitWidth - 1, unitHeight - 1};
+    ICoords accept{unit->size(), 1};
     while(!queue.empty()) {
         auto [coords, dir] = queue.front();
         queue.pop_front();
-        if(coords.x < 0 || coords.x >= m_width || coords.y < 0 || coords.y >= m_height || occupied[coords.y][coords.x]) {
+        if(!coords.within({}, ICoords{m_size, 1}) || occupied[coords.y][coords.x]) {
             Log::verbose<Log::gotos>(coords, " inaccessible");
             continue;
         }
@@ -246,7 +240,7 @@ std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistanc
         auto [coords, pair] = queue.front();
         auto [dir, dist] = pair;
         queue.pop_front();
-        if(coords.x < 0 || coords.x >= m_width || coords.y < 0 || coords.y >= m_height || occupied[coords.y][coords.x]) {
+        if(!coords.within({}, ICoords{m_size, 1}) || occupied[coords.y][coords.x]) {
             Log::verbose<Log::gotos>(coords, " inaccessible");
             continue;
         }

@@ -40,9 +40,9 @@ ImageData AndroidFont::own_renderText(const std::string& text) const {
     auto jBitmap = jni->CallObjectMethod(jni.object(), jni.getMethod("renderText"), jText, jFilename, m_fontSize, m_outline);
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(jni, jBitmap, &info);
-    auto width = info.width;
-    auto height = info.height;
-    auto stride = info.stride;
+    unsigned width = info.width;
+    unsigned height = info.height;
+    unsigned stride = info.stride;
     Log::debug<Log::graphics>("renderText: bitmap size ", width, "x", height);
     void* pixels;
     AndroidBitmap_lockPixels(jni, jBitmap, &pixels);
@@ -57,5 +57,5 @@ ImageData AndroidFont::own_renderText(const std::string& text) const {
     jni->DeleteLocalRef(jBitmap);
     jni->DeleteLocalRef(jFilename);
     jni->DeleteLocalRef(jText);
-    return {width, height, std::move(data)};
+    return {{width, height}, std::move(data)};
 }

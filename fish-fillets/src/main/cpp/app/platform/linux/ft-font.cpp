@@ -151,5 +151,5 @@ ImageData FTFont::own_renderText(const std::string& text) const {
         }
     }
 
-    return {width, height, std::move(data)};
+    return {{width, height}, std::move(data)};
 }

@@ -53,12 +53,12 @@ public:
 };
 
 class BufferImage : public Image {
-    ICoords m_size;
+    USize m_size;
     TextureType m_type;
     std::unique_ptr<std::uint8_t[]> m_data;
 
 public:
-    BufferImage(Instance& instance, ICoords size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
+    BufferImage(Instance& instance, USize size, TextureType type, std::unique_ptr<std::uint8_t[]>&& data);
     BufferImage(BufferImage&&) = default;
     BufferImage& operator=(BufferImage&&) = default;
 

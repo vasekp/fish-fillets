@@ -104,7 +104,7 @@ public:
 private:
     void registerCallbacks();
 
-    void level_createRoom(int width, int height, const std::string& bg);
+    void level_createRoom(unsigned width, unsigned height, const std::string& bg);
     int level_getRestartCounter() const;
     int level_getDepth() const;
     bool level_isNewRound() const;

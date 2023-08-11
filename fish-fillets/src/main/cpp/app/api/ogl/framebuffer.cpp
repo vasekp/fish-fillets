@@ -19,7 +19,7 @@ namespace ogl {
 
     void Framebuffer::bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, m_name);
-        glViewport(0, 0, m_texture->width(), m_texture->height());
+        glViewport(0, 0, m_texture->size().width, m_texture->size().height);
     }
 
     void Framebuffer::unbind() const {

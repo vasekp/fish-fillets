@@ -7,8 +7,7 @@ class Level;
 
 class LevelLayout {
     Level& m_level;
-    int m_width;
-    int m_height;
+    USize m_size;
 
     std::vector<std::unique_ptr<Model>> m_models_internal;
     mutable std::map<int, std::unique_ptr<Model>> m_virtModels;
@@ -39,12 +38,11 @@ class LevelLayout {
     std::vector<RopeDecor> m_ropes;
 
 public:
-    LevelLayout(Level& level, int width, int height);
+    LevelLayout(Level& level, USize size);
 
     auto& models() { return m_models_adapted; }
     const auto& models() const { return m_models_adapted; }
-    auto width() const { return m_width; }
-    auto height() const { return m_height; }
+    auto size() const { return m_size; }
 
     int addModel(const std::string& type, int x, int y, const std::string& shape);
     void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);

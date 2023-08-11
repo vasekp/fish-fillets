@@ -11,7 +11,7 @@ public:
     DisplayTarget(GraphicsSystem& system, const ogl::Display& display) :
         DrawTarget(system), m_display(display) { }
 
-    FCoords size() const override { return m_display.size(); }
+    FCoords size() const override { return FCoords{m_display.size()}; }
 
     void bind() override { m_display.bind(); }
 

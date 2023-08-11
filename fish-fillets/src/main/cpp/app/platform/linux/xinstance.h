@@ -17,7 +17,7 @@ class XInstance : public Instance {
     LinuxFiles m_files;
     XInput m_input;
     AlsaSink m_sink;
-    ICoords m_lastSize;
+    USize m_lastSize;
     std::map<std::string, Atom> m_atoms;
 
 public:

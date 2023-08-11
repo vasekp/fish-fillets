@@ -82,7 +82,7 @@ namespace ogg {
         void skipToKey();
 
     private:
-        void copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, int width, int height);
+        void copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src, USize size);
     };
 
 }

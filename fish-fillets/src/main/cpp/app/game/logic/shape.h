@@ -10,17 +10,15 @@ public:
 
 private:
     std::vector<std::bitset<maxSize>> m_bits;
-    unsigned m_width;
-    unsigned m_height;
+    USize m_size;
 
 public:
     Shape(const std::string& string);
 
-    unsigned width() const { return m_width; }
-    unsigned height() const { return m_height; }
+    USize size() const { return m_size; }
     const auto& operator[](unsigned y) const { return m_bits[y]; }
 
-    bool intersects(const Shape& other, ICoords d) const;
+    bool intersects(const Shape& other, ICoords delta) const;
     bool covers(ICoords xy) const;
 };
 

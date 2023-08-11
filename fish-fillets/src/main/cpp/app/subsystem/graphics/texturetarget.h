@@ -12,12 +12,12 @@ class TextureTarget : public DrawTarget {
     PlatformType m_framebuffer;
 
 public:
-    TextureTarget(GraphicsSystem& system, ICoords physSize, FCoords logSize = {});
+    TextureTarget(GraphicsSystem& system, USize physSize, FCoords logSize = {});
 
     const PlatformType& framebuffer() const { return m_framebuffer; }
     const Texture& texture() const { return m_texture; }
     FCoords size() const override { return m_texture.logSize(); }
-    void resize(ICoords physSize, FCoords logSize = {});
+    void resize(USize physSize, FCoords logSize = {});
     void bind() override;
 };
 

@@ -24,6 +24,11 @@ namespace lua {
         }
 
         template<>
+        inline unsigned read(lua_State *L, std::size_t index) {
+            return (unsigned) luaL_checkinteger(L, index);
+        }
+
+        template<>
         inline float read(lua_State *L, std::size_t index) {
             return (float) luaL_checknumber(L, index);
         }

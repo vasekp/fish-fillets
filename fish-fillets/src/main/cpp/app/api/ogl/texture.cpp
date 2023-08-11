@@ -2,8 +2,8 @@
 
 namespace ogl {
 
-    Texture::Texture(const ogl::Display& display, GLuint width, GLuint height, TextureType type, std::uint8_t* data) :
-        m_ref(display.ref()), m_width(width), m_height(height), m_channels(type.channels())
+    Texture::Texture(const ogl::Display& display, USize size, TextureType type, std::uint8_t* data) :
+        m_ref(display.ref()), m_size(size), m_channels(type.channels())
     {
         glGenTextures(1, &m_name);
         Log::verbose<Log::graphics>("texture: generate ", m_name);
@@ -11,7 +11,7 @@ namespace ogl {
         if(data)
             replaceData(data);
         else
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)m_size.width, (GLsizei)m_size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
         auto filter = type == TextureType::mask ? GL_NEAREST : GL_LINEAR;
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -30,8 +30,7 @@ namespace ogl {
     Texture::Texture(Texture&& other) noexcept :
         m_ref(std::move(other.m_ref)),
         m_name(other.m_name),
-        m_width(other.m_width),
-        m_height(other.m_height),
+        m_size(other.m_size),
         m_channels(other.m_channels)
     {
         other.m_name = 0;
@@ -40,8 +39,7 @@ namespace ogl {
     Texture& Texture::operator=(Texture&& other) noexcept {
         std::swap(m_ref, other.m_ref);
         std::swap(m_name, other.m_name);
-        m_width = other.m_width;
-        m_height = other.m_height;
+        m_size = other.m_size;
         m_channels = other.m_channels;
         return *this;
     }
@@ -53,7 +51,7 @@ namespace ogl {
     void Texture::replaceData(std::uint8_t* data) {
         auto format = m_channels == 4 ? GL_RGBA : GL_LUMINANCE;
         bind();
-        glTexImage2D(GL_TEXTURE_2D, 0, format, (GLsizei)m_width, (GLsizei)m_height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, (GLsizei)m_size.width, (GLsizei)m_size.height, 0, format, GL_UNSIGNED_BYTE, data);
     }
 
 }

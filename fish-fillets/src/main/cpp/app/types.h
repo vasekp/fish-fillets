@@ -20,15 +20,26 @@ struct alignas(16) vec4 {
     const float* data() const { return array.data(); }
 };
 
+struct USize {
+    unsigned width;
+    unsigned height;
+
+    friend bool operator==(USize a, USize b) { return a.width == b.width && a.height == b.height; }
+
+    friend std::ostream& operator<<(std::ostream& os, USize sz) { return os << sz.width << "×" << sz.height; }
+};
+
 struct ICoords {
     int x;
     int y;
+
+    ICoords() : x(0), y(0) { }
 
     template<typename T>
     requires std::is_integral_v<T>
     constexpr ICoords(T x_, T y_) : x(x_), y(y_) { }
 
-    ICoords() : x(0), y(0) { }
+    constexpr explicit ICoords(USize sz, int exclude = 0) : x(sz.width - exclude), y(sz.height - exclude) { }
 
     static const ICoords up;
     static const ICoords down;
@@ -43,11 +54,12 @@ struct ICoords {
     friend ICoords& operator-=(ICoords& a, ICoords b) { a.x -= b.x; a.y -= b.y; return a; }
     friend ICoords operator*(ICoords a, int s) { return {s*a.x, s*a.y}; }
     friend ICoords operator*(int s, ICoords a) { return {s*a.x, s*a.y}; }
-    bool within(ICoords from, ICoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
+    friend ICoords operator-(ICoords a) { return {-a.x, -a.y}; }
 
     bool operator!() const { return x == 0 && y == 0; }
     explicit operator bool() const { return !!*this; }
     friend bool operator<(const ICoords& a, const ICoords& b) { return (a.x < b.x) || (a.x == b.x && a.y < b.y); }
+    bool within(ICoords from, ICoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
 
     friend std::ostream& operator<<(std::ostream& os, ICoords coords) { return os << "[" << coords.x << "," << coords.y << "]"; }
 };
@@ -68,6 +80,7 @@ struct FCoords {
     constexpr FCoords(T x_, T y_) : x(x_), y(y_) { }
     constexpr FCoords(ICoords ic) : FCoords{(float)ic.x, (float)ic.y} { }
     constexpr FCoords() : FCoords{0.f, 0.f} { }
+    constexpr explicit FCoords(USize sz) : x((float)sz.width), y((float)sz.height) { }
 
     operator vec2() const { return {x, y}; }
 
@@ -80,6 +93,7 @@ struct FCoords {
     constexpr bool within(FCoords from, FCoords to) const { return x >= from.x && x <= to.x && y >= from.y && y <= to.y; }
     constexpr ICoords round() const { return {(int)x, (int)y}; }
     constexpr friend ICoords round(FCoords coords) { return coords.round(); }
+    constexpr USize toSize() const { return {(unsigned)x, (unsigned)y}; }
 
     friend constexpr FCoords operator+(FCoords a, FCoords b) { return {a.x + b.x, a.y + b.y}; }
     friend constexpr FCoords operator-(FCoords a, FCoords b) { return {a.x - b.x, a.y - b.y}; }
