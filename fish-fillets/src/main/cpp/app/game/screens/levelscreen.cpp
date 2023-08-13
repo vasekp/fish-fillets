@@ -89,6 +89,7 @@ void LevelScreen::own_draw(DrawTarget& target) {
 
 void LevelScreen::drawLevel(DrawTarget& target) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
+    const auto overlayProgram = m_instance.graphics().shaders().overlay();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
@@ -127,8 +128,8 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         const auto images = model.anim().get(model.orientation());
         switch(effect) {
             case Model::Effect::none:
-                for(const auto* image : images)
-                    target.draw(image, copyProgram, coords, { .dest = model.fxy() * size_unit });
+                for(auto i = 0u; i < images.size(); i++)
+                    target.draw(images[i], i == 0 ? copyProgram : overlayProgram, coords, { .dest = model.fxy() * size_unit });
                 break;
             case Model::Effect::invisible:
                 std::unreachable();

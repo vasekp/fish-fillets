@@ -8,6 +8,7 @@ static constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
 
 struct Shaders::Impl {
     Platform::Program copy;
+    Platform::Program overlay;
     Platform::Program maskCopy;
     Platform::Program alpha;
     Platform::Program reverse;
@@ -37,6 +38,7 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     vulkan::Shader pixelVert = spirv("pixel.spv");
     pImpl = std::make_unique<Impl>(
         vulkan::Program{display, pixelVert, spirv("copy.spv")},
+        vulkan::Program{display, pixelVert, spirv("overlay.spv")},
         vulkan::Program{display, pixelVert, spirv("mask-copy.spv")},
         vulkan::Program{display, pixelVert, spirv("alpha.spv")},
         vulkan::Program{display, pixelVert, spirv("reverse.spv")},
@@ -65,6 +67,7 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     ogl::Shader pixelVert = vert("pixel.vert");
     pImpl = std::make_unique<Impl>(
         ogl::Program{display, pixelVert, frag("copy.frag")},
+        ogl::Program{display, pixelVert, frag("overlay.frag")},
         ogl::Program{display, pixelVert, frag("mask-copy.frag")},
         ogl::Program{display, pixelVert, frag("alpha.frag")},
         ogl::Program{display, pixelVert, frag("reverse.frag")},
@@ -81,9 +84,9 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
         ogl::Program{display, vert("arrow.vert"), frag("arrow.frag")}
     );
 
-    for(const auto* program : {&pImpl->copy, &pImpl->maskCopy, &pImpl->alpha, &pImpl->blur,
-            &pImpl->wavyImage, &pImpl->wavyText, &pImpl->titleText,
-            &pImpl->disintegrate, &pImpl->mirror, &pImpl->zx, &pImpl->button}) {
+    for(const auto* program : {&pImpl->copy, &pImpl->overlay, &pImpl->maskCopy,
+            &pImpl->alpha, &pImpl->reverse, &pImpl->mirror, &pImpl->blur, &pImpl->disintegrate,
+            &pImpl->wavyImage, &pImpl->wavyText, &pImpl->titleText, &pImpl->zx, &pImpl->button}) {
         glUseProgram(*program);
         glUniform1i(program->uniform("uSrcTexture"), 0);
     }
@@ -243,6 +246,8 @@ void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& 
 #endif
 
 BaseProgram Shaders::copy() { return {pImpl->copy}; }
+
+BaseProgram Shaders::overlay() { return {pImpl->overlay}; }
 
 Program<Shaders::MaskCopyParams> Shaders::maskCopy(MaskCopyParams params) { return {pImpl->maskCopy, params}; }
 

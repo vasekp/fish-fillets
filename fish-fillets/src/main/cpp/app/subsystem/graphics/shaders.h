@@ -110,6 +110,7 @@ public:
     };
 
     BaseProgram copy();
+    BaseProgram overlay();
     Program<MaskCopyParams> maskCopy(MaskCopyParams params);
     BaseProgram reverse();
     BaseProgram mirror();
