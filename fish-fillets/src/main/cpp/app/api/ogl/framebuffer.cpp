@@ -10,21 +10,6 @@ namespace ogl {
         this->texture(texture);
     }
 
-    Framebuffer::Framebuffer(Framebuffer&& other) :
-        m_ref(std::move(other.m_ref)),
-        m_texture(other.m_texture),
-        m_name(other.m_name)
-    {
-        other.m_name = 0;
-    }
-
-    Framebuffer& Framebuffer::operator=(Framebuffer&& other) {
-        std::swap(m_ref, other.m_ref);
-        std::swap(m_texture, other.m_texture);
-        std::swap(m_name, other.m_name);
-        return *this;
-    }
-
     Framebuffer::~Framebuffer() {
         if(m_name && !m_ref.expired()) {
           Log::verbose<Log::graphics>("framebuffer: delete ", m_name);

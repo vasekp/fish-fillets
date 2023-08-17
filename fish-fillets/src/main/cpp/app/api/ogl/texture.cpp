@@ -27,23 +27,6 @@ namespace ogl {
         }
     }
 
-    Texture::Texture(Texture&& other) noexcept :
-        m_ref(std::move(other.m_ref)),
-        m_name(other.m_name),
-        m_size(other.m_size),
-        m_channels(other.m_channels)
-    {
-        other.m_name = 0;
-    }
-
-    Texture& Texture::operator=(Texture&& other) noexcept {
-        std::swap(m_ref, other.m_ref);
-        std::swap(m_name, other.m_name);
-        m_size = other.m_size;
-        m_channels = other.m_channels;
-        return *this;
-    }
-
     void Texture::bind() const {
         glBindTexture(GL_TEXTURE_2D, m_name);
     }

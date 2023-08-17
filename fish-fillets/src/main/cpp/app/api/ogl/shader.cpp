@@ -25,15 +25,6 @@ namespace ogl {
         }
     }
 
-    Shader::Shader(Shader&& other) noexcept : m_name(other.m_name) {
-        other.m_name = 0;
-    }
-
-    Shader& Shader::operator=(Shader&& other) noexcept {
-        std::swap(m_name, other.m_name);
-        return *this;
-    }
-
     Shader::~Shader() {
         if(m_name && !m_ref.expired()) {
             Log::verbose<Log::graphics>("shader: delete ", m_name);

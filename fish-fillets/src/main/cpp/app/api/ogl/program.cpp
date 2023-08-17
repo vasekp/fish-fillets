@@ -26,19 +26,6 @@ namespace ogl {
         }
     }
 
-    Program::Program(Program&& other) noexcept :
-            m_name(other.m_name),
-            m_uniforms(std::move(other.m_uniforms))
-    {
-        other.m_name = 0;
-    }
-
-    Program& Program::operator=(Program&& other) noexcept {
-        std::swap(m_name, other.m_name);
-        std::swap(m_uniforms, other.m_uniforms);
-        return *this;
-    }
-
     Program::~Program() {
         if(m_name && !m_ref.expired()) {
           Log::verbose<Log::graphics>("program: delete ", m_name);

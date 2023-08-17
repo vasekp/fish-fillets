@@ -4,9 +4,9 @@
 namespace ogl {
 
     class Display {
-        EGLDisplay m_display;
-        EGLSurface m_surface;
-        EGLContext m_context;
+        util::ResetOnMove<EGLDisplay, EGL_NO_DISPLAY> m_display;
+        util::ResetOnMove<EGLSurface, EGL_NO_SURFACE> m_surface;
+        util::ResetOnMove<EGLContext, EGL_NO_CONTEXT> m_context;
         USize m_size;
         ICoords m_origin;
         ICoords m_vpSize;
@@ -15,10 +15,7 @@ namespace ogl {
     public:
         template<typename... NativeArgs>
         Display(const NativeArgs& ... nativeArgs);
-        Display(const Display&) = delete;
-        Display(Display&&) noexcept;
-        Display& operator=(const Display&) = delete;
-        Display& operator=(Display&&) noexcept;
+        Display(Display&&) noexcept = default;
         ~Display();
 
         void setViewport(ICoords origin, ICoords size);

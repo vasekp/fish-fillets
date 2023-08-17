@@ -5,16 +5,13 @@ namespace ogl {
 
     class Program {
         std::weak_ptr<int> m_ref;
-        GLuint m_name = 0;
+        util::ResetOnMove<GLuint, 0> m_name;
         mutable std::map<std::string, GLint> m_uniforms;
 
     public:
         Program() = default;
         Program(const ogl::Display& display, const Shader& vertexShader, const Shader& fragmentShader);
-        Program(const Program&) = delete;
-        Program& operator=(const Program&) = delete;
-        Program(Program&&) noexcept;
-        Program& operator=(Program&&) noexcept;
+        Program(Program&&) noexcept = default;
         ~Program();
 
         operator GLuint() const { return m_name; }

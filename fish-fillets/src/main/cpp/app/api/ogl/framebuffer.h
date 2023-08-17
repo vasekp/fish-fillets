@@ -6,14 +6,11 @@ namespace ogl {
     class Framebuffer {
         std::weak_ptr<int> m_ref;
         const Texture* m_texture;
-        GLuint m_name = 0;
+        util::ResetOnMove<GLuint, 0> m_name;
 
     public:
         Framebuffer(const ogl::Display& display, const ogl::Texture& texture);
-        Framebuffer(const Framebuffer&) = delete;
-        Framebuffer& operator=(const Framebuffer&) = delete;
-        Framebuffer(Framebuffer&&);
-        Framebuffer& operator=(Framebuffer&&);
+        Framebuffer(Framebuffer&&) = default;
         ~Framebuffer();
 
         operator GLuint() const { return m_name; }

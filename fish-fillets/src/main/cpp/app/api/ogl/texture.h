@@ -7,7 +7,7 @@ namespace ogl {
 
     class Texture {
         std::weak_ptr<int> m_ref;
-        GLuint m_name = 0;
+        util::ResetOnMove<GLuint, 0> m_name;
         USize m_size;
         unsigned m_channels;
 
@@ -15,10 +15,8 @@ namespace ogl {
         Texture(const ogl::Display& display, USize size, TextureType type, std::uint8_t* data);
 
         Texture() = default;
-        Texture(const Texture&) = delete;
-        Texture& operator=(const Texture&) = delete;
-        Texture(Texture&& other) noexcept;
-        Texture& operator=(Texture&& other) noexcept;
+        Texture(Texture&& other) noexcept = default;
+        Texture& operator=(Texture&& other) noexcept = default;
         ~Texture();
 
         operator GLuint() const { return m_name; }
