@@ -30,28 +30,26 @@ bool DataAudioSource::done() const {
 
 AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
     AudioSource(type),
-    m_head(), m_tail(),
-    m_curNode(), m_curIndex(0),
+    m_head(std::make_unique<Node>()), m_tail(m_head.get()),
+    m_curNode(m_head.get()), m_curIndex(0),
     m_total(0),
     m_name(std::move(name))
 { }
 
 void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     m_total += data.size();
-    if(!m_head) {
-        m_head = std::make_unique<Node>();
-        m_head->data = std::move(data);
-        m_curNode = m_tail = m_head.get();
-    } else {
-        m_tail->next = std::make_unique<Node>();
-        m_tail->next->data = std::move(data);
-        m_tail = m_tail->next.get();
+    auto* tail = m_tail.load(std::memory_order::acquire);
+    tail->next = std::make_unique<Node>(std::move(data));
+    m_tail.store(tail->next.get(), std::memory_order::release);
 
-        // Good opportunity to clean up.
-        auto* curNode = m_curNode.load(std::memory_order::acquire);
-        while(m_head.get() != curNode)
-            m_head = std::move(m_head->next);
+    // Good opportunity to clean up.
+    auto* curNode = m_curNode.load(std::memory_order::acquire);
+    if(!curNode) {
+        Log::error("AudioSourceQueue: lost audio sync");
+        return;
     }
+    while(m_head.get() != curNode)
+        m_head = std::move(m_head->next);
 }
 
 void AudioSourceQueue::mixin(float* output, std::size_t numSamples, float refVolume) {
@@ -69,13 +67,14 @@ void AudioSourceQueue::mixin(float* output, std::size_t numSamples, float refVol
         auto countRead = data.size() - m_curIndex;
         for(auto i = 0u; i < countRead; i++)
             output[i] += volume * data[m_curIndex++];
-        current = current->next.get();
-        m_curNode.store(current, std::memory_order::release);
-        if(current) {
+        if(current == m_tail.load(std::memory_order::acquire)) {
+            Log::debug<Log::audio>("Audio data ended.");
+            m_curNode.store(nullptr, std::memory_order::release);
+        } else {
+            m_curNode.store(current->next.get(), std::memory_order::release);
             m_curIndex = 0;
             mixin(output + countRead, numSamples - countRead, refVolume);
-        } else
-            Log::debug<Log::audio>("Audio data ended.");
+        }
     }
 }
 
