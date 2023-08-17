@@ -39,7 +39,8 @@ AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
 void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     m_total += data.size();
     auto* tail = m_tail.load(std::memory_order::acquire);
-    tail->next = std::make_unique<Node>(std::move(data));
+    tail->next = std::make_unique<Node>();
+    tail->next->data = std::move(data);
     m_tail.store(tail->next.get(), std::memory_order::release);
 
     // Good opportunity to clean up.
