@@ -49,10 +49,20 @@ void Audio::removeSource(const AudioSource::Ref& source) {
     sources.checkDialogs();
 }
 
+void Audio::ping() {
+    auto sources = m_sources.local();
+    auto newEnd = std::remove_if(sources->begin(), sources->end(),
+            [](auto& source) { return source->done(); });
+    if(newEnd != sources->end()) {
+        Log::debug<Log::audio>("audio: removing ", std::distance(newEnd, sources->end()), " sources");
+        sources->erase(newEnd, sources->end());
+    }
+}
+
 void Audio::clear() {
     auto sources = m_sources.local();
     if(sources->size() > 0)
-        Log::debug<Log::audio>("clear: ", sources->size(), " -> 0");
+        Log::debug<Log::audio>("audio clear: ", sources->size(), " -> 0");
     sources->clear();
     sources.checkDialogs();
 }
@@ -96,14 +106,6 @@ void Audio::mix(float* output, std::size_t numSamples) {
         source->mixin(output, numSamples, volumes[(int)source->type()]);
     }
     m_sources.setDialogsThread(dialogs > 0);
-    if(auto guard = m_sources.threadGuard()) {
-        auto newEnd = std::remove_if(sources.begin(), sources.end(),
-                [](auto& source) { return source->done(); });
-        if(newEnd != sources.end()) {
-            Log::debug<Log::audio>("AudioSink: removing ", std::distance(newEnd, sources.end()), " sources");
-            sources.erase(newEnd, sources.end());
-        }
-    }
 }
 
 AudioData::Ref Audio::loadSound(const std::string& filename) const {

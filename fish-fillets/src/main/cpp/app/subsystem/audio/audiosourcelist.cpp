@@ -33,34 +33,18 @@ void AudioSourceList::SourcesGuard::checkDialogs() {
     m_parent.m_dialogsLocal.store(dialogs, std::memory_order::release);
 }
 
-AudioSourceList::SoftGuard::SoftGuard(AudioSourceList& parent) : m_parent(parent) {
-    locked = !m_parent.m_sources_lock.exchange(true, std::memory_order_acquire);
-}
-
-AudioSourceList::SoftGuard::~SoftGuard() {
-    if(locked)
-        m_parent.m_sources_lock.store(false, std::memory_order_release);
-}
-
-AudioSourceList::SoftGuard::operator bool() const {
-    return locked;
-}
-
 AudioSourceList::SourcesGuard AudioSourceList::local() {
     return SourcesGuard{*this};
 }
 
-AudioSourceList::SoftGuard AudioSourceList::threadGuard() {
-    return SoftGuard{*this};
-}
-
 AudioSourceList::Sources& AudioSourceList::thread() {
-    if(auto lock = SoftGuard(*this)) {
+    if(auto lock = !m_sources_lock.exchange(true, std::memory_order_acquire)) {
         if(m_sources_local) {
             m_sources_thread = std::move(m_sources_local);
             m_dialogsThread.store(m_dialogsLocal.load(std::memory_order::acquire), std::memory_order::release);
             m_dialogsLocal.store(false, std::memory_order::release);
         }
+        m_sources_lock.store(false, std::memory_order_release);
     }
     return *m_sources_thread;
 }

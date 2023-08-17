@@ -24,6 +24,7 @@ public:
     void removeSource(const AudioSource::Ref& source);
     void clear();
     void clearExcept(const AudioSource::Ref& source);
+    void ping();
 
     void preload(const std::string& filename);
     bool isDialog() const;
