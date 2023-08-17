@@ -6,23 +6,23 @@
 
 namespace ndk {
     class Asset {
-        AAsset *m_asset;
+        AAsset* m_asset;
 
     public:
         Asset() = default;
 
-        Asset(AAssetManager *assets, const char *filename, int mode) :
+        Asset(AAssetManager* assets, const char* filename, int mode) :
                 m_asset(AAssetManager_open(assets, filename, mode)) {}
 
-        Asset(const Asset &) = delete;
+        Asset(const Asset&) = delete;
 
-        Asset &operator=(const Asset &) = delete;
+        Asset& operator=(const Asset&) = delete;
 
-        Asset(Asset &&other) noexcept : m_asset(other.m_asset) {
+        Asset(Asset&& other) noexcept : m_asset(other.m_asset) {
             other.m_asset = nullptr;
         }
 
-        Asset &operator=(Asset &&other) noexcept {
+        Asset& operator=(Asset&& other) noexcept {
             std::swap(m_asset, other.m_asset);
             return *this;
         }
@@ -32,7 +32,7 @@ namespace ndk {
                 AAsset_close(m_asset);
         }
 
-        operator AAsset *() { return m_asset; }
+        operator AAsset*() { return m_asset; }
         operator bool() { return m_asset != nullptr; }
     };
 }

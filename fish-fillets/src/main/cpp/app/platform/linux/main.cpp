@@ -41,7 +41,7 @@ std::pair<Display*, Window> initWindow() {
     return {dpy, win};
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     try {
         auto [dpy, win] = initWindow();
 

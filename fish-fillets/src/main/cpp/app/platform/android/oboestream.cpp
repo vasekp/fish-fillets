@@ -37,7 +37,7 @@ void OboeStream::stop() {
 }
 
 oboe::DataCallbackResult
-OboeStream::onAudioReady(oboe::AudioStream*, void *audioData, int32_t numFrames) {
+OboeStream::onAudioReady(oboe::AudioStream*, void* audioData, int32_t numFrames) {
     m_audio.mix(reinterpret_cast<float*>(audioData), numFrames);
     return oboe::DataCallbackResult::Continue;
 }

@@ -3,7 +3,7 @@
 #include "game/screens/levelinput.h"
 #include "game/screens/levelscreen.h"
 
-LevelRules::LevelRules(Level &level, LevelLayout &layout) :
+LevelRules::LevelRules(Level& level, LevelLayout& layout) :
     m_level(level),
     m_layout(layout),
     m_curFish(nullptr),
@@ -188,7 +188,7 @@ void LevelRules::moveFish(Direction d) {
         return;
     }
     if(m_curFish->supportType() == Model::SupportType::small) {
-        if (std::find_if(obs.begin(), obs.end(), [](Model *model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
+        if (std::find_if(obs.begin(), obs.end(), [](Model* model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
     }
     if(m_layout.borderDir(m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
@@ -280,7 +280,7 @@ void LevelRules::enqueue(const std::vector<Direction>& dirs, bool fixed) {
         keyInput(Input::toKey(dir));
 }
 
-void LevelRules::registerMotion(Model *model, Direction d) {
+void LevelRules::registerMotion(Model* model, Direction d) {
     m_motions.emplace_back(model, d);
     updateDepGraph(model);
 }
@@ -425,7 +425,7 @@ void LevelRules::buildDepGraph() {
     for(const auto* model : m_layout.models()) {
         if (!model->movable() || model->hidden())
             continue;
-        for (auto *other : m_layout.intersections(model, Direction::down))
+        for (auto* other : m_layout.intersections(model, Direction::down))
             m_dependencyGraph.emplace(model, other);
     }
     buildSupportMap();
@@ -502,7 +502,7 @@ bool LevelRules::isFree(Model* model) const {
     auto [tThis, tOther] = model == m_small
         ? std::pair{Model::SupportType::small, Model::SupportType::big}
         : std::pair{Model::SupportType::big, Model::SupportType::small};
-    for(auto *other : m_layout.intersections(model, Direction::up))
+    for(auto* other : m_layout.intersections(model, Direction::up))
         if(auto support = m_support.at(other); other->movable()
                 && !support.test(Model::SupportType::wall)
                 && support.test(tThis)

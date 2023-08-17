@@ -9,7 +9,7 @@ namespace ogl {
 
     public:
         Shader() = default;
-        Shader(const ogl::Display& display, GLenum type, const std::string &code);
+        Shader(const ogl::Display& display, GLenum type, const std::string& code);
         Shader(const Shader&) = delete;
         Shader& operator=(const Shader&) = delete;
         Shader(Shader&&) noexcept;

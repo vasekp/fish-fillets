@@ -7,8 +7,8 @@
 
 namespace jni {
     class Env {
-        JavaVM *m_vm;
-        ::JNIEnv *m_env;
+        JavaVM* m_vm;
+        ::JNIEnv* m_env;
         jclass m_class;
         jobject m_obj;
         std::map<std::string, jmethodID> m_methods;
@@ -19,8 +19,8 @@ namespace jni {
         Env& operator=(const Env&) = delete;
         ~Env();
 
-        operator ::JNIEnv *() const { return m_env; }
-        ::JNIEnv *operator->() const { return m_env; }
+        operator ::JNIEnv*() const { return m_env; }
+        ::JNIEnv* operator->() const { return m_env; }
 
         jobject object() const { return m_obj; }
         void addMethod(const char* name, const char* sig);

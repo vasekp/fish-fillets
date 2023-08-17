@@ -13,7 +13,7 @@ public:
     std::string path() const { return m_relPath; }
     bool exists() const override;
     std::string read() const override;
-    bool write(const std::string &data) const override;
+    bool write(const std::string& data) const override;
 };
 
 #endif //FISH_FILLETS_FILES_USER_H

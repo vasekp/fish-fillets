@@ -9,7 +9,7 @@ bool SystemFile::exists() const {
     return exists(m_path);
 }
 
-bool SystemFile::exists(const std::filesystem::path &path) const {
+bool SystemFile::exists(const std::filesystem::path& path) const {
     return (bool) ndk::Asset{m_assets, path.c_str(), AASSET_MODE_UNKNOWN};
 }
 
@@ -18,7 +18,7 @@ std::string SystemFile::read() const {
     if(!asset)
         Log::fatal("System file not found: ", m_path);
     auto size = AAsset_getLength(asset);
-    auto buffer = static_cast<const char *>(AAsset_getBuffer(asset));
+    auto buffer = static_cast<const char*>(AAsset_getBuffer(asset));
     std::string ret(buffer, buffer + size);
     return ret;
 }

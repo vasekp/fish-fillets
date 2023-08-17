@@ -1,6 +1,6 @@
 #include "gamescreen.h"
 
-GameScreen::GameScreen(Instance &instance) :
+GameScreen::GameScreen(Instance& instance) :
     m_instance(instance),
     m_running(false)
 { }

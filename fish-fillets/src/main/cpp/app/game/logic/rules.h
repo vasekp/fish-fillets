@@ -27,7 +27,7 @@ class LevelRules {
     std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
 
 public:
-    LevelRules(Level &level, LevelLayout &layout);
+    LevelRules(Level& level, LevelLayout& layout);
 
     void registerMotion(Model* model, Direction d);
 

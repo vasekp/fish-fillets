@@ -12,7 +12,7 @@ DataAudioSource::DataAudioSource(AudioData::Ref data, AudioType type) :
     m_repeat(false)
 { }
 
-void DataAudioSource::mixin(float *output, std::size_t numSamples, float refVolume) {
+void DataAudioSource::mixin(float* output, std::size_t numSamples, float refVolume) {
     auto countRead = std::min(numSamples, m_samplesTotal - m_sampleIndex);
     float volume = refVolume * m_volume;
     for (auto i = 0u; i < countRead; i++)

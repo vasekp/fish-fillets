@@ -1,7 +1,7 @@
 #include "subsystem/script.h"
 #include "subsystem/files.h"
 
-Script::Script(Instance &instance, ScriptReferrer& ref) :
+Script::Script(Instance& instance, ScriptReferrer& ref) :
         m_instance(instance), m_ref(ref), m_env()
 {
     lua_pushstring(m_env, "leader");

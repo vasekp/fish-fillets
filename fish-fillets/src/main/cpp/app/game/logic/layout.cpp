@@ -37,7 +37,7 @@ Model* LevelLayout::modelAt(ICoords coords) const {
         return *it;
 }
 
-void LevelLayout::addRope(const Model *m1, const Model *m2, ICoords d1, ICoords d2) {
+void LevelLayout::addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2) {
     m_ropes.push_back({m1, m2, d1, d2});
 }
 

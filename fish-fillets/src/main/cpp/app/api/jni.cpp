@@ -15,14 +15,14 @@ namespace jni {
         m_vm->DetachCurrentThread();
     }
 
-    void Env::addMethod(const char *name, const char *sig) {
+    void Env::addMethod(const char* name, const char* sig) {
         auto ret = m_env->GetMethodID(m_class, name, sig);
         if(!ret)
             Log::fatal("JNI: method ", name, " not found!");
         m_methods[name] = ret;
     }
 
-    jmethodID Env::getMethod(const std::string &name) const {
+    jmethodID Env::getMethod(const std::string& name) const {
         return m_methods.at(name);
     }
 }

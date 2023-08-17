@@ -49,7 +49,7 @@ void LevelScreen::own_resize() {
         m_mirrorTarget = makeMirrorTarget(**it);
 }
 
-std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model &model) {
+std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model& model) {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
     auto modelSizePixel = coords.in2out_dim(FCoords{model.size()} * size_unit).toSize();
     return std::make_unique<TextureTarget>(m_instance.graphics().system(), modelSizePixel);
@@ -175,18 +175,18 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     }
 }
 
-AudioData::Ref LevelScreen::addSound(const std::string &name, const std::string &filename, bool single) {
+AudioData::Ref LevelScreen::addSound(const std::string& name, const std::string& filename, bool single) {
     if(single && m_sounds.contains(name))
         return m_sounds.find(name)->second;
     auto it = m_sounds.insert({name, m_instance.audio().loadSound(filename)});
     return it->second;
 }
 
-void LevelScreen::addSubtitle(const std::string &text, const std::string& colors) {
+void LevelScreen::addSubtitle(const std::string& text, const std::string& colors) {
     m_subs.add(text, colors);
 }
 
-void LevelScreen::showHint(const std::string &text) {
+void LevelScreen::showHint(const std::string& text) {
     m_hint.emplace(m_instance, text, false);
 }
 
@@ -198,7 +198,7 @@ void LevelScreen::setWaves(float amplitude, float period, float speed) {
     m_waves = {amplitude, period, speed};
 }
 
-void LevelScreen::playMusic(const std::string &filename) {
+void LevelScreen::playMusic(const std::string& filename) {
     if(m_music && m_music->name() == filename)
         return;
     stopMusic();

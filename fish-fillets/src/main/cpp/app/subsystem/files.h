@@ -9,7 +9,7 @@ public:
 
     virtual bool exists() const = 0;
     virtual std::string read() const = 0;
-    virtual bool write(const std::string &data) const = 0;
+    virtual bool write(const std::string& data) const = 0;
 };
 
 class IFiles {

@@ -1,6 +1,6 @@
 #include "subsystem/script.h"
 
-LuaCallback::LuaCallback(LuaCallback &&other) noexcept :
+LuaCallback::LuaCallback(LuaCallback&& other) noexcept :
     m_state(other.m_state),
     m_ref(other.m_ref),
     m_tries(other.m_tries)
@@ -8,7 +8,7 @@ LuaCallback::LuaCallback(LuaCallback &&other) noexcept :
     other.m_state = nullptr;
 }
 
-LuaCallback& LuaCallback::operator=(LuaCallback &&other) noexcept {
+LuaCallback& LuaCallback::operator=(LuaCallback&& other) noexcept {
     std::swap(m_state, other.m_state);
     std::swap(m_ref, other.m_ref);
     std::swap(m_tries, other.m_tries);

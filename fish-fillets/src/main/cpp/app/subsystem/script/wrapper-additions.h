@@ -3,7 +3,7 @@
 
 namespace lua::internal {
     template<>
-    inline LuaCallback read(lua_State *L, std::size_t index) {
+    inline LuaCallback read(lua_State* L, std::size_t index) {
         return LuaCallback::from(L);
     }
 
@@ -12,7 +12,7 @@ namespace lua::internal {
         using args<R(*)(Ts...)>::state;
         static constexpr std::size_t size = 1 + args<R(*)(Ts...)>::size;
 
-        args(lua_State *L) : args<R(*)(Ts...)>(L) {}
+        args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
         template<std::size_t index>
         auto get(std::size_t orig_index = index) const {
@@ -28,7 +28,7 @@ namespace lua::internal {
         using args<R(*)(Ts...)>::state;
         static constexpr std::size_t size = 1 + args<R(*)(Ts...)>::size;
 
-        args(lua_State *L) : args<R(*)(Ts...)>(L) {}
+        args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
         template<std::size_t index>
         auto get(std::size_t orig_index = index) const {
@@ -44,7 +44,7 @@ namespace lua::internal {
         using args<R(*)(Ts...)>::state;
         static constexpr std::size_t size = 1 + args<R(*)(Ts...)>::size;
 
-        args(lua_State *L) : args<R(*)(Ts...)>(L) {}
+        args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
         template<std::size_t index>
         auto get(std::size_t orig_index = index) const {

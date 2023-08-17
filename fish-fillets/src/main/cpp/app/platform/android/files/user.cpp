@@ -19,7 +19,7 @@ std::string UserFile::read() const {
     return oss.str();
 }
 
-bool UserFile::write(const std::string &data) const {
+bool UserFile::write(const std::string& data) const {
     std::filesystem::path path{m_fullPath};
     std::filesystem::create_directories(path.parent_path());
     std::ofstream ofs{m_fullPath};

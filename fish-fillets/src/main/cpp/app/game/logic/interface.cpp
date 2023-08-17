@@ -202,7 +202,7 @@ void Level::model_useSpecialAnim(int index, const std::string& name, int phase) 
     layout().getModel(index)->anim().setExtra(name, phase);
 }
 
-void Level::model_setEffect(int index, const std::string &name) {
+void Level::model_setEffect(int index, const std::string& name) {
     setModelEffect(layout().getModel(index), name);
 }
 
@@ -466,7 +466,7 @@ void Level::game_setScreenShift(float dx, float dy) {
     m_screen.setShift({dx, dy});
 }
 
-void Level::game_changeBg(const std::string &filename) {
+void Level::game_changeBg(const std::string& filename) {
     m_screen.replaceImage("background", filename);
 }
 

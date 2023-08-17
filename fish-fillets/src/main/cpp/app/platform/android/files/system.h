@@ -6,7 +6,7 @@
 #include "subsystem/files.h"
 
 class SystemFile : public IFile {
-    AAssetManager *m_assets;
+    AAssetManager* m_assets;
     std::filesystem::path m_path;
 
 public:
@@ -15,7 +15,7 @@ public:
     std::string path() const { return m_path; }
     bool exists() const override;
     std::string read() const override;
-    bool write(const std::string &data) const override;
+    bool write(const std::string& data) const override;
     ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const;
 
 private:

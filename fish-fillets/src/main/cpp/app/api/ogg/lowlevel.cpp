@@ -48,7 +48,7 @@ namespace ogg::ll {
     }
 
     std::size_t VorbisDecoder::operator>>(std::vector<float>& ret) {
-        float **pcm;
+        float** pcm;
         auto oldSize = ret.size();
         auto size = vorbis_synthesis_pcmout(this, &pcm);
         if(size == 0)

@@ -18,7 +18,7 @@ public:
     void stop();
 
     oboe::DataCallbackResult
-    onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override;
+    onAudioReady(oboe::AudioStream* audioStream, void* audioData, int32_t numFrames) override;
 };
 
 #endif //FF_ANDROID_AUDIO_SINK_H

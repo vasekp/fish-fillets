@@ -62,8 +62,8 @@ void BufferImage::compose(ImageData& picture, ICoords origin) {
     using rgba = std::array<std::uint8_t, 4>;
     auto src = reinterpret_cast<rgba*>(picture.data.get());
     auto dst = reinterpret_cast<rgba*>(m_data.get());
-    rgba *srcStart = src;
-    rgba *dstStart = dst + origin.y * m_size.width + origin.x;
+    rgba* srcStart = src;
+    rgba* dstStart = dst + origin.y * m_size.width + origin.x;
     for(auto y = 0u; y < picture.size.height; y++) {
         rgba *srcPtr = srcStart, *dstPtr = dstStart;
         for(auto x = 0u; x < picture.size.width; x++) {

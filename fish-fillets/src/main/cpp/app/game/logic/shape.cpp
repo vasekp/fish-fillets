@@ -1,6 +1,6 @@
 #include "shape.h"
 
-Shape::Shape(const std::string &string) {
+Shape::Shape(const std::string& string) {
     unsigned width = 0;
     unsigned x = 0;
     std::bitset<maxSize> line;

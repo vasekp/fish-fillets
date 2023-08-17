@@ -21,7 +21,7 @@ std::string SystemFile::read() const {
     return oss.str();
 }
 
-bool SystemFile::write(const std::string &data) const {
+bool SystemFile::write(const std::string& data) const {
     std::filesystem::path path{m_fullPath};
     std::filesystem::create_directories(path.parent_path());
     std::ofstream ofs{m_fullPath};

@@ -11,8 +11,8 @@ class CreditsScreen : public GameScreen {
     float m_totalHeight;
 
 public:
-    CreditsScreen(Instance &);
-    IInputSink &input() override { return m_input; }
+    CreditsScreen(Instance&);
+    IInputSink& input() override { return m_input; }
 
 protected:
     void own_start() override;

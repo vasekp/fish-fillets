@@ -41,7 +41,7 @@ public:
     void hide();
     bool visible() const { return m_visible; }
 
-    void draw(DrawTarget &target);
+    void draw(DrawTarget& target);
     bool pointerDown(FCoords coords) override;
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;

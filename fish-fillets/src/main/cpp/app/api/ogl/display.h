@@ -15,7 +15,7 @@ namespace ogl {
     public:
         template<typename... NativeArgs>
         Display(const NativeArgs& ... nativeArgs);
-        Display(const Display &) = delete;
+        Display(const Display&) = delete;
         Display(Display&&) noexcept;
         Display& operator=(const Display&) = delete;
         Display& operator=(Display&&) noexcept;
