@@ -30,7 +30,7 @@ public:
     void removeExtra();
 
     void update();
-    std::vector<const Image*> get(int dir) const;
+    std::pair<const Image*, std::optional<const Image*>> get(int dir) const;
 
     constexpr static int framesTurn = 3; // bound to the animation
     constexpr static int framesActivate = 4;

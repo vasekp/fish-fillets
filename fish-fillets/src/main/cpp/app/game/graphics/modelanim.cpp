@@ -35,12 +35,12 @@ void ModelAnim::removeExtra() {
     m_extra.reset();
 }
 
-std::vector<const Image*> ModelAnim::get(int dir) const {
+std::pair<const Image*, std::optional<const Image*>> ModelAnim::get(int dir) const {
     assert(m_main);
     if(m_extra)
-        return {m_main->get(dir), m_extra->get(dir)};
+        return {m_main->get(dir), {m_extra->get(dir)}};
     else
-        return {m_main->get(dir)};
+        return {m_main->get(dir), {}};
 }
 
 void ModelAnim::update() {

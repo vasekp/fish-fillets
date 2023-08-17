@@ -89,7 +89,6 @@ void LevelScreen::own_draw(DrawTarget& target) {
 
 void LevelScreen::drawLevel(DrawTarget& target) {
     const auto copyProgram = m_instance.graphics().shaders().copy();
-    const auto overlayProgram = m_instance.graphics().shaders().overlay();
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::window);
 
     if(m_display) {
@@ -125,11 +124,14 @@ void LevelScreen::drawLevel(DrawTarget& target) {
         auto [effect, effectTime] = model.effect();
         if(effect == Model::Effect::invisible)
             continue;
-        const auto images = model.anim().get(model.orientation());
+        const auto [imgMain, imgOverlay] = model.anim().get(model.orientation());
         switch(effect) {
             case Model::Effect::none:
-                for(auto i = 0u; i < images.size(); i++)
-                    target.draw(images[i], i == 0 ? copyProgram : overlayProgram, coords, { .dest = model.fxy() * size_unit });
+                target.draw(imgMain, copyProgram, coords, { .dest = model.fxy() * size_unit });
+                if(imgOverlay) {
+                    const auto overlayProgram = m_instance.graphics().shaders().overlay();
+                    target.draw(*imgOverlay, overlayProgram, coords, { .dest = model.fxy() * size_unit });
+                }
                 break;
             case Model::Effect::invisible:
                 std::unreachable();
@@ -138,21 +140,22 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 break;
             case Model::Effect::reverse: {
                 const auto program = m_instance.graphics().shaders().reverse();
-                for(const auto* image : images)
-                    target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
-                }
+                assert(!imgOverlay);
+                target.draw(imgMain, program, coords, { .dest = model.fxy() * size_unit });
                 break;
+            }
             case Model::Effect::disintegrate: {
                 const auto program = m_instance.graphics().shaders().disintegrate({ .time = timeAlive() - effectTime });
-                for(const auto* image : images)
-                    target.draw(image, program, coords, { .dest = model.fxy() * size_unit });
+                assert(!imgOverlay);
+                target.draw(imgMain, program, coords, { .dest = model.fxy() * size_unit });
                 break;
             }
             case Model::Effect::zx: {
                 if(!m_zxEffect)
                     m_zxEffect = std::make_unique<ZXEffect>(m_instance);
                 m_zxEffect->update(m_level.timer().tickCount());
-                m_zxEffect->render(target, images[0]);
+                assert(!imgOverlay);
+                m_zxEffect->render(target, imgMain);
                 break;
             }
         }
@@ -170,7 +173,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
                 .area = size
             });
         const auto program = m_instance.graphics().shaders().mirror();
-        const auto* image = mirror->anim().get(mirror->orientation())[0];
+        const auto* image = mirror->anim().get(mirror->orientation()).first;
         target.draw({
                 image->texture(),
                 m_mirrorTarget->texture()
