@@ -30,27 +30,37 @@ bool DataAudioSource::done() const {
 
 AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
     AudioSource(type),
-    m_start(), m_last(),
-    m_curIndex(0), m_total(0),
+    m_head(), m_tail(),
+    m_curNode(), m_curIndex(0),
+    m_total(0),
     m_name(std::move(name))
 { }
 
 void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     m_total += data.size();
-    if(Node* last = m_last.load(); !last) {
-        m_start = std::make_unique<Node>();
-        m_start->data = std::move(data);
-        m_last.store(m_start.get());
+    if(!m_head) {
+        m_head = std::make_unique<Node>();
+        m_head->data = std::move(data);
+        m_curNode = m_tail = m_head.get();
     } else {
-        last->next = std::make_unique<Node>();
-        last->next->data = std::move(data);
-        m_last.store(last->next.get());
+        m_tail->next = std::make_unique<Node>();
+        m_tail->next->data = std::move(data);
+        m_tail = m_tail->next.get();
+
+        // Good opportunity to clean up.
+        auto* curNode = m_curNode.load(std::memory_order::acquire);
+        while(m_head.get() != curNode)
+            m_head = std::move(m_head->next);
     }
 }
 
-void AudioSourceQueue::mixin(float *output, std::size_t numSamples, float refVolume) {
-    // assert m_start
-    const auto& data = m_start->data;
+void AudioSourceQueue::mixin(float* output, std::size_t numSamples, float refVolume) {
+    auto* current = m_curNode.load(std::memory_order::acquire);
+    if(!current) {
+        Log::error("AudioSourceQueue: data not ready");
+        return;
+    }
+    const auto& data = current->data;
     float volume = refVolume * m_volume;
     if(m_curIndex + numSamples < data.size()) {
         for(auto i = 0u; i < numSamples; i++)
@@ -59,8 +69,9 @@ void AudioSourceQueue::mixin(float *output, std::size_t numSamples, float refVol
         auto countRead = data.size() - m_curIndex;
         for(auto i = 0u; i < countRead; i++)
             output[i] += volume * data[m_curIndex++];
-        m_start = std::move(m_start->next);
-        if(m_start) {
+        current = current->next.get();
+        m_curNode.store(current, std::memory_order::release);
+        if(current) {
             m_curIndex = 0;
             mixin(output + countRead, numSamples - countRead, refVolume);
         } else
@@ -69,5 +80,5 @@ void AudioSourceQueue::mixin(float *output, std::size_t numSamples, float refVol
 }
 
 bool AudioSourceQueue::done() const {
-    return !m_start;
+    return !m_curNode.load(std::memory_order::acquire);
 }

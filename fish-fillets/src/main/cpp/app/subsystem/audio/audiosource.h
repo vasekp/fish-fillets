@@ -54,8 +54,9 @@ class AudioSourceQueue : public AudioSource {
         std::unique_ptr<Node> next;
     };
 
-    std::unique_ptr<Node> m_start;
-    std::atomic<Node*> m_last;
+    std::unique_ptr<Node> m_head;
+    Node* m_tail;
+    std::atomic<Node*> m_curNode;
     std::size_t m_curIndex;
     std::size_t m_total;
     std::string m_name;
