@@ -456,33 +456,36 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
     if(m_support.contains(model))
         return m_support[model];
 
-    std::set<const Model*> supportModels;
+    std::set<const Model*> seen;
+    std::set<const Model*> seen_via;
     EnumBitset<Model::SupportType> ret;
-    std::deque<const Model*> queue;
+    std::deque<std::pair<const Model*, bool>> queue;
 
     for(auto [above, below] : m_dependencyGraph)
         if(above == model)
-            queue.push_back(below);
+            queue.push_back({below, false});
     while(!queue.empty()) {
-        const auto* other = queue.front();
+        auto [other, viaWeak] = queue.front();
         queue.pop_front();
-        if(supportModels.contains(other) || other->hidden() || other == model)
+        if(other->hidden() || other == model
+                || (viaWeak && ret.test(Model::SupportType::weak))
+                || seen.contains(other) || (viaWeak && seen_via.contains(other)))
             continue;
-        supportModels.insert(other);
-        if(other->supportType() != Model::SupportType::weak) {
-            ret.set(other->supportType());
-            if(other->movable()) {
+        (viaWeak ? seen_via : seen).insert(other);
+        auto sType = other->supportType();
+        switch(sType) {
+            case Model::SupportType::weak:
+                viaWeak = viaWeak || (sType == Model::SupportType::weak);
+                [[fallthrough]];
+            case Model::SupportType::none:
                 for(auto[above, below] : m_dependencyGraph)
                     if(above == other)
-                        queue.push_back(below);
-            }
-        } else {
-            auto otherSupp = calcSupport(other);
-            if(otherSupp.any())
-                ret.set(other->supportType());
+                        queue.push_back({below, viaWeak});
+                break;
+            default:
+                ret.set(viaWeak ? Model::SupportType::weak : sType);
         }
     }
-    ret.reset(Model::SupportType::none);
     return m_support[model] = ret;
 }
 
