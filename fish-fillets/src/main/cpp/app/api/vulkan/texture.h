@@ -14,8 +14,8 @@ class Texture {
 public:
     Texture(vulkan::Display& display, USize size, TextureType type, std::uint8_t* data);
 
-    Texture(Texture&&);
-    Texture& operator=(Texture&&);
+    Texture(Texture&&) noexcept;
+    Texture& operator=(Texture&&) noexcept;
     ~Texture();
 
     auto size() const { return m_size; }

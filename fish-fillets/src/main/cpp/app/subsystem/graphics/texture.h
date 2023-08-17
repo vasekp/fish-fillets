@@ -16,8 +16,8 @@ class Texture {
 
 public:
     Texture() = delete;
-    Texture(Texture&& other) = default;
-    Texture& operator=(Texture&& other) = default;
+    Texture(Texture&& other) noexcept = default;
+    Texture& operator=(Texture&& other) noexcept = default;
 
     Texture(GraphicsSystem& system, TextureType type, USize size, std::uint8_t* data);
     Texture(GraphicsSystem& system, TextureType type, USize physSize, FCoords logSize, std::uint8_t* data);

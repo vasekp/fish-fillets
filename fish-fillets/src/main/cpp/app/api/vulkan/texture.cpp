@@ -84,9 +84,9 @@ Texture::Texture(Display& display, USize size, TextureType type, std::uint8_t* d
     display.device().updateDescriptorSets({dWrite}, {});
 }
 
-Texture::Texture(Texture&& other) = default;
+Texture::Texture(Texture&& other) noexcept = default;
 
-Texture& Texture::operator=(Texture&& other) {
+Texture& Texture::operator=(Texture&& other) noexcept {
     m_size = other.m_size;
     std::swap(pImpl, other.pImpl); // so that the old one is properly freed
     return *this;

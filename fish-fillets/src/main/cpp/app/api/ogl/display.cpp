@@ -83,7 +83,7 @@ namespace ogl {
 
     template Display::Display(const NativeWindowType&);
 
-    Display& Display::operator=(Display&& other) {
+    Display& Display::operator=(Display&& other) noexcept {
         m_display = other.m_display;
         m_surface = other.m_surface;
         m_context = other.m_context;
@@ -96,7 +96,7 @@ namespace ogl {
         return *this;
     }
 
-    Display::Display(Display&& other) {
+    Display::Display(Display&& other) noexcept {
         *this = std::move(other);
     }
 

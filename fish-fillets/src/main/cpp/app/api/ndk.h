@@ -18,11 +18,11 @@ namespace ndk {
 
         Asset &operator=(const Asset &) = delete;
 
-        Asset(Asset &&other) : m_asset(other.m_asset) {
+        Asset(Asset &&other) noexcept : m_asset(other.m_asset) {
             other.m_asset = nullptr;
         }
 
-        Asset &operator=(Asset &&other) {
+        Asset &operator=(Asset &&other) noexcept {
             std::swap(m_asset, other.m_asset);
             return *this;
         }

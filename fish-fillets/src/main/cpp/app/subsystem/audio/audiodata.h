@@ -19,8 +19,8 @@ public:
 
     AudioData(AudioData&) = delete;
     AudioData& operator=(const AudioData&) = delete;
-    AudioData(AudioData&&) = default;
-    AudioData& operator=(AudioData&&) = default;
+    AudioData(AudioData&&) noexcept = default;
+    AudioData& operator=(AudioData&&) noexcept = default;
     ~AudioData() { if(m_data) Log::verbose<Log::audio>("freeing audio data: ", m_filename); }
 
     using Ref = std::shared_ptr<AudioData>;
