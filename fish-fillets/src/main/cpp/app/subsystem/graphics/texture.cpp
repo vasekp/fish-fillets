@@ -1,19 +1,19 @@
 #include "subsystem/graphics.h"
-#include "graphicssystem.h"
+#include "graphicsbackend.h"
 #include "texture.h"
 
-Texture::Texture(Platform::Texture&& native, FCoords logSize) :
+Texture::Texture(BACKEND::Texture&& native, FCoords logSize) :
     m_native(std::move(native)),
     m_physSize(m_native.size()),
     m_logSize(logSize)
 { }
 
-Texture::Texture(GraphicsSystem& system, TextureType type, USize physSize, FCoords logSize, std::uint8_t* data) :
-    Texture{Platform::Texture(system.display(), physSize, type, data), logSize}
+Texture::Texture(GraphicsBackend& backend, TextureType type, USize physSize, FCoords logSize, std::uint8_t* data) :
+    Texture{BACKEND::Texture(backend.display(), physSize, type, data), logSize}
 { }
 
-Texture::Texture(GraphicsSystem& system, TextureType type, USize size, std::uint8_t* data) :
-    Texture(system, type, size, FCoords{size}, data)
+Texture::Texture(GraphicsBackend& backend, TextureType type, USize size, std::uint8_t* data) :
+    Texture(backend, type, size, FCoords{size}, data)
 { }
 
 void Texture::replaceData(std::uint8_t* data) {

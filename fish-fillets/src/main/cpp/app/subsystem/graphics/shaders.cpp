@@ -1,5 +1,5 @@
 #include "subsystem/graphics.h"
-#include "graphicssystem.h"
+#include "graphicsbackend.h"
 #include "subsystem/files.h"
 
 #ifdef FISH_FILLETS_USE_VULKAN
@@ -7,30 +7,30 @@ static constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
 #endif
 
 struct Shaders::Impl {
-    Platform::Program copy;
-    Platform::Program overlay;
-    Platform::Program maskCopy;
-    Platform::Program alpha;
-    Platform::Program reverse;
-    Platform::Program mirror;
-    Platform::Program flat;
-    Platform::Program blur;
-    Platform::Program disintegrate;
-    Platform::Program wavyImage;
-    Platform::Program wavyText;
-    Platform::Program titleText;
-    Platform::Program zx;
-    Platform::Program ycbcr;
-    Platform::Program button;
-    Platform::Program arrow;
+    BACKEND::Program copy;
+    BACKEND::Program overlay;
+    BACKEND::Program maskCopy;
+    BACKEND::Program alpha;
+    BACKEND::Program reverse;
+    BACKEND::Program mirror;
+    BACKEND::Program flat;
+    BACKEND::Program blur;
+    BACKEND::Program disintegrate;
+    BACKEND::Program wavyImage;
+    BACKEND::Program wavyText;
+    BACKEND::Program titleText;
+    BACKEND::Program zx;
+    BACKEND::Program ycbcr;
+    BACKEND::Program button;
+    BACKEND::Program arrow;
 };
 
 Shaders::~Shaders() = default;
 
-// NB. we can't get system from instance yet because this function is called when instance().graphics().system() is being constructed.
+// NB. we can't get backend from instance.graphics().backend() yet because this function is called when Instance is being constructed.
 #ifdef FISH_FILLETS_USE_VULKAN
-Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
-    auto& display = system.display();
+Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
+    auto& display = backend.display();
     auto& files = instance.files();
     auto spirv = [&](std::string filename) {
         return vulkan::Shader{display, files.system("shader/vulkan/"s + filename)->read()};
@@ -56,8 +56,8 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
     );
 }
 #else
-Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
-    auto& display = system.display();
+Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
+    auto& display = backend.display();
     auto& files = instance.files();
     auto shader = [&](std::string filename, GLenum type) {
         return ogl::Shader{display, type, files.system("shader/opengl/"s + filename)->read()};
@@ -102,10 +102,10 @@ Shaders::Shaders(Instance& instance, GraphicsSystem& system) {
 }
 #endif
 
-void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
+void BaseProgram::run([[maybe_unused]] GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
     const BaseProgram::Textures& textures) const {
 #ifdef FISH_FILLETS_USE_VULKAN
-    const auto& display = system.display();
+    const auto& display = backend.display();
     const auto& commandBuffer = display.commandBuffer();
 
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
@@ -118,7 +118,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     if(!descriptorSets.empty())
         commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, descriptorSets, {});
 
-    own_params(system);
+    own_params(backend);
 
     commandBuffer.draw(shape == Shape::rect ? 4 : 3, 1, 0, 0);
 #else
@@ -138,7 +138,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
     glUniform2fv(m_native.uniform("uArea"), 1, params.area.data());
     glUniform4fv(m_native.uniform("uCoords"), 1, params.coords.data());
 
-    own_params(system);
+    own_params(backend);
 
     constexpr static float rect[4][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
     constexpr static float triangle[3][3] = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1} };
@@ -160,8 +160,8 @@ void BaseProgram::run([[maybe_unused]] GraphicsSystem& system, DrawTarget& targe
 
 #ifdef FISH_FILLETS_USE_VULKAN
 template<typename SpecParams>
-void Program<SpecParams>::own_params(GraphicsSystem& system) const {
-    const auto& commandBuffer = system.display().commandBuffer();
+void Program<SpecParams>::own_params(GraphicsBackend& backend) const {
+    const auto& commandBuffer = backend.display().commandBuffer();
     commandBuffer.pushConstants<SpecParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
 }
 
@@ -179,51 +179,51 @@ template class Program<Shaders::ArrowParams>;
 #else
 
 template<>
-void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform1f(m_native.uniform("uAlpha"), m_params.alpha);
 }
 
 template<>
-void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::MaskCopyParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uMaskColor"), 1, m_params.maskColor.data());
 }
 
 template<>
-void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::FlatParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 }
 
 template<>
-void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::BlurParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform2fv(m_native.uniform("uDelta"), 1, m_params.dir.data());
 }
 
 template<>
-void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::DisintegrateParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform1f(m_native.uniform("uTime"), m_params.time);
 }
 
 template<>
-void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::WavyImageParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform1f(m_native.uniform("uAmplitude"), m_params.amplitude);
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
     glUniform1f(m_native.uniform("uPhase"), m_params.phase);
 }
 
 template<>
-void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::WavyTextParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uTime"), m_params.time);
 }
 
 template<>
-void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::TitleTextParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 }
 
 template<>
-void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uColor1"), 1, m_params.color1.data());
     glUniform4fv(m_native.uniform("uColor2"), 1, m_params.color2.data());
     glUniform1f(m_native.uniform("uPeriod"), m_params.period);
@@ -231,12 +231,12 @@ void Program<Shaders::ZXParams>::own_params([[maybe_unused]] GraphicsSystem& sys
 }
 
 template<>
-void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::ButtonParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 }
 
 template<>
-void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsSystem& system) const {
+void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
     glUniform2fv(m_native.uniform("uPosition"), 1, m_params.position.data());
     glUniform2fv(m_native.uniform("uDirection"), 1, m_params.direction.data());
     glUniform1f(m_native.uniform("uSize"), m_params.size);

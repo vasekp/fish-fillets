@@ -23,7 +23,7 @@ ImageRef PNGImage::create(Instance& instance, std::string filename, TextureType 
 
 void PNGImage::render(Instance& instance) {
     auto [size, data] = decoders::png(instance, m_filename);
-    m_texture = std::make_unique<Texture>(instance.graphics().system(), m_type, size, data.get());
+    m_texture = std::make_unique<Texture>(instance.graphics().backend(), m_type, size, data.get());
 }
 
 TextImage::TextImage(IFont& font, std::string text, Private) :
@@ -55,7 +55,7 @@ ImageRef BufferImage::create(Instance& instance, USize size, TextureType type, s
 }
 
 void BufferImage::render(Instance& instance) {
-    m_texture = std::make_unique<Texture>(instance.graphics().system(), m_type, m_size, m_data.get());
+    m_texture = std::make_unique<Texture>(instance.graphics().backend(), m_type, m_size, m_data.get());
 }
 
 void BufferImage::replace(std::unique_ptr<std::uint8_t[]>&& data) {

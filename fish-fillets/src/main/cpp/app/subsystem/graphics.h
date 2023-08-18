@@ -3,7 +3,18 @@
 
 #include "instance.h"
 
-#include "graphics/platform-fwd.h"
+#ifdef FISH_FILLETS_USE_VULKAN
+#define BACKEND vulkan
+#else
+#define BACKEND ogl
+#endif
+
+namespace BACKEND {
+    class Display;
+    class Texture;
+    class Program;
+    class Framebuffer;
+}
 
 #include "graphics/texturetype.h"
 #include "graphics/imagedata.h"
@@ -14,11 +25,11 @@
 #include "graphics/drawtarget.h"
 #include "graphics/texturetarget.h"
 
-class GraphicsSystem;
+class GraphicsBackend;
 
 class Graphics {
     Instance& m_instance;
-    std::unique_ptr<GraphicsSystem> m_system;
+    std::unique_ptr<GraphicsBackend> m_backend;
     std::set<std::unique_ptr<Image>> m_images;
     FCoords m_windowDim;
     FCoords m_windowShift;
@@ -41,14 +52,14 @@ public:
     Graphics(Instance& instance);
     ~Graphics();
 
-    void activate(Platform::Display&& display);
+    void activate(BACKEND::Display&& display);
     void shutdown();
 
-    auto& system() const { return *m_system; }
+    auto& backend() const { return *m_backend; }
     std::array<TextureTarget, 2>& blurTargets() const;
     TextureTarget& offscreenTarget() const;
     Shaders& shaders() const;
-    bool ready() const { return (bool)m_system; }
+    bool ready() const { return (bool)m_backend; }
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 

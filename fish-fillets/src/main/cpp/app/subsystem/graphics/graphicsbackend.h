@@ -1,25 +1,34 @@
 #ifndef FISH_FILLETS_GRAPHICS_SYSTEM_H
 #define FISH_FILLETS_GRAPHICS_SYSTEM_H
 
-#include "platform-full.h"
+#include "subsystem/graphics.h"
+
+#ifdef FISH_FILLETS_USE_VULKAN
+#include "api/vulkan.h"
+#else
+#include "api/ogl.h"
+#endif
+
+#include "texture.h"
 #include "displaytarget.h"
 #include "texturetarget.h"
 
-struct PlatformDetail;
-
-class GraphicsSystem {
+class GraphicsBackend {
 private:
     Graphics& m_graphics;
-    Platform::Display m_display;
+    BACKEND::Display m_display;
     std::array<TextureTarget, 2> m_blurTargets;
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
     DrawTarget* m_curTarget;
-    std::unique_ptr<PlatformDetail> m_platform;
+#ifdef FISH_FILLETS_USE_VULKAN
+    struct VulkanDetail;
+    std::unique_ptr<VulkanDetail> m_detail;
+#endif
 
 public:
-    GraphicsSystem(Instance& instance, Platform::Display&& display);
-    ~GraphicsSystem();
+    GraphicsBackend(Instance& instance, BACKEND::Display&& display);
+    ~GraphicsBackend();
 
     auto& display() { return m_display; }
 
@@ -35,7 +44,9 @@ public:
     friend class Graphics;
 
 private:
-    std::unique_ptr<PlatformDetail> platformDetail();
+#ifdef FISH_FILLETS_USE_VULKAN
+    std::unique_ptr<VulkanDetail> vulkanDetail();
+#endif
 
     USize blurTargetDims();
 };

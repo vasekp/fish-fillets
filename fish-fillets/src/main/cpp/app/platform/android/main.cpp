@@ -1,5 +1,6 @@
 #include "ainstance.h"
 #include "subsystem/graphics.h"
+#include "subsystem/graphics/graphicsbackend.h"
 #include "subsystem/audio.h"
 #include "subsystem/input.h"
 #include "subsystem/persist.h"
@@ -21,7 +22,7 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
             Log::debug<Log::platform>("APP_CMD_INIT_WINDOW");
             if(app->window != nullptr) {
                 instance.live = true;
-                auto display = GraphicsSystem::PlatformDisplay(app->window);
+                auto display = ogl::Display(app->window);
                 instance.graphics().activate(std::move(display));
                 instance.oboe().open();
                 instance.screens().resize();

@@ -8,8 +8,8 @@ class DisplayTarget : public DrawTarget {
     FCoords m_size;
 
 public:
-    DisplayTarget(GraphicsSystem& system, const ogl::Display& display) :
-        DrawTarget(system), m_display(display) { }
+    DisplayTarget(GraphicsBackend& backend, const ogl::Display& display) :
+        DrawTarget(backend), m_display(display) { }
 
     FCoords size() const override { return FCoords{m_display.size()}; }
 

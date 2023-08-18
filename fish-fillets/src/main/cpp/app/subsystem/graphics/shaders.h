@@ -2,11 +2,11 @@
 #define FISH_FILLETS_GRAPHICS_SHADERS_H
 
 class DrawTarget;
-class GraphicsSystem;
+class GraphicsBackend;
 
 class BaseProgram {
 protected:
-    const Platform::Program& m_native;
+    const BACKEND::Program& m_native;
 public:
     struct Params {
         vec2 src{};
@@ -24,12 +24,12 @@ public:
 
     using Textures = std::initializer_list<std::reference_wrapper<const Texture>>;
 
-    BaseProgram(const Platform::Program& native) : m_native(native) { }
+    BaseProgram(const BACKEND::Program& native) : m_native(native) { }
 
-    void run(GraphicsSystem& system, DrawTarget& target, const Params& params, Shape shape, const Textures& textures) const;
+    void run(GraphicsBackend& backend, DrawTarget& target, const Params& params, Shape shape, const Textures& textures) const;
 
 protected:
-    virtual void own_params(GraphicsSystem& system) const { }
+    virtual void own_params(GraphicsBackend& backend) const { }
 };
 
 template<typename SpecParams>
@@ -37,12 +37,12 @@ class Program : public BaseProgram {
     SpecParams m_params;
 
 public:
-    Program(const Platform::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
+    Program(const BACKEND::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
 
     SpecParams& params() { return m_params; }
 
 private:
-    void own_params(GraphicsSystem& system) const override;
+    void own_params(GraphicsBackend& backend) const override;
 };
 
 class Shaders {
@@ -51,7 +51,7 @@ private:
     std::unique_ptr<Impl> pImpl;
 
 public:
-    Shaders(Instance& instance, GraphicsSystem& system);
+    Shaders(Instance& instance, GraphicsBackend& backend);
     ~Shaders();
 
     struct AlphaParams {

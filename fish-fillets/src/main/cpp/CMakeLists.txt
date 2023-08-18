@@ -26,7 +26,7 @@ set(fillets_sources
         "${FILLETS_DIR}/subsystem/graphics/shaders.cpp"
         "${FILLETS_DIR}/subsystem/graphics/drawtarget.cpp"
         "${FILLETS_DIR}/subsystem/graphics/texturetarget.cpp"
-        "${FILLETS_DIR}/subsystem/graphics/graphicssystem.cpp"
+        "${FILLETS_DIR}/subsystem/graphics/graphicsbackend.cpp"
         "${FILLETS_DIR}/subsystem/input/key.cpp"
         "${FILLETS_DIR}/subsystem/persist.cpp"
         "${FILLETS_DIR}/subsystem/rng.cpp"

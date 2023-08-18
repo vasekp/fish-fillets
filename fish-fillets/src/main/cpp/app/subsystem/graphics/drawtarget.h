@@ -1,16 +1,16 @@
 #ifndef FISH_FILLETS_GRAPHICS_DRAWTARGET_H
 #define FISH_FILLETS_GRAPHICS_DRAWTARGET_H
 
-class GraphicsSystem;
+class GraphicsBackend;
 
 class DrawTarget {
 protected:
-    GraphicsSystem& m_system;
+    GraphicsBackend& m_backend;
 
 public:
     virtual ~DrawTarget() { }
 
-    DrawTarget(GraphicsSystem& system) : m_system(system) { }
+    DrawTarget(GraphicsBackend& backend) : m_backend(backend) { }
     virtual FCoords size() const = 0;
 
     void draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params = {});

@@ -1,28 +1,27 @@
 #include "graphics.h"
-#include "graphics/platform-full.h"
-#include "graphics/graphicssystem.h"
+#include "graphics/graphicsbackend.h"
 #include "game/screens/screenmanager.h"
 
 Graphics::Graphics(Instance& instance) : m_instance(instance) { }
 
 Graphics::~Graphics() = default;
 
-void Graphics::activate(Platform::Display&& display) {
+void Graphics::activate(BACKEND::Display&& display) {
     Log::debug<Log::graphics>("graphics: activate");
-    m_system = std::make_unique<GraphicsSystem>(m_instance, std::move(display));
+    m_backend = std::make_unique<GraphicsBackend>(m_instance, std::move(display));
     for(const auto& image : m_images)
         image->render(m_instance);
 }
 
 void Graphics::shutdown() {
     Log::debug<Log::graphics>("graphics: shutdown");
-    m_system.reset();
+    m_backend.reset();
 }
 
 void Graphics::setWindowSize(FCoords size) {
     m_windowDim = size;
     m_windowShift = {};
-    if(m_system)
+    if(m_backend)
         recalc();
 }
 
@@ -34,30 +33,30 @@ void Graphics::setWindowShift(FCoords shift) {
 
 void Graphics::setViewport(FCoords origin, FCoords size) {
     Log::debug<Log::graphics>("viewport origin ", origin, " size ", size);
-    m_system->setViewport(origin.round(), size.round()); // TODO check no-op
+    m_backend->setViewport(origin.round(), size.round()); // TODO check no-op
     recalc();
-    m_system->resizeBuffers();
+    m_backend->resizeBuffers();
     m_instance.screens().resize();
 }
 
 void Graphics::setScissor(ICoords from, ICoords to) {
-    m_system->setScissor(from, to);
+    m_backend->setScissor(from, to);
 }
 
 void Graphics::releaseScissor() {
-    m_system->releaseScissor();
+    m_backend->releaseScissor();
 }
 
 void Graphics::newFrame() {
-    m_system->newFrame();
+    m_backend->newFrame();
 }
 
 void Graphics::present(TextureTarget& target) {
-    m_system->present(target);
+    m_backend->present(target);
 }
 
 void Graphics::recalc() {
-    auto displayDim = FCoords{m_system->display().size()};
+    auto displayDim = FCoords{m_backend->display().size()};
     float scale0 = std::min(displayDim.x / baseDim.x, displayDim.y / baseDim.y);
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     float stripSize = buttonStripWidth * scale0;
@@ -80,7 +79,7 @@ void Graphics::recalc() {
 ImageRef Graphics::addImage(std::unique_ptr<Image>&& ptr) {
     ImageRef ref{m_instance, ptr};
     m_images.insert(std::move(ptr));
-    if(m_system)
+    if(m_backend)
         ref->render(m_instance);
     return ref;
 }
@@ -93,13 +92,13 @@ void Graphics::deleteImage(const ImageRef& ref) noexcept {
 }
 
 std::array<TextureTarget, 2>& Graphics::blurTargets() const {
-    return m_system->m_blurTargets;
+    return m_backend->m_blurTargets;
 }
 
 TextureTarget& Graphics::offscreenTarget() const {
-    return m_system->m_offscreenTarget;
+    return m_backend->m_offscreenTarget;
 }
 
 Shaders& Graphics::shaders() const {
-    return m_system->m_shaders;
+    return m_backend->m_shaders;
 }

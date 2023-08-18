@@ -30,7 +30,7 @@ std::vector<std::string> IFont::breakLines(const std::string& text, float width)
 std::unique_ptr<Texture> IFont::renderText(Instance& instance, const std::string& text) const {
     auto [physSize, data] = own_renderText(text);
     FCoords logSize = FCoords{physSize} / m_scale;
-    return std::make_unique<Texture>(instance.graphics().system(), TextureType::image, physSize, logSize, data.get());
+    return std::make_unique<Texture>(instance.graphics().backend(), TextureType::image, physSize, logSize, data.get());
 }
 
 void IFont::regImage(TextImage* image) {

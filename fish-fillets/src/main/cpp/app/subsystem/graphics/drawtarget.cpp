@@ -1,5 +1,5 @@
 #include "subsystem/graphics.h"
-#include "graphicssystem.h"
+#include "graphicsbackend.h"
 #include "drawtarget.h"
 
 void DrawTarget::drawMain(const BaseProgram& program,
@@ -7,14 +7,14 @@ void DrawTarget::drawMain(const BaseProgram& program,
         BaseProgram::Params params,
         BaseProgram::Shape shape,
         const BaseProgram::Textures& textures) {
-    m_system.bind(this);
+    m_backend.bind(this);
     if(!params.srcSize)
         params.srcSize = params.area;
     else if(!params.area)
         params.area = params.srcSize;
     params.dstSize = size();
     params.coords = {coords.origin.x, coords.origin.y, coords.scale, flipY() ? -1.f : 1.f};
-    program.run(m_system, *this, params, shape, textures);
+    program.run(m_backend, *this, params, shape, textures);
 }
 
 void DrawTarget::draw(const BaseProgram& program, const Coords& coords, BaseProgram::Params params) {
@@ -33,7 +33,7 @@ void DrawTarget::draw(const Texture& texture,
 
 void DrawTarget::draw(BaseProgram::Textures textures,
         const BaseProgram& program, const Coords& coords, BaseProgram::Params params) {
-    m_system.bind(this);
+    m_backend.bind(this);
     if(!params.srcSize)
         params.srcSize = textures.begin()->get().logSize();
     if(!params.area)
