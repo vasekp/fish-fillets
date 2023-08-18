@@ -21,14 +21,16 @@ public:
 
     AndroidInput& inputSource() override { return m_input; }
     std::string lang() override;
-    void own_quit() override;
 
-    void startstop();
     OboeSink& oboe() { return m_sink; }
 
 private:
     AndroidInput m_input;
     OboeSink m_sink;
+
+    void own_run() override;
+    void own_pause() override;
+    void own_quit() override;
 };
 
 #endif //FF_ANDROID_INSTANCE_H

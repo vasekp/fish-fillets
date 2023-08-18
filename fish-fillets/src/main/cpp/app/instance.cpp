@@ -20,7 +20,8 @@ Instance::Instance(std::unique_ptr<IFiles>&& files) :
     m_audio(std::make_unique<Audio>(*this)), // uses Persist in constructor for volume settings
     m_levels(std::make_unique<GameTree>(*this)),
     m_screens(std::make_unique<ScreenManager>(*this)), // uses Persist in destructor for playtime
-    m_rng(std::make_unique<RNG>())
+    m_rng(std::make_unique<RNG>()),
+    m_running(false)
 { }
 
 Instance::~Instance() = default;
@@ -53,8 +54,24 @@ void Instance::updateAndDraw() {
     screens().drawFrame();
 }
 
+void Instance::run() {
+    if(m_running)
+        return;
+    m_running = true;
+    screens().resume();
+    own_run();
+}
+
+void Instance::pause() {
+    if(!m_running)
+        return;
+    m_running = false;
+    screens().pause();
+    own_pause();
+}
+
 void Instance::quit() {
-    running = false;
+    m_running = false;
     audio().clear();
     own_quit();
 }

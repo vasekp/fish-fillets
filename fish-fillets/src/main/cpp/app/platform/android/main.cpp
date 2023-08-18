@@ -28,7 +28,8 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
                 instance.screens().resize();
                 instance.screens().drawFrame();
             }
-            instance.startstop();
+            if(instance.live)
+                instance.run();
             break;
         case APP_CMD_TERM_WINDOW:
             Log::debug<Log::platform>("APP_CMD_TERM_WINDOW");
@@ -39,18 +40,14 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_GAINED_FOCUS:
         case APP_CMD_RESUME:
             Log::debug<Log::platform>(cmd == APP_CMD_RESUME ? "APP_CMD_RESUME" : "APP_CMD_GAINED_FOCUS");
-            if(!instance.running) {
-                instance.running = true;
-                instance.startstop();
-            }
+            if(instance.live)
+                instance.run();
             break;
         case APP_CMD_LOST_FOCUS:
         case APP_CMD_PAUSE:
             Log::debug<Log::platform>(cmd == APP_CMD_PAUSE ? "APP_CMD_PAUSE" : "APP_CMD_LOST_FOCUS");
-            if(instance.running) {
-                instance.running = false;
-                instance.startstop();
-            }
+            if(instance.live)
+                instance.pause();
             break;
         case APP_CMD_START:
             Log::debug<Log::platform>("APP_CMD_START");
@@ -89,7 +86,7 @@ void android_main(struct android_app* app) {
             int events;
             struct android_poll_source* source;
 
-            while(ALooper_pollAll(instance.running ? 0 : -1, nullptr, &events, (void**)&source) >= 0) {
+            while(ALooper_pollAll(instance.running() ? 0 : -1, nullptr, &events, (void**)&source) >= 0) {
                 if(source != nullptr)
                     source->process(app, source);
                 if(app->destroyRequested) {
@@ -98,7 +95,7 @@ void android_main(struct android_app* app) {
                 }
             }
 
-            if(instance.live && instance.running)
+            if(instance.running())
                 instance.updateAndDraw();
         } catch(std::exception& e) {
             Log::error("Caught exception: %s", e.what());

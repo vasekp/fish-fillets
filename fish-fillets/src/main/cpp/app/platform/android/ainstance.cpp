@@ -25,20 +25,16 @@ AndroidInstance& AndroidInstance::get(android_app* app) {
     return *static_cast<AndroidInstance*>(app->userData);
 }
 
-void AndroidInstance::own_quit() {
-    ANativeActivity_finish(app->activity);
+void AndroidInstance::own_run() {
+    oboe().start();
 }
 
-void AndroidInstance::startstop() {
-    if(!live)
-        return;
-    if(!running) {
-        screens().pause();
-        oboe().stop();
-    } else {
-        oboe().start();
-        screens().resume();
-    }
+void AndroidInstance::own_pause() {
+    oboe().stop();
+}
+
+void AndroidInstance::own_quit() {
+    ANativeActivity_finish(app->activity);
 }
 
 std::string AndroidInstance::lang() {

@@ -39,9 +39,10 @@ public:
     virtual std::string lang() = 0;
 
     void updateAndDraw();
+    void run();
+    void pause();
     void quit();
-
-    bool running = false;
+    bool running() { return m_running; };
 
 private:
     std::unique_ptr<IFiles> m_files;
@@ -51,7 +52,10 @@ private:
     std::unique_ptr<GameTree> m_levels;
     std::unique_ptr<ScreenManager> m_screens;
     std::unique_ptr<RNG> m_rng;
+    bool m_running;
 
+    virtual void own_run() { }
+    virtual void own_pause() { }
     virtual void own_quit() { }
 };
 

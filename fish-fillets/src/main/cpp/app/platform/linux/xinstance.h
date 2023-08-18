@@ -18,6 +18,8 @@ public:
     XInput& inputSource() override { return m_input; }
     std::string lang() override;
 
+    bool closed() { return m_quit; }
+
     void dispatchEvent(const XEvent& event);
 
 private:
@@ -28,6 +30,11 @@ private:
     AlsaSink m_sink;
     USize m_lastSize;
     std::map<std::string, Atom> m_atoms;
+    bool m_quit;
+
+    void own_run() override;
+    void own_pause() override;
+    void own_quit() override;
 };
 
 #endif //FF_LINUX_INSTANCE_H

@@ -49,12 +49,10 @@ int main(int argc, char** argv) {
 
         XMapWindow(dpy, win);
         XFlush(dpy);
+        instance.run();
 
-        instance.screens().resume();
-        instance.running = true;
-
-        Log::info<Log::lifecycle>("Main loop");
-        while(instance.running) {
+        Log::info<Log::lifecycle>("Main loop started");
+        while(!instance.closed()) {
             while(XPending(dpy)) {
                 XEvent event;
                 XNextEvent(dpy, &event);
@@ -62,6 +60,7 @@ int main(int argc, char** argv) {
             }
             instance.updateAndDraw();
         }
+        Log::info<Log::lifecycle>("Main loop finished");
     } catch(std::exception& e) {
         Log::error("Caught exception ", e.what(), ", exiting");
         return 1;

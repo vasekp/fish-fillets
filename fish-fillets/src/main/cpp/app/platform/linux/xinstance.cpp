@@ -10,7 +10,8 @@ XInstance::XInstance(Display* dpy, Window win) :
     m_display(dpy),
     m_window(win),
     m_input(*this),
-    m_sink(audio())
+    m_sink(audio()),
+    m_quit(false)
 {
     m_atoms["WM_DELETE_WINDOW"] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
     m_atoms["WM_STATE"] = XInternAtom(dpy, "WM_STATE", False);
@@ -58,8 +59,8 @@ void XInstance::dispatchEvent(const XEvent& event) {
             }
         case ClientMessage:
             if((Atom)event.xclient.data.l[0] == m_atoms["WM_DELETE_WINDOW"]) {
-                Log::info<Log::lifecycle>("Quitting");
-                running = false;
+                Log::info<Log::lifecycle>("Window closed");
+                quit();
             }
             break;
         case PropertyNotify:
@@ -78,17 +79,26 @@ void XInstance::dispatchEvent(const XEvent& event) {
                                                 &length, &after, (unsigned char**)&state);
                 } while(!length);
                 Log::debug<Log::platform>("X window state: ", *state);
-                if(*state == IconicState) {
-                    screens().pause();
-                    m_sink.pause();
-                } else {
-                    screens().resume();
-                    m_sink.resume();
-                }
+                if(*state == IconicState)
+                    pause();
+                else
+                    run();
                 XFree(state);
             }
             break;
         default:
             break;
     }
+}
+
+void XInstance::own_run() {
+    m_sink.resume();
+}
+
+void XInstance::own_pause() {
+    m_sink.pause();
+}
+
+void XInstance::own_quit() {
+    m_quit = true;
 }

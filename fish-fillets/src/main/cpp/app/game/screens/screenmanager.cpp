@@ -52,7 +52,7 @@ void ScreenManager::poster(const LevelRecord& record) {
 void ScreenManager::useNext() {
     m_screen = std::move(m_next);
     curScreen().start();
-    if(m_instance.running)
+    if(m_instance.running())
         curScreen().resume();
     m_instance.inputSource().reset();
 }
