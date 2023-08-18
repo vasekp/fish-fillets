@@ -1,5 +1,5 @@
-#include "./input.h"
-#include "./ainstance.h"
+#include "input.h"
+#include "ainstance.h"
 
 static constexpr auto doubletapTime = 300ms;
 static constexpr auto longpressTime = 500ms;

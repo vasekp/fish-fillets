@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio/audiodata.h"
-#include "./files.h"
+#include "files.h"
 #include "ainstance.h"
 #include <thread>
 

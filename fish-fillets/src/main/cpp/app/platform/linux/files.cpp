@@ -1,5 +1,5 @@
 #include "subsystem/files.h"
-#include "./files.h"
+#include "files.h"
 
 std::unique_ptr<IFile> LinuxFiles::system(const std::string& path) {
     return std::make_unique<SystemFile>(path, "/home/vasek/prog/android/fish-fillets/fish-fillets/src/main/assets/"); // TODO

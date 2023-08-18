@@ -1,5 +1,5 @@
 #include "subsystem/files.h"
-#include "./files.h"
+#include "files.h"
 #include "ainstance.h"
 
 std::unique_ptr<IFile> AndroidFiles::system(const std::string& path) {

@@ -1,6 +1,4 @@
-#include "subsystem/graphics.h"
-#include "../graphicsbackend.h"
-
+#include "subsystem/graphics/graphicsbackend.h"
 #include "displaytarget.h"
 
 GraphicsBackend::GraphicsBackend(Instance& instance, BACKEND::Display&& display) :

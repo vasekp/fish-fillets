@@ -1,5 +1,4 @@
-#include "subsystem/graphics.h"
-#include "../graphicsbackend.h"
+#include "subsystem/graphics.h/graphicsbackend.h"
 
 struct GraphicsBackend::VulkanDetail {
     vk::raii::Semaphore imageAvailableSemaphore;
