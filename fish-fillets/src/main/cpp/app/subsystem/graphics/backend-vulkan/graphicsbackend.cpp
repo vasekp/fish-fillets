@@ -1,7 +1,6 @@
 #include "subsystem/graphics.h"
-#include "graphicsbackend.h"
+#include "../graphicsbackend.h"
 
-#ifdef FISH_FILLETS_USE_VULKAN
 struct GraphicsBackend::VulkanDetail {
     vk::raii::Semaphore imageAvailableSemaphore;
     vk::raii::Semaphore renderFinishedSemaphore;
@@ -22,9 +21,6 @@ std::unique_ptr<GraphicsBackend::VulkanDetail> GraphicsBackend::vulkanDetail() {
         nullptr
     );
 }
-#else
-#include "displaytarget.h"
-#endif
 
 GraphicsBackend::GraphicsBackend(Instance& instance, BACKEND::Display&& display) :
     m_graphics(instance.graphics()),
@@ -35,17 +31,13 @@ GraphicsBackend::GraphicsBackend(Instance& instance, BACKEND::Display&& display)
     m_offscreenTarget{*this, m_display.size()},
     m_shaders{instance, *this}
 {
-#ifdef FISH_FILLETS_USE_VULKAN
     m_detail = vulkanDetail();
-#endif
 }
 
 GraphicsBackend::~GraphicsBackend() = default;
 
 void GraphicsBackend::resizeBuffers() {
-#ifdef FISH_FILLETS_USE_VULKAN
     m_display.recreateSwapchain();
-#endif
     auto dispSize = m_display.size();
     m_offscreenTarget.resize(dispSize);
     auto blurSize = blurTargetDims();
@@ -62,7 +54,6 @@ USize GraphicsBackend::blurTargetDims() {
 }
 
 void GraphicsBackend::newFrame() {
-#ifdef FISH_FILLETS_USE_VULKAN
     const auto& device = m_display.device();
     constexpr std::uint64_t noTimeout = std::numeric_limits<std::uint64_t>::max();
     if(auto ret = device.waitForFences(*m_detail->inFlightFence, true, noTimeout); ret != vk::Result::eSuccess)
@@ -91,17 +82,12 @@ void GraphicsBackend::newFrame() {
     commandBuffer.setScissor(0, fullRect);
     vk::ClearRect clearRect{fullRect, 0, 1};
     commandBuffer.clearAttachments(clearAttachment, clearRect);
-#else
-    m_offscreenTarget.bind();
-    glClear(GL_COLOR_BUFFER_BIT);
-#endif
     m_curTarget = &m_offscreenTarget;
 }
 
 void GraphicsBackend::bind(DrawTarget* target) {
     if(target == m_curTarget)
         return;
-#ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = m_display.commandBuffer();
     commandBuffer.endRenderPass();
 
@@ -116,44 +102,27 @@ void GraphicsBackend::bind(DrawTarget* target) {
     vk::Rect2D fullRect{{}, {(std::uint32_t)size.x, (std::uint32_t)size.y}};
     commandBuffer.setViewport(0, viewport);
     commandBuffer.setScissor(0, fullRect);
-#else
-    target->bind();
-#endif
     m_curTarget = target;
 }
 
 void GraphicsBackend::setViewport(ICoords origin, ICoords size) {
-#ifdef FISH_FILLETS_USE_VULKAN
-    // not needed
-#else
-    m_display.setViewport(origin, size);
-#endif
+    // not used in Vulkan
 }
 
 void GraphicsBackend::setScissor(ICoords from, ICoords to) {
     ICoords size = to - from;
-#ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = m_display.commandBuffer();
     vk::Rect2D rect{{from.x, from.y}, {(std::uint32_t)size.x, (std::uint32_t)size.y}};
     commandBuffer.setScissor(0, rect);
-#else
-    glScissor(from.x, from.y, size.x, size.y);
-    glEnable(GL_SCISSOR_TEST);
-#endif
 }
 
 void GraphicsBackend::releaseScissor() {
-#ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = m_display.commandBuffer();
     vk::Rect2D fullRect{{}, {m_display.width(), m_display.height()}};
     commandBuffer.setScissor(0, fullRect);
-#else
-    glDisable(GL_SCISSOR_TEST);
-#endif
 }
 
 void GraphicsBackend::present(TextureTarget& target) {
-#ifdef FISH_FILLETS_USE_VULKAN
     const auto& commandBuffer = m_display.commandBuffer();
     commandBuffer.endRenderPass();
 
@@ -218,8 +187,4 @@ void GraphicsBackend::present(TextureTarget& target) {
         Log::error("Error presenting image");
     }
     m_display.device().waitIdle();
-#else
-    DisplayTarget{*this, m_display}.draw(m_offscreenTarget.texture(), m_shaders.copy(), m_graphics.coords(Graphics::CoordSystems::null));
-    m_display.swap();
-#endif
 }

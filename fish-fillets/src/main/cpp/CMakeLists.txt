@@ -23,10 +23,8 @@ set(fillets_sources
         "${FILLETS_DIR}/subsystem/graphics/texture.cpp"
         "${FILLETS_DIR}/subsystem/graphics/image.cpp"
         "${FILLETS_DIR}/subsystem/graphics/ifont.cpp"
-        "${FILLETS_DIR}/subsystem/graphics/shaders.cpp"
         "${FILLETS_DIR}/subsystem/graphics/drawtarget.cpp"
         "${FILLETS_DIR}/subsystem/graphics/texturetarget.cpp"
-        "${FILLETS_DIR}/subsystem/graphics/graphicsbackend.cpp"
         "${FILLETS_DIR}/subsystem/input/key.cpp"
         "${FILLETS_DIR}/subsystem/persist.cpp"
         "${FILLETS_DIR}/subsystem/rng.cpp"
@@ -59,6 +57,8 @@ set(fillets_sources
         "${FILLETS_DIR}/game/screens/options.cpp")
 
 set(fillets_sources_vulkan
+        "${FILLETS_DIR}/subsystem/graphics/backend-vulkan/graphicsbackend.cpp"
+        "${FILLETS_DIR}/subsystem/graphics/backend-vulkan/shaders.cpp"
         "${FILLETS_DIR}/api/vulkan/display.cpp"
         "${FILLETS_DIR}/api/vulkan/texture.cpp"
         "${FILLETS_DIR}/api/vulkan/framebuffer.cpp"
@@ -66,6 +66,8 @@ set(fillets_sources_vulkan
         "${FILLETS_DIR}/api/vulkan/descriptorpool.cpp")
 
 set(fillets_sources_opengl
+        "${FILLETS_DIR}/subsystem/graphics/backend-ogl/graphicsbackend.cpp"
+        "${FILLETS_DIR}/subsystem/graphics/backend-ogl/shaders.cpp"
         "${FILLETS_DIR}/api/ogl/texture.cpp"
         "${FILLETS_DIR}/api/ogl/display.cpp"
         "${FILLETS_DIR}/api/ogl/framebuffer.cpp"

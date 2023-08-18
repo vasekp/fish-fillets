@@ -1,7 +1,6 @@
 #ifndef FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
 #define FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H
 
-#ifndef FISH_FILLETS_USE_VULKAN
 class DisplayTarget : public DrawTarget {
 public:
     DisplayTarget(GraphicsBackend& backend, const ogl::Display& display) :
@@ -18,6 +17,5 @@ private:
 
     bool flipY() const override { return true; }
 };
-#endif
 
 #endif //FISH_FILLETS_GRAPHICS_DISPLAYTARGET_H

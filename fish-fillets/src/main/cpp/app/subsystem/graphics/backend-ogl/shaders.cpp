@@ -1,10 +1,6 @@
+#include "../graphicsbackend.h"
 #include "subsystem/graphics.h"
-#include "graphicsbackend.h"
 #include "subsystem/files.h"
-
-#ifdef FISH_FILLETS_USE_VULKAN
-static constexpr auto ownPushConstantOffset = sizeof(BaseProgram::Params);
-#endif
 
 struct Shaders::Impl {
     BACKEND::Program copy;
@@ -28,34 +24,6 @@ struct Shaders::Impl {
 Shaders::~Shaders() = default;
 
 // NB. we can't get backend from instance.graphics().backend() yet because this function is called when Instance is being constructed.
-#ifdef FISH_FILLETS_USE_VULKAN
-Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
-    auto& display = backend.display();
-    auto& files = instance.files();
-    auto spirv = [&](std::string filename) {
-        return vulkan::Shader{display, files.system("shader/vulkan/"s + filename)->read()};
-    };
-    vulkan::Shader pixelVert = spirv("pixel.spv");
-    pImpl = std::make_unique<Impl>(
-        vulkan::Program{display, pixelVert, spirv("copy.spv")},
-        vulkan::Program{display, pixelVert, spirv("overlay.spv")},
-        vulkan::Program{display, pixelVert, spirv("mask-copy.spv")},
-        vulkan::Program{display, pixelVert, spirv("alpha.spv")},
-        vulkan::Program{display, pixelVert, spirv("reverse.spv")},
-        vulkan::Program{display, pixelVert, spirv("mirror.spv")},
-        vulkan::Program{display, pixelVert, spirv("flat.spv")},
-        vulkan::Program{display, pixelVert, spirv("blur.spv")},
-        vulkan::Program{display, pixelVert, spirv("disintegrate.spv")},
-        vulkan::Program{display, pixelVert, spirv("wavy-image.spv")},
-        vulkan::Program{display, pixelVert, spirv("wavy-text.spv")},
-        vulkan::Program{display, pixelVert, spirv("title.spv")},
-        vulkan::Program{display, pixelVert, spirv("zx.spv")},
-        vulkan::Program{display, pixelVert, spirv("ycbcr.spv")},
-        vulkan::Program{display, pixelVert, spirv("button.spv")},
-        vulkan::Program{display, spirv("arrow.vert.spv"), spirv("arrow.frag.spv")}
-    );
-}
-#else
 Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
     auto& display = backend.display();
     auto& files = instance.files();
@@ -100,28 +68,9 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
     glUniform1i(pImpl->ycbcr.uniform("uCbTexture"), 1);
     glUniform1i(pImpl->ycbcr.uniform("uCrTexture"), 2);
 }
-#endif
 
 void BaseProgram::run([[maybe_unused]] GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
     const BaseProgram::Textures& textures) const {
-#ifdef FISH_FILLETS_USE_VULKAN
-    const auto& display = backend.display();
-    const auto& commandBuffer = display.commandBuffer();
-
-    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_native);
-
-    commandBuffer.pushConstants<Params>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0, params);
-
-    std::vector<vk::DescriptorSet> descriptorSets{};
-    for(const auto texture : textures)
-        descriptorSets.push_back(texture.get().native().descriptorSet());
-    if(!descriptorSets.empty())
-        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_native.pipelineLayout(), 0, descriptorSets, {});
-
-    own_params(backend);
-
-    commandBuffer.draw(shape == Shape::rect ? 4 : 3, 1, 0, 0);
-#else
     int texIndex = 0;
     for(auto ref : textures) {
         glActiveTexture(GL_TEXTURE0 + texIndex);
@@ -155,28 +104,7 @@ void BaseProgram::run([[maybe_unused]] GraphicsBackend& backend, DrawTarget& tar
             break;
         }
     }
-#endif
 }
-
-#ifdef FISH_FILLETS_USE_VULKAN
-template<typename SpecParams>
-void Program<SpecParams>::own_params(GraphicsBackend& backend) const {
-    const auto& commandBuffer = backend.display().commandBuffer();
-    commandBuffer.pushConstants<SpecParams>(m_native.pipelineLayout(), vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, ownPushConstantOffset, m_params);
-}
-
-template class Program<Shaders::MaskCopyParams>;
-template class Program<Shaders::AlphaParams>;
-template class Program<Shaders::FlatParams>;
-template class Program<Shaders::BlurParams>;
-template class Program<Shaders::DisintegrateParams>;
-template class Program<Shaders::WavyImageParams>;
-template class Program<Shaders::WavyTextParams>;
-template class Program<Shaders::TitleTextParams>;
-template class Program<Shaders::ZXParams>;
-template class Program<Shaders::ButtonParams>;
-template class Program<Shaders::ArrowParams>;
-#else
 
 template<>
 void Program<Shaders::AlphaParams>::own_params([[maybe_unused]] GraphicsBackend& backend) const {
@@ -243,7 +171,6 @@ void Program<Shaders::ArrowParams>::own_params([[maybe_unused]] GraphicsBackend&
     glUniform1f(m_native.uniform("uSign"), m_params.sign);
     glUniform4fv(m_native.uniform("uColor"), 1, m_params.color.data());
 }
-#endif
 
 BaseProgram Shaders::copy() { return {pImpl->copy}; }
 
