@@ -1,8 +1,6 @@
 #ifndef FISH_FILLETS_GRAPHICS_IMAGE_H
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
-class Texture;
-
 class Image {
 protected:
     Image() = default;
@@ -18,7 +16,7 @@ public:
     virtual void render(Instance& instance) = 0;
 
 protected:
-    std::unique_ptr<Texture> m_texture;
+    std::optional<Texture> m_texture;
 
     enum class Private { tag };
 };

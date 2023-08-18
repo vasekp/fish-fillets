@@ -16,7 +16,10 @@ namespace BACKEND {
     class Framebuffer;
 }
 
+class GraphicsBackend;
+
 #include "graphics/texturetype.h"
+#include "graphics/texture.h"
 #include "graphics/imagedata.h"
 #include "graphics/image.h"
 #include "graphics/coords.h"
@@ -24,8 +27,6 @@ namespace BACKEND {
 #include "graphics/ifont.h"
 #include "graphics/drawtarget.h"
 #include "graphics/texturetarget.h"
-
-class GraphicsBackend;
 
 class Graphics {
 public:

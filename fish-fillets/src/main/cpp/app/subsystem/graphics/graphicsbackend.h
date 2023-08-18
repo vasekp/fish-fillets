@@ -9,10 +9,6 @@
 #include "api/ogl.h"
 #endif
 
-#include "texture.h"
-#include "displaytarget.h"
-#include "texturetarget.h"
-
 class GraphicsBackend {
 public:
     GraphicsBackend(Instance& instance, BACKEND::Display&& display);

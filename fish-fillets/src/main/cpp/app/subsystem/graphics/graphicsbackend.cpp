@@ -22,6 +22,8 @@ std::unique_ptr<GraphicsBackend::VulkanDetail> GraphicsBackend::vulkanDetail() {
         nullptr
     );
 }
+#else
+#include "displaytarget.h"
 #endif
 
 GraphicsBackend::GraphicsBackend(Instance& instance, BACKEND::Display&& display) :
