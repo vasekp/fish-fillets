@@ -1,6 +1,7 @@
 #include "afont.h"
 #include "ainstance.h"
-#include "./files.h"
+#include "files.h"
+#include "subsystem/graphics.h"
 #include <android/bitmap.h>
 
 AndroidFont::AndroidFont(Instance& instance, const std::string& filename) :

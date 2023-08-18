@@ -17,6 +17,8 @@ LevelTitle::LevelTitle(Instance& instance) :
     m_font(decoders::ttf(instance, fontFilename))
 { }
 
+LevelTitle::~LevelTitle() = default;
+
 void LevelTitle::show(const std::string& text) {
     m_image.emplace(TextImage::create(m_instance, *m_font, text));
     m_hide.reset();

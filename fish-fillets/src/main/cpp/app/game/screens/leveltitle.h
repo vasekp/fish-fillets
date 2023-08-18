@@ -11,6 +11,7 @@ class IFont;
 class LevelTitle {
 public:
     LevelTitle(Instance& instance);
+    ~LevelTitle();
 
     void show(const std::string& text);
     void fadeout();

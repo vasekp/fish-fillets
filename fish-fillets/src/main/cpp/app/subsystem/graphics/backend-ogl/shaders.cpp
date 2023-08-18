@@ -33,24 +33,24 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
     auto vert = [&](std::string filename) { return shader(filename, GL_VERTEX_SHADER); };
     auto frag = [&](std::string filename) { return shader(filename, GL_FRAGMENT_SHADER); };
     ogl::Shader pixelVert = vert("pixel.vert");
-    pImpl = std::make_unique<Impl>(
-        ogl::Program{display, pixelVert, frag("copy.frag")},
-        ogl::Program{display, pixelVert, frag("overlay.frag")},
-        ogl::Program{display, pixelVert, frag("mask-copy.frag")},
-        ogl::Program{display, pixelVert, frag("alpha.frag")},
-        ogl::Program{display, pixelVert, frag("reverse.frag")},
-        ogl::Program{display, pixelVert, frag("mirror.frag")},
-        ogl::Program{display, pixelVert, frag("flat.frag")},
-        ogl::Program{display, pixelVert, frag("blur.frag")},
-        ogl::Program{display, pixelVert, frag("disintegrate.frag")},
-        ogl::Program{display, pixelVert, frag("wavy-image.frag")},
-        ogl::Program{display, pixelVert, frag("wavy-text.frag")},
-        ogl::Program{display, pixelVert, frag("title.frag")},
-        ogl::Program{display, pixelVert, frag("zx.frag")},
-        ogl::Program{display, pixelVert, frag("ycbcr.frag")},
-        ogl::Program{display, pixelVert, frag("button.frag")},
-        ogl::Program{display, vert("arrow.vert"), frag("arrow.frag")}
-    );
+    pImpl = std::make_unique<Impl>(Impl{
+            ogl::Program{display, pixelVert, frag("copy.frag")},
+            ogl::Program{display, pixelVert, frag("overlay.frag")},
+            ogl::Program{display, pixelVert, frag("mask-copy.frag")},
+            ogl::Program{display, pixelVert, frag("alpha.frag")},
+            ogl::Program{display, pixelVert, frag("reverse.frag")},
+            ogl::Program{display, pixelVert, frag("mirror.frag")},
+            ogl::Program{display, pixelVert, frag("flat.frag")},
+            ogl::Program{display, pixelVert, frag("blur.frag")},
+            ogl::Program{display, pixelVert, frag("disintegrate.frag")},
+            ogl::Program{display, pixelVert, frag("wavy-image.frag")},
+            ogl::Program{display, pixelVert, frag("wavy-text.frag")},
+            ogl::Program{display, pixelVert, frag("title.frag")},
+            ogl::Program{display, pixelVert, frag("zx.frag")},
+            ogl::Program{display, pixelVert, frag("ycbcr.frag")},
+            ogl::Program{display, pixelVert, frag("button.frag")},
+            ogl::Program{display, vert("arrow.vert"), frag("arrow.frag")}
+    });
 
     for(const auto* program : {&pImpl->copy, &pImpl->overlay, &pImpl->maskCopy,
             &pImpl->alpha, &pImpl->reverse, &pImpl->mirror, &pImpl->blur, &pImpl->disintegrate,

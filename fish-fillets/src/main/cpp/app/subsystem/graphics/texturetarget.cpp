@@ -11,7 +11,7 @@ TextureTarget::TextureTarget(GraphicsBackend& backend, USize physSize, FCoords l
 {
     Texture texture{backend, TextureType::image, physSize, logSize ? logSize : FCoords{physSize}, nullptr};
     BACKEND::Framebuffer framebuffer{backend.display(), texture.native()};
-    pImpl = std::make_unique<Impl>(std::move(texture), std::move(framebuffer));
+    pImpl = std::make_unique<Impl>(Impl{std::move(texture), std::move(framebuffer)});
 }
 
 TextureTarget::~TextureTarget() = default;

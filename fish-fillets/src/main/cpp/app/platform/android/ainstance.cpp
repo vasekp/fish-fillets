@@ -3,11 +3,11 @@
 
 AndroidInstance::AndroidInstance(android_app* androidApp):
         Instance(std::make_unique<AndroidFiles>(androidApp)),
-        m_input(*this),
-        m_sink(*this),
         app(androidApp),
         jni(androidApp),
-        live(false)
+        live(false),
+        m_input(*this),
+        m_sink(*this)
 {
     app->userData = this;
 

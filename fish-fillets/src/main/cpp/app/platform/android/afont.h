@@ -2,7 +2,7 @@
 #define FISH_FILLETS_ANDROID_FONT_H
 
 #include "common.h"
-#include "subsystem/graphics/image.h"
+#include "subsystem/graphics.h"
 
 class Instance;
 
