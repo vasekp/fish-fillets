@@ -1,9 +1,20 @@
 #include "leveltitle.h"
 #include "subsystem/graphics.h"
 
+static constexpr const char* fontFilename = "font/font_title.ttf";
+static constexpr float fontSize = 18.f; // base pixels
+static constexpr float startY = 400.f;
+static constexpr float endY = 470.f;
+static constexpr float maxWidth = 480.f;
+static constexpr Color colorFg{255, 210, 40};
+static constexpr Color colorBg{40, 20, 6};
+static constexpr FCoords shadow{2.f, 2.f};
+static constexpr auto lingerTime = 1200ms;
+static constexpr auto fadeoutTime = 300ms;
+
 LevelTitle::LevelTitle(Instance& instance) :
     m_instance(instance),
-    m_font(decoders::ttf(instance, LevelTitle::fontFilename))
+    m_font(decoders::ttf(instance, fontFilename))
 { }
 
 void LevelTitle::show(const std::string& text) {

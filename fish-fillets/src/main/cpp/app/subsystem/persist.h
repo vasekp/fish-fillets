@@ -30,9 +30,6 @@ private:
 
     void worker();
     void save();
-
-    constexpr static const char* filename = "./persist.lua";
-    constexpr static auto interval = 3s;
 };
 
 #endif //FISH_FILLETS_PERSIST_H

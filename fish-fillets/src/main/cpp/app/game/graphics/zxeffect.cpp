@@ -2,6 +2,15 @@
 #include "subsystem/graphics.h"
 #include "subsystem/rng.h"
 
+static constexpr float height1 = 38.5;
+static constexpr float height2 = 3.4;
+static constexpr float roomHeight = 36 * 15.f;
+
+static constexpr std::array<std::pair<Color, Color>, 2> colors{{
+    {0x800000, 0x008080},
+    {0x000080, 0x808000}
+}};
+
 ZXEffect::ZXEffect(Instance& instance) :
     m_instance(instance),
     m_stripHeight(height1),

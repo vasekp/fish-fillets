@@ -1,6 +1,10 @@
 #include "hint.h"
 #include "subsystem/graphics.h"
 
+static constexpr const char* fontFilename = "font/font_subtitle.ttf";
+static constexpr float fontSize = 20.f; // in "reduced base pixels": 640x480 window after reducing button strip
+static constexpr float outline = 2.f;
+
 Hint::Hint(Instance& instance, const std::string& text, bool fullWidth) :
     m_instance(instance),
     m_font(decoders::ttf(instance, fontFilename)),

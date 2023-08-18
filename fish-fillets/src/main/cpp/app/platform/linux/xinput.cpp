@@ -2,6 +2,10 @@
 #include "xinput.h"
 #include <X11/keysym.h>
 
+static constexpr auto doubletapTime = 300ms;
+static constexpr auto longpressTime = 500ms;
+static constexpr std::chrono::steady_clock::time_point absolutePast{};
+
 XInput::XInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),

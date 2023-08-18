@@ -3,6 +3,13 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+static constexpr FCoords imgSize{195, 332};
+static constexpr int shadowBorder = 20;
+static constexpr float volLength = 120.f;
+static constexpr float volSliderOffset = 8.f;
+static constexpr float volTolerance = 10.f;
+static constexpr float volSpan = 63.f;
+
 OptionsOverlay::OptionsOverlay(Instance& instance) :
     m_instance(instance),
     m_options(PNGImage::create(instance, "images/menu/options.png")),

@@ -4,6 +4,8 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+static constexpr std::size_t vBufSize = 5;
+
 IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),

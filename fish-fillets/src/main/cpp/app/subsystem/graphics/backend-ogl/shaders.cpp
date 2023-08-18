@@ -89,8 +89,8 @@ void BaseProgram::run(GraphicsBackend& backend, DrawTarget& target, const BasePr
 
     own_params(backend);
 
-    constexpr static float rect[4][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
-    constexpr static float triangle[3][3] = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1} };
+    static constexpr float rect[4][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
+    static constexpr float triangle[3][3] = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1} };
 
     switch(shape) {
         case Shape::rect: {

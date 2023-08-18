@@ -39,11 +39,6 @@ private:
         FCoords origin;
         static constexpr FCoords size{43, 44};
     } m_buttons[3];
-
-    static constexpr ICoords pos{193, 141};
-    static constexpr FCoords digitArray{275, 177};
-    static constexpr FCoords digitSize{19, 24};
-    static constexpr auto digitTime = 250ms;
 };
 
 #endif //FISH_FILLETS_GAME_PEDOMETER_H

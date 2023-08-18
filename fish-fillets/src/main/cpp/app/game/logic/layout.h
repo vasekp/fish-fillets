@@ -38,9 +38,9 @@ public:
 
     void animate(std::chrono::duration<float> dt, float speed = speed_normal);
 
-    constexpr static float speed_normal = 1.f;
-    constexpr static float speed_loading = 10.f;
-    constexpr static float speed_instant = 0.f;
+    static constexpr float speed_normal = 1.f;
+    static constexpr float speed_loading = 10.f;
+    static constexpr float speed_instant = 0.f;
 
 private:
     Level& m_level;
@@ -68,7 +68,7 @@ private:
 
     std::vector<RopeDecor> m_ropes;
 
-    constexpr static unsigned maxDim = Shape::maxSize;
+    static constexpr unsigned maxDim = Shape::maxSize;
     std::array<std::bitset<maxDim>, maxDim> occupiedBitmap(const Model* unit);
 };
 

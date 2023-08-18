@@ -1,5 +1,8 @@
 #include "model.h"
 
+static constexpr auto baseTime = 300ms; // 3 frames at 10 FPS. Swimming animations have 6 frames, but that would be too slow. Only half will be seen unless motion continues in the same direction.
+static constexpr float warpIncrement = .2f;
+
 static const std::map<std::string, std::tuple<Model::Type, bool, Model::SupportType, Model::Weight>> modelTypes{{
     {"item_light", {Model::Type::item_light, false, Model::SupportType::none, Model::Weight::light}},
     {"item_heavy", {Model::Type::item_heavy, false, Model::SupportType::none, Model::Weight::heavy}},

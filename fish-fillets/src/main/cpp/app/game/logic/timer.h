@@ -24,7 +24,7 @@ private:
 
     void worker();
 
-    constexpr static auto interval = 100ms;
+    static constexpr auto interval = 100ms;
 };
 
 #endif //FISH_FILLETS_TIMER_H

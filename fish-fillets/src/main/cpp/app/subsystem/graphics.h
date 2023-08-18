@@ -62,8 +62,6 @@ private:
     std::array<Coords, SIZE> m_coords;
 
     void recalc();
-
-    static constexpr float buttonStripWidth = 64.f;
 };
 
 namespace decoders {

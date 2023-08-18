@@ -19,13 +19,6 @@ public:
     void resize();
     void clear();
 
-    constexpr static const char* fontFilename = "font/font_subtitle.ttf";
-    constexpr static float fontSize = 20.f; // in "reduced base pixels": 640x480 window after reducing button strip
-    constexpr static float outline = 2.f;
-    constexpr static auto timePerChar = 90ms;
-    constexpr static auto minTimePerLine = 2500ms;
-    constexpr static auto newLineTime = 1s;
-
 private:
     struct Title {
         ImageRef image;

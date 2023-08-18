@@ -178,9 +178,6 @@ private:
 
     std::unique_ptr<IFile> saveFile() const;
     std::unique_ptr<IFile> solveFile() const;
-
-    constexpr static int index_talk_both = -1;
-    constexpr static int index_free_space = -1;
 };
 
 #endif //FISH_FILLETS_LEVEL_H

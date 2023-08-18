@@ -2,6 +2,9 @@
 #include "subsystem/files.h"
 #include <sstream>
 
+static constexpr const char* filename = "./persist.lua";
+static constexpr auto interval = 3s;
+
 Persist::Persist(Instance& instance) :
     m_instance(instance)
 {

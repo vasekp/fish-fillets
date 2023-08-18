@@ -26,8 +26,8 @@ struct LevelRecord {
     std::filesystem::path saveFilename() const;
     std::filesystem::path solveFilename() const;
 
-    constexpr static int noColor = -1;
-    constexpr static int depthEnding = 16;
+    static constexpr int noColor = -1;
+    static constexpr int depthEnding = 16;
 };
 
 #endif //FISH_FILLETS_LEVELRECORD_H

@@ -45,8 +45,6 @@ public:
     void display();
     Image* displayed();
 
-    constexpr static int size_unit = 15;
-
 private:
     void own_start() override;
     void own_resize() override;
@@ -59,10 +57,6 @@ private:
     void drawLevel(DrawTarget& target);
 
     std::unique_ptr<TextureTarget> makeMirrorTarget(const Model& model);
-
-    constexpr static float flashInit = 0.5f;
-    constexpr static auto flashDecay = 500ms;
-    constexpr static Color ropeColor{0x30404E};
 
 private:
     Level m_level;

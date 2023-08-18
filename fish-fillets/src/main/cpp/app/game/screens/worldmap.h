@@ -13,6 +13,15 @@ class WorldMap : public GameScreen {
 public:
     WorldMap(Instance&);
 
+    enum class Frames {
+        none,
+        loading,
+        exit,
+        options,
+        intro,
+        credits
+    };
+
 protected:
     IInputSink& input() override { return m_input; }
 
@@ -24,15 +33,6 @@ protected:
     bool own_pointer(FCoords coords) override;
 
 private:
-    enum class Frames {
-        none,
-        loading,
-        exit,
-        options,
-        intro,
-        credits
-    };
-
     BaseInput m_input;
     AudioSource::Ref m_music;
     std::vector<const Image*> m_nodeImages;
@@ -44,31 +44,6 @@ private:
     bool m_frameShown;
     std::optional<Pedometer> m_pm;
     bool m_showEnding;
-
-    static constexpr int nodeRadius = 9;
-    static constexpr int nodeTolerance = 15;
-
-    struct MaskColors {
-        static constexpr Color exit = 0x008080;
-        static constexpr Color options = 0x008000;
-        static constexpr Color intro = 0x000080;
-        static constexpr Color credits = 0x808000;
-        static constexpr Color ending = 0x808080;
-    };
-
-    struct ActiveAreas {
-        FCoords from;
-        FCoords to;
-        Frames frame;
-    };
-
-    static constexpr std::array<ActiveAreas, 5> areas {{
-            {{0, 0}, {138, 127}, Frames::intro},
-            {{517, 0}, {640, 130}, Frames::exit},
-            {{0, 364}, {124, 480}, Frames::credits},
-            {{0, 403}, {145, 480}, Frames::credits}, /* a single rectangle would overlap a level */
-            {{487, 362}, {640, 480}, Frames::options}
-    }};
 
     void drawMasked(DrawTarget& target, Color maskColor);
     void staticFrame(Frames frame, std::function<void()>&& action);

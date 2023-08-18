@@ -7,6 +7,11 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+static constexpr float flashInit = 0.5f;
+static constexpr auto flashDecay = 500ms;
+static constexpr Color ropeColor{0x30404E};
+static constexpr int size_unit = 15;
+
 LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         GameScreen(instance),
         m_level(instance, *this, record),

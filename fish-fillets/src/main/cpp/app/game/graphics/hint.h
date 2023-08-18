@@ -12,10 +12,6 @@ public:
     void draw(DrawTarget& target);
     void resize();
 
-    constexpr static const char* fontFilename = "font/font_subtitle.ttf";
-    constexpr static float fontSize = 20.f; // in "reduced base pixels": 640x480 window after reducing button strip
-    constexpr static float outline = 2.f;
-
 private:
     Instance& m_instance;
     std::unique_ptr<IFont> m_font;

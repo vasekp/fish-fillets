@@ -2,6 +2,27 @@
 #include "subsystem/graphics.h"
 #include "game/screens/levelscreen.h"
 
+static constexpr const char* fontFilename = "font/FFArrows.ttf";
+static constexpr float minDistance = 30.f; // all dimension in "base pixels"
+static constexpr float maxDriftGoto = 15.f;
+static constexpr float buttonDistance = 35.f;
+static constexpr float arrowSize = 64.f;
+static constexpr float buttonSize = 48.f;
+static constexpr float buttonFontSize = 40.f;
+static constexpr auto dirpadAppearTime = 300ms;
+static constexpr auto dirpadHistoryLength = 100ms;
+static constexpr auto dirpadRepeatDelay = 500ms;
+static constexpr auto flashDuration = 500ms;
+static constexpr std::chrono::steady_clock::time_point absolutePast{};
+
+static constexpr Color colorSmall{255, 197, 102};
+static constexpr Color colorBig{162, 244, 255};
+static constexpr Color colorButtons{128, 128, 128};
+static constexpr float alphaBase = 0.5f;
+static constexpr float alphaActive = 1.0f;
+static constexpr float alphaDisabled = 0.25f;
+static constexpr float alphaFlash = 1.5f;
+
 LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_instance(instance),
         m_screen(screen),

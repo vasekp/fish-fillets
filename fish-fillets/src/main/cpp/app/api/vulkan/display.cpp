@@ -7,6 +7,16 @@ static constexpr bool useValidation = true;
 namespace {
     constexpr std::uint32_t noFamily = std::numeric_limits<std::uint32_t>::max();
 
+    static constexpr auto debugUtilsInfo = vk::DebugUtilsMessengerCreateInfoEXT{}
+        .setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning
+            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError
+            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose
+            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo)
+        .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation
+            /* | vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral*/
+            /* | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance*/)
+        .setPfnUserCallback(&debugCallback);
+
     template<typename T>
     const char* name(const T&);
 

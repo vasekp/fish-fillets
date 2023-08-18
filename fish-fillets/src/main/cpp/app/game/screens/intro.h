@@ -37,8 +37,6 @@ private:
     float m_imgTime;
 
     void fill_buffers();
-
-    static constexpr std::size_t vBufSize = 5;
 };
 
 #endif //FISH_FILLETS_GAME_INTRO_H

@@ -79,27 +79,6 @@ private:
 
     void drawButtons(DrawTarget& target);
     void drawDirpad(DrawTarget& target);
-
-    constexpr static const char* fontFilename = "font/FFArrows.ttf";
-    constexpr static float minDistance = 30.f; // all dimension in "base pixels"
-    constexpr static float maxDriftGoto = 15.f;
-    constexpr static float buttonDistance = 35.f;
-    constexpr static float arrowSize = 64.f;
-    constexpr static float buttonSize = 48.f;
-    constexpr static float buttonFontSize = 40.f;
-    constexpr static auto dirpadAppearTime = 300ms;
-    constexpr static auto dirpadHistoryLength = 100ms;
-    constexpr static auto dirpadRepeatDelay = 500ms;
-    constexpr static auto flashDuration = 500ms;
-    constexpr static std::chrono::steady_clock::time_point absolutePast{};
-
-    constexpr static Color colorSmall{255, 197, 102};
-    constexpr static Color colorBig{162, 244, 255};
-    constexpr static Color colorButtons{128, 128, 128};
-    constexpr static float alphaBase = 0.5f;
-    constexpr static float alphaActive = 1.0f;
-    constexpr static float alphaDisabled = 0.25f;
-    constexpr static float alphaFlash = 1.5f;
 };
 
 #endif //FISH_FILLETS_LEVELINPUT_H

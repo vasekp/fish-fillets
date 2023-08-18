@@ -4,6 +4,8 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+static constexpr auto minTime = 2s;
+
 PosterScreen::PosterScreen(Instance& instance, const std::string& script) :
         GameScreen(instance),
         m_input(instance, *this),

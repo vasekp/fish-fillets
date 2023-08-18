@@ -13,7 +13,7 @@ public:
     bool intersects(const Shape& other, ICoords delta) const;
     bool covers(ICoords xy) const;
 
-    constexpr static unsigned maxSize = 60;
+    static constexpr unsigned maxSize = 60;
 
 private:
     std::vector<std::bitset<maxSize>> m_bits;

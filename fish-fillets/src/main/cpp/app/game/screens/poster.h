@@ -32,8 +32,6 @@ private:
 
     void poster_display(const std::string& filename);
     void poster_translation(const std::string& text);
-
-    constexpr static auto minTime = 3s;
 };
 
 #endif //FISH_FILLETS_GAME_POSTER_H

@@ -208,21 +208,21 @@ void LevelRules::moveFish(Direction d) {
     m_level.notifyRound();
 }
 
-constexpr static std::array<std::tuple<Direction, char, char>, 4> charDirs_normal{{
+static constexpr std::array<std::tuple<Direction, char, char>, 4> charDirs_normal{{
     {Direction::up, 'u', 'U'},
     {Direction::down, 'd', 'D'},
     {Direction::left, 'l', 'L'},
     {Direction::right, 'r', 'R'}
 }};
 
-constexpr static std::array<std::tuple<Direction, char, char>, 4> charDirs_vintage{{
+static constexpr std::array<std::tuple<Direction, char, char>, 4> charDirs_vintage{{
     {Direction::up, 'n', 'N'},
     {Direction::down, 's', 'S'},
     {Direction::left, 'w', 'W'},
     {Direction::right, 'e', 'E'}
 }};
 
-constexpr static std::array<std::pair<char, Key>, 8> dirChars_normal{{
+static constexpr std::array<std::pair<char, Key>, 8> dirChars_normal{{
     {'u', Key::smallUp},
     {'d', Key::smallDown},
     {'l', Key::smallLeft},
@@ -233,7 +233,7 @@ constexpr static std::array<std::pair<char, Key>, 8> dirChars_normal{{
     {'R', Key::bigRight}
 }};
 
-constexpr static std::array<std::pair<char, Key>, 8> dirChars_vintage{{
+static constexpr std::array<std::pair<char, Key>, 8> dirChars_vintage{{
     {'n', Key::smallUp},
     {'s', Key::smallDown},
     {'w', Key::smallLeft},

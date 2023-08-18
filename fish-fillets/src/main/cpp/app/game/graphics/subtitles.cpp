@@ -1,6 +1,13 @@
 #include "subtitles.h"
 #include "subsystem/graphics.h"
 
+static constexpr const char* fontFilename = "font/font_subtitle.ttf";
+static constexpr float fontSize = 20.f; // in "reduced base pixels": 640x480 window after reducing button strip
+static constexpr float outline = 2.f;
+static constexpr auto timePerChar = 90ms;
+static constexpr auto minTimePerLine = 2500ms;
+static constexpr auto newLineTime = 1s;
+
 Subtitles::Subtitles(Instance& instance) :
     m_instance(instance),
     m_font(decoders::ttf(instance, fontFilename)),

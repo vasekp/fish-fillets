@@ -124,9 +124,6 @@ public:
 
     static Effect readEffect(const std::string& name);
 
-    constexpr static auto baseTime = 300ms; // 3 frames at 10 FPS. Swimming animations have 6 frames, but that would be too slow. Only half will be seen unless motion continues in the same direction.
-    constexpr static float warpIncrement = .2f;
-
 private:
     int m_index;
     Type m_type;

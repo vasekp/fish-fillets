@@ -31,9 +31,6 @@ private:
 
     void worker();
     bool tryRestart(int error);
-
-    constexpr static std::size_t bufSizeTarget = 1024;
-    constexpr static std::size_t millisRefresh = 10;
 };
 
 #endif //FISH_FILLETS_LINUX_AUDIO_SINK_H

@@ -15,10 +15,10 @@ public:
     void update();
     std::pair<const Image*, std::optional<const Image*>> get(int dir) const;
 
-    constexpr static int framesTurn = 3; // bound to the animation
-    constexpr static int framesActivate = 4;
-    constexpr static int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
-    constexpr static int framesRestart = 30;
+    static constexpr int framesTurn = 3; // bound to the animation
+    static constexpr int framesActivate = 4;
+    static constexpr int framesDeath = 15; // 1.5 seconds; bound to disintegrate.frag
+    static constexpr int framesRestart = 30;
 
 private:
     class Layer {

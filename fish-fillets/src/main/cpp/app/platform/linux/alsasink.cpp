@@ -3,6 +3,9 @@
 #include <cerrno>
 #include <poll.h>
 
+static constexpr std::size_t bufSizeTarget = 1024;
+static constexpr std::size_t millisRefresh = 10;
+
 AlsaSink::AlsaSink(Audio& iface) : m_audio(iface), m_pause(false), m_quit(false) {
     snd_pcm_hw_params_t* hw_params;
     snd_pcm_sw_params_t* sw_params;

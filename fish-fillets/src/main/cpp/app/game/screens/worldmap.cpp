@@ -5,6 +5,31 @@
 #include "subsystem/audio.h"
 #include "game/structure/gametree.h"
 
+static constexpr int nodeRadius = 9;
+static constexpr int nodeTolerance = 15;
+
+struct MaskColors {
+    static constexpr Color exit = 0x008080;
+    static constexpr Color options = 0x008000;
+    static constexpr Color intro = 0x000080;
+    static constexpr Color credits = 0x808000;
+    static constexpr Color ending = 0x808080;
+};
+
+struct ActiveAreas {
+    FCoords from;
+    FCoords to;
+    WorldMap::Frames frame;
+};
+
+static constexpr std::array<ActiveAreas, 5> areas {{
+    {{0, 0}, {138, 127}, WorldMap::Frames::intro},
+    {{517, 0}, {640, 130}, WorldMap::Frames::exit},
+    {{0, 364}, {124, 480}, WorldMap::Frames::credits},
+    {{0, 403}, {145, 480}, WorldMap::Frames::credits}, /* a single rectangle would overlap a level */
+    {{487, 362}, {640, 480}, WorldMap::Frames::options}
+}};
+
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),

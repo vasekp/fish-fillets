@@ -4,6 +4,11 @@
 #include "subsystem/input.h"
 #include "screenmanager.h"
 
+static constexpr ICoords pos{193, 141};
+static constexpr FCoords digitArray{275, 177};
+static constexpr FCoords digitSize{19, 24};
+static constexpr auto digitTime = 250ms;
+
 constexpr FCoords offset{0.5f, 0.5f};
 
 Pedometer::Pedometer(Instance& instance, LevelRecord& level, LiveClock::time_point time):

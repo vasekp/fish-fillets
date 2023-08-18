@@ -29,10 +29,6 @@ private:
     FCoords m_pointerCoords;
     bool m_pointerHandled;
     FCoords m_lastHover;
-
-    constexpr static auto doubletapTime = 300ms;
-    constexpr static auto longpressTime = 500ms;
-    constexpr static std::chrono::steady_clock::time_point absolutePast{};
 };
 
 #endif //FISH_FILLETS_ANDROID_INPUT_H

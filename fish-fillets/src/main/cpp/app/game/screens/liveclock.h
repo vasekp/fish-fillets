@@ -9,7 +9,7 @@ public:
     using period = std::ratio<1>;
     using duration = std::chrono::duration<rep, period>;
     using time_point = std::chrono::time_point<LiveClock>;
-    constexpr static bool is_steady = true;
+    static constexpr bool is_steady = true;
 
     time_point now() noexcept {
         return m_running

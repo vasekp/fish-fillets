@@ -88,16 +88,6 @@ private:
             VkDebugUtilsMessageTypeFlagsEXT messageType,
             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*);
 
-    constexpr static auto debugUtilsInfo = vk::DebugUtilsMessengerCreateInfoEXT{}
-        .setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning
-            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError
-            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose
-            | vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo)
-        .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation
-            /* | vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral*/
-            /* | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance*/)
-        .setPfnUserCallback(&debugCallback);
-
     static std::vector<const char*> extensions();
     static std::vector<const char*> platformExtensions();
 };

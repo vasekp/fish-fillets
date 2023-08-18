@@ -56,13 +56,6 @@ private:
 
     static float exp(float x);
     static float log(float v);
-
-    constexpr static FCoords imgSize{195, 332};
-    constexpr static int shadowBorder = 20;
-    constexpr static float volLength = 120.f;
-    constexpr static float volSliderOffset = 8.f;
-    constexpr static float volTolerance = 10.f;
-    constexpr static float volSpan = 63.f;
 };
 
 #endif //FISH_FILLETS_SCREENS_OPTIONS_H

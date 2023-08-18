@@ -368,7 +368,7 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
     auto source = AudioSource::create(data, types[type.value_or(0)]);
     source->setRepeat(loops.value_or(false));
     source->setDialog(dialogFlag.value_or(false));
-    if(index != index_talk_both)
+    if(index != -1 /* talk_both */)
         layout().getModel(index)->talk() = source;
     else {
         auto [small, big] = rules().bothFish();
@@ -393,7 +393,7 @@ bool Level::model_equals(int index, int x, int y) {
     ICoords xy{x, y};
     if(!xy.within({}, ICoords{layout().size(), 1}))
         return false;
-    if(index != index_free_space) {
+    if(index != -1 /* free space */) {
         const auto* model = layout().getModel(index);
         return model->shape().covers(xy - model->xy());
     } else
