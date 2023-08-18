@@ -1,11 +1,13 @@
 #ifndef FISH_FILLETS_LINUX_AUDIO_SINK_H
 #define FISH_FILLETS_LINUX_AUDIO_SINK_H
 
-#include "subsystem/audio.h"
+#include "common.h"
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <alsa/asoundlib.h>
+
+class Audio;
 
 class AlsaSink {
 public:

@@ -1,9 +1,13 @@
 #ifndef FISH_FILLETS_SCREENS_OPTIONS_H
 #define FISH_FILLETS_SCREENS_OPTIONS_H
 
-#include "subsystem/audio.h"
+#include "common.h"
+#include "instance.h"
+#include "subsystem/audio/audiotype.h"
+#include "subsystem/graphics/image.h"
 #include "subsystem/input.h"
-#include "subsystem/graphics.h"
+
+class DrawTarget;
 
 class OptionsOverlay : public IInputSink {
 public:

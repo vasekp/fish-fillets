@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 #define FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 
+// always included from graphics.h
+
 class TextureTarget : public DrawTarget {
 public:
     TextureTarget(GraphicsBackend& backend, USize physSize, FCoords logSize = {});

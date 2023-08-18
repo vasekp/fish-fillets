@@ -2,11 +2,11 @@
 #define FISH_FILLETS_OGL_H
 
 #include "common.h"
+#include "utils/resetonmove.h"
 
 #include "EGL/egl.h"
 #include "GLES2/gl2.h"
 
-#include "ogl/util.h"
 #include "ogl/display.h"
 #include "ogl/texture.h"
 #include "ogl/shader.h"

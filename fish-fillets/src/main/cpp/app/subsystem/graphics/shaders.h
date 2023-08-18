@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_GRAPHICS_SHADERS_H
 #define FISH_FILLETS_GRAPHICS_SHADERS_H
 
+// always included from graphics.h
+
 class DrawTarget;
 class GraphicsBackend;
 

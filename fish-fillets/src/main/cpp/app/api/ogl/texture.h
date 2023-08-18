@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_OGL_TEXTURE_H
 #define FISH_FILLETS_OGL_TEXTURE_H
 
+// always included from ogl.h
 #include "subsystem/graphics/texturetype.h"
 
 namespace ogl {

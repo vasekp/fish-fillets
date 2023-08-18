@@ -5,9 +5,13 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-namespace vulkan {
-    constexpr bool useValidation = false;
+#include "vulkan/display.h"
+#include "vulkan/descriptorpool.h"
+#include "vulkan/texture.h"
+#include "vulkan/framebuffer.h"
+#include "vulkan/program.h"
 
+namespace vulkan {
     constexpr auto baseRange = vk::ImageSubresourceRange{}
         .setAspectMask(vk::ImageAspectFlagBits::eColor)
         .setBaseMipLevel(0)
@@ -21,11 +25,5 @@ namespace vulkan {
         .setBaseArrayLayer(0)
         .setLayerCount(1);
 }
-
-#include "vulkan/display.h"
-#include "vulkan/descriptorpool.h"
-#include "vulkan/texture.h"
-#include "vulkan/framebuffer.h"
-#include "vulkan/program.h"
 
 #endif //FISH_FILLETS_VULKAN_H

@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_FILES_H
 #define FISH_FILLETS_FILES_H
 
+#include "common.h"
 #include "instance.h"
 
 class IFile {

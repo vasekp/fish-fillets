@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_OGL_FRAMEBUFFER_H
 #define FISH_FILLETS_OGL_FRAMEBUFFER_H
 
+// always included from ogl.h
+
 namespace ogl {
 
     class Framebuffer {

@@ -1,4 +1,5 @@
 #include "persist.h"
+#include "subsystem/files.h"
 #include <sstream>
 
 Persist::Persist(Instance& instance) :

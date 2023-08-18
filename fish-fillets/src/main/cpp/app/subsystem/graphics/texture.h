@@ -1,6 +1,10 @@
 #ifndef FISH_FILLETS_TEXTURE_H
 #define FISH_FILLETS_TEXTURE_H
 
+#include "common.h"
+#include "texturetype.h"
+#include "backend-fwd.h"
+
 class Texture {
 public:
     Texture() = delete;

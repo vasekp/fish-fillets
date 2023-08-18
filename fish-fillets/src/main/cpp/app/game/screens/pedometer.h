@@ -1,9 +1,13 @@
 #ifndef FISH_FILLETS_GAME_PEDOMETER_H
 #define FISH_FILLETS_GAME_PEDOMETER_H
 
-#include "subsystem/graphics.h"
+#include "common.h"
+#include "instance.h"
+#include "subsystem/graphics/image.h"
 #include "game/structure/levelrecord.h"
 #include "game/screens/liveclock.h"
+
+class DrawTarget;
 
 class Pedometer {
 public:

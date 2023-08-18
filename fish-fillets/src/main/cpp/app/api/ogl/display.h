@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_OGL_DISPLAY_H
 #define FISH_FILLETS_OGL_DISPLAY_H
 
+// always included from ogl.h
+
 namespace ogl {
 
     class Display {
@@ -26,7 +28,6 @@ namespace ogl {
         ICoords m_origin;
         ICoords m_vpSize;
         std::shared_ptr<int> m_ref;
-
     };
 
 }

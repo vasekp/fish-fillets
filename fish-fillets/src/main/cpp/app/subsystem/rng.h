@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_RNG_H
 #define FISH_FILLETS_RNG_H
 
+#include "common.h"
+#include "instance.h"
 #include <random>
 
 class RNG {

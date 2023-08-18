@@ -1,5 +1,7 @@
 #include "options.h"
 #include "subsystem/persist.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 OptionsOverlay::OptionsOverlay(Instance& instance) :
     m_instance(instance),

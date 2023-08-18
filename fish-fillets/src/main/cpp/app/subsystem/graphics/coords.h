@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_COORDS_H
 #define FISH_FILLETS_COORDS_H
 
+#include "common.h"
+
 struct Coords {
     FCoords origin = {};
     float scale = 1.f;

@@ -1,11 +1,13 @@
 #ifndef FISH_FILLETS_GAME_SCREEN_H
 #define FISH_FILLETS_GAME_SCREEN_H
 
+#include "common.h"
 #include "instance.h"
-#include "subsystem/graphics.h"
-#include "subsystem/script.h"
+#include "subsystem/graphics/image.h"
 #include "subsystem/input.h"
 #include "liveclock.h"
+
+class DrawTarget;
 
 class GameScreen {
 public:

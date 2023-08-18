@@ -1,14 +1,17 @@
 #ifndef FISH_FILLETS_LEVELSCREEN_H
 #define FISH_FILLETS_LEVELSCREEN_H
 
+#include "common.h"
+#include "instance.h"
 #include "gamescreen.h"
 #include "levelinput.h"
 #include "game/structure/levelrecord.h"
-#include "game/logic/level.h"
-#include "subsystem/audio.h"
+#include "subsystem/audio/audiodata.h"
+#include "subsystem/audio/audiosource.h"
 #include "game/graphics/subtitles.h"
 #include "game/graphics/hint.h"
 #include "game/graphics/zxeffect.h"
+#include "game/logic/level.h"
 
 class LevelScreen : public GameScreen {
 public:

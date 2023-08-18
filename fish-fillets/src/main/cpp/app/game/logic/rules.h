@@ -1,8 +1,10 @@
 #ifndef FISH_FILLETS_RULES_H
 #define FISH_FILLETS_RULES_H
 
-#include "subsystem/input.h"
-#include "game/logic/model.h"
+#include "common.h"
+#include "subsystem/input/key.h"
+#include "utils/enumbitset.h"
+#include "model.h"
 
 class Level;
 class LevelLayout;
@@ -49,7 +51,7 @@ private:
     bool m_queueFixed;
     std::vector<std::pair<Model*, Direction>> m_motions;
     std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
-    std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
+    std::map<const Model*, util::EnumBitset<Model::SupportType>> m_support;
 
     void enqueue(char c);
     void processKey(Key key);
@@ -59,8 +61,8 @@ private:
     void buildDepGraph();
     void updateDepGraph(const Model* model);
     void buildSupportMap();
-    const EnumBitset<Model::SupportType>& calcSupport(const Model* model);
-    EnumBitset<Model::SupportType> directSupport(const Model* model);
+    const util::EnumBitset<Model::SupportType>& calcSupport(const Model* model);
+    util::EnumBitset<Model::SupportType> directSupport(const Model* model);
     void evalFalls();
     void evalMotion(Model* model, Direction d);
     void evalSteel();

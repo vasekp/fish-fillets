@@ -1,6 +1,7 @@
 #include "common.h"
 #include "layout.h"
 #include "level.h"
+#include "rules.h"
 #include "subsystem/rng.h"
 
 LevelLayout::LevelLayout(Level& level, USize size) :

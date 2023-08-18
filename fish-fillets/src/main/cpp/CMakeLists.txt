@@ -94,7 +94,7 @@ else()
             "${FILLETS_DIR}/platform/linux/files/system.cpp"
             "${FILLETS_DIR}/platform/linux/files/user.cpp"
             "${FILLETS_DIR}/platform/linux/ft-font.cpp"
-            "${FILLETS_DIR}/platform/linux/input.cpp"
+            "${FILLETS_DIR}/platform/linux/xinput.cpp"
             "${FILLETS_DIR}/platform/linux/loadogg.cpp"
             "${FILLETS_DIR}/platform/linux/loadpng.cpp"
             "${FILLETS_DIR}/platform/linux/log.cpp"

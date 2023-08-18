@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_LUA_ARGS_H
 #define FISH_FILLETS_LUA_ARGS_H
 
+// always included from lua.h
+
 namespace lua {
 
     namespace internal {

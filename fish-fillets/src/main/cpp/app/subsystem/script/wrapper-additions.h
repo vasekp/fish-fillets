@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_WRAPPER_ADDITIONS_H
 #define FISH_FILLETS_WRAPPER_ADDITIONS_H
 
+// always included from script.h
+
 namespace lua::internal {
     template<>
     inline LuaCallback read(lua_State* L, std::size_t index) {

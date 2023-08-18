@@ -1,6 +1,8 @@
 #include "poster.h"
 #include "screenmanager.h"
 #include "subsystem/persist.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 PosterScreen::PosterScreen(Instance& instance, const std::string& script) :
         GameScreen(instance),

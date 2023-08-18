@@ -1,5 +1,6 @@
 #include "pedometer.h"
 #include "subsystem/files.h"
+#include "subsystem/graphics.h"
 #include "subsystem/input.h"
 #include "screenmanager.h"
 

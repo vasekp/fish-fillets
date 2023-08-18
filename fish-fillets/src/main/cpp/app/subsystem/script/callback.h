@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_SCRIPT_QUEUED_FUNCTION_H
 #define FISH_FILLETS_SCRIPT_QUEUED_FUNCTION_H
 
+// always included from script.h
 #include <variant>
 
 class LuaCallback {

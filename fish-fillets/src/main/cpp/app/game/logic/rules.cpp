@@ -1,5 +1,6 @@
 #include "level.h"
 #include "rules.h"
+#include "layout.h"
 #include "game/screens/levelinput.h"
 #include "game/screens/levelscreen.h"
 
@@ -452,13 +453,13 @@ void LevelRules::buildSupportMap() {
     }
 }
 
-const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model) {
+const util::EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model) {
     if(m_support.contains(model))
         return m_support[model];
 
     std::set<const Model*> seen;
     std::set<const Model*> seen_via;
-    EnumBitset<Model::SupportType> ret;
+    util::EnumBitset<Model::SupportType> ret;
     std::deque<std::pair<const Model*, bool>> queue;
 
     for(auto [above, below] : m_dependencyGraph)
@@ -489,8 +490,8 @@ const EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model
     return m_support[model] = ret;
 }
 
-EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
-    EnumBitset<Model::SupportType> ret;
+util::EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
+    util::EnumBitset<Model::SupportType> ret;
     for(auto[above, below] : m_dependencyGraph)
         if(above == model && below->supportType() != Model::SupportType::none)
             ret.set(below->supportType());

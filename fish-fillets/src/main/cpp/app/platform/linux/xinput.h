@@ -1,10 +1,9 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
+#include "common.h"
 #include "subsystem/input.h"
 #include <X11/Xlib.h>
-
-class XInstance;
 
 class XInput : public IInputSource {
 public:

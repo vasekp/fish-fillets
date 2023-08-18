@@ -1,7 +1,10 @@
 #ifndef FISH_FILLETS_ANDROID_FONT_H
 #define FISH_FILLETS_ANDROID_FONT_H
 
-#include "subsystem/graphics.h"
+#include "common.h"
+#include "subsystem/graphics/image.h"
+
+class Instance;
 
 class AndroidFont : public IFont {
 public:

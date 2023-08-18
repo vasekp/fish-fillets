@@ -1,7 +1,11 @@
 #include "level.h"
+#include "layout.h"
+#include "rules.h"
 #include "game/screens/levelscreen.h"
-#include "subsystem/rng.h"
+#include "subsystem/files.h"
 #include "subsystem/persist.h"
+#include "subsystem/audio.h"
+#include "subsystem/rng.h"
 
 #include <sstream>
 

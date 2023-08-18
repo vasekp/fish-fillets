@@ -1,7 +1,11 @@
 #include "levelscreen.h"
 #include "game/logic/level.h"
+#include "game/logic/layout.h"
+#include "game/logic/rules.h"
 #include "screenmanager.h"
 #include "subsystem/rng.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 LevelScreen::LevelScreen(Instance& instance, LevelRecord& record, bool replay) :
         GameScreen(instance),

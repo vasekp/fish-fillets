@@ -53,8 +53,8 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
     );
 }
 
-void BaseProgram::run(GraphicsBackend&, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
-    const BaseProgram::Textures& textures) const {
+void BaseProgram::run(GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
+        const BaseProgram::Textures& textures) const {
     const auto& display = backend.display();
     const auto& commandBuffer = display.commandBuffer();
 

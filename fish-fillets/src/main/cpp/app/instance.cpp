@@ -1,6 +1,6 @@
 #include "instance.h"
 
-// All the platform headers needed here as their unique_ptr<>s are instantiated.
+// All the subsystem headers needed here as their unique_ptr<>s are instantiated.
 // Can not be incomplete at that point.
 
 #include "subsystem/graphics.h"

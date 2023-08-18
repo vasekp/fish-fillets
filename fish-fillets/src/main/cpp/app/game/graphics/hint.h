@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_GAME_HINT_H
 #define FISH_FILLETS_GAME_HINT_H
 
+#include "common.h"
+#include "instance.h"
 #include "subsystem/graphics.h"
 
 class Hint {

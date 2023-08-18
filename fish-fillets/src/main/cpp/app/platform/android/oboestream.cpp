@@ -1,4 +1,5 @@
 #include "oboestream.h"
+#include "subsystem/audio.h"
 
 OboeStream::OboeStream(Audio& iface, oboe::AudioStreamErrorCallback* callback) : m_audio(iface), m_stream() {
     Log::debug<Log::audio>("Oboe stream: construct");

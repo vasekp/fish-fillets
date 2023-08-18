@@ -1,4 +1,5 @@
 #include "zxeffect.h"
+#include "subsystem/graphics.h"
 #include "subsystem/rng.h"
 
 ZXEffect::ZXEffect(Instance& instance) :

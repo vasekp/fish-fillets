@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_VULKAN_TEXTURE_H
 #define FISH_FILLETS_VULKAN_TEXTURE_H
 
+// always included from vulkan.h
 #include "subsystem/graphics/texturetype.h"
 
 namespace vulkan {

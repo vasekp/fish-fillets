@@ -1,6 +1,8 @@
 #include "intro.h"
 #include "screenmanager.h"
 #include "subsystem/files.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),

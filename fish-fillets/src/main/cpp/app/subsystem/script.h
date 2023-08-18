@@ -1,10 +1,11 @@
 #ifndef FISH_FILLETS_SCRIPT_H
 #define FISH_FILLETS_SCRIPT_H
 
-#include "instance.h"
+#include "common.h"
 #include "api/lua.h"
-#include "subsystem/files.h"
 #include "script/callback.h"
+
+class Instance;
 
 class ScriptReferrer {
 public:

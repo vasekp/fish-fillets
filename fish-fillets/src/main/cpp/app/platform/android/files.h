@@ -1,6 +1,7 @@
 #ifndef FF_ANDROID_FILES_H
 #define FF_ANDROID_FILES_H
 
+#include "common.h"
 #include "subsystem/files.h"
 #include "./files/system.h"
 #include "./files/user.h"

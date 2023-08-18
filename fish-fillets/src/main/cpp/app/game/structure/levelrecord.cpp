@@ -1,4 +1,3 @@
-#include "gametree.h"
 #include "levelrecord.h"
 
 LevelState LevelRecord::state() const {

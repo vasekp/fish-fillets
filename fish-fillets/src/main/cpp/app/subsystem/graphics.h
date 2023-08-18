@@ -1,23 +1,9 @@
 #ifndef FISH_FILLETS_GRAPHICS_H
 #define FISH_FILLETS_GRAPHICS_H
 
+#include "common.h"
 #include "instance.h"
-
-#ifdef FISH_FILLETS_USE_VULKAN
-#define BACKEND vulkan
-#else
-#define BACKEND ogl
-#endif
-
-namespace BACKEND {
-    class Display;
-    class Texture;
-    class Program;
-    class Framebuffer;
-}
-
-class GraphicsBackend;
-
+#include "graphics/backend-fwd.h"
 #include "graphics/texturetype.h"
 #include "graphics/texture.h"
 #include "graphics/imagedata.h"

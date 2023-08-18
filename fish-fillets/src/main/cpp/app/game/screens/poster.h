@@ -1,10 +1,12 @@
 #ifndef FISH_FILLETS_GAME_POSTER_H
 #define FISH_FILLETS_GAME_POSTER_H
 
+#include "common.h"
+#include "instance.h"
 #include "gamescreen.h"
 #include "game/graphics/hint.h"
 #include "subsystem/script.h"
-#include "subsystem/audio.h"
+#include "subsystem/audio/audiosource.h"
 #include "baseinput.h"
 
 class PosterScreen : public GameScreen, public ScriptReferrer {

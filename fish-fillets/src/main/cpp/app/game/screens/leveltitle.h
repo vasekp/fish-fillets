@@ -1,7 +1,12 @@
 #ifndef FISH_FILLETS_LEVEL_TITLE_H
 #define FISH_FILLETS_LEVEL_TITLE_H
 
-#include "subsystem/graphics.h"
+#include "common.h"
+#include "instance.h"
+#include "subsystem/graphics/image.h"
+
+class DrawTarget;
+class IFont;
 
 class LevelTitle {
 public:

@@ -1,8 +1,9 @@
 #ifndef FISH_FILLETS_MODELANIM_H
 #define FISH_FILLETS_MODELANIM_H
 
-#include "subsystem/graphics.h"
-#include <optional>
+#include "common.h"
+
+class Image;
 
 class ModelAnim {
 public:

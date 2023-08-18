@@ -1,8 +1,13 @@
 #include "level.h"
+#include "layout.h"
+#include "rules.h"
 #include "game/screens/levelscreen.h"
 #include "game/screens/poster.h"
 #include "game/screens/screenmanager.h"
+#include "subsystem/files.h"
 #include "subsystem/persist.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_instance(instance),

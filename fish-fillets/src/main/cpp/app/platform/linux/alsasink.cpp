@@ -1,4 +1,5 @@
 #include "alsasink.h"
+#include "subsystem/audio.h"
 #include <cerrno>
 #include <poll.h>
 

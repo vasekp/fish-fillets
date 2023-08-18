@@ -1,5 +1,6 @@
-#include "subsystem/audio.h"
-#include "./files.h"
+#include "subsystem/audio/audiodata.h"
+#include "subsystem/files.h"
+#include "files.h"
 #include <cstdio>
 #include <cstring>
 #include <vorbis/codec.h>

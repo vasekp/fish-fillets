@@ -1,4 +1,5 @@
 #include "hint.h"
+#include "subsystem/graphics.h"
 
 Hint::Hint(Instance& instance, const std::string& text, bool fullWidth) :
     m_instance(instance),

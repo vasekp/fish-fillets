@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_TYPES_H
 #define FISH_FILLETS_TYPES_H
 
+#include "common.h"
 #include <ostream>
 #include <charconv>
 

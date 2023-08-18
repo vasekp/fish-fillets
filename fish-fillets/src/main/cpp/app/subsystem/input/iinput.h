@@ -1,10 +1,7 @@
 #ifndef FISH_FILLETS_GAME_IINPUT_H
 #define FISH_FILLETS_GAME_IINPUT_H
 
-#include "common.h"
-#include "key.h"
-
-class Instance;
+// always included from input.h
 
 class IInputSource {
 public:

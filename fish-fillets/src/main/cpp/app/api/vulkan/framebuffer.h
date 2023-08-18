@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_VULKAN_FRAMEBUFFER_H
 #define FISH_FILLETS_VULKAN_FRAMEBUFFER_H
 
+// always included from vulkan.h
+
 namespace vulkan {
 
 class Framebuffer {

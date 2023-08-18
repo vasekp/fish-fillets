@@ -1,7 +1,7 @@
 #ifndef FISH_FILLETS_KEY_H
 #define FISH_FILLETS_KEY_H
 
-#include "common.h"
+#include "types.h"
 
 enum class Key {
     none,

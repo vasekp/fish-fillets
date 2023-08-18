@@ -1,6 +1,9 @@
 #include "worldmap.h"
 #include "screenmanager.h"
 #include "subsystem/persist.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
+#include "game/structure/gametree.h"
 
 WorldMap::WorldMap(Instance& instance) :
     GameScreen(instance),

@@ -1,5 +1,7 @@
 #include "credits.h"
 #include "screenmanager.h"
+#include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 CreditsScreen::CreditsScreen(Instance& instance) :
         GameScreen(instance),

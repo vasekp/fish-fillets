@@ -1,10 +1,12 @@
 #ifndef FISH_FILLETS_GAME_SCREENMANAGER_H
 #define FISH_FILLETS_GAME_SCREENMANAGER_H
 
+#include "common.h"
 #include "instance.h"
 #include "gamescreen.h"
 #include "leveltitle.h"
 #include "options.h"
+#include "subsystem/input.h"
 
 struct LevelRecord;
 

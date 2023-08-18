@@ -1,7 +1,9 @@
-#ifndef FISH_FILLETS_OGL_UTIL_H
-#define FISH_FILLETS_OGL_UTIL_H
+#ifndef FISH_FILLETS_RESETONMOVE_H
+#define FISH_FILLETS_RESETONMOVE_H
 
-namespace ogl::util {
+#include <utility>
+
+namespace util {
 
     template<typename T, T nullValue>
     struct ResetOnMove {
@@ -30,4 +32,4 @@ namespace ogl::util {
 
 }
 
-#endif //FISH_FILLETS_OGL_UTIL_H
+#endif //FISH_FILLETS_RESETONMOVE_H

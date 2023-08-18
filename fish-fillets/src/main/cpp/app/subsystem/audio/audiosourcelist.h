@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_AUDIO_SOURCELIST_H
 #define FISH_FILLETS_AUDIO_SOURCELIST_H
 
+// always included from audio.h
+
 class AudioSourceList {
     using Sources = std::vector<AudioSource::Ref>;
 

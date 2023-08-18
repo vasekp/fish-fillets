@@ -3,6 +3,7 @@
 
 #include <android/asset_manager_jni.h>
 #include <memory>
+#include <utility>
 
 namespace ndk {
     class Asset {

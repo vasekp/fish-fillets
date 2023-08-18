@@ -1,4 +1,5 @@
 #include "gamescreen.h"
+#include "subsystem/graphics.h"
 
 GameScreen::GameScreen(Instance& instance) :
     m_instance(instance),

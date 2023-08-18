@@ -1,9 +1,10 @@
 #ifndef FISH_FILLETS_AUDIO_H
 #define FISH_FILLETS_AUDIO_H
 
+#include "common.h"
 #include "instance.h"
-
 #include "audio/audiodata.h"
+#include "audio/audiotype.h"
 #include "audio/audiosource.h"
 #include "audio/audiosourcelist.h"
 

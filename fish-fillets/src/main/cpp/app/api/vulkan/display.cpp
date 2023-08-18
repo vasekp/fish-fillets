@@ -1,6 +1,8 @@
-#include "../vulkan.h"
+#include "api/vulkan.h"
 
 namespace vulkan {
+
+static constexpr bool useValidation = true;
 
 namespace {
     constexpr std::uint32_t noFamily = std::numeric_limits<std::uint32_t>::max();
@@ -44,8 +46,10 @@ vk::raii::Instance Display::createInstance() {
     return {m_context, instanceInfo.get<vk::InstanceCreateInfo>()};
 }
 
-vk::raii::DebugUtilsMessengerEXT Display::createMessenger() {
-    return m_instance.createDebugUtilsMessengerEXT(debugUtilsInfo);
+std::optional<vk::raii::DebugUtilsMessengerEXT> Display::createMessenger() {
+    return useValidation
+        ? m_instance.createDebugUtilsMessengerEXT(debugUtilsInfo)
+        : std::optional<vk::raii::DebugUtilsMessengerEXT>{};
 }
 
 vk::raii::PhysicalDevice Display::choosePhysicalDevice() {

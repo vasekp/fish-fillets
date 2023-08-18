@@ -1,8 +1,10 @@
 #ifndef FISH_FILLETS_OBOESINK_H
 #define FISH_FILLETS_OBOESINK_H
 
-#include "instance.h"
+#include "common.h"
 #include "oboestream.h"
+
+class Instance;
 
 class OboeSink: public oboe::AudioStreamErrorCallback {
 public:

@@ -1,9 +1,11 @@
 #ifndef FISH_FILLETS_GAME_WORLDMAP_H
 #define FISH_FILLETS_GAME_WORLDMAP_H
 
+#include "common.h"
+#include "instance.h"
 #include "gamescreen.h"
-#include "game/structure/gametree.h"
-#include "subsystem/audio.h"
+#include "subsystem/audio/audiosource.h"
+#include "game/structure/levelrecord.h"
 #include "pedometer.h"
 #include "baseinput.h"
 

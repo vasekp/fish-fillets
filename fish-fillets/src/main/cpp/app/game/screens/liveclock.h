@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_LIVECLOCK_H
 #define FISH_FILLETS_LIVECLOCK_H
 
+#include "common.h"
+
 class LiveClock {
 public:
     using rep = float;

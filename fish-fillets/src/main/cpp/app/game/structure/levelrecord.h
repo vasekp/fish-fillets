@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_LEVELRECORD_H
 #define FISH_FILLETS_LEVELRECORD_H
 
+#include "common.h"
+
 enum class LevelState {
     locked,
     open,

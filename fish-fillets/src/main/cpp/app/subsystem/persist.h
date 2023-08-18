@@ -1,9 +1,9 @@
 #ifndef FISH_FILLETS_PERSIST_H
 #define FISH_FILLETS_PERSIST_H
 
+#include "common.h"
 #include "instance.h"
 #include "subsystem/script.h"
-#include "subsystem/files.h"
 #include <thread>
 #include <mutex>
 #include <condition_variable>

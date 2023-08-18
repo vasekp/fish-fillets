@@ -1,10 +1,5 @@
 #include "common.h"
 #include "xinstance.h"
-#include "subsystem/graphics.h"
-#include "subsystem/persist.h"
-#include "game/screens/screenmanager.h"
-
-#include <iostream>
 
 std::pair<Display*, Window> initWindow() {
     Display* dpy = XOpenDisplay(nullptr);

@@ -1,8 +1,10 @@
 #ifndef FISH_FILLETS_GAME_INTRO_H
 #define FISH_FILLETS_GAME_INTRO_H
 
+#include "common.h"
+#include "instance.h"
 #include "gamescreen.h"
-#include "subsystem/audio.h"
+#include "subsystem/audio/audiosource.h"
 #include "api/ogg/video.h"
 #include "baseinput.h"
 

@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_IFONT_H
 #define FISH_FILLETS_IFONT_H
 
+// always included from graphics.h
+
 class TextImage;
 
 class IFont {

@@ -2,10 +2,11 @@
 #define FISH_FILLETS_LEVELINPUT_H
 
 #include "common.h"
+#include "instance.h"
 #include "subsystem/input.h"
+#include "subsystem/graphics/image.h"
 #include "game/logic/model.h"
 
-class Instance;
 class DrawTarget;
 class LevelScreen;
 

@@ -1,6 +1,13 @@
 #ifndef FISH_FILLETS_GRAPHICS_IMAGE_H
 #define FISH_FILLETS_GRAPHICS_IMAGE_H
 
+#include "common.h"
+#include "imagedata.h"
+#include "texturetype.h"
+#include "texture.h"
+
+class Instance;
+
 class Image {
 protected:
     Image() = default;

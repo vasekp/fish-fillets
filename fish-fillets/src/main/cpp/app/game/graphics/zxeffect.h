@@ -1,7 +1,11 @@
 #ifndef FISH_FILLETS_ZXEFFECT_H
 #define FISH_FILLETS_ZXEFFECT_H
 
-#include "subsystem/graphics.h"
+#include "common.h"
+#include "instance.h"
+
+class Image;
+class DrawTarget;
 
 class ZXEffect {
 public:

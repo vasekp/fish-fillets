@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_VULKAN_DISPLAY_H
 #define FISH_FILLETS_VULKAN_DISPLAY_H
 
+// always included from vulkan.h
 #include "descriptorpool.h"
 
 namespace vulkan {
@@ -11,7 +12,7 @@ public:
     Display(const NativeArgs& ... nativeArgs) :
         m_context{},
         m_instance{createInstance()},
-        m_messenger{useValidation ? createMessenger() : decltype(m_messenger){}},
+        m_messenger{createMessenger()},
         m_surface{createSurface(nativeArgs...)},
         m_physDevice{choosePhysicalDevice()},
         m_memoryProperties{m_physDevice.getMemoryProperties()},
@@ -71,7 +72,7 @@ private:
     std::vector<vk::Image> m_swapchainImages;
 
     vk::raii::Instance createInstance();
-    vk::raii::DebugUtilsMessengerEXT createMessenger();
+    std::optional<vk::raii::DebugUtilsMessengerEXT> createMessenger();
     template<typename... NativeArgs>
     vk::raii::SurfaceKHR createSurface(const NativeArgs& ... nativeArgs);
     vk::raii::PhysicalDevice choosePhysicalDevice();

@@ -1,4 +1,5 @@
 #include "subtitles.h"
+#include "subsystem/graphics.h"
 
 Subtitles::Subtitles(Instance& instance) :
     m_instance(instance),

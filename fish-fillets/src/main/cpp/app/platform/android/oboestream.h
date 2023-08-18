@@ -1,8 +1,9 @@
 #ifndef FF_ANDROID_AUDIO_SINK_H
 #define FF_ANDROID_AUDIO_SINK_H
 
-#include "subsystem/audio.h"
 #include <oboe/Oboe.h>
+
+class Audio;
 
 class OboeStream : oboe::AudioStreamDataCallback {
 public:

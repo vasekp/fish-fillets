@@ -1,6 +1,7 @@
 #include "common.h"
 #include "subsystem/graphics/imagedata.h"
-#include "./files.h"
+#include "subsystem/files.h"
+#include "files.h"
 #include <png.h>
 #include <cstdio>
 #include <csetjmp>

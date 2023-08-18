@@ -2,7 +2,6 @@
 #define FISH_FILLETS_SHAPE_H
 
 #include "common.h"
-#include <bitset>
 
 class Shape {
 public:

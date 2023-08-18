@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_GAMETREE_H
 #define FISH_FILLETS_GAMETREE_H
 
+#include "common.h"
 #include "instance.h"
 #include "levelrecord.h"
 #include "subsystem/script.h"

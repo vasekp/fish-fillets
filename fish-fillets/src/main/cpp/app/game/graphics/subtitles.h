@@ -1,8 +1,12 @@
 #ifndef FISH_FILLETS_GAME_SUBTITLES_H
 #define FISH_FILLETS_GAME_SUBTITLES_H
 
-#include "subsystem/graphics.h"
+#include "common.h"
+#include "instance.h"
+#include "subsystem/graphics/image.h"
 #include "game/screens/liveclock.h"
+
+class DrawTarget;
 
 class Subtitles {
 public:

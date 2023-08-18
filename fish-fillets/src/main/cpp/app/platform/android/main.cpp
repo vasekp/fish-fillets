@@ -1,9 +1,7 @@
 #include "ainstance.h"
 #include "subsystem/graphics.h"
 #include "subsystem/graphics/graphicsbackend.h"
-#include "subsystem/audio.h"
 #include "subsystem/input.h"
-#include "subsystem/persist.h"
 #include "game/screens/screenmanager.h"
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event) {

@@ -1,9 +1,11 @@
 #ifndef FISH_FILLETS_LAYOUT_H
 #define FISH_FILLETS_LAYOUT_H
 
-#include "model.h"
+#include "common.h"
+#include "shape.h"
 
 class Level;
+class Model;
 
 class LevelLayout {
 public:

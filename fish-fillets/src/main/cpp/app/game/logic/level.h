@@ -1,16 +1,19 @@
 #ifndef FISH_FILLETS_LEVEL_H
 #define FISH_FILLETS_LEVEL_H
 
+#include "common.h"
+#include "instance.h"
 #include "subsystem/script.h"
 #include "game/structure/levelrecord.h"
 #include "game/logic/timer.h"
-#include "layout.h"
-#include "rules.h"
-
-#include <variant>
+#include "game/logic/model.h"
+#include "utils/enumbitset.h"
 
 class LevelScreen;
 class LevelInput;
+class LevelLayout;
+class LevelRules;
+class IFile;
 
 class Level : public ScriptReferrer {
 public:
@@ -99,7 +102,7 @@ private:
         replay,
         SIZE
     };
-    EnumBitset<BusyReason> m_busy;
+    util::EnumBitset<BusyReason> m_busy;
     bool m_goto;
 
     void registerCallbacks();

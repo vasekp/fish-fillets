@@ -1,4 +1,5 @@
 #include "leveltitle.h"
+#include "subsystem/graphics.h"
 
 LevelTitle::LevelTitle(Instance& instance) :
     m_instance(instance),

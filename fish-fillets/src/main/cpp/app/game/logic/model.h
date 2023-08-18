@@ -1,9 +1,10 @@
 #ifndef FISH_FILLETS_MODEL_H
 #define FISH_FILLETS_MODEL_H
 
-#include "game/graphics/modelanim.h"
-#include "subsystem/audio.h"
+#include "common.h"
 #include "shape.h"
+#include "game/graphics/modelanim.h"
+#include "subsystem/audio/audiosource.h"
 
 class LevelLayout;
 

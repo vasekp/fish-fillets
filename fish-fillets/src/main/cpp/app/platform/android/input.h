@@ -1,6 +1,7 @@
 #ifndef FISH_FILLETS_ANDROID_INPUT_H
 #define FISH_FILLETS_ANDROID_INPUT_H
 
+#include "common.h"
 #include "subsystem/input.h"
 #include <android/input.h>
 

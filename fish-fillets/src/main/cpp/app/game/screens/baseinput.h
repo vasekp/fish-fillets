@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_BASEINPUT_H
 #define FISH_FILLETS_BASEINPUT_H
 
+#include "common.h"
+#include "instance.h"
 #include "subsystem/input.h"
 
 class GameScreen;

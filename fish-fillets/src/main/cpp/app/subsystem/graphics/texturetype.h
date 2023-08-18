@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_TEXTURE_TYPE_H
 #define FISH_FILLETS_TEXTURE_TYPE_H
 
+#include "common.h"
+
 struct TextureType {
     enum class Type {
         image,

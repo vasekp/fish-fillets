@@ -40,7 +40,6 @@ namespace std::numbers {
 #endif
 
 #include "types.h"
-#include "utils.h"
 #include "log.h"
 
 using namespace std::string_literals;

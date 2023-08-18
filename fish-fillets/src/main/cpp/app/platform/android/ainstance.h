@@ -1,6 +1,7 @@
 #ifndef FF_ANDROID_INSTANCE_H
 #define FF_ANDROID_INSTANCE_H
 
+#include "common.h"
 #include "instance.h"
 #include "api/jni.h"
 #include "files.h"

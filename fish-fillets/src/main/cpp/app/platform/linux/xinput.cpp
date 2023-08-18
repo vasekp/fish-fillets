@@ -1,6 +1,5 @@
 #include "subsystem/input.h"
-#include "instance.h"
-#include "./input.h"
+#include "xinput.h"
 #include <X11/keysym.h>
 
 XInput::XInput(Instance& instance) :

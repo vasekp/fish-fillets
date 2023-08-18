@@ -1,4 +1,5 @@
 #include "gametree.h"
+#include "subsystem/files.h"
 
 GameTree::GameTree(Instance& instance) :
         m_instance(instance),

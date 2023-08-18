@@ -1,8 +1,10 @@
 #ifndef FISH_FILLETS_CREDITS_H
 #define FISH_FILLETS_CREDITS_H
 
+#include "common.h"
+#include "instance.h"
 #include "gamescreen.h"
-#include "subsystem/audio.h"
+#include "subsystem/audio/audiosource.h"
 #include "baseinput.h"
 
 class CreditsScreen : public GameScreen {

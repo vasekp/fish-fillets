@@ -69,7 +69,7 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
     glUniform1i(pImpl->ycbcr.uniform("uCrTexture"), 2);
 }
 
-void BaseProgram::run([[maybe_unused]] GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
+void BaseProgram::run(GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,
     const BaseProgram::Textures& textures) const {
     int texIndex = 0;
     for(auto ref : textures) {

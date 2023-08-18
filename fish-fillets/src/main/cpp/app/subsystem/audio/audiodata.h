@@ -1,6 +1,8 @@
 #ifndef FISH_FILLETS_AUDIO_DATA_H
 #define FISH_FILLETS_AUDIO_DATA_H
 
+#include "common.h"
+
 class AudioData {
     enum class Private { tag };
 

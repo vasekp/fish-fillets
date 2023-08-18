@@ -1,9 +1,10 @@
 #ifndef FF_LINUX_INSTANCE_H
 #define FF_LINUX_INSTANCE_H
 
+#include "common.h"
 #include "instance.h"
-#include "./files.h"
-#include "./input.h"
+#include "files.h"
+#include "xinput.h"
 #include "alsasink.h"
 
 #include <X11/Xlib.h>

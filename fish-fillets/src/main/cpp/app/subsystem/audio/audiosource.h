@@ -1,11 +1,9 @@
 #ifndef FISH_FILLETS_AUDIO_SOURCE_H
 #define FISH_FILLETS_AUDIO_SOURCE_H
 
-enum class AudioType {
-    sound,
-    music,
-    talk
-};
+#include "common.h"
+#include "audiotype.h"
+#include "audiodata.h"
 
 class AudioSource {
 public:
