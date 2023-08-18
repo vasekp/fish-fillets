@@ -6,10 +6,6 @@
 namespace vulkan {
 
 class Texture {
-    struct Impl;
-    std::unique_ptr<Impl> pImpl;
-    USize m_size;
-
 public:
     Texture(vulkan::Display& display, USize size, TextureType type, std::uint8_t* data);
 
@@ -25,6 +21,11 @@ public:
     const vk::DescriptorSet& descriptorSet() const;
 
     void replaceData(std::uint8_t* data);
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
+    USize m_size;
 };
 
 }

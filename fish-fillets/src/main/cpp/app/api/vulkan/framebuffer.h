@@ -4,9 +4,6 @@
 namespace vulkan {
 
 class Framebuffer {
-    const vulkan::Display& m_display;
-    vk::raii::Framebuffer m_native;
-
 public:
     Framebuffer(const vulkan::Display& display, const Texture& texture);
 
@@ -15,6 +12,9 @@ public:
     operator const vk::Framebuffer&() const { return *m_native; }
 
 private:
+    const vulkan::Display& m_display;
+    vk::raii::Framebuffer m_native;
+
     vk::raii::Framebuffer createFramebuffer(const vulkan::Display& display, const Texture& texture);
 };
 

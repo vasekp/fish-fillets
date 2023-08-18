@@ -5,10 +5,6 @@
 #include "oboestream.h"
 
 class OboeSink: public oboe::AudioStreamErrorCallback {
-    Instance& m_instance;
-    std::unique_ptr<OboeStream> m_stream;
-    bool m_running;
-
 public:
     OboeSink(Instance& instance) : m_instance(instance), m_stream(), m_running(false) { }
 
@@ -32,6 +28,10 @@ public:
     }
 
 private:
+    Instance& m_instance;
+    std::unique_ptr<OboeStream> m_stream;
+    bool m_running;
+
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override {
         if(error == oboe::Result::ErrorDisconnected) {
             Log::info<Log::audio>("restarting Oboe stream");

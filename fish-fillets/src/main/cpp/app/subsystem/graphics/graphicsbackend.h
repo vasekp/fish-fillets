@@ -14,18 +14,6 @@
 #include "texturetarget.h"
 
 class GraphicsBackend {
-private:
-    Graphics& m_graphics;
-    BACKEND::Display m_display;
-    std::array<TextureTarget, 2> m_blurTargets;
-    TextureTarget m_offscreenTarget;
-    Shaders m_shaders;
-    DrawTarget* m_curTarget;
-#ifdef FISH_FILLETS_USE_VULKAN
-    struct VulkanDetail;
-    std::unique_ptr<VulkanDetail> m_detail;
-#endif
-
 public:
     GraphicsBackend(Instance& instance, BACKEND::Display&& display);
     ~GraphicsBackend();
@@ -38,17 +26,25 @@ public:
     void setScissor(ICoords from, ICoords to);
     void releaseScissor();
     void present(TextureTarget& target);
-
     void resizeBuffers();
 
-    friend class Graphics;
-
 private:
+    Graphics& m_graphics;
+    BACKEND::Display m_display;
+    std::array<TextureTarget, 2> m_blurTargets;
+    TextureTarget m_offscreenTarget;
+    Shaders m_shaders;
+    DrawTarget* m_curTarget;
 #ifdef FISH_FILLETS_USE_VULKAN
+    struct VulkanDetail;
+    std::unique_ptr<VulkanDetail> m_detail;
+
     std::unique_ptr<VulkanDetail> vulkanDetail();
 #endif
 
     USize blurTargetDims();
+
+    friend class Graphics;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SYSTEM_H

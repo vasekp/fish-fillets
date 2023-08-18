@@ -8,24 +8,6 @@ class Level;
 class LevelLayout;
 
 class LevelRules {
-    Level& m_level;
-    LevelLayout& m_layout;
-
-    Model* m_small;
-    Model* m_big;
-    Model* m_curFish;
-    bool m_doomed;
-    bool m_vintage;
-    Model* m_bonusExit;
-
-    std::vector<Model*> m_goals;
-
-    std::deque<Key> m_keyQueue;
-    bool m_queueFixed;
-    std::vector<std::pair<Model*, Direction>> m_motions;
-    std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
-    std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
-
 public:
     LevelRules(Level& level, LevelLayout& layout);
 
@@ -51,6 +33,24 @@ public:
     void bonusSwitch(bool value);
 
 private:
+    Level& m_level;
+    LevelLayout& m_layout;
+
+    Model* m_small;
+    Model* m_big;
+    Model* m_curFish;
+    bool m_doomed;
+    bool m_vintage;
+    Model* m_bonusExit;
+
+    std::vector<Model*> m_goals;
+
+    std::deque<Key> m_keyQueue;
+    bool m_queueFixed;
+    std::vector<std::pair<Model*, Direction>> m_motions;
+    std::set<std::pair<const Model*, const Model*>> m_dependencyGraph;
+    std::map<const Model*, EnumBitset<Model::SupportType>> m_support;
+
     void enqueue(char c);
     void processKey(Key key);
     void moveFish(Model::Fish which, Direction d);

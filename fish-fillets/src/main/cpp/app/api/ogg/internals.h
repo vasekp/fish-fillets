@@ -32,8 +32,6 @@ namespace ogg::internal {
 
     template<class C, auto free>
     class OggPointer {
-        C* m_native;
-
     public:
         OggPointer() : m_native(nullptr) { }
 
@@ -54,6 +52,9 @@ namespace ogg::internal {
         C* native() { return m_native; }
         C** operator&() { return &m_native; }
         operator C*() { return native(); }
+
+    private:
+        C* m_native;
     };
 }
 

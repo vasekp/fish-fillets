@@ -12,14 +12,6 @@
 #include <X11/XKBlib.h>
 
 class XInstance : public Instance {
-    Display* m_display;
-    Window m_window;
-    LinuxFiles m_files;
-    XInput m_input;
-    AlsaSink m_sink;
-    USize m_lastSize;
-    std::map<std::string, Atom> m_atoms;
-
 public:
     XInstance(Display* dpy, Window window);
 
@@ -27,6 +19,15 @@ public:
     std::string lang() override;
 
     void dispatchEvent(const XEvent& event);
+
+private:
+    Display* m_display;
+    Window m_window;
+    LinuxFiles m_files;
+    XInput m_input;
+    AlsaSink m_sink;
+    USize m_lastSize;
+    std::map<std::string, Atom> m_atoms;
 };
 
 #endif //FF_LINUX_INSTANCE_H

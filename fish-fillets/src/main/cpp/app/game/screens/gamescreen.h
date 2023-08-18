@@ -8,14 +8,6 @@
 #include "liveclock.h"
 
 class GameScreen {
-protected:
-    Instance& m_instance;
-    bool m_running;
-    LiveClock m_clock;
-
-private:
-    std::map<std::string, ImageRef> m_images;
-
 public:
     virtual ~GameScreen() { }
 
@@ -34,6 +26,10 @@ public:
     LiveClock::time_point liveTime();
 
 protected:
+    Instance& m_instance;
+    bool m_running;
+    LiveClock m_clock;
+
     GameScreen(Instance& instance);
 
     const Image* addImage(const std::string& path, const std::string& name = "", TextureType type = TextureType::image);
@@ -48,6 +44,9 @@ protected:
     virtual void own_draw(DrawTarget& target) = 0;
     virtual bool own_pointer(FCoords coords) { return false; }
     virtual bool own_key(Key key) { return false; }
+
+private:
+    std::map<std::string, ImageRef> m_images;
 };
 
 #endif //FISH_FILLETS_GAME_SCREEN_H

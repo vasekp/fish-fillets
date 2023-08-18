@@ -6,9 +6,6 @@
 #include <sstream>
 
 class AudioPreloader : public ScriptReferrer {
-    Audio& m_audio;
-    Script m_script;
-
 public:
     explicit AudioPreloader(Audio& audio, Instance& instance) : m_audio(audio), m_script(instance, *this) {
         m_script.registerFn("preload_sound", lua::wrap<&AudioPreloader::preload_sound>);
@@ -21,6 +18,10 @@ public:
     void preload_sound(const std::string& filename) {
         m_audio.preload(filename);
     }
+
+private:
+    Audio& m_audio;
+    Script m_script;
 };
 
 Audio::Audio(Instance& instance) : m_instance(instance) {

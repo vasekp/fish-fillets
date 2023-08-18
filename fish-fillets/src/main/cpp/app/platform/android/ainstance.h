@@ -10,9 +10,6 @@
 struct android_app;
 
 class AndroidInstance : public Instance {
-    AndroidInput m_input;
-    OboeSink m_sink;
-
 public:
     android_app* app;
     jni::Env jni;
@@ -28,6 +25,10 @@ public:
 
     void startstop();
     OboeSink& oboe() { return m_sink; }
+
+private:
+    AndroidInput m_input;
+    OboeSink m_sink;
 };
 
 #endif //FF_ANDROID_INSTANCE_H

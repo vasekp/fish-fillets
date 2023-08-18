@@ -9,15 +9,6 @@
 #include <condition_variable>
 
 class Persist : public ScriptReferrer {
-    Instance& m_instance;
-    std::map<std::string, std::variant<std::string, int>> m_records;
-
-    std::thread m_thread;
-    std::mutex m_mutex;
-    std::condition_variable m_cond;
-    bool m_changed;
-    bool m_startstop;
-
 public:
     Persist(Instance& instance);
     ~Persist();
@@ -28,6 +19,15 @@ public:
     T get(const std::string& name, T defValue);
 
 private:
+    Instance& m_instance;
+    std::map<std::string, std::variant<std::string, int>> m_records;
+
+    std::thread m_thread;
+    std::mutex m_mutex;
+    std::condition_variable m_cond;
+    bool m_changed;
+    bool m_startstop;
+
     void worker();
     void save();
 

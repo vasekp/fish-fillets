@@ -4,9 +4,6 @@
 namespace ogl {
 
     class Shader {
-        std::weak_ptr<int> m_ref;
-        util::ResetOnMove<GLuint, 0> m_name;
-
     public:
         Shader() = default;
         Shader(const ogl::Display& display, GLenum type, const std::string& code);
@@ -14,6 +11,10 @@ namespace ogl {
         ~Shader();
 
         operator GLuint() const { return m_name; }
+
+    private:
+        std::weak_ptr<int> m_ref;
+        util::ResetOnMove<GLuint, 0> m_name;
     };
 
 }

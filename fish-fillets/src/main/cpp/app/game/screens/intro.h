@@ -7,6 +7,19 @@
 #include "baseinput.h"
 
 class IntroScreen : public GameScreen {
+public:
+    IntroScreen(Instance&);
+
+    IInputSink& input() override { return m_input; }
+
+protected:
+    void own_start() override;
+    void own_update() override;
+    void own_draw(DrawTarget& target) override;
+    bool own_key(Key key) override;
+    bool own_pointer(FCoords coords) override;
+
+private:
     BaseInput m_input;
 
     ogg::InterleavedStream m_ogg;
@@ -21,19 +34,6 @@ class IntroScreen : public GameScreen {
     ImageRef m_imgCr;
     float m_imgTime;
 
-public:
-    IntroScreen(Instance&);
-
-    IInputSink& input() override { return m_input; }
-
-protected:
-    void own_start() override;
-    void own_update() override;
-    void own_draw(DrawTarget& target) override;
-    bool own_key(Key key) override;
-    bool own_pointer(FCoords coords) override;
-
-private:
     void fill_buffers();
 
     static constexpr std::size_t vBufSize = 5;

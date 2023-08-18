@@ -2,9 +2,6 @@
 #define FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H
 
 class TextureTarget : public DrawTarget {
-    struct Impl;
-    std::unique_ptr<Impl> pImpl;
-
 public:
     TextureTarget(GraphicsBackend& backend, USize physSize, FCoords logSize = {});
     ~TextureTarget();
@@ -14,6 +11,10 @@ public:
     FCoords size() const override;
     void resize(USize physSize, FCoords logSize = {});
     void bind() override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_TEXTURE_TARGET_H

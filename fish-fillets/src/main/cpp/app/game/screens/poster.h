@@ -8,11 +8,6 @@
 #include "baseinput.h"
 
 class PosterScreen : public GameScreen, public ScriptReferrer {
-    BaseInput m_input;
-    AudioSource::Ref m_music;
-    Script m_script;
-    std::optional<Hint> m_hint;
-
 public:
     PosterScreen(Instance& instance, const std::string& script);
 
@@ -26,6 +21,11 @@ protected:
     void own_resize() override;
 
 private:
+    BaseInput m_input;
+    AudioSource::Ref m_music;
+    Script m_script;
+    std::optional<Hint> m_hint;
+
     void quit();
 
     void poster_display(const std::string& filename);

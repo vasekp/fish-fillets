@@ -2,11 +2,6 @@
 #define FISH_FILLETS_AUDIO_DATA_H
 
 class AudioData {
-    std::string m_filename;
-    std::unique_ptr<float[]> m_data;
-    std::size_t m_samples;
-    std::size_t m_loopStart;
-
     enum class Private { tag };
 
 public:
@@ -35,6 +30,12 @@ public:
     float operator[](std::size_t index) const { return m_data[index]; }
     std::size_t samples() const { return m_samples; }
     std::size_t loopStart() const { return m_loopStart; }
+
+private:
+    std::string m_filename;
+    std::unique_ptr<float[]> m_data;
+    std::size_t m_samples;
+    std::size_t m_loopStart;
 };
 
 #endif //FISH_FILLETS_AUDIO_DATA_H

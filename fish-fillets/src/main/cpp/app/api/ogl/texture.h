@@ -6,11 +6,6 @@
 namespace ogl {
 
     class Texture {
-        std::weak_ptr<int> m_ref;
-        util::ResetOnMove<GLuint, 0> m_name;
-        USize m_size;
-        unsigned m_channels;
-
     public:
         Texture(const ogl::Display& display, USize size, TextureType type, std::uint8_t* data);
 
@@ -24,6 +19,12 @@ namespace ogl {
 
         void bind() const;
         void replaceData(std::uint8_t* data);
+
+    private:
+        std::weak_ptr<int> m_ref;
+        util::ResetOnMove<GLuint, 0> m_name;
+        USize m_size;
+        unsigned m_channels;
     };
 
 }

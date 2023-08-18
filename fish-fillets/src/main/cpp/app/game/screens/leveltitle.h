@@ -4,12 +4,6 @@
 #include "subsystem/graphics.h"
 
 class LevelTitle {
-    Instance& m_instance;
-    std::unique_ptr<IFont> m_font;
-    std::optional<ImageRef> m_image;
-    std::optional<std::chrono::steady_clock::time_point> m_hide;
-    float m_opacity;
-
 public:
     LevelTitle(Instance& instance);
 
@@ -21,6 +15,12 @@ public:
     void draw(DrawTarget& target);
 
 private:
+    Instance& m_instance;
+    std::unique_ptr<IFont> m_font;
+    std::optional<ImageRef> m_image;
+    std::optional<std::chrono::steady_clock::time_point> m_hide;
+    float m_opacity;
+
     constexpr static const char* fontFilename = "font/font_title.ttf";
     constexpr static float fontSize = 18.f; // base pixels
     constexpr static float startY = 400.f;

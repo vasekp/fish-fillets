@@ -34,13 +34,15 @@ namespace ogg::ll {
     };
 
     class VorbisDecoder : public OggStruct<vorbis_dsp_state, vorbis_synthesis_init, vorbis_dsp_clear> {
-        vorbis_block m_block;
     public:
         VorbisDecoder(vorbis_info* info);
         ~VorbisDecoder();
 
         void operator<<(ogg_packet& packet);
         std::size_t operator>>(std::vector<float>& ret);
+
+    private:
+        vorbis_block m_block;
     };
 
 }

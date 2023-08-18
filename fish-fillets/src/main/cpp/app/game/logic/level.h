@@ -13,42 +13,6 @@ class LevelScreen;
 class LevelInput;
 
 class Level : public ScriptReferrer {
-    Instance& m_instance;
-    LevelScreen& m_screen;
-    LevelRecord& m_record;
-    Timer m_timer;
-    Script m_script;
-    std::unique_ptr<LevelLayout> m_layout;
-    std::unique_ptr<LevelRules> m_rules;
-    std::string m_replay;
-    int m_attempt;
-    bool m_roundFlag;
-
-    std::deque<Callback> m_plan;
-
-    struct Delayed {
-        int countdown;
-        std::function<void()> callback;
-    };
-    std::vector<Delayed> m_transitions;
-
-    struct Dialog {
-        std::string soundFile;
-        std::string colors;
-        std::map<std::string, std::string> texts;
-    };
-    std::map<std::string, Dialog> m_dialogs;
-
-    enum class BusyReason {
-        loading,
-        slideshow,
-        demo,
-        replay,
-        SIZE
-    };
-    EnumBitset<BusyReason> m_busy;
-    bool m_goto;
-
 public:
     Level(Instance& instance, LevelScreen& screen, LevelRecord& record);
     ~Level();
@@ -102,6 +66,42 @@ public:
     void notifyEscape(Model* model);
 
 private:
+    Instance& m_instance;
+    LevelScreen& m_screen;
+    LevelRecord& m_record;
+    Timer m_timer;
+    Script m_script;
+    std::unique_ptr<LevelLayout> m_layout;
+    std::unique_ptr<LevelRules> m_rules;
+    std::string m_replay;
+    int m_attempt;
+    bool m_roundFlag;
+
+    std::deque<Callback> m_plan;
+
+    struct Delayed {
+        int countdown;
+        std::function<void()> callback;
+    };
+    std::vector<Delayed> m_transitions;
+
+    struct Dialog {
+        std::string soundFile;
+        std::string colors;
+        std::map<std::string, std::string> texts;
+    };
+    std::map<std::string, Dialog> m_dialogs;
+
+    enum class BusyReason {
+        loading,
+        slideshow,
+        demo,
+        replay,
+        SIZE
+    };
+    EnumBitset<BusyReason> m_busy;
+    bool m_goto;
+
     void registerCallbacks();
 
     void level_createRoom(unsigned width, unsigned height, const std::string& bg);

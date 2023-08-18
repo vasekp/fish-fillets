@@ -6,6 +6,41 @@
 class Level;
 
 class LevelLayout {
+public:
+    LevelLayout(Level& level, USize size);
+
+    auto& models() { return m_models_adapted; }
+    const auto& models() const { return m_models_adapted; }
+    auto size() const { return m_size; }
+
+    int addModel(const std::string& type, int x, int y, const std::string& shape);
+    void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);
+    Model* getModel(int index) const;
+    Model* modelAt(ICoords coords) const;
+
+    struct RopeDecor {
+        const Model* m1;
+        const Model* m2;
+        ICoords d1;
+        ICoords d2;
+    };
+
+    const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
+
+    std::set<Model*> intersections(const Model* model, ICoords d);
+    std::set<Model*> obstacles(const Model* root, ICoords d);
+    Direction borderDir(const Model* model) const;
+    bool isOut(const Model* model) const;
+    std::vector<Direction> findPath(const Model* unit, ICoords target);
+    std::vector<Direction> randomPath(const Model* unit, int minDistance);
+
+    void animate(std::chrono::duration<float> dt, float speed = speed_normal);
+
+    constexpr static float speed_normal = 1.f;
+    constexpr static float speed_loading = 10.f;
+    constexpr static float speed_instant = 0.f;
+
+private:
     Level& m_level;
     USize m_size;
 
@@ -29,44 +64,10 @@ class LevelLayout {
         auto size() { return m_models.size(); }
     } m_models_adapted;
 
-    struct RopeDecor {
-        const Model* m1;
-        const Model* m2;
-        ICoords d1;
-        ICoords d2;
-    };
     std::vector<RopeDecor> m_ropes;
 
-public:
-    LevelLayout(Level& level, USize size);
-
-    auto& models() { return m_models_adapted; }
-    const auto& models() const { return m_models_adapted; }
-    auto size() const { return m_size; }
-
-    int addModel(const std::string& type, int x, int y, const std::string& shape);
-    void addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2);
-    Model* getModel(int index) const;
-    Model* modelAt(ICoords coords) const;
-    const std::vector<RopeDecor>& getRopes() const { return m_ropes; };
-
-    std::set<Model*> intersections(const Model* model, ICoords d);
-    std::set<Model*> obstacles(const Model* root, ICoords d);
-    Direction borderDir(const Model* model) const;
-    bool isOut(const Model* model) const;
-    std::vector<Direction> findPath(const Model* unit, ICoords target);
-    std::vector<Direction> randomPath(const Model* unit, int minDistance);
-
-    void animate(std::chrono::duration<float> dt, float speed = speed_normal);
-
-private:
     constexpr static unsigned maxDim = Shape::maxSize;
     std::array<std::bitset<maxDim>, maxDim> occupiedBitmap(const Model* unit);
-
-public:
-    constexpr static float speed_normal = 1.f;
-    constexpr static float speed_loading = 10.f;
-    constexpr static float speed_instant = 0.f;
 };
 
 #endif //FISH_FILLETS_LAYOUT_H

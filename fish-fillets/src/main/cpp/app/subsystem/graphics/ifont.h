@@ -4,14 +4,6 @@
 class TextImage;
 
 class IFont {
-    std::set<TextImage*> m_images;
-
-protected:
-    Instance& m_instance;
-    float m_fontSize;
-    float m_outline;
-    float m_scale;
-
 public:
     IFont(Instance& instance) : m_instance(instance) { }
     virtual ~IFont() = 0;
@@ -23,7 +15,15 @@ public:
     void regImage(TextImage* image);
     void unregImage(TextImage* image);
 
+protected:
+    Instance& m_instance;
+    float m_fontSize;
+    float m_outline;
+    float m_scale;
+
 private:
+    std::set<TextImage*> m_images;
+
     virtual void own_setSizes() = 0;
     virtual std::vector<std::string> own_breakLines(const std::string& text, float width) = 0;
     virtual ImageData own_renderText(const std::string& text) const = 0;

@@ -11,21 +11,6 @@
 #include "game/graphics/zxeffect.h"
 
 class LevelScreen : public GameScreen {
-    Level m_level;
-    LevelInput m_input;
-    std::multimap<std::string, AudioData::Ref> m_sounds;
-    AudioSource::Ref m_music;
-    std::array<float, 3> m_waves;
-    FCoords m_winSize;
-    Subtitles m_subs;
-    std::optional<Hint> m_hint;
-    std::optional<ImageRef> m_display;
-    std::unique_ptr<TextureTarget> m_mirrorTarget;
-    std::unique_ptr<ZXEffect> m_zxEffect;
-    LiveClock::time_point m_lastUpdate;
-    float m_flashAlpha;
-    bool m_replay;
-
 public:
     LevelScreen(Instance& instance, LevelRecord& record, bool replay);
     ~LevelScreen();
@@ -75,6 +60,22 @@ private:
     constexpr static float flashInit = 0.5f;
     constexpr static auto flashDecay = 500ms;
     constexpr static Color ropeColor{0x30404E};
+
+private:
+    Level m_level;
+    LevelInput m_input;
+    std::multimap<std::string, AudioData::Ref> m_sounds;
+    AudioSource::Ref m_music;
+    std::array<float, 3> m_waves;
+    FCoords m_winSize;
+    Subtitles m_subs;
+    std::optional<Hint> m_hint;
+    std::optional<ImageRef> m_display;
+    std::unique_ptr<TextureTarget> m_mirrorTarget;
+    std::unique_ptr<ZXEffect> m_zxEffect;
+    LiveClock::time_point m_lastUpdate;
+    float m_flashAlpha;
+    bool m_replay;
 };
 
 #endif //FISH_FILLETS_LEVELSCREEN_H

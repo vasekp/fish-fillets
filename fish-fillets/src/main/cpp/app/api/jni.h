@@ -7,12 +7,6 @@
 
 namespace jni {
     class Env {
-        JavaVM* m_vm;
-        ::JNIEnv* m_env;
-        jclass m_class;
-        jobject m_obj;
-        std::map<std::string, jmethodID> m_methods;
-
     public:
         Env(android_app* app);
         Env(const Env&) = delete;
@@ -25,6 +19,13 @@ namespace jni {
         jobject object() const { return m_obj; }
         void addMethod(const char* name, const char* sig);
         jmethodID getMethod(const std::string& name) const;
+
+    private:
+        JavaVM* m_vm;
+        ::JNIEnv* m_env;
+        jclass m_class;
+        jobject m_obj;
+        std::map<std::string, jmethodID> m_methods;
     };
 }
 

@@ -9,19 +9,7 @@
 struct LevelRecord;
 
 class ScreenManager {
-    Instance& m_instance;
-    std::unique_ptr<GameScreen> m_screen;
-    std::unique_ptr<GameScreen> m_next;
-    LevelTitle m_title;
-    OptionsOverlay m_options;
-
 public:
-    enum class Mode {
-        WorldMap,
-        Intro,
-        Credits
-    };
-
     ScreenManager(Instance& instance) : m_instance(instance), m_title(instance), m_options(instance) { };
 
     void resize();
@@ -29,6 +17,12 @@ public:
     void resume();
     void updateAll();
     void drawFrame();
+
+    enum class Mode {
+        WorldMap,
+        Intro,
+        Credits
+    };
 
     void startMode(Mode mode);
     void announceLevel(const std::string& title);
@@ -42,6 +36,12 @@ public:
     IInputSource& inputSourceMasked();
 
 private:
+    Instance& m_instance;
+    std::unique_ptr<GameScreen> m_screen;
+    std::unique_ptr<GameScreen> m_next;
+    LevelTitle m_title;
+    OptionsOverlay m_options;
+
     template<class ScreenType, typename... Ts>
     ScreenType& open(Ts&&... ts);
 

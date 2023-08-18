@@ -4,6 +4,13 @@
 #include "subsystem/graphics.h"
 
 class ZXEffect {
+public:
+    ZXEffect(Instance& m_instance);
+
+    void render(DrawTarget& target, const Image* image);
+    void update(int tickCount);
+
+private:
     Instance& m_instance;
     float m_stripHeight;
     float m_stripOffset;
@@ -18,12 +25,6 @@ class ZXEffect {
         {0x800000, 0x008080},
         {0x000080, 0x808000}
     }};
-
-public:
-    ZXEffect(Instance& m_instance);
-
-    void render(DrawTarget& target, const Image* image);
-    void update(int tickCount);
 };
 
 #endif //FISH_FILLETS_ZXEFFECT_H

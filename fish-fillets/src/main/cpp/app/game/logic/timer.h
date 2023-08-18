@@ -5,11 +5,6 @@
 #include <thread>
 
 class Timer {
-    std::thread m_thread;
-    std::atomic<bool> m_tick;
-    std::atomic<bool> m_stop;
-    int m_tickCount;
-
 public:
     Timer();
     ~Timer();
@@ -22,6 +17,11 @@ public:
     void reset();
 
 private:
+    std::thread m_thread;
+    std::atomic<bool> m_tick;
+    std::atomic<bool> m_stop;
+    int m_tickCount;
+
     void worker();
 
     constexpr static auto interval = 100ms;

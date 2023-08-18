@@ -8,6 +8,20 @@
 #include "baseinput.h"
 
 class WorldMap : public GameScreen {
+public:
+    WorldMap(Instance&);
+
+protected:
+    IInputSink& input() override { return m_input; }
+
+    void own_start() override;
+    void own_resume() override;
+    void own_update() override;
+    void own_draw(DrawTarget& target) override;
+    bool own_key(Key key) override;
+    bool own_pointer(FCoords coords) override;
+
+private:
     enum class Frames {
         none,
         loading,
@@ -54,20 +68,6 @@ class WorldMap : public GameScreen {
             {{487, 362}, {640, 480}, Frames::options}
     }};
 
-public:
-    WorldMap(Instance&);
-
-protected:
-    IInputSink& input() override { return m_input; }
-
-    void own_start() override;
-    void own_resume() override;
-    void own_update() override;
-    void own_draw(DrawTarget& target) override;
-    bool own_key(Key key) override;
-    bool own_pointer(FCoords coords) override;
-
-private:
     void drawMasked(DrawTarget& target, Color maskColor);
     void staticFrame(Frames frame, std::function<void()>&& action);
 };

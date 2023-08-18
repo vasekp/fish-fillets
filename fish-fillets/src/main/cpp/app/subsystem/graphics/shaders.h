@@ -5,8 +5,6 @@ class DrawTarget;
 class GraphicsBackend;
 
 class BaseProgram {
-protected:
-    const BACKEND::Program& m_native;
 public:
     struct Params {
         vec2 src{};
@@ -29,27 +27,25 @@ public:
     void run(GraphicsBackend& backend, DrawTarget& target, const Params& params, Shape shape, const Textures& textures) const;
 
 protected:
+    const BACKEND::Program& m_native;
+
     virtual void own_params(GraphicsBackend& backend) const { }
 };
 
 template<typename SpecParams>
 class Program : public BaseProgram {
-    SpecParams m_params;
-
 public:
     Program(const BACKEND::Program& native, SpecParams params) : BaseProgram(native), m_params(params) { }
 
     SpecParams& params() { return m_params; }
 
 private:
+    SpecParams m_params;
+
     void own_params(GraphicsBackend& backend) const override;
 };
 
 class Shaders {
-private:
-    struct Impl;
-    std::unique_ptr<Impl> pImpl;
-
 public:
     Shaders(Instance& instance, GraphicsBackend& backend);
     ~Shaders();
@@ -125,6 +121,10 @@ public:
     BaseProgram YCbCr();
     Program<ButtonParams> button(ButtonParams params);
     Program<ArrowParams> arrow(ArrowParams params);
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
 };
 
 #endif //FISH_FILLETS_GRAPHICS_SHADERS_H

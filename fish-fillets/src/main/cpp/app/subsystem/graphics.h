@@ -28,26 +28,6 @@ namespace BACKEND {
 class GraphicsBackend;
 
 class Graphics {
-    Instance& m_instance;
-    std::unique_ptr<GraphicsBackend> m_backend;
-    std::set<std::unique_ptr<Image>> m_images;
-    FCoords m_windowDim;
-    FCoords m_windowShift;
-
-public:
-    enum CoordSystems {
-        null,
-        base,
-        buttons,
-        reduced,
-        window0,
-        window,
-        SIZE
-    };
-
-private:
-    std::array<Coords, SIZE> m_coords;
-
 public:
     Graphics(Instance& instance);
     ~Graphics();
@@ -60,6 +40,16 @@ public:
     TextureTarget& offscreenTarget() const;
     Shaders& shaders() const;
     bool ready() const { return (bool)m_backend; }
+
+    enum CoordSystems {
+        null,
+        base,
+        buttons,
+        reduced,
+        window0,
+        window,
+        SIZE
+    };
 
     const Coords& coords(CoordSystems which) { return m_coords[which]; }
 
@@ -77,6 +67,13 @@ public:
     static constexpr FCoords baseDim{640, 480};
 
 private:
+    Instance& m_instance;
+    std::unique_ptr<GraphicsBackend> m_backend;
+    std::set<std::unique_ptr<Image>> m_images;
+    FCoords m_windowDim;
+    FCoords m_windowShift;
+    std::array<Coords, SIZE> m_coords;
+
     void recalc();
 
     static constexpr float buttonStripWidth = 64.f;

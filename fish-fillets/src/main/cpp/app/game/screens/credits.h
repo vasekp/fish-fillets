@@ -6,10 +6,6 @@
 #include "baseinput.h"
 
 class CreditsScreen : public GameScreen {
-    BaseInput m_input;
-    AudioSource::Ref m_music;
-    float m_totalHeight;
-
 public:
     CreditsScreen(Instance&);
     IInputSink& input() override { return m_input; }
@@ -21,6 +17,10 @@ protected:
     bool own_key(Key key) override;
 
 private:
+    BaseInput m_input;
+    AudioSource::Ref m_music;
+    float m_totalHeight;
+
     void quit();
 };
 

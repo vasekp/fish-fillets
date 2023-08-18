@@ -5,23 +5,6 @@
 #include "game/screens/liveclock.h"
 
 class Subtitles {
-    struct Title {
-        ImageRef image;
-        bool live;
-        float yOffset;
-        LiveClock::time_point addTime;
-        LiveClock::duration duration;
-        unsigned groupSize;
-        Color color1;
-        Color color2;
-    };
-
-    Instance& m_instance;
-    std::unique_ptr<IFont> m_font;
-    std::deque<Title> m_lines;
-    std::map<std::string, std::pair<Color, Color>> m_colors;
-    LiveClock::time_point m_lastUpdate;
-
 public:
     Subtitles(Instance& instance);
 
@@ -38,6 +21,24 @@ public:
     constexpr static auto timePerChar = 90ms;
     constexpr static auto minTimePerLine = 2500ms;
     constexpr static auto newLineTime = 1s;
+
+private:
+    struct Title {
+        ImageRef image;
+        bool live;
+        float yOffset;
+        LiveClock::time_point addTime;
+        LiveClock::duration duration;
+        unsigned groupSize;
+        Color color1;
+        Color color2;
+    };
+
+    Instance& m_instance;
+    std::unique_ptr<IFont> m_font;
+    std::deque<Title> m_lines;
+    std::map<std::string, std::pair<Color, Color>> m_colors;
+    LiveClock::time_point m_lastUpdate;
 };
 
 #endif //FISH_FILLETS_GAME_SUBTITLES_H

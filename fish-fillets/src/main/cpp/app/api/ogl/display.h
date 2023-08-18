@@ -4,14 +4,6 @@
 namespace ogl {
 
     class Display {
-        util::ResetOnMove<EGLDisplay, EGL_NO_DISPLAY> m_display;
-        util::ResetOnMove<EGLSurface, EGL_NO_SURFACE> m_surface;
-        util::ResetOnMove<EGLContext, EGL_NO_CONTEXT> m_context;
-        USize m_size;
-        ICoords m_origin;
-        ICoords m_vpSize;
-        std::shared_ptr<int> m_ref;
-
     public:
         template<typename... NativeArgs>
         Display(const NativeArgs& ... nativeArgs);
@@ -25,6 +17,16 @@ namespace ogl {
 
         void bind() const;
         void swap() const;
+
+    private:
+        util::ResetOnMove<EGLDisplay, EGL_NO_DISPLAY> m_display;
+        util::ResetOnMove<EGLSurface, EGL_NO_SURFACE> m_surface;
+        util::ResetOnMove<EGLContext, EGL_NO_CONTEXT> m_context;
+        USize m_size;
+        ICoords m_origin;
+        ICoords m_vpSize;
+        std::shared_ptr<int> m_ref;
+
     };
 
 }

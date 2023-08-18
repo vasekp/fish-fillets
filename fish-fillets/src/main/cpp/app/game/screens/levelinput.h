@@ -10,6 +10,30 @@ class DrawTarget;
 class LevelScreen;
 
 class LevelInput : public IInputSink {
+public:
+    LevelInput(Instance& instance, LevelScreen& screen);
+
+    void setFish(Model::Fish fish);
+    void setSavePossible(bool possible);
+    void setLoadPossible(bool possible);
+    void setRestartPossible(bool possible);
+    void flashButton(Key which);
+
+    bool keyDown(Key key) override;
+    bool pointerDown(FCoords coords) override;
+    bool pointerMove(FCoords coords) override;
+    bool pointerUp(bool empty) override;
+    void pointerCancel() override;
+    bool longPress(FCoords coords) override;
+    bool doubleTap(FCoords coords) override;
+    bool twoPointTap() override;
+
+    void resize();
+    void update();
+    void draw(DrawTarget& target);
+    Key poll();
+
+private:
     Instance& m_instance;
     LevelScreen& m_screen;
     Model::Fish m_activeFish;
@@ -49,30 +73,6 @@ class LevelInput : public IInputSink {
     ImageRef m_fishSmall;
     ImageRef m_fishBig;
 
-public:
-    LevelInput(Instance& instance, LevelScreen& screen);
-
-    void setFish(Model::Fish fish);
-    void setSavePossible(bool possible);
-    void setLoadPossible(bool possible);
-    void setRestartPossible(bool possible);
-    void flashButton(Key which);
-
-    bool keyDown(Key key) override;
-    bool pointerDown(FCoords coords) override;
-    bool pointerMove(FCoords coords) override;
-    bool pointerUp(bool empty) override;
-    void pointerCancel() override;
-    bool longPress(FCoords coords) override;
-    bool doubleTap(FCoords coords) override;
-    bool twoPointTap() override;
-
-    void resize();
-    void update();
-    void draw(DrawTarget& target);
-    Key poll();
-
-private:
     const Button* findButton(FCoords pos);
     Button& keyButton(Key key);
 

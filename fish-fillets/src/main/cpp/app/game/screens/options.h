@@ -6,6 +6,22 @@
 #include "subsystem/graphics.h"
 
 class OptionsOverlay : public IInputSink {
+public:
+    OptionsOverlay(Instance& instance);
+
+    void show();
+    void hide();
+    bool visible() const { return m_visible; }
+
+    void draw(DrawTarget& target);
+    bool pointerDown(FCoords coords) override;
+    bool pointerMove(FCoords coords) override;
+    bool pointerUp(bool empty) override;
+    void pointerCancel() override;
+    bool doubleTap(FCoords coords) override;
+    bool keyDown(Key key) override;
+
+private:
     Instance& m_instance;
     ImageRef m_options;
     ImageRef m_slider;
@@ -34,22 +50,6 @@ class OptionsOverlay : public IInputSink {
 
     std::string m_currSubs;
 
-public:
-    OptionsOverlay(Instance& instance);
-
-    void show();
-    void hide();
-    bool visible() const { return m_visible; }
-
-    void draw(DrawTarget& target);
-    bool pointerDown(FCoords coords) override;
-    bool pointerMove(FCoords coords) override;
-    bool pointerUp(bool empty) override;
-    void pointerCancel() override;
-    bool doubleTap(FCoords coords) override;
-    bool keyDown(Key key) override;
-
-private:
     static float exp(float x);
     static float log(float v);
 

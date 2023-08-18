@@ -12,10 +12,6 @@ public:
 };
 
 class Script {
-    Instance& m_instance;
-    ScriptReferrer& m_ref;
-    lua::Env m_env;
-
 public:
     Script(Instance& instance, ScriptReferrer& ref);
     Script(const Script&) = delete;
@@ -29,6 +25,11 @@ public:
     void loadFile(const std::string& filename);
 
     bool file_exists(const std::string& filename);
+
+private:
+    Instance& m_instance;
+    ScriptReferrer& m_ref;
+    lua::Env m_env;
 };
 
 #include "script/wrapper-additions.h"

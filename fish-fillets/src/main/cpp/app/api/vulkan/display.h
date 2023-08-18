@@ -6,25 +6,6 @@
 namespace vulkan {
 
 class Display {
-    vk::raii::Context m_context;
-    vk::raii::Instance m_instance;
-    std::optional<vk::raii::DebugUtilsMessengerEXT> m_messenger;
-    vk::raii::SurfaceKHR m_surface;
-    vk::raii::PhysicalDevice m_physDevice;
-    vk::PhysicalDeviceMemoryProperties m_memoryProperties;
-    std::uint32_t m_queueFamily;
-    vk::raii::Device m_device;
-    vk::raii::Queue m_queue;
-    vk::raii::CommandPool m_commandPool;
-    vk::raii::CommandBuffers m_commandBuffers;
-    vk::raii::RenderPass m_renderPass;
-    DescriptorPool m_descriptorPool;
-    vk::raii::Sampler m_samplerLinear;
-    vk::raii::Sampler m_samplerNearest;
-    vk::SwapchainCreateInfoKHR m_swapchainInfo;
-    vk::raii::SwapchainKHR m_swapchain;
-    std::vector<vk::Image> m_swapchainImages;
-
 public:
     template<typename... NativeArgs>
     Display(const NativeArgs& ... nativeArgs) :
@@ -70,6 +51,25 @@ public:
     USize size() const { return {width(), height()}; }
 
 private:
+    vk::raii::Context m_context;
+    vk::raii::Instance m_instance;
+    std::optional<vk::raii::DebugUtilsMessengerEXT> m_messenger;
+    vk::raii::SurfaceKHR m_surface;
+    vk::raii::PhysicalDevice m_physDevice;
+    vk::PhysicalDeviceMemoryProperties m_memoryProperties;
+    std::uint32_t m_queueFamily;
+    vk::raii::Device m_device;
+    vk::raii::Queue m_queue;
+    vk::raii::CommandPool m_commandPool;
+    vk::raii::CommandBuffers m_commandBuffers;
+    vk::raii::RenderPass m_renderPass;
+    DescriptorPool m_descriptorPool;
+    vk::raii::Sampler m_samplerLinear;
+    vk::raii::Sampler m_samplerNearest;
+    vk::SwapchainCreateInfoKHR m_swapchainInfo;
+    vk::raii::SwapchainKHR m_swapchain;
+    std::vector<vk::Image> m_swapchainImages;
+
     vk::raii::Instance createInstance();
     vk::raii::DebugUtilsMessengerEXT createMessenger();
     template<typename... NativeArgs>

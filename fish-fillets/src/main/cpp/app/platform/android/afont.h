@@ -4,12 +4,12 @@
 #include "subsystem/graphics.h"
 
 class AndroidFont : public IFont {
-    std::string m_filename;
-
 public:
     AndroidFont(Instance& instance, const std::string& filename);
 
 private:
+    std::string m_filename;
+
     void own_setSizes() override;
     std::vector<std::string> own_breakLines(const std::string& text, float width) override;
     ImageData own_renderText(const std::string& text) const override;

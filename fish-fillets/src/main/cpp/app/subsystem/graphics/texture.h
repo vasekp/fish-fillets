@@ -4,10 +4,6 @@
 #include "graphicsbackend.h"
 
 class Texture {
-    BACKEND::Texture m_native;
-    USize m_physSize;
-    FCoords m_logSize;
-
 public:
     Texture() = delete;
     Texture(Texture&& other) noexcept = default;
@@ -24,6 +20,10 @@ public:
     void replaceData(std::uint8_t* data);
 
 private:
+    BACKEND::Texture m_native;
+    USize m_physSize;
+    FCoords m_logSize;
+
     Texture(BACKEND::Texture&& texture, FCoords logSize);
 };
 

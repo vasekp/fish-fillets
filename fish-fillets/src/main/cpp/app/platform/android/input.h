@@ -7,6 +7,16 @@
 class AndroidInstance;
 
 class AndroidInput : public IInputSource {
+public:
+    AndroidInput(AndroidInstance& instance);
+
+    bool processEvent(AInputEvent* event);
+    void ping() override;
+    Key pollKey() override;
+    void reset() override;
+    FCoords hover() override;
+
+private:
     AndroidInstance& m_instance;
 
     Key m_lastKey;
@@ -22,15 +32,6 @@ class AndroidInput : public IInputSource {
     constexpr static auto doubletapTime = 300ms;
     constexpr static auto longpressTime = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
-
-public:
-    AndroidInput(AndroidInstance& instance);
-
-    bool processEvent(AInputEvent* event);
-    void ping() override;
-    Key pollKey() override;
-    void reset() override;
-    FCoords hover() override;
 };
 
 #endif //FISH_FILLETS_ANDROID_INPUT_H

@@ -8,12 +8,6 @@
 #include "audio/audiosourcelist.h"
 
 class Audio {
-    Instance& m_instance;
-    AudioSourceList m_sources;
-    std::map<std::string, AudioData::Ref> m_sounds_preload;
-    static_assert(std::atomic<float>::is_always_lock_free);
-    std::array<std::atomic<float>, 3> m_volumes;
-
 public:
     Audio(Instance& instance);
 
@@ -33,6 +27,13 @@ public:
     void setVolume(AudioType type, float volume);
 
     void mix(float* output, std::size_t numSamples);
+
+private:
+    Instance& m_instance;
+    AudioSourceList m_sources;
+    std::map<std::string, AudioData::Ref> m_sounds_preload;
+    static_assert(std::atomic<float>::is_always_lock_free);
+    std::array<std::atomic<float>, 3> m_volumes;
 };
 
 namespace decoders {

@@ -4,9 +4,6 @@
 class GraphicsBackend;
 
 class DrawTarget {
-protected:
-    GraphicsBackend& m_backend;
-
 public:
     virtual ~DrawTarget() { }
 
@@ -26,6 +23,8 @@ public:
     virtual void bind() = 0;
 
 protected:
+    GraphicsBackend& m_backend;
+
     void drawMain(const BaseProgram& program, const Coords& coords, BaseProgram::Params params, BaseProgram::Shape shape, const BaseProgram::Textures& textures);
 
     virtual bool flipY() const { return false; }

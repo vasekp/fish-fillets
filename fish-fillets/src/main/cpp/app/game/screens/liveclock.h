@@ -9,12 +9,6 @@ public:
     using time_point = std::chrono::time_point<LiveClock>;
     constexpr static bool is_steady = true;
 
-private:
-    bool m_running = false;
-    time_point m_lastTime = {};
-    std::chrono::steady_clock::time_point m_lastStart = {};
-
-public:
     time_point now() noexcept {
         return m_running
             ? m_lastTime + duration(std::chrono::steady_clock::now() - m_lastStart)
@@ -30,6 +24,11 @@ public:
         m_lastStart = std::chrono::steady_clock::now();
         m_running = true;
     }
+
+private:
+    bool m_running = false;
+    time_point m_lastTime = {};
+    std::chrono::steady_clock::time_point m_lastStart = {};
 };
 
 #endif

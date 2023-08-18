@@ -7,13 +7,13 @@
 #include FT_STROKER_H
 
 class FTFont : public IFont {
-    FT_Library m_ft;
-    FT_Face m_face;
-
 public:
     FTFont(Instance& instance, const std::string& filename);
 
 private:
+    FT_Library m_ft;
+    FT_Face m_face;
+
     void own_setSizes() override;
     std::vector<std::string> own_breakLines(const std::string& text, float width) override;
     ImageData own_renderText(const std::string& text) const override;

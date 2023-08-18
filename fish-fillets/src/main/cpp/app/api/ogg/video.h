@@ -8,19 +8,16 @@ namespace ogg {
     class InterleavedStream;
 
     class AutoStream : public ll::OggStream {
-        InterleavedStream& m_source;
-
     public:
         AutoStream(InterleavedStream& source, ogg_page&& page);
 
         bool operator>>(ogg_packet& packet);
+
+    private:
+        InterleavedStream& m_source;
     };
 
     class InterleavedStream {
-        ll::OggSync m_sync;
-        AutoStream m_s1, m_s2;
-        AutoStream &m_theora, &m_vorbis;
-
     public:
         InterleavedStream(const std::string& data);
 
@@ -30,6 +27,10 @@ namespace ogg {
         bool operator>>(AutoStream& target);
 
     private:
+        ll::OggSync m_sync;
+        AutoStream m_s1, m_s2;
+        AutoStream &m_theora, &m_vorbis;
+
         ogg_page getBOS();
         AutoStream& pickTheora();
         AutoStream& pickVorbis();
@@ -37,12 +38,6 @@ namespace ogg {
     };
 
     class VorbisDecoder {
-        AutoStream& m_stream;
-        ll::VorbisInfo m_info;
-        ll::VorbisComment m_comment;
-        ll::VorbisDecoder m_decoder;
-        bool m_done;
-
     public:
         VorbisDecoder(InterleavedStream& source);
 
@@ -52,18 +47,16 @@ namespace ogg {
         bool operator>>(std::vector<float>& buffer);
 
     private:
+        AutoStream& m_stream;
+        ll::VorbisInfo m_info;
+        ll::VorbisComment m_comment;
+        ll::VorbisDecoder m_decoder;
+        bool m_done;
+
         vorbis_info* init();
     };
 
     class TheoraDecoder {
-        AutoStream& m_stream;
-        ll::TheoraInfo m_info;
-        ll::TheoraComment m_comment;
-        ll::TheoraSetup m_setup;
-        ll::TheoraDecoder m_decoder;
-        bool m_done;
-        bool m_skipping;
-
     public:
         struct Frame {
             std::unique_ptr<std::uint8_t[]> yData;
@@ -82,6 +75,14 @@ namespace ogg {
         void skipToKey();
 
     private:
+        AutoStream& m_stream;
+        ll::TheoraInfo m_info;
+        ll::TheoraComment m_comment;
+        ll::TheoraSetup m_setup;
+        ll::TheoraDecoder m_decoder;
+        bool m_done;
+        bool m_skipping;
+
         void copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src);
     };
 

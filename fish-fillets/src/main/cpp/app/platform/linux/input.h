@@ -7,6 +7,18 @@
 class XInstance;
 
 class XInput : public IInputSource {
+public:
+    XInput(Instance& instance);
+
+    void keyEvent(const XKeyEvent& xkey);
+    void buttonEvent(const XButtonEvent& xbutton);
+    void motionEvent(const XMotionEvent& xmotion);
+    void ping() override;
+    Key pollKey() override;
+    void reset() override;
+    FCoords hover() override;
+
+private:
     Instance& m_instance;
 
     Key m_lastKey;
@@ -22,17 +34,6 @@ class XInput : public IInputSource {
     constexpr static auto doubletapTime = 300ms;
     constexpr static auto longpressTime = 500ms;
     constexpr static std::chrono::steady_clock::time_point absolutePast{};
-
-public:
-    XInput(Instance& instance);
-
-    void keyEvent(const XKeyEvent& xkey);
-    void buttonEvent(const XButtonEvent& xbutton);
-    void motionEvent(const XMotionEvent& xmotion);
-    void ping() override;
-    Key pollKey() override;
-    void reset() override;
-    FCoords hover() override;
 };
 
 #endif //FISH_FILLETS_ANDROID_INPUT_H

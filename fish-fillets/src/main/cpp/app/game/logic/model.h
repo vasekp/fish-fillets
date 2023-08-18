@@ -71,34 +71,6 @@ public:
         zx
     };
 
-private:
-    int m_index;
-    Type m_type;
-    SupportType m_supportType;
-    Weight m_weight;
-    Goal m_goal;
-    ICoords m_position;
-    ICoords m_move;
-    FCoords m_delta;
-    FCoords m_viewShift;
-    FCoords m_viewShiftSpeed;
-    Shape m_shape;
-    bool m_alive;
-    bool m_pushing;
-    bool m_driven;
-    bool m_hidden;
-    Action m_action;
-    Orientation m_orientation;
-    ModelAnim m_anim;
-    AudioSource::Ref m_talk;
-    ICoords m_touchDir;
-    float m_warp;
-    struct {
-        Effect name;
-        float startTime;
-    } m_effect;
-
-public:
     Model(int index, const std::string& type, int x, int y, const std::string& shape);
 
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
@@ -153,6 +125,33 @@ public:
 
     constexpr static auto baseTime = 300ms; // 3 frames at 10 FPS. Swimming animations have 6 frames, but that would be too slow. Only half will be seen unless motion continues in the same direction.
     constexpr static float warpIncrement = .2f;
+
+private:
+    int m_index;
+    Type m_type;
+    SupportType m_supportType;
+    Weight m_weight;
+    Goal m_goal;
+    ICoords m_position;
+    ICoords m_move;
+    FCoords m_delta;
+    FCoords m_viewShift;
+    FCoords m_viewShiftSpeed;
+    Shape m_shape;
+    bool m_alive;
+    bool m_pushing;
+    bool m_driven;
+    bool m_hidden;
+    Action m_action;
+    Orientation m_orientation;
+    ModelAnim m_anim;
+    AudioSource::Ref m_talk;
+    ICoords m_touchDir;
+    float m_warp;
+    struct {
+        Effect name;
+        float startTime;
+    } m_effect;
 };
 
 #endif //FISH_FILLETS_MODEL_H

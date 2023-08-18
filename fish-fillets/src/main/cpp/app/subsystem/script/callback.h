@@ -4,10 +4,6 @@
 #include <variant>
 
 class LuaCallback {
-    lua_State* m_state;
-    int m_ref;
-    int m_tries;
-
 public:
     LuaCallback() = delete;
     LuaCallback(const LuaCallback&) = delete;
@@ -21,6 +17,10 @@ public:
     bool operator()();
 
 private:
+    lua_State* m_state;
+    int m_ref;
+    int m_tries;
+
     LuaCallback(lua_State* L, int ref) : m_state(L), m_ref(ref), m_tries(0) { }
 };
 
