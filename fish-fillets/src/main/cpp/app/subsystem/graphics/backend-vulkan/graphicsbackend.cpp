@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h/graphicsbackend.h"
 
-struct GraphicsBackend::VulkanDetail {
+struct GraphicsBackend::Detail {
     vk::raii::Semaphore imageAvailableSemaphore;
     vk::raii::Semaphore renderFinishedSemaphore;
     vk::raii::Fence inFlightFence;
@@ -9,10 +9,10 @@ struct GraphicsBackend::VulkanDetail {
     const vk::Image* curImage;
 };
 
-std::unique_ptr<GraphicsBackend::VulkanDetail> GraphicsBackend::vulkanDetail() {
+GraphicsBackend::Detail* GraphicsBackend::backendDetail() {
     const auto& device = m_display.device();
 
-    return std::make_unique<VulkanDetail>(
+    return new Detail(
         vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
         vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
         vk::raii::Fence{device, vk::FenceCreateInfo{}.setFlags(vk::FenceCreateFlagBits::eSignaled)},
@@ -21,35 +21,8 @@ std::unique_ptr<GraphicsBackend::VulkanDetail> GraphicsBackend::vulkanDetail() {
     );
 }
 
-GraphicsBackend::GraphicsBackend(Instance& instance, BACKEND::Display&& display) :
-    m_graphics(instance.graphics()),
-    m_display(std::move(display)),
-    m_blurTargets{{
-        TextureTarget{*this, blurTargetDims(), FCoords{m_display.size()}},
-        TextureTarget{*this, blurTargetDims(), FCoords{m_display.size()}}}},
-    m_offscreenTarget{*this, m_display.size()},
-    m_shaders{instance, *this}
-{
-    m_detail = vulkanDetail();
-}
-
-GraphicsBackend::~GraphicsBackend() = default;
-
-void GraphicsBackend::resizeBuffers() {
-    m_display.recreateSwapchain();
-    auto dispSize = m_display.size();
-    m_offscreenTarget.resize(dispSize);
-    auto blurSize = blurTargetDims();
-    m_blurTargets[0].resize(blurSize, FCoords{dispSize});
-    m_blurTargets[1].resize(blurSize, FCoords{dispSize});
-}
-
-USize GraphicsBackend::blurTargetDims() {
-    auto dispSize = FCoords{m_display.size()};
-    auto scale = std::max(Graphics::baseDim.x / dispSize.x, Graphics::baseDim.y / dispSize.y);
-    auto size = (scale * dispSize).toSize();
-    Log::debug<Log::graphics>("Blur dims: ", size);
-    return size;
+GraphicsBackend::~GraphicsBackend() {
+    delete m_detail;
 }
 
 void GraphicsBackend::newFrame() {

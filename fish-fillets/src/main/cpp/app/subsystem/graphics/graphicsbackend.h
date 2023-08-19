@@ -22,7 +22,7 @@ public:
     void setScissor(ICoords from, ICoords to);
     void releaseScissor();
     void present(TextureTarget& target);
-    void resizeBuffers();
+    void notifyResize(USize sz);
 
 private:
     Graphics& m_graphics;
@@ -31,12 +31,10 @@ private:
     TextureTarget m_offscreenTarget;
     Shaders m_shaders;
     DrawTarget* m_curTarget;
-#ifdef FISH_FILLETS_USE_VULKAN
-    struct VulkanDetail;
-    std::unique_ptr<VulkanDetail> m_detail;
 
-    std::unique_ptr<VulkanDetail> vulkanDetail();
-#endif
+    struct Detail;
+    Detail* m_detail;
+    Detail* backendDetail();
 
     USize blurTargetDims();
 

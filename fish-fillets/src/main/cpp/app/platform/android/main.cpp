@@ -59,10 +59,11 @@ static void handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_WINDOW_RESIZED:
             Log::debug<Log::platform>("APP_CMD_WINDOW_RESIZED");
             Log::debug<Log::platform>("native window: ", ANativeWindow_getWidth(app->window), " ", ANativeWindow_getHeight(app->window));
+            instance.graphics().notifyResize({(unsigned)ANativeWindow_getWidth(app->window), (unsigned)ANativeWindow_getHeight(app->window)});
             break;
         case APP_CMD_WINDOW_REDRAW_NEEDED:
             Log::debug<Log::platform>("APP_CMD_WINDOW_REDRAW_NEEDED");
-            instance.graphics().setViewport({app->contentRect.left, ANativeWindow_getHeight(app->window) - app->contentRect.bottom}, {app->contentRect.right - app->contentRect.left, app->contentRect.bottom - app->contentRect.top});
+            //instance.graphics().setViewport({app->contentRect.left, ANativeWindow_getHeight(app->window) - app->contentRect.bottom}, {app->contentRect.right - app->contentRect.left, app->contentRect.bottom - app->contentRect.top});
             break;
         case APP_CMD_CONTENT_RECT_CHANGED:
             Log::debug<Log::platform>("APP_CMD_CONTENT_RECT_CHANGED");

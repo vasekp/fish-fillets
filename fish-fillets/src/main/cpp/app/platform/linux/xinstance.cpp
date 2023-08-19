@@ -52,7 +52,7 @@ void XInstance::dispatchEvent(const XEvent& event) {
                 if(size == m_lastSize)
                     break;
                 Log::debug<Log::platform>("Resize: ", size);
-                graphics().setViewport({0, 0}, ICoords{size});
+                graphics().notifyResize(size);
                 m_lastSize = size;
                 break;
             }

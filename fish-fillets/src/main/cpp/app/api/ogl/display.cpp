@@ -109,4 +109,10 @@ namespace ogl {
         eglSwapBuffers(m_display, m_surface);
     }
 
+    void Display::notifyResize(USize sz) {
+        m_origin = {};
+        m_size = sz;
+        Log::debug<Log::graphics>("display: resize ", m_size);
+    }
+
 }

@@ -14,6 +14,7 @@ namespace ogl {
 
         void setViewport(ICoords origin, ICoords size);
         USize size() const { return m_size; }
+        void notifyResize(USize sz);
 
         std::weak_ptr<int> ref() const { return {m_ref}; }
 

@@ -35,8 +35,6 @@ public:
     template<typename Target>
     vk::raii::DeviceMemory allocMemory(const Target& target, vk::MemoryPropertyFlags reqProperties) const;
 
-    void recreateSwapchain();
-
     const auto& device() const { return m_device; }
     const auto& queue() const { return *m_queue; }
     const auto& commandBuffer() const { return *m_commandBuffers[0]; }
@@ -50,6 +48,7 @@ public:
     auto width() const { return m_swapchainInfo.imageExtent.width; }
     auto height() const { return m_swapchainInfo.imageExtent.height; }
     USize size() const { return {width(), height()}; }
+    void notifyResize(USize sz);
 
 private:
     vk::raii::Context m_context;

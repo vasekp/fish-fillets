@@ -259,7 +259,7 @@ vk::SwapchainCreateInfoKHR Display::createSwapchainInfo(vk::SwapchainKHR old) {
     return swapchainInfo;
 }
 
-void Display::recreateSwapchain() {
+void Display::notifyResize(USize) {
     m_swapchainInfo = createSwapchainInfo(*m_swapchain);
     m_swapchain = vk::raii::SwapchainKHR{m_device, m_swapchainInfo};
     m_swapchainImages = m_swapchain.getImages();
