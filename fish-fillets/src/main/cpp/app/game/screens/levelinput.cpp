@@ -89,6 +89,7 @@ bool LevelInput::pointerDown(FCoords coords) {
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(now, coords);
     m_dirpad.state = DirpadState::wait;
+    m_dirpad.gotoPos = {};
     return false;
 }
 
@@ -208,12 +209,11 @@ void LevelInput::update() {
     auto now = std::chrono::steady_clock::now();
 
     // test for long press
-    if(m_dirpad.state == DirpadState::wait && now - m_dirpad.touchTime > longPressTime) {
-        // TODO only once
+    if(m_dirpad.state == DirpadState::wait && !m_dirpad.gotoPos && now - m_dirpad.touchTime > longPressTime) {
         auto coords = m_dirpad.history.front().second;
+        m_dirpad.gotoPos = coords; // prevent further tests until a new gesture, regardless of success
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-        bool ret = m_screen.input_goTo(windowCoords);
-        if(ret) {
+        if(m_screen.input_goTo(windowCoords)) {
             m_dirpad.gotoPos = coords;
             m_dirpad.state = DirpadState::goTo;
             m_pointerAction = true;
