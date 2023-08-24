@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
+    compileSdk 33
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'cz.absolutno.fillets'
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdk 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_shared'
