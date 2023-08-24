@@ -6,18 +6,14 @@ static constexpr std::chrono::steady_clock::time_point absolutePast{};
 AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
-        m_keyHandled(false),
         m_pointerFollow(false),
         m_pointerId(-1),
-        m_pointerDownTime(absolutePast),
-        m_pointerHandled(false),
         m_lastHover(noHover)
 { }
 
 void AndroidInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
-    m_pointerDownTime = absolutePast;
 }
 
 static Key AndroidKeymap(unsigned int code) {
@@ -60,7 +56,6 @@ bool AndroidInput::processEvent(AInputEvent* event) {
         auto index = (combined & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
         if(action == AMOTION_EVENT_ACTION_CANCEL) {
             inputSink.pointerCancel();
-            m_pointerDownTime = absolutePast;
             m_pointerFollow = false;
             return false;
         }
@@ -71,35 +66,30 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
             switch(action) {
                 case AMOTION_EVENT_ACTION_DOWN: {
-                    auto lastPointerTime = m_pointerDownTime;
-                    m_pointerDownTime = std::chrono::steady_clock::now();
-                    m_pointerCoords = coords;
                     m_pointerId = pointerId;
                     m_pointerFollow = true;
-                    m_pointerHandled = inputSink.pointerDown(coords);
                     jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
-                    return m_pointerHandled;
+                    return inputSink.pointerDown(coords);
                 }
                 case AMOTION_EVENT_ACTION_MOVE: {
                     if(!m_pointerFollow || pointerId != m_pointerId)
                         return false;
-                    m_pointerCoords = coords;
-                    return m_pointerHandled |= inputSink.pointerMove(coords);
+                    inputSink.pointerMove(coords);
+                    return true;
                 }
                 case AMOTION_EVENT_ACTION_UP: {
                     if(!m_pointerFollow)
                         return false;
+                    bool handled = false;
                     if(pointerId == m_pointerId)
-                        m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
-                    if(!m_pointerHandled) {
+                        handled = inputSink.pointerUp();
+                    if(!handled) {
                         jni->CallVoidMethod(jni.object(), jni.getMethod("showUI"));
-                        // keep m_pointerDownTime for double tap
                     } else {
                         jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
-                        m_pointerDownTime = absolutePast;
                     }
                     m_pointerFollow = false;
-                    return m_pointerHandled;
+                    return true;
                 }
                 case AMOTION_EVENT_ACTION_HOVER_ENTER:
                     [[fallthrough]];
@@ -120,12 +110,11 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             auto id1 = AMotionEvent_getPointerId(event, 1);
             if(id0 != m_pointerId && id1 != m_pointerId)
                 return false;
-            return m_pointerHandled |= inputSink.twoPointTap();
+            return inputSink.twoPointTap();
         } else if(action == AMOTION_EVENT_ACTION_POINTER_UP && AMotionEvent_getPointerId(event, index) == m_pointerId) {
-            m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
-            m_pointerDownTime = absolutePast;
+            inputSink.pointerUp();
             m_pointerFollow = false;
-            return m_pointerHandled;
+            return true;
         }
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
@@ -136,12 +125,12 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             if(m_lastKey != Key::none)
                 return false;
             m_lastKey = key;
-            return m_keyHandled = inputSink.keyDown(key);
+            return inputSink.keyDown(key);
         } else if(action == AKEY_EVENT_ACTION_UP) {
             if(key != m_lastKey)
                 return false;
             m_lastKey = Key::none;
-            return m_keyHandled;
+            return true;
         } else
             return false;
     }

@@ -23,7 +23,7 @@ public:
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;
     bool pointerMove(FCoords coords) override;
-    bool pointerUp(bool empty) override;
+    bool pointerUp() override;
     void pointerCancel() override;
     bool twoPointTap() override;
 
@@ -54,6 +54,7 @@ private:
         ICoords lastDir;
         ICoords lastNonzeroDir;
     } m_dirpad;
+    bool m_pointerAction;
 
     struct Button {
         ImageRef image;

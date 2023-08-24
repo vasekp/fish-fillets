@@ -20,13 +20,8 @@ private:
     Instance& m_instance;
 
     Key m_lastKey;
-    bool m_keyHandled;
 
     bool m_pointerFollow;
-    std::chrono::steady_clock::time_point m_lastPointerDownTime;
-    std::chrono::steady_clock::time_point m_pointerDownTime;
-    FCoords m_pointerCoords;
-    bool m_pointerHandled;
     FCoords m_lastHover;
 };
 

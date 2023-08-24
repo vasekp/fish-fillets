@@ -97,7 +97,7 @@ bool OptionsOverlay::pointerMove(FCoords coords) {
     return true;
 }
 
-bool OptionsOverlay::pointerUp(bool empty) {
+bool OptionsOverlay::pointerUp() {
     m_sliding = nullptr;
     return false;
 }

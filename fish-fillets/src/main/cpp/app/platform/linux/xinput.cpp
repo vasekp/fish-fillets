@@ -7,19 +7,13 @@ static constexpr std::chrono::steady_clock::time_point absolutePast{};
 XInput::XInput(Instance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
-        m_keyHandled(false),
         m_pointerFollow(false),
-        m_lastPointerDownTime(absolutePast),
-        m_pointerDownTime(absolutePast),
-        m_pointerHandled(false),
         m_lastHover(noHover)
 { }
 
 void XInput::reset() {
     m_lastKey = Key::none;
     m_pointerFollow = false;
-    m_lastPointerDownTime = absolutePast;
-    m_pointerDownTime = absolutePast;
 }
 
 Key XKeyMap(KeySym keysym) {
@@ -89,21 +83,17 @@ void XInput::buttonEvent(const XButtonEvent& event) {
     switch(event.type) {
     case ButtonPress:
         if(event.button == Button1) {
-            m_pointerDownTime = std::chrono::steady_clock::now();
-            m_pointerCoords = coords;
             m_pointerFollow = true;
-            m_pointerHandled = inputSink.pointerDown(coords);
+            inputSink.pointerDown(coords);
         } else if(event.button == Button3) {
-            m_pointerHandled |= inputSink.twoPointTap();
+            inputSink.twoPointTap();
         }
         break;
     case ButtonRelease:
         if(event.button == Button1) {
             if(!m_pointerFollow)
                 return;
-            m_pointerHandled |= inputSink.pointerUp(!m_pointerHandled);
-            m_lastPointerDownTime = m_pointerDownTime;
-            m_pointerDownTime = absolutePast;
+            inputSink.pointerUp();
             m_pointerFollow = false;
         }
         break;
@@ -115,8 +105,7 @@ void XInput::motionEvent(const XMotionEvent& event) {
     m_lastHover = coords;
     if(!m_pointerFollow || !(event.state & Button1Mask))
         return;
-    m_pointerCoords = coords;
-    m_pointerHandled |= m_instance.inputSink().pointerMove(coords);
+    m_instance.inputSink().pointerMove(coords);
 }
 
 Key XInput::pollKey() {

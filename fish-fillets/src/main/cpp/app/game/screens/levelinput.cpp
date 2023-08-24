@@ -30,6 +30,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_screen(screen),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
+        m_pointerAction(false),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_activeButton(nullptr),
         m_fishSmall(PNGImage::create(instance, "images/fishes/small/right/body_rest_00.png")),
@@ -74,15 +75,15 @@ bool LevelInput::pointerDown(FCoords coords) {
         return true;
     }
     auto now = std::chrono::steady_clock::now();
-    bool handled = false; // TODO here
+    m_pointerAction = false;
     if(m_dirpad.state == DirpadState::idle && now - m_dirpad.touchTime < doubleTapTime) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         if(!m_screen.input_switchFish(windowCoords))
-            handled = m_screen.keypress(Key::space);
+            m_pointerAction = m_screen.keypress(Key::space);
     }
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
-        return handled;
+        return m_pointerAction;
     }
     m_dirpad.touchTime = now;
     m_dirpad.history.clear();
@@ -136,6 +137,7 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_dirpad.lastNonzeroDir = dir;
                 m_dirpad.touchTime = now;
                 m_dirpad.state = DirpadState::follow;
+                m_pointerAction = true;
                 return true;
             } else
                 return false;
@@ -155,7 +157,7 @@ bool LevelInput::pointerMove(FCoords coords) {
     }
 }
 
-bool LevelInput::pointerUp(bool empty) {
+bool LevelInput::pointerUp() {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != nullptr) {
@@ -163,7 +165,7 @@ bool LevelInput::pointerUp(bool empty) {
             m_screen.keypress(m_activeButton->key);
         return true;
     }
-    if(empty)
+    if(!m_pointerAction) // if nothing happened in this gesture
         m_screen.keypress(Key::interrupt);
     return false;
 }
@@ -174,6 +176,7 @@ void LevelInput::pointerCancel() {
 
 bool LevelInput::twoPointTap() {
     m_screen.keypress(Key::skip);
+    m_pointerAction = true;
     return true;
 }
 
@@ -213,13 +216,14 @@ void LevelInput::update() {
 
     // test for long press
     if(m_dirpad.state == DirpadState::wait && now - m_dirpad.touchTime > longPressTime) {
+        // TODO only once
         auto coords = m_dirpad.history.front().second;
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         bool ret = m_screen.input_goTo(windowCoords);
         if(ret) {
             m_dirpad.gotoPos = coords;
             m_dirpad.state = DirpadState::goTo;
-            // TODO handled
+            m_pointerAction = true;
         }
     }
 
