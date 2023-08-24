@@ -25,12 +25,10 @@ public:
     bool pointerMove(FCoords coords) override;
     bool pointerUp(bool empty) override;
     void pointerCancel() override;
-    bool longPress(FCoords coords) override;
-    bool doubleTap(FCoords coords) override;
     bool twoPointTap() override;
 
     void resize();
-    void update();
+    void update() override;
     void draw(DrawTarget& target);
     Key poll();
 

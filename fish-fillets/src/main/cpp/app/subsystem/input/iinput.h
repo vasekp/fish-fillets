@@ -7,7 +7,6 @@ class IInputSource {
 public:
     virtual ~IInputSource() { }
     virtual Key pollKey() { return Key::none; }
-    virtual void ping() { }
     virtual void reset() { }
     virtual FCoords hover() { return noHover; }
 
@@ -23,9 +22,8 @@ public:
     virtual bool pointerMove(FCoords coords) { return false; }
     virtual bool pointerUp(bool empty) { return false; }
     virtual void pointerCancel() { }
-    virtual bool longPress(FCoords coords) { return false; }
-    virtual bool doubleTap(FCoords coords) { return false; }
     virtual bool twoPointTap() { return false; }
+    virtual void update() { }
     virtual ~IInputSink() { }
 };
 

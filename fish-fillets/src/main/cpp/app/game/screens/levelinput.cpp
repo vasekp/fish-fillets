@@ -9,6 +9,8 @@ static constexpr float buttonDistance = 35.f;
 static constexpr float arrowSize = 64.f;
 static constexpr float buttonSize = 48.f;
 static constexpr float buttonFontSize = 40.f;
+static constexpr auto doubleTapTime = 300ms;
+static constexpr auto longPressTime = 500ms;
 static constexpr auto dirpadAppearTime = 300ms;
 static constexpr auto dirpadHistoryLength = 100ms;
 static constexpr auto dirpadRepeatDelay = 500ms;
@@ -71,13 +73,20 @@ bool LevelInput::pointerDown(FCoords coords) {
         m_activeButton = button;
         return true;
     }
+    auto now = std::chrono::steady_clock::now();
+    bool handled = false; // TODO here
+    if(m_dirpad.state == DirpadState::idle && now - m_dirpad.touchTime < doubleTapTime) {
+        auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
+        if(!m_screen.input_switchFish(windowCoords))
+            handled = m_screen.keypress(Key::space);
+    }
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
-        return false;
+        return handled;
     }
-    m_dirpad.touchTime = std::chrono::steady_clock::now();
+    m_dirpad.touchTime = now;
     m_dirpad.history.clear();
-    m_dirpad.history.emplace_front(std::chrono::steady_clock::now(), coords);
+    m_dirpad.history.emplace_front(now, coords);
     m_dirpad.state = DirpadState::wait;
     return false;
 }
@@ -163,44 +172,9 @@ void LevelInput::pointerCancel() {
     m_dirpad.state = DirpadState::idle;
 }
 
-bool LevelInput::doubleTap(FCoords coords) {
-    if(auto button = findButton(coords); button != nullptr && button->enabled) {
-        m_dirpad.state = DirpadState::button;
-        m_activeButton = button;
-        return true;
-    }
-    auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-    bool ret = false;
-    if(!m_screen.input_switchFish(windowCoords))
-        ret = m_screen.keypress(Key::space);
-    if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
-        m_dirpad.state = DirpadState::ignore;
-        return ret;
-    }
-    auto now = std::chrono::steady_clock::now();
-    m_dirpad.touchTime = now;
-    m_dirpad.history.clear();
-    m_dirpad.history.emplace_front(now, coords);
-    m_dirpad.state = DirpadState::wait;
-    return true;
-}
-
 bool LevelInput::twoPointTap() {
     m_screen.keypress(Key::skip);
     return true;
-}
-
-bool LevelInput::longPress(FCoords coords) {
-    if(m_dirpad.state == DirpadState::wait) {
-        auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
-        bool ret = m_screen.input_goTo(windowCoords);
-        if(ret) {
-            m_dirpad.gotoPos = coords;
-            m_dirpad.state = DirpadState::goTo;
-        }
-        return ret;
-    } else
-        return false;
 }
 
 void LevelInput::resize() {
@@ -235,8 +209,21 @@ void LevelInput::flashButton(Key which) {
 }
 
 void LevelInput::update() {
-    // update buttons
     auto now = std::chrono::steady_clock::now();
+
+    // test for long press
+    if(m_dirpad.state == DirpadState::wait && now - m_dirpad.touchTime > longPressTime) {
+        auto coords = m_dirpad.history.front().second;
+        auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
+        bool ret = m_screen.input_goTo(windowCoords);
+        if(ret) {
+            m_dirpad.gotoPos = coords;
+            m_dirpad.state = DirpadState::goTo;
+            // TODO handled
+        }
+    }
+
+    // update buttons
     for(auto& button : m_buttons) {
         if(button.flashing) {
             if(button.flashTime == absolutePast)
@@ -304,7 +291,7 @@ void LevelInput::drawDirpad(DrawTarget& target) {
     });
     auto color = m_activeFish == Model::Fish::small ? colorSmall : colorBig;
 
-    for([[maybe_unused]] auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
+    for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right}) {
         program.params().direction = FCoords{dir};
         bool active = (m_dirpad.state == DirpadState::follow && dir == m_dirpad.lastNonzeroDir) || m_dirpad.state == DirpadState::goTo;
         float alpha = (active ? alphaActive : alphaBase) * baseAlpha;

@@ -12,7 +12,6 @@ public:
     void keyEvent(const XKeyEvent& xkey);
     void buttonEvent(const XButtonEvent& xbutton);
     void motionEvent(const XMotionEvent& xmotion);
-    void ping() override;
     Key pollKey() override;
     void reset() override;
     FCoords hover() override;

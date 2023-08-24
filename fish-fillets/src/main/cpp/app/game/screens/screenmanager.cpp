@@ -60,6 +60,7 @@ void ScreenManager::useNext() {
 void ScreenManager::updateAll() {
     if(m_next)
         useNext();
+    input().update();
     curScreen().update();
     m_title.update();
 }

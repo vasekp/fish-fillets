@@ -49,7 +49,6 @@ void Instance::init() {
 
 void Instance::updateAndDraw() {
     audio().ping();
-    inputSource().ping();
     screens().updateAll();
     screens().drawFrame();
 }

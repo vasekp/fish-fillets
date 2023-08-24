@@ -2,8 +2,6 @@
 #include "xinput.h"
 #include <X11/keysym.h>
 
-static constexpr auto doubletapTime = 300ms;
-static constexpr auto longpressTime = 500ms;
 static constexpr std::chrono::steady_clock::time_point absolutePast{};
 
 XInput::XInput(Instance& instance) :
@@ -94,10 +92,7 @@ void XInput::buttonEvent(const XButtonEvent& event) {
             m_pointerDownTime = std::chrono::steady_clock::now();
             m_pointerCoords = coords;
             m_pointerFollow = true;
-            if(m_pointerDownTime - m_lastPointerDownTime < doubletapTime)
-                m_pointerHandled = inputSink.doubleTap(coords);
-            else
-                m_pointerHandled = inputSink.pointerDown(coords);
+            m_pointerHandled = inputSink.pointerDown(coords);
         } else if(event.button == Button3) {
             m_pointerHandled |= inputSink.twoPointTap();
         }
@@ -122,13 +117,6 @@ void XInput::motionEvent(const XMotionEvent& event) {
         return;
     m_pointerCoords = coords;
     m_pointerHandled |= m_instance.inputSink().pointerMove(coords);
-}
-
-void XInput::ping() {
-    if(m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerCoords);
-        m_pointerDownTime = absolutePast;
-    }
 }
 
 Key XInput::pollKey() {

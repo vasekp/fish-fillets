@@ -76,8 +76,6 @@ void LevelScreen::own_update() {
         m_flashAlpha = std::max(m_flashAlpha - dt / flashDecay * flashInit, 0.f);
 
     m_subs.update(time);
-    m_input.update();
-
     m_lastUpdate = time;
 }
 

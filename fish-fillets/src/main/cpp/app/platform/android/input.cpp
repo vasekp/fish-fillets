@@ -1,8 +1,6 @@
 #include "input.h"
 #include "ainstance.h"
 
-static constexpr auto doubletapTime = 300ms;
-static constexpr auto longpressTime = 500ms;
 static constexpr std::chrono::steady_clock::time_point absolutePast{};
 
 AndroidInput::AndroidInput(AndroidInstance& instance) :
@@ -78,10 +76,7 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     m_pointerCoords = coords;
                     m_pointerId = pointerId;
                     m_pointerFollow = true;
-                    if(m_pointerDownTime - lastPointerTime < doubletapTime)
-                        m_pointerHandled = inputSink.doubleTap(coords);
-                    else
-                        m_pointerHandled = inputSink.pointerDown(coords);
+                    m_pointerHandled = inputSink.pointerDown(coords);
                     jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
                     return m_pointerHandled;
                 }
@@ -151,13 +146,6 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             return false;
     }
     return false;
-}
-
-void AndroidInput::ping() {
-    if(m_pointerFollow && m_pointerDownTime != absolutePast && std::chrono::steady_clock::now() > m_pointerDownTime + longpressTime) {
-        m_pointerHandled |= m_instance.inputSink().longPress(m_pointerCoords);
-        m_pointerDownTime = absolutePast;
-    }
 }
 
 Key AndroidInput::pollKey() {

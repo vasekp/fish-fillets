@@ -106,10 +106,6 @@ void OptionsOverlay::pointerCancel() {
     m_sliding = nullptr;
 }
 
-bool OptionsOverlay::doubleTap(FCoords coords) {
-    return pointerDown(coords);
-}
-
 bool OptionsOverlay::keyDown(Key key) {
     hide();
     return true;

@@ -13,7 +13,6 @@ public:
 
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;
-    bool doubleTap(FCoords coords) override;
 
 private:
     Instance& m_instance;
