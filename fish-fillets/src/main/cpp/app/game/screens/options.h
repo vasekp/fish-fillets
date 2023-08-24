@@ -20,7 +20,7 @@ public:
     void draw(DrawTarget& target);
     bool pointerDown(FCoords coords) override;
     void pointerMove(FCoords coords) override;
-    bool pointerUp() override;
+    void pointerUp() override;
     void pointerCancel() override;
     bool keyDown(Key key) override;
 

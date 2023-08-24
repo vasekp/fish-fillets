@@ -152,17 +152,15 @@ void LevelInput::pointerMove(FCoords coords) {
     }
 }
 
-bool LevelInput::pointerUp() {
+void LevelInput::pointerUp() {
     auto lastState = m_dirpad.state;
     m_dirpad.state = DirpadState::idle;
     if(lastState == DirpadState::button && m_activeButton != nullptr) {
         if(m_activeButton->enabled)
             m_screen.keypress(m_activeButton->key);
-        return true;
     }
     if(!m_pointerAction) // if nothing happened in this gesture
         m_screen.keypress(Key::interrupt);
-    return m_pointerAction;
 }
 
 void LevelInput::pointerCancel() {

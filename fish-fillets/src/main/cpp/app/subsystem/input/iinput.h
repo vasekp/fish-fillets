@@ -20,7 +20,7 @@ public:
     virtual bool keyDown(Key key) { return false; }
     virtual bool pointerDown(FCoords coords) { return false; }
     virtual void pointerMove(FCoords coords) { }
-    virtual bool pointerUp() { return false; }
+    virtual void pointerUp() { }
     virtual void pointerCancel() { }
     virtual bool twoPointTap() { return false; }
     virtual void update() { }

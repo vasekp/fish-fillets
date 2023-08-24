@@ -97,10 +97,8 @@ void OptionsOverlay::pointerMove(FCoords coords) {
     m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100.f));
 }
 
-bool OptionsOverlay::pointerUp() {
-    bool ret = m_sliding;
+void OptionsOverlay::pointerUp() {
     m_sliding = nullptr;
-    return ret;
 }
 
 void OptionsOverlay::pointerCancel() {
