@@ -75,12 +75,13 @@ bool LevelInput::pointerDown(FCoords coords) {
         return true;
     }
     auto now = std::chrono::steady_clock::now();
-    m_pointerAction = false;
-    if(m_dirpad.state == DirpadState::idle && now - m_dirpad.touchTime < doubleTapTime) {
+    if(m_dirpad.state == DirpadState::idle && now - m_dirpad.touchTime < doubleTapTime && !m_pointerAction) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         if(!m_screen.input_switchFish(windowCoords))
-            m_pointerAction = m_screen.keypress(Key::space);
-    }
+            m_screen.keypress(Key::space);
+        m_pointerAction = true;
+    } else
+        m_pointerAction = false;
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
         return false;
