@@ -19,7 +19,7 @@ public:
 
     void draw(DrawTarget& target);
     bool pointerDown(FCoords coords) override;
-    bool pointerMove(FCoords coords) override;
+    void pointerMove(FCoords coords) override;
     bool pointerUp() override;
     void pointerCancel() override;
     bool keyDown(Key key) override;
@@ -53,6 +53,7 @@ private:
 
     std::string m_currSubs;
 
+    bool slider(FCoords coords);
     static float exp(float x);
     static float log(float v);
 };

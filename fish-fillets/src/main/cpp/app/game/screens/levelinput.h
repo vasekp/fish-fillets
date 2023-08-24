@@ -22,7 +22,7 @@ public:
 
     bool keyDown(Key key) override;
     bool pointerDown(FCoords coords) override;
-    bool pointerMove(FCoords coords) override;
+    void pointerMove(FCoords coords) override;
     bool pointerUp() override;
     void pointerCancel() override;
     bool twoPointTap() override;

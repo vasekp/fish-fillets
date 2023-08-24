@@ -19,7 +19,7 @@ class IInputSink {
 public:
     virtual bool keyDown(Key key) { return false; }
     virtual bool pointerDown(FCoords coords) { return false; }
-    virtual bool pointerMove(FCoords coords) { return false; }
+    virtual void pointerMove(FCoords coords) { }
     virtual bool pointerUp() { return false; }
     virtual void pointerCancel() { }
     virtual bool twoPointTap() { return false; }

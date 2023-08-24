@@ -75,7 +75,8 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
     for(const auto& bar : m_volbars)
         if(lcoords.within(bar.from, bar.to)) {
             m_sliding = &bar;
-            return pointerMove(coords);
+            pointerMove(coords);
+            return true;
         }
     for(const auto& button : m_buttons)
         if(lcoords.within(button.origin, button.origin + Button::size)) {
@@ -86,20 +87,20 @@ bool OptionsOverlay::pointerDown(FCoords coords) {
     return false;
 }
 
-bool OptionsOverlay::pointerMove(FCoords coords) {
+void OptionsOverlay::pointerMove(FCoords coords) {
     if(!m_sliding)
-        return false;
+        return;
     const auto& bar = *m_sliding;
     auto lcoords = m_instance.graphics().coords(Graphics::CoordSystems::base).out2in(coords) - m_origin;
     float volume = exp(std::clamp((lcoords.x - bar.origin.x) / volLength, 0.f, 1.f));
     m_instance.audio().setVolume(bar.type, volume);
     m_instance.persist().set("volume_"s + bar.typeString, (int)(volume * 100.f));
-    return true;
 }
 
 bool OptionsOverlay::pointerUp() {
+    bool ret = m_sliding;
     m_sliding = nullptr;
-    return false;
+    return ret;
 }
 
 void OptionsOverlay::pointerCancel() {

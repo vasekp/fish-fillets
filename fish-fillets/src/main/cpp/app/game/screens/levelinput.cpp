@@ -83,19 +83,19 @@ bool LevelInput::pointerDown(FCoords coords) {
     }
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
-        return m_pointerAction;
+        return false;
     }
     m_dirpad.touchTime = now;
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(now, coords);
     m_dirpad.state = DirpadState::wait;
-    return false;
+    return true;
 }
 
-bool LevelInput::pointerMove(FCoords coords) {
+void LevelInput::pointerMove(FCoords coords) {
     if(m_dirpad.state == DirpadState::button) {
         m_activeButton = findButton(coords);
-        return true;
+        return;
     }
     auto now = std::chrono::steady_clock::now();
     m_dirpad.history.emplace_front(now, coords);
@@ -120,9 +120,7 @@ bool LevelInput::pointerMove(FCoords coords) {
     switch (m_dirpad.state) {
         case DirpadState::idle:
             Log::error("Inconsistent dirpad state");
-            return false;
-        case DirpadState::ignore:
-            return false;
+            return;
         case DirpadState::goTo:
             if((coords - m_dirpad.gotoPos).length() > maxDriftGoto * cscale) {
                 m_dirpad.state = DirpadState::wait;
@@ -138,9 +136,8 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_dirpad.touchTime = now;
                 m_dirpad.state = DirpadState::follow;
                 m_pointerAction = true;
-                return true;
-            } else
-                return false;
+            }
+            return;
         case DirpadState::follow:
             if(small && timeDiff > dirpadHistoryLength)
                 m_dirpad.lastDir = {};
@@ -149,11 +146,9 @@ bool LevelInput::pointerMove(FCoords coords) {
                 m_screen.keypress(Input::toKey(dir));
                 m_dirpad.lastNonzeroDir = m_dirpad.lastDir = dir;
             }
-            return true;
-        case DirpadState::button: // handled earlier
-            return true;
+            return;
         default:
-            std::unreachable();
+            break;
     }
 }
 

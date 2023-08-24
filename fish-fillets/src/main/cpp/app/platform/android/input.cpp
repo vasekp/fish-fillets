@@ -69,7 +69,8 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     m_pointerId = pointerId;
                     m_pointerFollow = true;
                     jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
-                    return inputSink.pointerDown(coords);
+                    inputSink.pointerDown(coords);
+                    return true;
                 }
                 case AMOTION_EVENT_ACTION_MOVE: {
                     if(!m_pointerFollow || pointerId != m_pointerId)
