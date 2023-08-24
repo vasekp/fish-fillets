@@ -57,6 +57,7 @@ void Graphics::present(TextureTarget& target) {
 
 void Graphics::recalc() {
     auto displayDim = FCoords{m_backend->display().size()};
+    m_coords[null].size = displayDim;
     float scale0 = std::min(displayDim.x / baseDim.x, displayDim.y / baseDim.y);
     m_coords[base] = {(displayDim - scale0 * baseDim) / 2.f, scale0, baseDim};
     constexpr float buttonStripWidth = 64.f;

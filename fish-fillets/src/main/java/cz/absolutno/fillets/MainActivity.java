@@ -30,7 +30,6 @@ public class MainActivity extends NativeActivity {
     private static final String TAG = "Fillets";
 
     private final Map<String, Typeface> fontMap = new HashMap<>();
-    private Handler uiHandler;
 
     static {
         System.loadLibrary("fillets");
@@ -50,8 +49,6 @@ public class MainActivity extends NativeActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        uiHandler = new Handler(getMainLooper());
     }
 
     Bitmap loadBitmap(String filename) {
@@ -124,30 +121,7 @@ public class MainActivity extends NativeActivity {
         return bitmap;
     }
 
-    void showUI() {
-        uiHandler.postDelayed(showUIRunnable, 300);
-        uiHandler.postDelayed(hideUIRunnable, 2000);
-    }
-
-    void hideUI() {
-        uiHandler.removeCallbacks(showUIRunnable);
-        uiHandler.removeCallbacks(hideUIRunnable);
-        uiHandler.post(hideUIRunnable);
-    }
-
     String getLang() {
         return getResources().getConfiguration().locale.getLanguage();
     }
-
-    private final Runnable showUIRunnable = () -> {
-        if (Build.VERSION.SDK_INT >= 30) {
-            getWindow().getInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-        }
-    };
-
-    private final Runnable hideUIRunnable = () -> {
-        if (Build.VERSION.SDK_INT >= 30) {
-            getWindow().getInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-        }
-    };
 }

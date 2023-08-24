@@ -14,8 +14,6 @@ AndroidInstance::AndroidInstance(android_app* androidApp):
     jni.addMethod("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
     jni.addMethod("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
     jni.addMethod("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
-    jni.addMethod("showUI", "()V");
-    jni.addMethod("hideUI", "()V");
     jni.addMethod("getLang", "()Ljava/lang/String;");
 
     init();

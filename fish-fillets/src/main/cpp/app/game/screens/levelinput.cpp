@@ -89,7 +89,7 @@ bool LevelInput::pointerDown(FCoords coords) {
     m_dirpad.history.clear();
     m_dirpad.history.emplace_front(now, coords);
     m_dirpad.state = DirpadState::wait;
-    return true;
+    return false;
 }
 
 void LevelInput::pointerMove(FCoords coords) {
@@ -162,7 +162,7 @@ bool LevelInput::pointerUp() {
     }
     if(!m_pointerAction) // if nothing happened in this gesture
         m_screen.keypress(Key::interrupt);
-    return false;
+    return m_pointerAction;
 }
 
 void LevelInput::pointerCancel() {

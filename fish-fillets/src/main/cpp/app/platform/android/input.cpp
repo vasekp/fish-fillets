@@ -1,7 +1,9 @@
 #include "input.h"
 #include "ainstance.h"
+#include "subsystem/graphics.h"
 
 static constexpr std::chrono::steady_clock::time_point absolutePast{};
+static constexpr float edgePercentage = 0.07f;
 
 AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_instance(instance),
@@ -66,10 +68,17 @@ bool AndroidInput::processEvent(AInputEvent* event) {
             FCoords coords{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
             switch(action) {
                 case AMOTION_EVENT_ACTION_DOWN: {
+                    auto size = m_instance.graphics().coords(Graphics::null).size;
+                    auto edge = edgePercentage * std::min(size.x, size.y);
+                    auto edges = FCoords{edge, edge};
                     m_pointerId = pointerId;
                     m_pointerFollow = true;
-                    jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
-                    inputSink.pointerDown(coords);
+                    auto ret = inputSink.pointerDown(coords);
+                    if(!coords.within(edges, size - edges) && !ret) {
+                        inputSink.pointerUp();
+                        m_pointerFollow = false;
+                        return false;
+                    }
                     return true;
                 }
                 case AMOTION_EVENT_ACTION_MOVE: {
@@ -78,20 +87,13 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                     inputSink.pointerMove(coords);
                     return true;
                 }
-                case AMOTION_EVENT_ACTION_UP: {
+                case AMOTION_EVENT_ACTION_UP:
                     if(!m_pointerFollow)
                         return false;
-                    bool handled = false;
                     if(pointerId == m_pointerId)
-                        handled = inputSink.pointerUp();
-                    if(!handled) {
-                        jni->CallVoidMethod(jni.object(), jni.getMethod("showUI"));
-                    } else {
-                        jni->CallVoidMethod(jni.object(), jni.getMethod("hideUI"));
-                    }
+                        inputSink.pointerUp();
                     m_pointerFollow = false;
                     return true;
-                }
                 case AMOTION_EVENT_ACTION_HOVER_ENTER:
                     [[fallthrough]];
                 case AMOTION_EVENT_ACTION_HOVER_MOVE:
