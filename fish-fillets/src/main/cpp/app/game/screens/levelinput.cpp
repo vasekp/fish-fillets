@@ -30,6 +30,7 @@ LevelInput::LevelInput(Instance& instance, LevelScreen& screen) :
         m_screen(screen),
         m_activeFish(Model::Fish::none),
         m_dirpad({DirpadState::ignore}),
+        m_lastTouchTime(absolutePast),
         m_pointerAction(false),
         m_buttonsFont(decoders::ttf(instance, fontFilename)),
         m_activeButton(nullptr),
@@ -75,13 +76,14 @@ bool LevelInput::pointerDown(FCoords coords) {
         return true;
     }
     auto now = std::chrono::steady_clock::now();
-    if(m_dirpad.state == DirpadState::idle && now - m_dirpad.touchTime < doubleTapTime && !m_pointerAction) {
+    if(now - m_lastTouchTime < doubleTapTime && !m_pointerAction) {
         auto windowCoords = m_instance.graphics().coords(Graphics::CoordSystems::window).out2in(coords);
         if(!m_screen.input_switchFish(windowCoords))
             m_screen.keypress(Key::space);
         m_pointerAction = true;
     } else
         m_pointerAction = false;
+    m_lastTouchTime = now;
     if(m_activeFish == Model::Fish::none || !m_screen.level().activeFishReady()) {
         m_dirpad.state = DirpadState::ignore;
         return false;

@@ -195,7 +195,6 @@ void LevelRules::moveFish(Direction d) {
     if(m_layout.borderDir(m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
         return;
     for(const auto* model : obs) {
-      Log::debug<Log::motion>(m_layout.borderDir(model), d);
         if(m_layout.borderDir(model) == d && model->goal() != Model::Goal::escape)
             return;
     }

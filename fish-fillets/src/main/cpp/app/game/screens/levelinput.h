@@ -54,6 +54,7 @@ private:
         ICoords lastDir;
         ICoords lastNonzeroDir;
     } m_dirpad;
+    std::chrono::steady_clock::time_point m_lastTouchTime;
     bool m_pointerAction;
 
     struct Button {
