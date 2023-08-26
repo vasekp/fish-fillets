@@ -15,7 +15,6 @@
             android:name=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:resizeableActivity="false"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"

@@ -2,6 +2,7 @@ package cz.absolutno.fillets;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -48,9 +49,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Vi
         view.setLayoutParams(new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         setContentView(view);
         if (Build.VERSION.SDK_INT >= 30) {
-            WindowInsetsController insetsController = getWindow().getInsetsController();
-            insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            if(!isInMultiWindowMode()) {
+                WindowInsetsController insetsController = getWindow().getInsetsController();
+                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
@@ -62,6 +65,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Vi
 
         view.getHolder().addCallback(this);
         view.setOnHoverListener(this);
+
     }
 
     @Override
@@ -129,6 +133,28 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Vi
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(TAG, "surfaceDestroyed (Java)");
         setSurface(libHandle, null);
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        Log.d(TAG, "onmwmc");
+        if(isInMultiWindowMode) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                WindowInsetsController insetsController = getWindow().getInsetsController();
+                insetsController.show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            } else {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= 30) {
+                WindowInsetsController insetsController = getWindow().getInsetsController();
+                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            } else {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        }
     }
 
     Bitmap loadBitmap(String filename) {
