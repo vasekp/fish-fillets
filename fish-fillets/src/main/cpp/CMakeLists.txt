@@ -85,7 +85,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             "${FILLETS_DIR}/platform/android/files/user.cpp"
             "${FILLETS_DIR}/platform/android/input.cpp"
             "${FILLETS_DIR}/platform/android/log.cpp"
-            "${FILLETS_DIR}/platform/android/main.cpp"
+            "${FILLETS_DIR}/platform/android/glue.cpp"
             "${FILLETS_DIR}/platform/android/oboestream.cpp"
             "${FILLETS_DIR}/api/jni.cpp")
 else()
@@ -119,9 +119,6 @@ else()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    add_library(native_app_glue STATIC
-            ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-
     set(CMAKE_SHARED_LINKER_FLAGS
             "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
@@ -204,7 +201,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 
     target_link_libraries(fillets
             android
-            native_app_glue
             jnigraphics
             mediandk
             oboe::oboe

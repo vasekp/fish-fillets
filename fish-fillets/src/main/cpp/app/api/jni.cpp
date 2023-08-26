@@ -1,10 +1,8 @@
 #include "jni.h"
 
 namespace jni {
-    Env::Env(android_app* app) :
-            m_vm(app->activity->vm),
-            m_env(),
-            m_obj(app->activity->clazz) // android NDK misnomer
+    Env::Env(JavaVM* vm, jobject obj) :
+        m_vm(vm), m_env(), m_obj(obj)
     {
         m_vm->AttachCurrentThread(&m_env, nullptr);
         m_class = m_env->GetObjectClass(m_obj);

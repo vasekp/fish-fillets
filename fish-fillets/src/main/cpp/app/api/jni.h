@@ -3,18 +3,17 @@
 
 #include "common.h"
 #include <jni.h>
-#include <android_native_app_glue.h>
 
 namespace jni {
     class Env {
     public:
-        Env(android_app* app);
+        Env(JavaVM* vm, jobject obj);
         Env(const Env&) = delete;
         Env& operator=(const Env&) = delete;
         ~Env();
 
-        operator ::JNIEnv*() const { return m_env; }
-        ::JNIEnv* operator->() const { return m_env; }
+        operator JNIEnv*() const { return m_env; }
+        JNIEnv* operator->() const { return m_env; }
 
         jobject object() const { return m_obj; }
         void addMethod(const char* name, const char* sig);
@@ -22,7 +21,7 @@ namespace jni {
 
     private:
         JavaVM* m_vm;
-        ::JNIEnv* m_env;
+        JNIEnv* m_env;
         jclass m_class;
         jobject m_obj;
         std::map<std::string, jmethodID> m_methods;

@@ -1,16 +1,15 @@
 #include "ainstance.h"
 #include "game/screens/screenmanager.h"
+#include "glue.h"
 
-AndroidInstance::AndroidInstance(android_app* androidApp):
-        Instance(std::make_unique<AndroidFiles>(androidApp)),
-        app(androidApp),
-        jni(androidApp),
-        live(false),
-        m_input(*this),
-        m_sink(*this)
+AndroidInstance::AndroidInstance(Glue& glue, jni::Env& env, jobject jAMgr, std::string&& userPath) :
+    Instance(std::make_unique<AndroidFiles>(env, jAMgr, std::move(userPath))),
+    jni(env),
+    live(false),
+    m_glue(glue),
+    m_input(*this),
+    m_sink(*this)
 {
-    app->userData = this;
-
     jni.addMethod("loadBitmap", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
     jni.addMethod("breakLines", "(Ljava/lang/String;Ljava/lang/String;FI)[Ljava/lang/String;");
     jni.addMethod("renderText", "(Ljava/lang/String;Ljava/lang/String;FF)Landroid/graphics/Bitmap;");
@@ -32,7 +31,7 @@ void AndroidInstance::own_pause() {
 }
 
 void AndroidInstance::own_quit() {
-    ANativeActivity_finish(app->activity);
+    m_glue.closeActivity();
 }
 
 std::string AndroidInstance::lang() {

@@ -7,16 +7,19 @@
 #include "files.h"
 #include "input.h"
 #include "oboesink.h"
+#include <thread>
+#include <android/asset_manager_jni.h>
 
 struct android_app;
+class Glue;
 
 class AndroidInstance : public Instance {
 public:
-    android_app* app;
-    jni::Env jni;
+    jni::Env& jni;
     bool live;
 
-    AndroidInstance(android_app* androidApp);
+    AndroidInstance(Glue& glue, jni::Env& env, jobject jAMgr, std::string&& userPath);
+    virtual ~AndroidInstance() = default;
 
     static AndroidInstance& get(android_app* app);
 
@@ -26,6 +29,7 @@ public:
     OboeSink& oboe() { return m_sink; }
 
 private:
+    Glue& m_glue;
     AndroidInput m_input;
     OboeSink m_sink;
 
