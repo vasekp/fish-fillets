@@ -43,7 +43,7 @@ public:
 private:
     AudioData::Ref m_data;
     std::size_t m_samplesTotal;
-    std::size_t m_sampleIndex;
+    std::atomic<std::size_t> m_sampleIndex;
     bool m_repeat;
 };
 

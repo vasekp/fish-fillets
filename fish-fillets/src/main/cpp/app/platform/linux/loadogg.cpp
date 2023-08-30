@@ -58,15 +58,14 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
         Log::verbose<Log::audio>("numSamples: ", numSamples);
     }
 
-    auto ret = AudioData::create(filename, numSamples);
+    auto ref = AudioData::create(filename, numSamples);
     std::thread([=] () mutable {
-        auto data = ret->data();
+        auto data = ref->data();
         std::size_t curSample = 0;
         while(true) {
             float** buffer;
             int section;
-            auto ret = ov_read_float(&vf, &buffer, 1, &section);
-            if(ret > 0) {
+            if(auto ret = ov_read_float(&vf, &buffer, 1, &section); ret > 0) {
                 auto samplesRead = (std::size_t)ret;
                 if(doubleSample) {
                     assert(curSample + 2u * samplesRead <= numSamples);
@@ -82,6 +81,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                     std::memcpy(&data[curSample], buffer[0], samplesRead * sizeof(float));
                     curSample += samplesRead;
                 }
+                ref->m_samplesAvail.store(curSample, std::memory_order::release);
             } else if(ret == 0)
                 break;
             else {
@@ -93,5 +93,5 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
         ov_clear(&vf);
     }).detach();
 
-    return ret;
+    return ref;
 }

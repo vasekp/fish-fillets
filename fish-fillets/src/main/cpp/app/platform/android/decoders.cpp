@@ -154,6 +154,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 } else
                     curSample += samplesRead;
                 AMediaCodec_releaseOutputBuffer(codec, outIndex, false);
+                ret->m_samplesAvail.store(curSample, std::memory_order::release);
             } else
                 switch(outIndex) {
                     case AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED: {
@@ -169,7 +170,6 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                         break;
                 }
         } while(!(extractorDone && codecDone));
-        numSamples = curSample;
         Log::debug<Log::audio>("loadSoundAsync ", filename, ": decoded ", curSample, " frames");
 
         AMediaFormat_delete(format);

@@ -11,7 +11,8 @@ public:
             m_filename(std::move(filename)),
             m_data(std::make_unique<float[]>(numSamples)),
             m_samples(numSamples),
-            m_loopStart(0)
+            m_loopStart(0),
+            m_samplesAvail(0)
     { }
 
     AudioData(AudioData&) = delete;
@@ -38,6 +39,9 @@ private:
     std::unique_ptr<float[]> m_data;
     std::size_t m_samples;
     std::size_t m_loopStart;
+
+public:
+    std::atomic<std::size_t> m_samplesAvail;
 };
 
 #endif //FISH_FILLETS_AUDIO_DATA_H
