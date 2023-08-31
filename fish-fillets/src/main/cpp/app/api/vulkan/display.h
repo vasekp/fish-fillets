@@ -83,10 +83,6 @@ private:
     vk::raii::Sampler createSampler(vk::Filter filter);
     vk::SwapchainCreateInfoKHR createSwapchainInfo(vk::SwapchainKHR old = nullptr);
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-            VkDebugUtilsMessageTypeFlagsEXT messageType,
-            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*);
-
     static std::vector<const char*> extensions();
     static std::vector<const char*> platformExtensions();
 };

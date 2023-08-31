@@ -33,7 +33,7 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
         return vulkan::Shader{display, files.system("shader/vulkan/"s + filename)->read()};
     };
     vulkan::Shader pixelVert = spirv("pixel.spv");
-    pImpl = std::make_unique<Impl>(
+    pImpl = std::make_unique<Impl>(Impl{
         vulkan::Program{display, pixelVert, spirv("copy.spv")},
         vulkan::Program{display, pixelVert, spirv("overlay.spv")},
         vulkan::Program{display, pixelVert, spirv("mask-copy.spv")},
@@ -50,7 +50,7 @@ Shaders::Shaders(Instance& instance, GraphicsBackend& backend) {
         vulkan::Program{display, pixelVert, spirv("ycbcr.spv")},
         vulkan::Program{display, pixelVert, spirv("button.spv")},
         vulkan::Program{display, spirv("arrow.vert.spv"), spirv("arrow.frag.spv")}
-    );
+    });
 }
 
 void BaseProgram::run(GraphicsBackend& backend, DrawTarget& target, const BaseProgram::Params& params, Shape shape,

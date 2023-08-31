@@ -1,4 +1,4 @@
-#include "subsystem/graphics.h/graphicsbackend.h"
+#include "subsystem/graphics/graphicsbackend.h"
 
 struct GraphicsBackend::Detail {
     vk::raii::Semaphore imageAvailableSemaphore;
@@ -12,13 +12,13 @@ struct GraphicsBackend::Detail {
 GraphicsBackend::Detail* GraphicsBackend::backendDetail() {
     const auto& device = m_display.device();
 
-    return new Detail(
+    return new Detail(Detail{
         vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
         vk::raii::Semaphore{device, vk::SemaphoreCreateInfo{}},
         vk::raii::Fence{device, vk::FenceCreateInfo{}.setFlags(vk::FenceCreateFlagBits::eSignaled)},
         0,
         nullptr
-    );
+    });
 }
 
 GraphicsBackend::~GraphicsBackend() {

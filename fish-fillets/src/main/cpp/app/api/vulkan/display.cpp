@@ -4,6 +4,11 @@ namespace vulkan {
 
 static constexpr bool useValidation = true;
 
+static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT messageType,
+        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*);
+
 namespace {
     constexpr std::uint32_t noFamily = std::numeric_limits<std::uint32_t>::max();
 
@@ -285,7 +290,7 @@ vk::raii::DeviceMemory Display::allocMemory(const Target& target, vk::MemoryProp
 template vk::raii::DeviceMemory Display::allocMemory(const vk::raii::Buffer&, vk::MemoryPropertyFlags) const;
 template vk::raii::DeviceMemory Display::allocMemory(const vk::raii::Image&, vk::MemoryPropertyFlags) const;
 
-VKAPI_ATTR VkBool32 VKAPI_CALL Display::debugCallback(
+static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*) {
