@@ -11,10 +11,10 @@ IOSFiles::IOSFiles() {
     CFRelease(bundleURL);
 }
 
-std::unique_ptr<IFile> LinuxFiles::system(const std::string& path) {
+std::unique_ptr<IFile> IOSFiles::system(const std::string& path) {
     return std::make_unique<SystemFile>(path, m_bundle);
 }
 
-std::unique_ptr<IFile> LinuxFiles::user(const std::string& path) {
+std::unique_ptr<IFile> IOSFiles::user(const std::string& path) {
     return std::make_unique<UserFile>(path, m_docs);
 }
