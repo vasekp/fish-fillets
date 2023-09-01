@@ -195,6 +195,7 @@
 		FFD9AFA62AA289D2001D7CCA /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AE512AA287E1001D7CCA /* smooth.c */; };
 		FFD9AFA72AA289D8001D7CCA /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AE9D2AA287E2001D7CCA /* truetype.c */; };
 		FFD9AFAA2AA289F4001D7CCA /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD9AE1E2AA287A1001D7CCA /* libfreetype.a */; };
+		FFD9AFAD2AA28E48001D7CCA /* display_metal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFAB2AA28E3B001D7CCA /* display_metal.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -946,6 +947,7 @@
 		FFD9AF332AA287E3001D7CCA /* ftbdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftbdf.h; sourceTree = "<group>"; };
 		FFD9AF342AA287E3001D7CCA /* ftrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftrender.h; sourceTree = "<group>"; };
 		FFD9AF352AA287E3001D7CCA /* ft2build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ft2build.h; sourceTree = "<group>"; };
+		FFD9AFAB2AA28E3B001D7CCA /* display_metal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = display_metal.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1236,6 +1238,7 @@
 		FFD99C4D2AA129AB001D7CCA /* vulkan */ = {
 			isa = PBXGroup;
 			children = (
+				FFD9AFAB2AA28E3B001D7CCA /* display_metal.cpp */,
 				FFD99C4E2AA129AB001D7CCA /* program.cpp */,
 				FFD99C4F2AA129AB001D7CCA /* descriptorpool.h */,
 				FFD99C502AA129AB001D7CCA /* framebuffer.cpp */,
@@ -2338,6 +2341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFD9AFAD2AA28E48001D7CCA /* display_metal.cpp in Sources */,
 				FFD9ADBA2AA13D18001D7CCA /* user.cpp in Sources */,
 				FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */,
 				FFD99C9D2AA12ACF001D7CCA /* filletsApp.swift in Sources */,
@@ -2697,8 +2701,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "FISH_FILLETS_USE_VULKAN=1";
-				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "FISH_FILLETS_USE_VULKAN=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"FISH_FILLETS_USE_VULKAN=1",
+					"VK_USE_PLATFORM_METAL_EXT=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -2784,7 +2790,10 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "FISH_FILLETS_USE_VULKAN=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"FISH_FILLETS_USE_VULKAN=1",
+					"VK_USE_PLATFORM_METAL_EXT=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -2870,7 +2879,10 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "FISH_FILLETS_USE_VULKAN=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"FISH_FILLETS_USE_VULKAN=1",
+					"VK_USE_PLATFORM_METAL_EXT=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -2956,7 +2968,10 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "FISH_FILLETS_USE_VULKAN=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"FISH_FILLETS_USE_VULKAN=1",
+					"VK_USE_PLATFORM_METAL_EXT=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
