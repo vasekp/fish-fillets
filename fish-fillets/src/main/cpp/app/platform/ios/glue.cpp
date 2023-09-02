@@ -31,13 +31,6 @@ void Glue::submitMessage(const Message& message) {
     m_cond.wait(lock, [this]() { return !m_msgQueued.load(std::memory_order::relaxed); });
 }
 
-/*void Glue::closeActivity() {
-    auto& env = m_instance->jni;
-    jclass clazz = env->GetObjectClass(m_activity);
-    jmethodID method = env->GetMethodID(clazz, "finish", "()V");
-    env->CallVoidMethod(m_activity, method);
-}*/
-
 void Glue::worker() {
     IOSInstance instance{*this};
     m_instance = &instance;

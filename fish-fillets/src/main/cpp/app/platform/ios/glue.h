@@ -27,7 +27,6 @@ public:
     Glue(void* metalLayer);
     ~Glue();
 
-    void closeActivity();
     void submitMessage(const Message& message);
     IOSInstance& instance();
     IOSInput& input();

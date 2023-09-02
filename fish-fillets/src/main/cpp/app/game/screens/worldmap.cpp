@@ -143,7 +143,9 @@ bool WorldMap::own_pointer(FCoords coords) {
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {
                 case Frames::exit:
+#ifndef FISH_FILLETS_DISABLE_EXIT
                     staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
+#endif
                     return true;
                 case Frames::options:
                     m_instance.screens().options().show();
