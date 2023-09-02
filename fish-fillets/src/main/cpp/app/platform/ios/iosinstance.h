@@ -5,7 +5,7 @@
 #include "instance.h"
 #include "files.h"
 #include "subsystem/input.h"
-//#include "input.h"
+#include "input.h"
 //#include "oboesink.h"
 #include <thread>
 
@@ -18,14 +18,14 @@ public:
     IOSInstance(Glue& glue);
     virtual ~IOSInstance() = default;
 
-    IInputSource& inputSource() override { return nullInputSource; }
+    IOSInput& inputSource() override { return m_input; }
     std::string lang() override;
 
 //    OboeSink& oboe() { return m_sink; }
 
 private:
     Glue& m_glue;
-//    IOSInput m_input;
+    IOSInput m_input;
 //    OboeSink m_sink;
 
     void own_run() override;

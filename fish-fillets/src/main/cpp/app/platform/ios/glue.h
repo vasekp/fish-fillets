@@ -25,8 +25,7 @@ public:
 
     void closeActivity();
     void submitMessage(const Message& message);
-
-    //IOSInput& input();
+    IOSInput& input();
 
 private:
     std::thread m_thread;

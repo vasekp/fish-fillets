@@ -3,6 +3,7 @@
 #include "iosinstance.h"
 #include "subsystem/rng.h"
 #include "subsystem/graphics/graphicsbackend.h"
+#include "bridge.h"
 
 Glue::Glue(void* metalLayer) :
     m_msgQueued(false),
@@ -62,7 +63,7 @@ void Glue::worker() {
                 m_msgQueued.store(false, std::memory_order::release);
                 m_cond.notify_one();
             }
-            //m_instance->inputSource().deliverEvents();
+            m_instance->inputSource().deliverEvents();
 
             if(instance.live && instance.running())
                 instance.updateAndDraw();
@@ -111,46 +112,22 @@ void Glue::dispatch(const SurfaceMessage& msg) {
 }
 #endif
 
-//IOSInput& Glue::input() {
-//    return m_instance->inputSource();
-//}
+IOSInput& Glue::input() {
+    return m_instance->inputSource();
+}
 
-extern "C" {
 void* start(void* metalLayer) {
     Log::debug<Log::platform>("start: ", metalLayer);
     return new Glue(metalLayer);
 }
+
+void touchEvent(void* pGlue, int type, float x, float y) {
+    auto& glue = *(Glue*)pGlue;
+    Log::debug<Log::platform>("touch: type ", type, " @ ", FCoords{x, y});
+    glue.input().registerTouchEvent(type, {x, y});
 }
 
 #if 0
-extern "C"
-JNIEXPORT jint JNICALL
-Java_cz_absolutno_fillets_MainActivity_startApp(JNIEnv* env, jobject activity, jobject jAMgr, jstring jUserPath) {
-    RNG rng;
-    jint index;
-    do {
-        index = (jint)rng.randomIndex(std::numeric_limits<jint>::max());
-    } while(global_map.contains(index));
-
-    const char* utf = env->GetStringUTFChars(jUserPath, nullptr);
-    std::string userPath{utf};
-    env->ReleaseStringUTFChars(jUserPath, utf);
-
-    auto glue = std::make_unique<Glue>(env, activity, jAMgr, std::move(userPath));
-    global_map.insert_or_assign(index, std::move(glue));
-
-    Log::verbose<Log::lifecycle>("onCreate (C++): index = ", index, " count = ", global_map.size());
-
-    return index;
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_cz_absolutno_fillets_MainActivity_quitApp(JNIEnv* env, jobject, jint handle) {
-    Log::verbose<Log::lifecycle>("onDestroy (C++), handle = ", handle);
-    global_map.erase(handle);
-}
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_cz_absolutno_fillets_MainActivity_setForeground(JNIEnv* env, jobject thiz, jint handle, jboolean focus) {
@@ -165,22 +142,5 @@ Java_cz_absolutno_fillets_MainActivity_setSurface(JNIEnv* env, jobject, jint han
     Log::verbose<Log::lifecycle>("setSurface (C++), handle = ", handle, " surface = ", (void*)jSurface);
     auto& glue = *global_map.at(handle);
     glue.submitMessage(SurfaceMessage{jSurface ? ANativeWindow_fromSurface(env, jSurface) : nullptr});
-}
-
-extern "C"
-JNIEXPORT jboolean JNICALL
-Java_cz_absolutno_fillets_MainActivity_pointerAction(JNIEnv* env, jobject thiz, jint handle, jint action, jfloat x, jfloat y) {
-    Log::verbose<Log::lifecycle>("pointer event (C++), action = ", action, " x = ", x, " y = ", y);
-    auto& glue = *global_map.at(handle);
-    glue.input().registerTouchEvent(action, {x, y});
-    return true;
-}
-
-extern "C"
-JNIEXPORT jboolean JNICALL
-Java_cz_absolutno_fillets_MainActivity_keyAction(JNIEnv* env, jobject thiz, jint handle, jint action, jint keyCode) {
-    Log::verbose<Log::lifecycle>("key event (C++), action = ", action, " code = ", keyCode);
-    auto& glue = *global_map.at(handle);
-    return glue.input().registerKeyEvent(action, keyCode);
 }
 #endif

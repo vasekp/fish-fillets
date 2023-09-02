@@ -29,19 +29,28 @@ class ContentViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("Touches began: %u %f %f", touches.count, touches.first!.location(in: nil).x, touches.first!.location(in: nil).y)
+        if event?.allTouches?.count == 1 {
+            let loc = touches.first!.location(in: self.view)
+            touchEvent(ptr, kTouchEventPointerDown, Float(loc.x), Float(loc.y))
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("touches cancelled")
+        touchEvent(ptr, kTouchEventCancel, 0, 0)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("touches moved: %u %f %f", touches.count, touches.first!.location(in: nil).x, touches.first!.location(in: nil).y)
+        if event?.allTouches?.count == 1 {
+            let loc = touches.first!.location(in: self.view)
+            touchEvent(ptr, kTouchEventPointerMove, Float(loc.x), Float(loc.y))
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("touches ended")
+        if event?.allTouches?.count == 1 {
+            let loc = touches.first!.location(in: self.view)
+            touchEvent(ptr, kTouchEventPointerUp, Float(loc.x), Float(loc.y))
+        }
     }
     
     override func viewDidLoad() {
@@ -72,7 +81,7 @@ class ContentViewController: UIViewController {
             let audioFormat = AVAudioFormat(
                 commonFormat: AVAudioCommonFormat.pcmFormatFloat32, sampleRate: sampleRate, channels: AVAudioChannelCount(1), interleaved: false)
             try bus0.setFormat(audioFormat!)
-            let iptr = ptr;
+            //let iptr = ptr;
             /*audioUnit!.outputProvider = { (actionFlags, timestamp, frameCount, inputBusNumber, inputDataList) -> AUAudioUnitStatus in
                 render(iptr, frameCount, inputDataList[0].mBuffers.mData)
                 return 0

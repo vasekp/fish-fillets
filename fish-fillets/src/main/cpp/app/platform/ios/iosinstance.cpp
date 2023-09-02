@@ -5,8 +5,8 @@
 IOSInstance::IOSInstance(Glue& glue) :
     Instance(std::make_unique<IOSFiles>()),
     live(false),
-    m_glue(glue)
-//    m_input(*this),
+    m_glue(glue),
+    m_input(*this)
 //    m_sink(*this)
 {
     init();

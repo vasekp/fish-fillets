@@ -14,6 +14,7 @@
 		FFB327652AA2B05A008151EC /* music in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275E2AA2B059008151EC /* music */; };
 		FFB327662AA2B05A008151EC /* images in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275F2AA2B059008151EC /* images */; };
 		FFB327672AA2B05A008151EC /* video in Resources */ = {isa = PBXBuildFile; fileRef = FFB327602AA2B05A008151EC /* video */; };
+		FFB327732AA3A237008151EC /* input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB327722AA3A236008151EC /* input.cpp */; };
 		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
 		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
@@ -335,6 +336,8 @@
 		FFB3275E2AA2B059008151EC /* music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = music; path = ../../assets/music; sourceTree = "<group>"; };
 		FFB3275F2AA2B059008151EC /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../assets/images; sourceTree = "<group>"; };
 		FFB327602AA2B05A008151EC /* video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = video; path = ../../assets/video; sourceTree = "<group>"; };
+		FFB327712AA3A236008151EC /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
+		FFB327722AA3A236008151EC /* input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = input.cpp; sourceTree = "<group>"; };
 		FFD990C42AA116C0001D7CCA /* fillets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fillets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../../../../Library/Frameworks/MoltenVK.xcframework; sourceTree = "<group>"; };
 		FFD99BD02AA129AB001D7CCA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -964,7 +967,7 @@
 		FFD9AF342AA287E3001D7CCA /* ftrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftrender.h; sourceTree = "<group>"; };
 		FFD9AF352AA287E3001D7CCA /* ft2build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ft2build.h; sourceTree = "<group>"; };
 		FFD9AFAB2AA28E3B001D7CCA /* display_metal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = display_metal.cpp; sourceTree = "<group>"; };
-		FFD9AFAE2AA2966C001D7CCA /* bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bridge.h; path = ../swift/bridge.h; sourceTree = "<group>"; };
+		FFD9AFAE2AA2966C001D7CCA /* bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
 		FFD9AFAF2AA2A067001D7CCA /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glue.h; sourceTree = "<group>"; };
 		FFD9AFB02AA2A067001D7CCA /* glue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glue.cpp; sourceTree = "<group>"; };
 		FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosinstance.cpp; sourceTree = "<group>"; };
@@ -1086,7 +1089,6 @@
 		FFD99BCE2AA1294E001D7CCA /* Fillets */ = {
 			isa = PBXGroup;
 			children = (
-				FFD9AFAE2AA2966C001D7CCA /* bridge.h */,
 				FFD99C9B2AA129E5001D7CCA /* Assets.xcassets */,
 				FFD99C9A2AA129E5001D7CCA /* ContentView.swift */,
 				FFD99C992AA129E4001D7CCA /* filletsApp.swift */,
@@ -1746,6 +1748,9 @@
 		FFD9ADAE2AA13D17001D7CCA /* ios */ = {
 			isa = PBXGroup;
 			children = (
+				FFD9AFAE2AA2966C001D7CCA /* bridge.h */,
+				FFB327722AA3A236008151EC /* input.cpp */,
+				FFB327712AA3A236008151EC /* input.h */,
 				FFD9AFB02AA2A067001D7CCA /* glue.cpp */,
 				FFD9AFAF2AA2A067001D7CCA /* glue.h */,
 				FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */,
@@ -2424,6 +2429,7 @@
 				FFD99CF42AA12ACF001D7CCA /* levelrecord.cpp in Sources */,
 				FFD99CF62AA12ACF001D7CCA /* gametree.cpp in Sources */,
 				FFD99CF92AA12ACF001D7CCA /* lowlevel.cpp in Sources */,
+				FFB327732AA3A237008151EC /* input.cpp in Sources */,
 				FFD99CFB2AA12ACF001D7CCA /* video.cpp in Sources */,
 				FFD99D0C2AA12ACF001D7CCA /* program.cpp in Sources */,
 				FFD9ADBE2AA13D82001D7CCA /* loadpng.cpp in Sources */,
@@ -2786,7 +2792,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = app/platform/ios/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -2875,7 +2881,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = app/platform/ios/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -2965,7 +2971,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = app/platform/ios/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -3055,7 +3061,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = app/platform/ios/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
