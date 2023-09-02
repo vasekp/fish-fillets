@@ -54,7 +54,6 @@ class ContentViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        NSLog("viewDidLoad")
         NSLog("bundle loc: %@", Bundle.main.preferredLocalizations.first!);
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(enterForeground), name: UIScene.willEnterForegroundNotification, object: nil)
@@ -83,7 +82,7 @@ class ContentViewController: UIViewController {
             let audioFormat = AVAudioFormat(
                 commonFormat: AVAudioCommonFormat.pcmFormatFloat32, sampleRate: sampleRate, channels: AVAudioChannelCount(1), interleaved: false)
             try bus0.setFormat(audioFormat!)
-            let iptr = ptr;
+            let iptr = ptr
             audioUnit!.outputProvider = { (actionFlags, timestamp, frameCount, inputBusNumber, inputDataList) -> AUAudioUnitStatus in
                 renderAudio(iptr, frameCount, inputDataList[0].mBuffers.mData)
                 return 0
@@ -97,7 +96,8 @@ class ContentViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        NSLog("viewWillAppear")
+        NSLog("viewWillAppear %f %f", self.view.frame.size.width, self.view.frame.size.height);
+        resizeWin(ptr, UInt32(self.view.frame.size.width), UInt32(self.view.frame.size.height))
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -106,20 +106,20 @@ class ContentViewController: UIViewController {
     
     @objc func enterForeground() {
         NSLog("foreground")
+        setFocus(ptr, 1)
     }
     
     @objc func enterActive() {
         NSLog("active")
-        //activate(ptr)
     }
     
     @objc func enterInactive() {
         NSLog("inactive")
-        //inactivate(ptr)
     }
     
     @objc func enterBackground() {
         NSLog("background")
+        setFocus(ptr, 0)
     }
     
     @objc func audioInterrupted() {

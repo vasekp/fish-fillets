@@ -15,6 +15,8 @@ enum : int {
     kTouchEventTwoTap
 };
 
+void resizeWin(void* pGlue, unsigned width, unsigned height);
+void setFocus(void* pGlue, int focus);
 void touchEvent(void* pGlue, int type, float x, float y);
 
 void renderAudio(void* pGlue, unsigned count, void* buffer);

@@ -49,7 +49,6 @@ void Glue::worker() {
     auto display = vulkan::Display(m_layer);
     m_instance->graphics().activate(std::move(display));
     m_instance->live = true;
-    m_instance->run();
 
     while(m_running) {
         try {
@@ -82,34 +81,15 @@ void Glue::dispatch(const QuitMessage&) {
 void Glue::dispatch(const FocusMessage& msg) {
     if(!m_instance->live)
         return;
-    if(msg.foreground)
+    if(msg.focus)
         m_instance->run();
     else
         m_instance->pause();
 }
 
-#if 0
-void Glue::dispatch(const SurfaceMessage& msg) {
-    if(msg.surface != nullptr) {
-        if(msg.surface == m_window) {
-            Log::debug<Log::graphics>("surface updated (worker)");
-            m_instance->graphics().notifyResize({(unsigned)ANativeWindow_getWidth(msg.surface), (unsigned)ANativeWindow_getHeight(msg.surface)});
-        } else {
-            Log::debug<Log::graphics>("new surface (worker)");
-            m_window = msg.surface;
-            auto display = ogl::Display(m_window);
-            m_instance->graphics().activate(std::move(display));
-            m_instance->live = true;
-            m_instance->run();
-        }
-    } else {
-        Log::debug<Log::graphics>("surface deleted (worker)");
-        m_window = nullptr;
-        m_instance->graphics().shutdown();
-        m_instance->live = false;
-    }
+void Glue::dispatch(const ResizeMessage& msg) {
+    m_instance->graphics().notifyResize(msg.size);
 }
-#endif
 
 IOSInstance& Glue::instance() {
     return *m_instance;
@@ -124,6 +104,17 @@ void* start(void* metalLayer) {
     return new Glue(metalLayer);
 }
 
+void resizeWin(void* pGlue, unsigned width, unsigned height) {
+    auto& glue = *(Glue*)pGlue;
+    Log::debug<Log::platform>("Resize: ", width, "x", height);
+    glue.submitMessage(ResizeMessage{USize{width, height}});
+}
+
+void setFocus(void* pGlue, int focus) {
+    auto& glue = *(Glue*)pGlue;
+    glue.submitMessage(FocusMessage{(bool)focus});
+}
+
 void touchEvent(void* pGlue, int type, float x, float y) {
     auto& glue = *(Glue*)pGlue;
     Log::debug<Log::platform>("touch: type ", type, " @ ", FCoords{x, y});
@@ -134,21 +125,3 @@ void renderAudio(void* pGlue, unsigned count, void* buffer) {
     auto& glue = *(Glue*)pGlue;
     glue.instance().audio().mix(reinterpret_cast<float*>(buffer), count);
 }
-
-#if 0
-extern "C"
-JNIEXPORT void JNICALL
-Java_cz_absolutno_fillets_MainActivity_setForeground(JNIEnv* env, jobject thiz, jint handle, jboolean focus) {
-    Log::verbose<Log::lifecycle>("onFocus (C++), handle = ", handle, " focus = ", (bool)focus);
-    auto& glue = *global_map.at(handle);
-    glue.submitMessage(FocusMessage{(bool)focus});
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_cz_absolutno_fillets_MainActivity_setSurface(JNIEnv* env, jobject, jint handle, jobject jSurface) {
-    Log::verbose<Log::lifecycle>("setSurface (C++), handle = ", handle, " surface = ", (void*)jSurface);
-    auto& glue = *global_map.at(handle);
-    glue.submitMessage(SurfaceMessage{jSurface ? ANativeWindow_fromSurface(env, jSurface) : nullptr});
-}
-#endif

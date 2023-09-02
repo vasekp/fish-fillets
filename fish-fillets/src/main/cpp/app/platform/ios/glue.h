@@ -11,10 +11,14 @@
 struct QuitMessage { };
 
 struct FocusMessage {
-    bool foreground;
+    bool focus;
 };
 
-using Message = std::variant<QuitMessage, FocusMessage>;
+struct ResizeMessage {
+    USize size;
+};
+
+using Message = std::variant<QuitMessage, FocusMessage, ResizeMessage>;
 
 class IOSInstance;
 
@@ -43,6 +47,7 @@ private:
     void worker();
     void dispatch(const QuitMessage& msg);
     void dispatch(const FocusMessage& msg);
+    void dispatch(const ResizeMessage& msg);
 };
 
 #endif //FISH_FILLETS_IOS_GLUE_H
