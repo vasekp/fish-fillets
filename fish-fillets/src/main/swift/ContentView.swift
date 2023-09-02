@@ -61,6 +61,8 @@ class ContentViewController: UIViewController {
         nc.addObserver(self, selector: #selector(enterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterActive), name: UIScene.didActivateNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterInactive), name: UIScene.willDeactivateNotification, object: nil)
+        let layer = self.view.layer as! CAMetalLayer;
+        ptr = start(Unmanaged.passUnretained(layer).toOpaque())
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(AVAudioSession.Category.playback)
@@ -81,17 +83,14 @@ class ContentViewController: UIViewController {
             let audioFormat = AVAudioFormat(
                 commonFormat: AVAudioCommonFormat.pcmFormatFloat32, sampleRate: sampleRate, channels: AVAudioChannelCount(1), interleaved: false)
             try bus0.setFormat(audioFormat!)
-            //let iptr = ptr;
-            /*audioUnit!.outputProvider = { (actionFlags, timestamp, frameCount, inputBusNumber, inputDataList) -> AUAudioUnitStatus in
-                render(iptr, frameCount, inputDataList[0].mBuffers.mData)
+            let iptr = ptr;
+            audioUnit!.outputProvider = { (actionFlags, timestamp, frameCount, inputBusNumber, inputDataList) -> AUAudioUnitStatus in
+                renderAudio(iptr, frameCount, inputDataList[0].mBuffers.mData)
                 return 0
-            }*/
+            }
             audioUnit!.isOutputEnabled = true // should be default
             try audioUnit!.allocateRenderResources()
-            //try audioUnit!.startHardware()
-            // ----
-            let layer = self.view.layer as! CAMetalLayer;
-            ptr = start(Unmanaged.passUnretained(layer).toOpaque())
+            try audioUnit!.startHardware()
         } catch let error {
             NSLog("error %s", error.localizedDescription)
         }

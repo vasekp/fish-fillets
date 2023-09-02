@@ -3,6 +3,7 @@
 #include "iosinstance.h"
 #include "subsystem/rng.h"
 #include "subsystem/graphics/graphicsbackend.h"
+#include "subsystem/audio.h"
 #include "bridge.h"
 
 Glue::Glue(void* metalLayer) :
@@ -50,7 +51,6 @@ void Glue::worker() {
     m_instance->live = true;
     m_instance->run();
 
-//    instance.oboe().open();
     while(m_running) {
         try {
             if(!instance.live) {
@@ -71,7 +71,6 @@ void Glue::worker() {
             Log::error("Caught exception: %s", e.what());
         }
     }
-//    instance.oboe().close();
     Log::info<Log::lifecycle>("thread quitting (worker)");
     instance.quit();
 }
@@ -112,6 +111,10 @@ void Glue::dispatch(const SurfaceMessage& msg) {
 }
 #endif
 
+IOSInstance& Glue::instance() {
+    return *m_instance;
+}
+
 IOSInput& Glue::input() {
     return m_instance->inputSource();
 }
@@ -125,6 +128,11 @@ void touchEvent(void* pGlue, int type, float x, float y) {
     auto& glue = *(Glue*)pGlue;
     Log::debug<Log::platform>("touch: type ", type, " @ ", FCoords{x, y});
     glue.input().registerTouchEvent(type, {x, y});
+}
+
+void renderAudio(void* pGlue, unsigned count, void* buffer) {
+    auto& glue = *(Glue*)pGlue;
+    glue.instance().audio().mix(reinterpret_cast<float*>(buffer), count);
 }
 
 #if 0

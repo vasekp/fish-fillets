@@ -17,6 +17,8 @@ enum : int {
 
 void touchEvent(void* pGlue, int type, float x, float y);
 
+void renderAudio(void* pGlue, unsigned count, void* buffer);
+
 #ifdef __cplusplus
 }
 #endif

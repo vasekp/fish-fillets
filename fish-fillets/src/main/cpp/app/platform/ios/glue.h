@@ -25,6 +25,7 @@ public:
 
     void closeActivity();
     void submitMessage(const Message& message);
+    IOSInstance& instance();
     IOSInput& input();
 
 private:
