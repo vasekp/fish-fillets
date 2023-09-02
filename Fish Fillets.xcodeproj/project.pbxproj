@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
+		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
 		FFD991252AA11D48001D7CCA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD99C9A2AA129E5001D7CCA /* ContentView.swift */; };
@@ -948,6 +950,11 @@
 		FFD9AF342AA287E3001D7CCA /* ftrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftrender.h; sourceTree = "<group>"; };
 		FFD9AF352AA287E3001D7CCA /* ft2build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ft2build.h; sourceTree = "<group>"; };
 		FFD9AFAB2AA28E3B001D7CCA /* display_metal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = display_metal.cpp; sourceTree = "<group>"; };
+		FFD9AFAE2AA2966C001D7CCA /* bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bridge.h; path = ../swift/bridge.h; sourceTree = "<group>"; };
+		FFD9AFAF2AA2A067001D7CCA /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glue.h; sourceTree = "<group>"; };
+		FFD9AFB02AA2A067001D7CCA /* glue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glue.cpp; sourceTree = "<group>"; };
+		FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosinstance.cpp; sourceTree = "<group>"; };
+		FFD9AFB22AA2A068001D7CCA /* iosinstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iosinstance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1050,6 +1057,7 @@
 		FFD99BCE2AA1294E001D7CCA /* Fillets */ = {
 			isa = PBXGroup;
 			children = (
+				FFD9AFAE2AA2966C001D7CCA /* bridge.h */,
 				FFD99C9B2AA129E5001D7CCA /* Assets.xcassets */,
 				FFD99C9A2AA129E5001D7CCA /* ContentView.swift */,
 				FFD99C992AA129E4001D7CCA /* filletsApp.swift */,
@@ -1709,6 +1717,10 @@
 		FFD9ADAE2AA13D17001D7CCA /* ios */ = {
 			isa = PBXGroup;
 			children = (
+				FFD9AFB02AA2A067001D7CCA /* glue.cpp */,
+				FFD9AFAF2AA2A067001D7CCA /* glue.h */,
+				FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */,
+				FFD9AFB22AA2A068001D7CCA /* iosinstance.h */,
 				FFD9AE182AA142CD001D7CCA /* ft-font.cpp */,
 				FFD9AE172AA142CD001D7CCA /* ft-font.h */,
 				FFD9ADBB2AA13D82001D7CCA /* loadogg.cpp */,
@@ -2341,6 +2353,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */,
+				FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */,
 				FFD9AFAD2AA28E48001D7CCA /* display_metal.cpp in Sources */,
 				FFD9ADBA2AA13D18001D7CCA /* user.cpp in Sources */,
 				FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */,
@@ -2736,6 +2750,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -2824,6 +2839,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -2913,6 +2929,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -3002,6 +3019,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = ../swift/bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = (
