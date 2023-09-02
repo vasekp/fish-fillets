@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FFB327612AA2B05A008151EC /* script in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275A2AA2B058008151EC /* script */; };
+		FFB327622AA2B05A008151EC /* sound in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275B2AA2B058008151EC /* sound */; };
+		FFB327632AA2B05A008151EC /* shader in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275C2AA2B059008151EC /* shader */; };
+		FFB327642AA2B05A008151EC /* font in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275D2AA2B059008151EC /* font */; };
+		FFB327652AA2B05A008151EC /* music in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275E2AA2B059008151EC /* music */; };
+		FFB327662AA2B05A008151EC /* images in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275F2AA2B059008151EC /* images */; };
+		FFB327672AA2B05A008151EC /* video in Resources */ = {isa = PBXBuildFile; fileRef = FFB327602AA2B05A008151EC /* video */; };
 		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
 		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
@@ -321,6 +328,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FFB3275A2AA2B058008151EC /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; name = script; path = ../../assets/script; sourceTree = "<group>"; };
+		FFB3275B2AA2B058008151EC /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sound; path = ../../assets/sound; sourceTree = "<group>"; };
+		FFB3275C2AA2B059008151EC /* shader */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shader; path = ../../assets/shader; sourceTree = "<group>"; };
+		FFB3275D2AA2B059008151EC /* font */ = {isa = PBXFileReference; lastKnownFileType = folder; name = font; path = ../../assets/font; sourceTree = "<group>"; };
+		FFB3275E2AA2B059008151EC /* music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = music; path = ../../assets/music; sourceTree = "<group>"; };
+		FFB3275F2AA2B059008151EC /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../assets/images; sourceTree = "<group>"; };
+		FFB327602AA2B05A008151EC /* video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = video; path = ../../assets/video; sourceTree = "<group>"; };
 		FFD990C42AA116C0001D7CCA /* fillets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fillets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../../../../Library/Frameworks/MoltenVK.xcframework; sourceTree = "<group>"; };
 		FFD99BD02AA129AB001D7CCA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -1042,6 +1056,7 @@
 		EDDC36905D464C7DAD48D69F = {
 			isa = PBXGroup;
 			children = (
+				FFB327592AA2B039008151EC /* Assets */,
 				FFD99BCE2AA1294E001D7CCA /* Fillets */,
 				FFD9ABC32AA13004001D7CCA /* lua */,
 				FFD9AC352AA132E4001D7CCA /* ogg */,
@@ -1052,6 +1067,20 @@
 				A79FAA6554D04A6CA5F32539 /* Products */,
 				C5D9470A258C4CEBB75CD9C5 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		FFB327592AA2B039008151EC /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				FFB3275D2AA2B059008151EC /* font */,
+				FFB3275F2AA2B059008151EC /* images */,
+				FFB3275E2AA2B059008151EC /* music */,
+				FFB3275A2AA2B058008151EC /* script */,
+				FFB3275C2AA2B059008151EC /* shader */,
+				FFB3275B2AA2B058008151EC /* sound */,
+				FFB327602AA2B05A008151EC /* video */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		FFD99BCE2AA1294E001D7CCA /* Fillets */ = {
@@ -2343,6 +2372,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFB327662AA2B05A008151EC /* images in Resources */,
+				FFB327622AA2B05A008151EC /* sound in Resources */,
+				FFB327632AA2B05A008151EC /* shader in Resources */,
+				FFB327652AA2B05A008151EC /* music in Resources */,
+				FFB327672AA2B05A008151EC /* video in Resources */,
+				FFB327612AA2B05A008151EC /* script in Resources */,
+				FFB327642AA2B05A008151EC /* font in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
