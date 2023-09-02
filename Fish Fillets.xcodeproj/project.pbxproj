@@ -15,6 +15,10 @@
 		FFB327662AA2B05A008151EC /* images in Resources */ = {isa = PBXBuildFile; fileRef = FFB3275F2AA2B059008151EC /* images */; };
 		FFB327672AA2B05A008151EC /* video in Resources */ = {isa = PBXBuildFile; fileRef = FFB327602AA2B05A008151EC /* video */; };
 		FFB327732AA3A237008151EC /* input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB327722AA3A236008151EC /* input.cpp */; };
+		FFB327782AA3E850008151EC /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = FFB327742AA3E84F008151EC /* arm_init.c */; };
+		FFB327792AA3E850008151EC /* palette_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = FFB327752AA3E84F008151EC /* palette_neon_intrinsics.c */; };
+		FFB3277A2AA3E850008151EC /* filter_neon.S in Sources */ = {isa = PBXBuildFile; fileRef = FFB327762AA3E84F008151EC /* filter_neon.S */; };
+		FFB3277B2AA3E850008151EC /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = FFB327772AA3E84F008151EC /* filter_neon_intrinsics.c */; };
 		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
 		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
@@ -338,6 +342,10 @@
 		FFB327602AA2B05A008151EC /* video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = video; path = ../../assets/video; sourceTree = "<group>"; };
 		FFB327712AA3A236008151EC /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
 		FFB327722AA3A236008151EC /* input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = input.cpp; sourceTree = "<group>"; };
+		FFB327742AA3E84F008151EC /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = arm_init.c; sourceTree = "<group>"; };
+		FFB327752AA3E84F008151EC /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = palette_neon_intrinsics.c; sourceTree = "<group>"; };
+		FFB327762AA3E84F008151EC /* filter_neon.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = filter_neon.S; sourceTree = "<group>"; };
+		FFB327772AA3E84F008151EC /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = filter_neon_intrinsics.c; sourceTree = "<group>"; };
 		FFD990C42AA116C0001D7CCA /* fillets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fillets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../../../../Library/Frameworks/MoltenVK.xcframework; sourceTree = "<group>"; };
 		FFD99BD02AA129AB001D7CCA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -1089,10 +1097,10 @@
 		FFB327682AA2B3F9008151EC /* arm */ = {
 			isa = PBXGroup;
 			children = (
-				FFB327692AA2B3F9008151EC /* filter_neon.S */,
-				FFB3276A2AA2B3F9008151EC /* filter_neon_intrinsics.c */,
-				FFB3276B2AA2B3F9008151EC /* arm_init.c */,
-				FFB3276C2AA2B3F9008151EC /* palette_neon_intrinsics.c */,
+				FFB327742AA3E84F008151EC /* arm_init.c */,
+				FFB327772AA3E84F008151EC /* filter_neon_intrinsics.c */,
+				FFB327762AA3E84F008151EC /* filter_neon.S */,
+				FFB327752AA3E84F008151EC /* palette_neon_intrinsics.c */,
 			);
 			name = arm;
 			path = deps/png/arm;
@@ -2590,11 +2598,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FFB3276F2AA2B3F9008151EC /* arm_init.c in Sources */,
 				FFD9AE0A2AA13F40001D7CCA /* pngset.c in Sources */,
 				FFD9AE102AA13F40001D7CCA /* pngread.c in Sources */,
 				FFD9AE112AA13F40001D7CCA /* pngerror.c in Sources */,
-				FFB3276D2AA2B3F9008151EC /* filter_neon.S in Sources */,
 				FFD9AE042AA13F3F001D7CCA /* png.c in Sources */,
 				FFD9AE072AA13F40001D7CCA /* pngmem.c in Sources */,
 				FFD9AE062AA13F3F001D7CCA /* pngrtran.c in Sources */,
@@ -2602,13 +2608,15 @@
 				FFD9AE092AA13F40001D7CCA /* pngwtran.c in Sources */,
 				FFD9AE0B2AA13F40001D7CCA /* pngget.c in Sources */,
 				FFD9AE0F2AA13F40001D7CCA /* pngrio.c in Sources */,
-				FFB3276E2AA2B3F9008151EC /* filter_neon_intrinsics.c in Sources */,
 				FFD9AE0E2AA13F40001D7CCA /* pngwrite.c in Sources */,
 				FFD9AE132AA13F40001D7CCA /* pngpread.c in Sources */,
 				FFD9AE0D2AA13F40001D7CCA /* pngtrans.c in Sources */,
-				FFB327702AA2B3F9008151EC /* palette_neon_intrinsics.c in Sources */,
+				FFB3277A2AA3E850008151EC /* filter_neon.S in Sources */,
 				FFD9AE122AA13F40001D7CCA /* pngwutil.c in Sources */,
+				FFB327782AA3E850008151EC /* arm_init.c in Sources */,
 				FFD9AE052AA13F3F001D7CCA /* pngwio.c in Sources */,
+				FFB327792AA3E850008151EC /* palette_neon_intrinsics.c in Sources */,
+				FFB3277B2AA3E850008151EC /* filter_neon_intrinsics.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
