@@ -21,8 +21,8 @@ class MetalView: UIView {
 
 class ContentViewController: UIViewController {
     var ptr : UnsafeMutableRawPointer? = nil
-    //var tou : ToneOutputUnit = ToneOutputUnit()
     var audioUnit : AUAudioUnit? = nil
+    var scaleFactor : CGFloat = 1.0
     
     override func loadView() {
         self.view = MetalView()
@@ -31,7 +31,7 @@ class ContentViewController: UIViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if event?.allTouches?.count == 1 {
             let loc = touches.first!.location(in: self.view)
-            touchEvent(ptr, kTouchEventPointerDown, Float(loc.x), Float(loc.y))
+            touchEvent(ptr, kTouchEventPointerDown, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
         }
     }
     
@@ -42,14 +42,14 @@ class ContentViewController: UIViewController {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if event?.allTouches?.count == 1 {
             let loc = touches.first!.location(in: self.view)
-            touchEvent(ptr, kTouchEventPointerMove, Float(loc.x), Float(loc.y))
+            touchEvent(ptr, kTouchEventPointerMove, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if event?.allTouches?.count == 1 {
             let loc = touches.first!.location(in: self.view)
-            touchEvent(ptr, kTouchEventPointerUp, Float(loc.x), Float(loc.y))
+            touchEvent(ptr, kTouchEventPointerUp, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
         }
     }
     
@@ -60,6 +60,8 @@ class ContentViewController: UIViewController {
         nc.addObserver(self, selector: #selector(enterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterActive), name: UIScene.didActivateNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterInactive), name: UIScene.willDeactivateNotification, object: nil)
+        scaleFactor = UIScreen.main.nativeScale
+        self.view.contentScaleFactor = scaleFactor
         let layer = self.view.layer as! CAMetalLayer;
         ptr = start(Unmanaged.passUnretained(layer).toOpaque())
         do {
@@ -97,7 +99,7 @@ class ContentViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         NSLog("viewWillAppear %f %f", self.view.frame.size.width, self.view.frame.size.height);
-        resizeWin(ptr, UInt32(self.view.frame.size.width), UInt32(self.view.frame.size.height))
+        resizeWin(ptr, UInt32(self.view.frame.size.width * scaleFactor), UInt32(self.view.frame.size.height * scaleFactor))
     }
     
     override func viewDidDisappear(_ animated: Bool) {
