@@ -2,7 +2,7 @@
 
 namespace vulkan {
 
-static constexpr bool useValidation = true;
+static constexpr bool useValidation = false;
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

@@ -10,7 +10,7 @@ class Display {
 public:
     template<typename... NativeArgs>
     Display(const NativeArgs& ... nativeArgs) :
-        m_context{},
+        m_context{&vkGetInstanceProcAddr},
         m_instance{createInstance()},
         m_messenger{createMessenger()},
         m_surface{createSurface(nativeArgs...)},
