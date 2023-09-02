@@ -110,7 +110,7 @@ void setFocus(void* pGlue, int focus) {
 
 void touchEvent(void* pGlue, int type, float x, float y) {
     auto& glue = *(Glue*)pGlue;
-    Log::debug<Log::platform>("touch: type ", type, " @ ", FCoords{x, y});
+    Log::verbose<Log::platform>("touch: type ", type, " @ ", FCoords{x, y});
     glue.input().registerTouchEvent(type, {x, y});
 }
 

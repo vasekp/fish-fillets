@@ -29,9 +29,12 @@ class ContentViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if event?.allTouches?.count == 1 {
+        let fullCount = event?.allTouches?.count
+        if fullCount == 1 {
             let loc = touches.first!.location(in: self.view)
             touchEvent(ptr, kTouchEventPointerDown, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
+        } else if fullCount == 2 {
+            touchEvent(ptr, kTouchEventTwoTap, 0, 0)
         }
     }
     
@@ -62,6 +65,7 @@ class ContentViewController: UIViewController {
         nc.addObserver(self, selector: #selector(enterInactive), name: UIScene.willDeactivateNotification, object: nil)
         scaleFactor = UIScreen.main.nativeScale
         self.view.contentScaleFactor = scaleFactor
+        self.view.isMultipleTouchEnabled = true
         let layer = self.view.layer as! CAMetalLayer;
         ptr = start(Unmanaged.passUnretained(layer).toOpaque())
         do {
