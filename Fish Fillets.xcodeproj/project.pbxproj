@@ -2809,6 +2809,7 @@
 					deps/theora/include,
 					deps/lua,
 				);
+				INFOPLIST_KEY_CFBundleDisplayName = "Fish Fillets";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -2905,6 +2906,7 @@
 					deps/theora/include,
 					deps/lua,
 				);
+				INFOPLIST_KEY_CFBundleDisplayName = "Fish Fillets";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -3001,6 +3003,7 @@
 					deps/theora/include,
 					deps/lua,
 				);
+				INFOPLIST_KEY_CFBundleDisplayName = "Fish Fillets";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -3097,6 +3100,7 @@
 					deps/theora/include,
 					deps/lua,
 				);
+				INFOPLIST_KEY_CFBundleDisplayName = "Fish Fillets";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
