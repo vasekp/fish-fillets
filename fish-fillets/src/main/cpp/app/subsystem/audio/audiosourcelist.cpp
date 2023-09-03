@@ -16,6 +16,7 @@ AudioSourceList::SourcesGuard::SourcesGuard(AudioSourceList& parent) : m_parent(
 }
 
 AudioSourceList::SourcesGuard::~SourcesGuard() {
+    checkDialogs();
     m_parent.m_sources_lock.store(false, std::memory_order_release);
 }
 

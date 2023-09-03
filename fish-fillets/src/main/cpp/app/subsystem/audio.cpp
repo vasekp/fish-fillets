@@ -35,7 +35,6 @@ void Audio::addSource(const AudioSource::Ref& source) {
     Log::debug<Log::audio>("adding audio source ", source.get(), " (", source->name(), ")");
     auto sources = m_sources.local();
     sources->push_back(source);
-    sources.checkDialogs();
 }
 
 void Audio::removeSource(const AudioSource::Ref& source) {
@@ -47,7 +46,6 @@ void Audio::removeSource(const AudioSource::Ref& source) {
         Log::debug<Log::audio>("removing audio source ", source.get(), " (", source->name(), ")");
         sources->erase(it);
     }
-    sources.checkDialogs();
 }
 
 void Audio::ping() {
@@ -65,13 +63,11 @@ void Audio::clear() {
     if(sources->size() > 0)
         Log::debug<Log::audio>("audio clear: ", sources->size(), " -> 0");
     sources->clear();
-    sources.checkDialogs();
 }
 
 void Audio::clearExcept(const AudioSource::Ref& source) {
     auto sources = m_sources.local();
     std::erase_if(sources.vector(), [&source](const auto& other) { return other != source; });
-    sources.checkDialogs();
 }
 
 void Audio::preload(const std::string& filename) {

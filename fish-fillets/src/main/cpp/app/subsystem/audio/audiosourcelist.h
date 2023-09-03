@@ -13,11 +13,10 @@ class AudioSourceList {
 
         Sources& vector();
         Sources* operator->();
-
-        void checkDialogs();
-
     private:
         AudioSourceList& m_parent;
+
+        void checkDialogs();
     };
 
 public:
