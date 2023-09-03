@@ -51,7 +51,7 @@ void Glue::worker() {
                 m_msgQueued.store(false, std::memory_order::release);
                 m_cond.notify_one();
             }
-            m_instance->inputSource().deliverEvents();
+            instance.inputSource().deliverEvents();
 
             if(instance.live && instance.running())
                 instance.updateAndDraw();
@@ -94,7 +94,9 @@ IOSInput& Glue::input() {
     return m_instance->inputSource();
 }
 
-void* start(void* metalLayer) {
+/* Swift bridge functions */
+
+void* startApp(void* metalLayer) {
     Log::debug<Log::platform>("start: ", metalLayer);
     return new Glue(metalLayer);
 }

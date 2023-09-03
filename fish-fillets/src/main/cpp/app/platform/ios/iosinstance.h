@@ -6,7 +6,6 @@
 #include "files.h"
 #include "subsystem/input.h"
 #include "input.h"
-//#include "oboesink.h"
 #include <thread>
 
 class Glue;
@@ -21,16 +20,9 @@ public:
     IOSInput& inputSource() override { return m_input; }
     std::string lang() override;
 
-//    OboeSink& oboe() { return m_sink; }
-
 private:
     Glue& m_glue;
     IOSInput m_input;
-//    OboeSink m_sink;
-
-    void own_run() override;
-    void own_pause() override;
-    void own_quit() override;
 };
 
 #endif //FF_IOS_INSTANCE_H

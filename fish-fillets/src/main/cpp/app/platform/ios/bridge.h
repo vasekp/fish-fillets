@@ -5,7 +5,7 @@ extern "C" {
 #define FF_ENUM_CLASS
 #endif
 
-void* start(void* metalLayer);
+void* startApp(void* metalLayer);
 
 enum : int {
     kTouchEventPointerDown,

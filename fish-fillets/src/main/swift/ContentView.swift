@@ -8,9 +8,7 @@ struct ContentView: UIViewControllerRepresentable {
         return ContentViewController()
     }
     
-    func updateUIViewController(_ uiView: UIViewControllerType, context: Context) {
-        
-    }
+    func updateUIViewController(_ uiView: UIViewControllerType, context: Context) { }
 }
 
 class MetalView: UIView {
@@ -61,13 +59,11 @@ class ContentViewController: UIViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(enterForeground), name: UIScene.willEnterForegroundNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
-        nc.addObserver(self, selector: #selector(enterActive), name: UIScene.didActivateNotification, object: nil)
-        nc.addObserver(self, selector: #selector(enterInactive), name: UIScene.willDeactivateNotification, object: nil)
         scaleFactor = UIScreen.main.nativeScale
         self.view.contentScaleFactor = scaleFactor
         self.view.isMultipleTouchEnabled = true
         let layer = self.view.layer as! CAMetalLayer;
-        ptr = start(Unmanaged.passUnretained(layer).toOpaque())
+        ptr = startApp(Unmanaged.passUnretained(layer).toOpaque())
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(AVAudioSession.Category.playback)
@@ -106,21 +102,9 @@ class ContentViewController: UIViewController {
         resizeWin(ptr, UInt32(self.view.frame.size.width * scaleFactor), UInt32(self.view.frame.size.height * scaleFactor))
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        NSLog("viewDidDisappear")
-    }
-    
     @objc func enterForeground() {
         NSLog("foreground")
         setFocus(ptr, 1)
-    }
-    
-    @objc func enterActive() {
-        NSLog("active")
-    }
-    
-    @objc func enterInactive() {
-        NSLog("inactive")
     }
     
     @objc func enterBackground() {
