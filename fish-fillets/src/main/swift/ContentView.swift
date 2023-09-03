@@ -55,7 +55,6 @@ class ContentViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        NSLog("bundle loc: %@", Bundle.main.preferredLocalizations.first!);
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(enterForeground), name: UIScene.willEnterForegroundNotification, object: nil)
         nc.addObserver(self, selector: #selector(enterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
