@@ -10,7 +10,7 @@ class Display {
 public:
     template<typename... NativeArgs>
     Display(const NativeArgs& ... nativeArgs) :
-        m_context{},
+        m_context{&vkGetInstanceProcAddr},
         m_instance{createInstance()},
         m_messenger{createMessenger()},
         m_surface{createSurface(nativeArgs...)},
@@ -82,10 +82,6 @@ private:
     vk::raii::RenderPass createRenderPass();
     vk::raii::Sampler createSampler(vk::Filter filter);
     vk::SwapchainCreateInfoKHR createSwapchainInfo(vk::SwapchainKHR old = nullptr);
-
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-            VkDebugUtilsMessageTypeFlagsEXT messageType,
-            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*);
 
     static std::vector<const char*> extensions();
     static std::vector<const char*> platformExtensions();

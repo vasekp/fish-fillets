@@ -10,3 +10,9 @@
 [submodule "ffng4/src/main/cpp/deps/lua"]
 	path = fish-fillets/src/main/cpp/deps/lua
 	url = https://github.com/lua/lua
+[submodule "fish-fillets/src/main/cpp/deps/png"]
+	path = fish-fillets/src/main/cpp/deps/png
+	url = git@github.com:glennrp/libpng.git
+[submodule "fish-fillets/src/main/cpp/deps/freetype2-ios"]
+	path = fish-fillets/src/main/cpp/deps/freetype2-ios
+	url = git@github.com:cdave1/freetype2-ios.git

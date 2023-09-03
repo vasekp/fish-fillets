@@ -4,9 +4,9 @@ namespace vulkan {
 
 struct Texture::Impl {
     Display& display;
-    const vk::raii::Image image;
-    const vk::raii::DeviceMemory memory;
-    const vk::raii::ImageView imageView;
+    vk::raii::Image image;
+    vk::raii::DeviceMemory memory;
+    vk::raii::ImageView imageView;
     TextureType type;
     const vk::DescriptorSet* descriptorSet;
 };
@@ -38,13 +38,13 @@ Texture::Texture(Display& display, USize size, TextureType type, std::uint8_t* d
             .setFormat(format)
             .setSubresourceRange(baseRange)};
 
-    pImpl = std::make_unique<Impl>(
+    pImpl = std::make_unique<Impl>(Impl{
         display,
         std::move(image),
         std::move(deviceMemory),
         std::move(imageView),
         type,
-        display.descriptors().allocDescriptorSet(type.binding()));
+        display.descriptors().allocDescriptorSet(type.binding())});
 
     if(data) {
         replaceData(data);
