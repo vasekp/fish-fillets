@@ -39,10 +39,6 @@ void Glue::worker() {
     Log::info<Log::lifecycle>("thread running (worker)");
     m_cond.notify_one();
     
-    auto display = vulkan::Display(m_layer);
-    m_instance->graphics().activate(std::move(display));
-    m_instance->live = true;
-
     while(m_running) {
         try {
             if(!instance.live) {
@@ -81,6 +77,12 @@ void Glue::dispatch(const FocusMessage& msg) {
 }
 
 void Glue::dispatch(const ResizeMessage& msg) {
+    if(!m_instance->live) {
+        auto display = vulkan::Display(m_layer);
+        m_instance->graphics().activate(std::move(display));
+        m_instance->live = true;
+        m_instance->run();
+    }
     m_instance->graphics().notifyResize(msg.size);
 }
 
