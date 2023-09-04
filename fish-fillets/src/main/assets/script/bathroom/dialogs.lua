@@ -35,7 +35,7 @@ dialog_add("br-v-nerozvadet1", "big", {
   en="Please, no jokes about defecation."})
 
 dialog_add("br-v-nerozvadet2", "big", {
-  cs="Ano, vím o tom. Nebudeme to komentovat.",
+  cs="Ano, vím o tom. Nebudeme to komentovat.",
   en="Yes, I know about that. We won’t comment on it."})
 
 dialog_add("br-m-dva", "small", {
@@ -51,7 +51,7 @@ dialog_add("br-m-sprcha", "small", {
   en="I’ve seen many useless things, but an underwater shower..."})
 
 dialog_add("br-v-lazen", "big", {
-  cs="Třeba z ní tryská vzduch, jako ve vířivé lázni.",
+  cs="Třeba z ní tryská vzduch, jako ve vířivé lázni.",
   en="Maybe it sprays air, like in the bubble bath."})
 
 dialog_add("br-m-zapnout", "small", {
@@ -71,7 +71,7 @@ dialog_add("br-v-nechat", "big", {
   en="We should have left it alone."})
 
 dialog_add("br-m-nefunguje", "small", {
-  cs="A navíc stejně nefunguje.",
+  cs="A navíc stejně nefunguje.",
   en="And it doesn’t work anyway."})
 
 dialog_add("br-m-ahoj", "small", {

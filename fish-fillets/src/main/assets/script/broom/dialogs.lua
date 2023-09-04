@@ -31,7 +31,7 @@ dialog_add("kos-v-koste1", "big", {
   en="Could you please hand me that broom?"})
 
 dialog_add("kos-v-koste2", "big", {
-  cs="Podáš mi, prosím tě, to koště? A zkus mi ho nehodit na hlavu.",
+  cs="Podáš mi, prosím tě, to koště? A zkus mi ho nehodit na hlavu.",
   en="Could you please hand me that broom? And try not to drop it on my head."})
 
 dialog_add("kos-m-zamet0", "small", {
@@ -43,10 +43,10 @@ dialog_add("kos-m-zamet1", "small", {
   en="It should all fit."})
 
 dialog_add("kos-m-zamet2", "small", {
-  cs="Jenom to zameť dolů a padáme.",
+  cs="Jenom to zameť dolů a padáme.",
   en="Just sweep it down and we’ll be out of here."})
 
 dialog_add("kos-m-zamet3", "small", {
-  cs="Na uhlák se vykašli a nameť to dolů.",
+  cs="Na uhlák se vykašli a nameť to dolů.",
   en="Forget that bin and just sweep the garbage down."})
 

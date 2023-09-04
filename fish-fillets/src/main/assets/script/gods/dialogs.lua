@@ -7,7 +7,7 @@ dialog_add("lod-v-silenost1", "big", {
   en="I always knew that: the gods must be mad."})
 
 dialog_add("lod-v-silenost2", "big", {
-  cs="Bůh je šílený a celý svět je jeho hračka.",
+  cs="Bůh je šílený a celý svět je jeho hračka.",
   en="God is mad and the whole world is his plaything."})
 
 dialog_add("lod-m-pravda0", "small", {
@@ -23,7 +23,7 @@ dialog_add("lod-m-pravda2", "small", {
   en="Yes, it is shocking."})
 
 dialog_add("lod-m-costim", "small", {
-  cs="Co s tím uděláme?",
+  cs="Co s tím uděláme?",
   en="What are we to do about it?"})
 
 dialog_add("lod-v-internovat", "big", {
@@ -47,11 +47,11 @@ dialog_add("lod-v-golf", "big", {
   en="Of course. If we leave one of them here, any mad idea could occur to him. He could try to start playing golf, for example."})
 
 dialog_add("lod-m-jednoho", "small", {
-  cs="S touhle holí těžko. Myslím, že budeme rádi, když dostaneme jednoho. Ten druhý už nebude nebezpečný.",
+  cs="S touhle holí těžko. Myslím, že budeme rádi, když dostaneme jednoho. Ten druhý už nebude nebezpečný.",
   en="Hardly with this club. I think we should be happy if we manage to get one. The other one will be harmless then."})
 
 dialog_add("lod-v-koho", "big", {
-  cs="Tak dobře. A koho?",
+  cs="Tak dobře. A koho?",
   en="Well. Which one?"})
 
 dialog_add("lod-m-zluty", "small", {
@@ -115,7 +115,7 @@ dialog_add("lod-v-rozliseni", "big", {
   en="It’s hard to say with this screen resolution."})
 
 dialog_add("lod-m-bohove", "small", {
-  cs="Naším úkolem je tentokrát dostat ven z místnosti kteréhokoliv z těch bohů.",
+  cs="Naším úkolem je tentokrát dostat ven z místnosti kteréhokoliv z těch bohů.",
   en="This time our goal is to get out one of those gods."})
 
 dialog_add("b1-voda1", "yellow", {
@@ -267,7 +267,7 @@ dialog_add("b2-podvadis", "cyan", {
   en="You cheat!!!"})
 
 dialog_add("b2-spatne", "cyan", {
-  cs="Tohle jsem už zkoušel – a ty jsi řekl „voda“!",
+  cs="Tohle jsem už zkoušel – a ty jsi řekl „voda“!",
   en="I have tried that – and you said “miss”!"})
 
 dialog_add("b1-1", "", {})

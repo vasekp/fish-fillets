@@ -1,9 +1,9 @@
 dialog_add("pra-m-pravidla", "small", {
-  cs="Pravidla už znáš. Teď si je můžeš vyzkoušet v praxi. Budeme ti trochu radit.",
+  cs="Pravidla už znáš. Teď si je můžeš vyzkoušet v praxi. Budeme ti trochu radit.",
   en="You know the rules already. Now you can practice them. We will give you some hints occasionally."})
 
 dialog_add("pra-v-klesnout", "big", {
-  cs="Já například teď nesmím podklesnout dolů. A nahoru to také moc nejde.",
+  cs="Já například teď nesmím podklesnout dolů. A nahoru to také moc nejde.",
   en="I must not swim down now. And I cannot go up, either."})
 
 dialog_add("pra-v-nahore", "big", {
@@ -11,7 +11,7 @@ dialog_add("pra-v-nahore", "big", {
   en="Hey, arrange it up there somehow. But be careful!"})
 
 dialog_add("pra-m-nepohnu", "small", {
-  cs="S tímhle já nepohnu, to je ocel.",
+  cs="S tímhle já nepohnu, to je ocel.",
   en="I can’t move this. This is steel."})
 
 dialog_add("pra-m-zpatky", "small", {
@@ -39,7 +39,7 @@ dialog_add("pra-v-vzit", "big", {
   en="You mustn’t push the axe!"})
 
 dialog_add("pra-m-prisun", "small", {
-  cs="Když mi sem přisuneš sklenici, hodím ji na ni, to bude v pohodě.",
+  cs="Když mi sem přisuneš sklenici, hodím ji na ni, to bude v pohodě.",
   en="If you can push that can to me, I’ll shove the axe on it and everything will be okay."})
 
 dialog_add("pra-v-problem", "big", {
@@ -51,11 +51,11 @@ dialog_add("pra-m-reseni", "small", {
   en="But only if you are sure of your solution."})
 
 dialog_add("pra-v-ukladani", "big", {
-  cs="Nezapomeň, co jsme ti říkali o ukládání pozice.",
+  cs="Nezapomeň, co jsme ti říkali o ukládání pozice.",
   en="Remember what we have said about saving positions."})
 
 dialog_add("pra-m-uvazovat", "small", {
-  cs="O tomhle bych ani neměla uvažovat.",
+  cs="O tomhle bych ani neměla uvažovat.",
   en="I shouldn’t be thinking about this."})
 
 dialog_add("pra-v-spatne", "big", {
@@ -63,7 +63,7 @@ dialog_add("pra-v-spatne", "big", {
   en="This looks real bad. You are going to have to restart the level."})
 
 dialog_add("pra-m-pustis", "small", {
-  cs="Jestli to pustíš a já zůstanu tady, nedostanu se už nikdy ven.",
+  cs="Jestli to pustíš a já zůstanu tady, nedostanu se už nikdy ven.",
   en="If you drop that and I stay here, I will never get out."})
 
 dialog_add("pra-v-zavazis", "big", {
@@ -87,11 +87,11 @@ dialog_add("pra-v-valec", "big", {
   en="So that it will catch that steel cylinder when I push it."})
 
 dialog_add("pra-m-jakudelat", "small", {
-  cs="Ale jak to udělat, v tom ti nebudeme radit.",
+  cs="Ale jak to udělat, v tom ti nebudeme radit.",
   en="But we will not tell you how to do it."})
 
 dialog_add("pra-v-nezapomen", "big", {
-  cs="Jen nezapomeň, že i když po sobě nemůžeme předměty posouvat, můžeme je na něco nasouvat a nebo je ze sebe shazovat.",
+  cs="Jen nezapomeň, že i když po sobě nemůžeme předměty posouvat, můžeme je na něco nasouvat a nebo je ze sebe shazovat.",
   en="Just remember that although we cannot push objects along each other’s back, we can push them down or onto some solid structure."})
 
 dialog_add("pra-v-objet", "big", {
@@ -107,7 +107,7 @@ dialog_add("pra-m-stava", "small", {
   en="Things like that happen sometimes."})
 
 dialog_add("pra-v-dopredu", "big", {
-  cs="V téhle hře je potřeba myslet móc daleko dopředu.",
+  cs="V téhle hře je potřeba myslet móc daleko dopředu.",
   en="Sometimes you have to think faaar ahead."})
 
 dialog_add("pra-m-restart", "small", {
@@ -119,6 +119,6 @@ dialog_add("pra-v-schvalne", "big", {
   en="We admit that we did this on purpose."})
 
 dialog_add("pra-m-znovu", "small", {
-  cs="Aby sis to zkusil znovu – a tentokrát už bez našich rad.",
+  cs="Aby sis to zkusil znovu – a tentokrát už bez našich rad.",
   en="So that you could try it again – this time without any hints."})
 

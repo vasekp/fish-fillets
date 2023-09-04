@@ -3,7 +3,7 @@ dialog_add("pot-v-lod", "big", {
   en="Could this be Captain Silver’s ship?"})
 
 dialog_add("pot-m-soud", "small", {
-  cs="Z čeho tak soudíš?",
+  cs="Z čeho tak soudíš?",
   en="What makes you think so?"})
 
 dialog_add("pot-v-jmeno", "big", {
@@ -47,15 +47,15 @@ dialog_add("pot-m-velik", "small", {
   en="This sure is a big stetson."})
 
 dialog_add("pot-v-kras", "big", {
-  cs="A taky krásný.",
+  cs="A taky krásný.",
   en="And a beatiful one, too."})
 
 dialog_add("pot-v-nehnu", "big", {
-  cs="S tím ani nehnu.",
+  cs="S tím ani nehnu.",
   en="I can’t move this."})
 
 dialog_add("pot-v-trub", "big", {
-  cs="S tou trubkou nepohnu.",
+  cs="S tou trubkou nepohnu.",
   en="I can’t move that cylinder."})
 
 dialog_add("pot-m-nezb", "small", {
@@ -79,11 +79,11 @@ dialog_add("pot-m-moc", "small", {
   en="I don’t like it here."})
 
 dialog_add("pot-v-plav", "big", {
-  cs="Nemluv a plav, interiéry starých lodí jsou nadmíru zajímavá místa.",
+  cs="Nemluv a plav, interiéry starých lodí jsou nadmíru zajímavá místa.",
   en="Stop talking and swim. Old ship interiors are highly interesting places."})
 
 dialog_add("pot-v-ponur", "big", {
-  cs="Cítíš tu ponurou atmosféru zániku a pomíjivosti?",
+  cs="Cítíš tu ponurou atmosféru zániku a pomíjivosti?",
   en="Can you sense that atmosphere of doom and decay?"})
 
 dialog_add("pot-m-hnil", "small", {

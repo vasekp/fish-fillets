@@ -39,7 +39,7 @@ dialog_add("pz-m-pocitace", "small", {
   en="Computers. They’ve always fascinated me. But now I’m sick of them."})
 
 dialog_add("pz-x-pocitac", "white", {
-  cs="Ryby. Vždycky jsem je nenáviděl. A teď jich tady mám plné obvody.",
+  cs="Ryby. Vždycky jsem je nenáviděl. A teď jich tady mám plné obvody.",
   en="Fish. I’ve always hated them. And now my circuits are overloaded with them."})
 
 dialog_add("pz-v-hej", "big", {

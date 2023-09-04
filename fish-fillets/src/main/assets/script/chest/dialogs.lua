@@ -15,11 +15,11 @@ dialog_add("tru-v-gral", "big", {
   en="The Holy Grail, of course."})
 
 dialog_add("tru-v-vkupe", "big", {
-  cs="Tak to tu máme pěkně v kupě: poklady i Grál.",
+  cs="Tak to tu máme pěkně v kupě: poklady i Grál.",
   en="It’s neatly in one place: the treasure and the Grail."})
 
 dialog_add("tru-m-zrada", "small", {
-  cs="Jen aby v tom nebyla nějaká zrada.",
+  cs="Jen aby v tom nebyla nějaká zrada.",
   en="I think it’s much too easy to be true."})
 
 dialog_add("tru-m-oznamit", "small", {
@@ -39,7 +39,7 @@ dialog_add("tru-v-nejspis", "big", {
   en="Well, all right. PROBABLY this is not what we are looking for."})
 
 dialog_add("tru-m-nejistota", "small", {
-  cs="Tak je to lepší. Zůstává v tom střípek nejistoty.",
+  cs="Tak je to lepší. Zůstává v tom střípek nejistoty.",
   en="That’s better. There remains a bit of uncertainty."})
 
 dialog_add("tru-m-truhla0", "small", {
@@ -59,11 +59,11 @@ dialog_add("tru-v-truhla1", "big", {
   en="Try to push its lid."})
 
 dialog_add("tru-m-vzit0", "small", {
-  cs="Nevezmeme si s sebou něco?",
+  cs="Nevezmeme si s sebou něco?",
   en="Won’t we take something with us?"})
 
 dialog_add("tru-m-vzit1", "small", {
-  cs="Co si takhle vzít nějaký poklad s sebou?",
+  cs="Co si takhle vzít nějaký poklad s sebou?",
   en="What about taking some treasure with us?"})
 
 dialog_add("tru-m-vzit2", "small", {
@@ -83,10 +83,10 @@ dialog_add("tru-v-vzit2", "big", {
   en="The treasure would only hinder us."})
 
 dialog_add("tru-v-zrak", "big", {
-  cs="Už mě z toho lesku přechází zrak.",
+  cs="Už mě z toho lesku přechází zrak.",
   en="All this glinting is a sight for the eyes."})
 
 dialog_add("tru-m-trpyt", "small", {
-  cs="Všechno se tu tak třpytí. Až z toho oči přecházejí.",
+  cs="Všechno se tu tak třpytí. Až z toho oči přecházejí.",
   en="Everything here gleams so. It makes me dizzy."})
 

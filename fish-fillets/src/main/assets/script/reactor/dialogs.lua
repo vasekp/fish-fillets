@@ -11,7 +11,7 @@ dialog_add("rea-m-nevim", "small", {
   en="I have no idea, but it’s disgusting."})
 
 dialog_add("rea-m-comyslis", "small", {
-  cs="Co si myslíš o těch tyčích?",
+  cs="Co si myslíš o těch tyčích?",
   en="What do you think about these rods?"})
 
 dialog_add("rea-v-patrne", "big", {
@@ -23,7 +23,7 @@ dialog_add("rea-v-ledaze", "big", {
   en="Unless, of course, this reactor works on some completely different principle."})
 
 dialog_add("rea-m-mohl", "small", {
-  cs="Mohl by to být nukleopartikulární megadisruptor s ultramezonovými urychlovači.",
+  cs="Mohl by to být nukleopartikulární megadisruptor s ultramezonovými urychlovači.",
   en="It could, of course, be a nucleo-particle megadisruptor with ultramezon colliders."})
 
 dialog_add("rea-v-tozni", "big", {
@@ -31,11 +31,11 @@ dialog_add("rea-v-tozni", "big", {
   en="That sounds reasonable..."})
 
 dialog_add("rea-m-anebo", "small", {
-  cs="A nebo to není vůbec reaktor.",
+  cs="A nebo to není vůbec reaktor.",
   en="Then again, maybe this isn’t a nuclear reactor."})
 
 dialog_add("rea-v-acoby", "big", {
-  cs="A co by to bylo?",
+  cs="A co by to bylo?",
   en="So what is it, then?"})
 
 dialog_add("rea-m-cojavim", "small", {
@@ -51,7 +51,7 @@ dialog_add("rea-m-jakmuzes", "small", {
   en="But how do you know what’s a rational explanation and what isn’t?"})
 
 dialog_add("rea-v-kolik", "big", {
-  cs="Kolik procent létajících talířů má podle tebe na palubě střelnici? A kolik reaktor?",
+  cs="Kolik procent létajících talířů má podle tebe na palubě střelnici? A kolik reaktor?",
   en="Well just how many flying saucers, in your opinion, have a shooting gallery on board? And how many have a power plant?"})
 
 dialog_add("rea-v-takvidis", "big", {
@@ -63,7 +63,7 @@ dialog_add("rea-m-doufam", "small", {
   en="I hope we don’t start some unpleasant reaction."})
 
 dialog_add("rea-v-nemudruj", "big", {
-  cs="Nemudruj a zasouvej tyče.",
+  cs="Nemudruj a zasouvej tyče.",
   en="Don’t think. Just push the rods."})
 
 dialog_add("rea-x-pldik", "pink", {

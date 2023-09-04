@@ -23,7 +23,7 @@ dialog_add("zx-v-pamet", "big", {
   en="Well, I just realized that the animations of us two alone would fill up the RAM of a ZX Spectrum."})
 
 dialog_add("zx-v-otazka", "big", {
-  cs="Uvědomuješ si, že ta tvá otázka by jako zvukový soubor zaplnila celou paměť ZX Spectra? A uvědom si, kolik takových zvuků je v téhle hře.",
+  cs="Uvědomuješ si, že ta tvá otázka by jako zvukový soubor zaplnila celou paměť ZX Spectra? A uvědom si, kolik takových zvuků je v téhle hře.",
   en="Do you know that your question alone in WAV format would overfill the RAM of ZX Spectrum? And imagine how many such sounds are in this game."})
 
 dialog_add("zx-m-necodosebe", "small", {
@@ -47,7 +47,7 @@ dialog_add("zx-v-roboti", "big", {
   en="This line of robots looks familiar."})
 
 dialog_add("zx-m-highway", "small", {
-  cs="Já taky, to je přece z Highway Encounter.",
+  cs="Já taky, to je přece z Highway Encounter.",
   en="Oh sure, they are from the Highway Encounter."})
 
 dialog_add("zx-v-nahravani", "big", {

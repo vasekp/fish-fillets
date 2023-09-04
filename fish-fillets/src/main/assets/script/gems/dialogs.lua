@@ -3,7 +3,7 @@ dialog_add("zav-v-sto", "big", {
   en="Please note, that this level contains one hundred and nine objects."})
 
 dialog_add("zav-v-trpyt", "big", {
-  cs="A všechny se krásně třpytí.",
+  cs="A všechny se krásně třpytí.",
   en="And all of them gleam beautifully."})
 
 dialog_add("zav-m-pohnout", "small", {

@@ -7,11 +7,11 @@ dialog_add("kor-v-spitu", "big", {
   en="They sleep for thousands of years... in eternal stillness..."})
 
 dialog_add("kor-m-avlada", "small", {
-  cs="...a vláda to tají.",
+  cs="...a vláda to tají.",
   en="...and the government tries to cover it up."})
 
 dialog_add("kor-v-nicje", "big", {
-  cs="...nic je neprobudí z jejich spánku...",
+  cs="...nic je neprobudí z jejich spánku...",
   en="...nothing can wake them up..."})
 
 dialog_add("kor-m-pokud", "small", {
@@ -19,7 +19,7 @@ dialog_add("kor-m-pokud", "small", {
   en="Unless we activate that octopus."})
 
 dialog_add("kor-v-podivej", "big", {
-  cs="Podívej, všechno je tu tak mrtvé a nehybné.",
+  cs="Podívej, všechno je tu tak mrtvé a nehybné.",
   en="Look, everything here is so still and quiet."})
 
 dialog_add("kor-m-vzdyt", "small", {
@@ -31,15 +31,15 @@ dialog_add("kor-v-treba", "big", {
   en="Maybe they’re in the throes of death."})
 
 dialog_add("kor-v-shledavam", "big", {
-  cs="Shledávám v tom jistou symboliku.",
+  cs="Shledávám v tom jistou symboliku.",
   en="I find a certain symbolism in that."})
 
 dialog_add("kor-v-bermudy", "big", {
-  cs="To je zajímavé, tento druh korálu přece roste jen v bermudském trojúhelníku.",
+  cs="To je zajímavé, tento druh korálu přece roste jen v bermudském trojúhelníku.",
   en="That’s interesting. This type of coral normally grows only in the Bermuda Triangle."})
 
 dialog_add("kor-v-inteligentni", "big", {
-  cs="Víš o tom, že některé druhy korálů jsou skoro tak inteligentní jako ryby?",
+  cs="Víš o tom, že některé druhy korálů jsou skoro tak inteligentní jako ryby?",
   en="Did you know that some types of coral are almost as intelligent as fish?"})
 
 dialog_add("kor-v-jedovate", "big", {
@@ -75,11 +75,11 @@ dialog_add("kor-m-vsimlsis", "small", {
   en="Did you see what the lobsters were doing?"})
 
 dialog_add("kor-v-avidelas", "big", {
-  cs="A viděla jsi, jak trsaly ty sasanky?",
+  cs="A viděla jsi, jak trsaly ty sasanky?",
   en="And how those anemones were dancing?"})
 
 dialog_add("kor-m-tovis", "small", {
-  cs="To víš, moc radosti si zde v hlubině asi neužijou.",
+  cs="To víš, moc radosti si zde v hlubině asi neužijou.",
   en="Well, you know, it’s not all that much fun down here at the bottom of the ocean."})
 
 dialog_add("kor-v-vali", "big", {
@@ -111,7 +111,7 @@ dialog_add("kor-v-kostice", "big", {
   en="I’m fed up to the gills with this."})
 
 dialog_add("kor-v-odsud", "big", {
-  cs="Odsud s tím nepohnu, potřeboval bych se k tomu dostat zleva.",
+  cs="Odsud s tím nepohnu, potřeboval bych se k tomu dostat zleva.",
   en="I can’t budge this from where I am. I’d have to try to move it from the left side."})
 
 dialog_add("kor-m-budesmuset", "small", {

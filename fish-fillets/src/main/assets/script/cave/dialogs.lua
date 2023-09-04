@@ -99,6 +99,6 @@ dialog_add("jes-v-nechut0", "big", {
   en="I think you are going to need that “monster”."})
 
 dialog_add("jes-v-nechut1", "big", {
-  cs="Myslím, že bys měla překonat nechuť k té „nestvůře“.",
+  cs="Myslím, že bys měla překonat nechuť k té „nestvůře“.",
   en="I think you will have to overcome your dislike of that “abomination”."})
 

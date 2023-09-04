@@ -15,11 +15,11 @@ dialog_add("sec-m-ven0", "small", {
   en="See, now you got out."})
 
 dialog_add("sec-m-ven1", "small", {
-  cs="Tak, a jsme zase spolu.",
+  cs="Tak, a jsme zase spolu.",
   en="So, we are together again."})
 
 dialog_add("sec-v-zavreny", "big", {
-  cs="Jsem zavřený v místnosti bez dveří!",
+  cs="Jsem zavřený v místnosti bez dveří!",
   en="I am closed in a room without doors!"})
 
 dialog_add("sec-m-kamen", "small", {
@@ -31,7 +31,7 @@ dialog_add("sec-m-krab", "small", {
   en="Isn’t that crab a little bit strange?"})
 
 dialog_add("sec-v-ktery", "big", {
-  cs="A kterého myslíš?",
+  cs="A kterého myslíš?",
   en="Which one do you mean?"})
 
 dialog_add("sec-m-dole0", "small", {
@@ -75,7 +75,7 @@ dialog_add("sec-v-oci", "big", {
   en="Their eyes move in accord with each other. As if they are controlled by some common superconsciousness."})
 
 dialog_add("sec-m-program", "small", {
-  cs="Jistě, řídí je počítačový program. Stejně jako to vlnění vody kolem a tvoje hloupé řeči.",
+  cs="Jistě, řídí je počítačový program. Stejně jako to vlnění vody kolem a tvoje hloupé řeči.",
   en="But of course, they are controlled by computer program. Just like the undulating of water and your silly talk."})
 
 dialog_add("sec-v-socha", "big", {

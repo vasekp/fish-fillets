@@ -23,7 +23,7 @@ dialog_add("pt2-m-piknik2", "small", {
   en="That’s all that is left from the picnic."})
 
 dialog_add("pt2-m-piknik3", "small", {
-  cs="Měli tu takový piknik u dna.",
+  cs="Měli tu takový piknik u dna.",
   en="They have had a kind of picnic by the bottom."})
 
 dialog_add("pt2-v-unaveni0", "big", {

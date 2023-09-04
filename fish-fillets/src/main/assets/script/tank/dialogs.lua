@@ -1,5 +1,5 @@
 dialog_add("sv-m-pomohli", "small", {
-  cs="To jsme si pomohli. Z batyskafu do tanku, to je jako ze sítě do podběráku.",
+  cs="To jsme si pomohli. Z batyskafu do tanku, to je jako ze sítě do podběráku.",
   en="This is some improvement. From bathyscaph to tank, this is like from a line into a net."})
 
 dialog_add("sv-v-bezsneku", "big", {
@@ -27,7 +27,7 @@ dialog_add("sv-v-obojzivelny", "big", {
   en="Maybe it was an amphibious tank."})
 
 dialog_add("sv-m-kecy", "small", {
-  cs="Mořský obojživelný tank? Úplně to vidím před sebou: za bezměsíčné noci se k pobřeží omývanému vlnami šírého oceánu blíží les šnorchlů... a na písečné pláže vyjíždějí první obrněnci... konsternovaní obránci nechápavě hledají loď, která je tu vysadila...",
+  cs="Mořský obojživelný tank? Úplně to vidím před sebou: za bezměsíčné noci se k pobřeží omývanému vlnami šírého oceánu blíží les šnorchlů... a na písečné pláže vyjíždějí první obrněnci... konsternovaní obránci nechápavě hledají loď, která je tu vysadila...",
   en="An amphibious tank? Just imagine: On the moonless night, the uncomprehending defenders bewilderedly watch the mass of snorkels emerging from the surf, searching in vain for the landing craft..."})
 
 dialog_add("sv-v-proc", "big", {
@@ -59,6 +59,6 @@ dialog_add("sv-m-ven", "small", {
   en="To climb out? But we have only fins."})
 
 dialog_add("sv-v-ucpat", "big", {
-  cs="Abychom s ním ucpali tu díru.",
+  cs="Abychom s ním ucpali tu díru.",
   en="No. To plug that hole."})
 

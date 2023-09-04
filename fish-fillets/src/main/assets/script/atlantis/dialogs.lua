@@ -15,7 +15,7 @@ dialog_add("sp-m-neopatrnost", "small", {
   en="Such carelessness."})
 
 dialog_add("sp-v-zahynuli", "big", {
-  cs="Tisíce lidí zahynuly, celé město zmizelo v rozbouřených vlnách kvůli takové hlouposti.",
+  cs="Tisíce lidí zahynuly, celé město zmizelo v rozbouřených vlnách kvůli takové hlouposti.",
   en="Thousands perished – the whole city disappeared in the waves because of such ineptness."})
 
 dialog_add("sp-m-vytazeny", "small", {
@@ -27,7 +27,7 @@ dialog_add("sp-v-trapne", "big", {
   en="An embarrassing blunder."})
 
 dialog_add("sp-m-costim", "small", {
-  cs="Co s ním teď uděláme?",
+  cs="Co s ním teď uděláme?",
   en="What are we to do with it?"})
 
 dialog_add("sp-v-vratit0", "big", {
@@ -35,11 +35,11 @@ dialog_add("sp-v-vratit0", "big", {
   en="We can try to put it back in place."})
 
 dialog_add("sp-m-vratit0", "small", {
-  cs="A co potom? Myslíš, že tu vodu, co sem natekla, vypijem?",
+  cs="A co potom? Myslíš, že tu vodu, co sem natekla, vypijem?",
   en="And then? Shall we drink the water that poured in, or what?"})
 
 dialog_add("sp-v-vratit1", "big", {
-  cs="Můžem ho vrátit na místo jako vyjádření našeho obdivu k hrdinskému úsilí obyvatel města udržet ho nad hladinou. Jako pomník jejich důmyslu, zručnosti a ... vytrvalosti.",
+  cs="Můžem ho vrátit na místo jako vyjádření našeho obdivu k hrdinskému úsilí obyvatel města udržet ho nad hladinou. Jako pomník jejich důmyslu, zručnosti a ... vytrvalosti.",
   en="We can put it back in place as a token of our esteem of the citizens’ heroic effort to keep it afloat. As a memorial to their industrious, adroit and... persistent nature."})
 
 dialog_add("sp-m-vratit1", "small", {
@@ -47,19 +47,19 @@ dialog_add("sp-m-vratit1", "small", {
   en="Of what? “Where are you running? I need to order eight swords.” The Providence itself unplugged that hole. Just imagine you’d hear such things at home. Day by day."})
 
 dialog_add("sp-m-kalet", "small", {
-  cs="A navíc: copak sem ještě někdo někdy přijde? Tady budou na ten špunt akorát kálet sépie.",
+  cs="A navíc: copak sem ještě někdo někdy přijde? Tady budou na ten špunt akorát kálet sépie.",
   en="And moreover: is it likely that anybody would ever come here? Only sepias will nibble it occasionally."})
 
 dialog_add("sp-v-pocit", "big", {
-  cs="Budem z toho mít dobrý pocit.",
+  cs="Budem z toho mít dobrý pocit.",
   en="We are going to feel good about it."})
 
 dialog_add("sp-m-potize", "small", {
-  cs="Budem z toho mít potíže. Myslíš, že nám to šéf uvěří? Obří vytažený špunt. A co jste s ním udělali? Ucpali jsme s ním díru. Ha, ha, ha.",
+  cs="Budem z toho mít potíže. Myslíš, že nám to šéf uvěří? Obří vytažený špunt. A co jste s ním udělali? Ucpali jsme s ním díru. Ha, ha, ha.",
   en="We are going to feel down about it. Do you think the boss is going to believe it? A giant unplugged plug? And what have you done with it? We plugged it again. He, he, he."})
 
 dialog_add("sp-v-vzit", "big", {
-  cs="Na tom něco je. Možná by bylo lepší ho vzít s sebou.",
+  cs="Na tom něco je. Možná by bylo lepší ho vzít s sebou.",
   en="You might be right. Maybe it would be better to take it along."})
 
 dialog_add("sp-m-taky", "small", {
@@ -79,7 +79,7 @@ dialog_add("sp-v-centrala", "big", {
   en="What would the Agency say?"})
 
 dialog_add("sp-v-jedno", "big", {
-  cs="Už mi začíná být jedno, co si o mně šéf pomyslí.",
+  cs="Už mi začíná být jedno, co si o mně šéf pomyslí.",
   en="I don’t think I mind what the boss is going to think about me."})
 
 dialog_add("sp-m-vydrz", "small", {
@@ -119,6 +119,6 @@ dialog_add("sp-v-nesmysl", "big", {
   en="That is just nonsense."})
 
 dialog_add("sp-v-ven", "big", {
-  cs="Naším úkolem tentokrát bude dostat ven z místnosti ten špunt!",
+  cs="Naším úkolem tentokrát bude dostat ven z místnosti ten špunt!",
   en="This time our goal is to get that plug out."})
 

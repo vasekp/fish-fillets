@@ -19,7 +19,7 @@ dialog_add("gr-m-zare2", "small", {
   en="Can’t you see how conspicuously is it placed in the center of the cave?"})
 
 dialog_add("gr-v-nic0", "big", {
-  cs="Svatozář nic neznamená. Svatý grál může vypadat i úplně obyčejně.",
+  cs="Svatozář nic neznamená. Svatý grál může vypadat i úplně obyčejně.",
   en="The halo means nothing. The Holy Grail could look quite plain."})
 
 dialog_add("gr-v-nic1", "big", {
@@ -27,7 +27,7 @@ dialog_add("gr-v-nic1", "big", {
   en="All that glitters is not gold. No one ever said that Holy Grail must glow."})
 
 dialog_add("gr-v-nic2", "big", {
-  cs="Hmmm... když dá někdo obyčejný grál na vyvýšené místo, nestane z něj přece svatý.",
+  cs="Hmmm... když dá někdo obyčejný grál na vyvýšené místo, nestane z něj přece svatý.",
   en="Hmm... Placing a plain Grail in a conspicuous place will not turn it into a Holy one."})
 
 dialog_add("gr-v-tuseni", "big", {
@@ -35,7 +35,7 @@ dialog_add("gr-v-tuseni", "big", {
   en="I feel it will not be as it seems."})
 
 dialog_add("gr-m-tuseni", "small", {
-  cs="Ty a ty tvoje tušení...",
+  cs="Ty a ty tvoje tušení...",
   en="You and your feelings."})
 
 dialog_add("gr-m-svaty0", "small", {
@@ -51,7 +51,7 @@ dialog_add("gr-m-vsechny0", "small", {
   en="Hmm... It seems you were right. We’ll take them all."})
 
 dialog_add("gr-m-svaty1", "small", {
-  cs="Naším úkolem v této místnosti je vystrkat z ní svatý grál.",
+  cs="Naším úkolem v této místnosti je vystrkat z ní svatý grál.",
   en="Our goal in this level is to push out the Holy Grail."})
 
 dialog_add("gr-v-vsechny1", "big", {
@@ -63,7 +63,7 @@ dialog_add("gr-m-jensvaty", "small", {
   en="The Holy one is enough."})
 
 dialog_add("gr-m-vsechny1", "small", {
-  cs="Naším úkolem je vystrkat z této místnosti úplně všechny grály.",
+  cs="Naším úkolem je vystrkat z této místnosti úplně všechny grály.",
   en="Our goal is to push all the Grails out of this room."})
 
 dialog_add("gr-v-skoro0", "big", {
@@ -71,6 +71,6 @@ dialog_add("gr-v-skoro0", "big", {
   en="Almost all of them are gone, now!"})
 
 dialog_add("gr-v-skoro1", "big", {
-  cs="Ještě jeden grál a bude to!",
+  cs="Ještě jeden grál a bude to!",
   en="One more Grail and we are done!"})
 

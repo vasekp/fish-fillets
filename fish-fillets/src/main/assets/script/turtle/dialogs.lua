@@ -3,7 +3,7 @@ dialog_add("zel-v-zelva0", "big", {
   en="Can you see it? This must be that telepathic turtle."})
 
 dialog_add("zel-v-zelva1", "big", {
-  cs="Ha, to je ona. Želva s telepatickými schopnostmi.",
+  cs="Ha, to je ona. Želva s telepatickými schopnostmi.",
   en="Yes, this is it. The telepathic turtle."})
 
 dialog_add("zel-m-fotky0", "small", {
@@ -11,15 +11,15 @@ dialog_add("zel-m-fotky0", "small", {
   en="Well, I don’t know. Judging from those photos, it could be it."})
 
 dialog_add("zel-m-fotky1", "small", {
-  cs="Nejsem si jistá... a co ty telepatické schopnosti?",
+  cs="Nejsem si jistá... a co ty telepatické schopnosti?",
   en="I am not sure... what about those telepathic powers?"})
 
 dialog_add("zel-v-zmistnosti0", "big", {
-  cs="V každém případě ji vystrkáme z místnosti.",
+  cs="V každém případě ji vystrkáme z místnosti.",
   en="In any case we have to get it out of the room."})
 
 dialog_add("zel-v-zmistnosti1", "big", {
-  cs="Vyneseme ven z místnosti tu želvu.",
+  cs="Vyneseme ven z místnosti tu želvu.",
   en="Let’s take out that turtle."})
 
 dialog_add("zel-m-coto0", "small", {
@@ -43,7 +43,7 @@ dialog_add("zel-v-coto1", "big", {
   en="What should it mean?"})
 
 dialog_add("zel-v-coto2", "big", {
-  cs="Co se to s tebou děje?",
+  cs="Co se to s tebou děje?",
   en="What happened to you?"})
 
 dialog_add("zel-m-nevim0", "small", {
@@ -63,7 +63,7 @@ dialog_add("zel-v-nevim1", "big", {
   en="I didn’t want to..."})
 
 dialog_add("zel-v-cosedeje", "big", {
-  cs="Co se to s námi jen děje?",
+  cs="Co se to s námi jen děje?",
   en="What’s happening to us?"})
 
 dialog_add("zel-m-cimtoje", "small", {
@@ -115,10 +115,10 @@ dialog_add("zel-v-tvary", "big", {
   en="Where do so many bizarre shapes come from?"})
 
 dialog_add("zel-m-jednoduse", "small", {
-  cs="Jednoduše – programátoři vytvoří zapeklitý problém a grafici to pak nakreslí.",
+  cs="Jednoduše – programátoři vytvoří zapeklitý problém a grafici to pak nakreslí.",
   en="It’s easy – designers create tricky problems and leave the drawing to the graphic artists."})
 
 dialog_add("zel-v-ukol", "big", {
-  cs="V této místnosti je naším úkolem dostat ven tu želvu.",
+  cs="V této místnosti je naším úkolem dostat ven tu želvu.",
   en="Our goal in this room is to get that turtle out."})
 

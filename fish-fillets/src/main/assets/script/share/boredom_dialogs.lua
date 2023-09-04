@@ -27,7 +27,7 @@ dialog_add("ob-v-klid", "big", {
   en="Take it easy."})
 
 dialog_add("ob-v-neobvykle", "big", {
-  cs="V tom bude něco neobvyklého...",
+  cs="V tom bude něco neobvyklého...",
   en="There is something strange about it..."})
 
 dialog_add("ob-m-teorie", "small", {
@@ -135,7 +135,7 @@ dialog_add("ob-m-mysleli", "small", {
   en="We were just afraid that you might have forgotten about us."})
 
 dialog_add("ob-v-nehybes", "big", {
-  cs="Hele, proč s námi nehýbeš?",
+  cs="Hele, proč s námi nehýbeš?",
   en="Look, why don’t you move us a little bit?"})
 
 dialog_add("ob-m-resit", "small", {
@@ -155,11 +155,11 @@ dialog_add("ob-m-tezky", "small", {
   en="Difficult, isn’t it?"})
 
 dialog_add("ob-v-jidlo", "big", {
-  cs="Hele, hráči, neskočil bys nám pro něco k jídlu? Dej nám to do adresáře TMP, hned to sníme.",
+  cs="Hele, hráči, neskočil bys nám pro něco k jídlu? Dej nám to do adresáře TMP, hned to sníme.",
   en="Look player, couldn’t you bring us something to eat? Put it in the TEMP directory, we’ll eat it immediately."})
 
 dialog_add("ob-m-strach", "small", {
-  cs="Prosím tě, až přestaneš hrát, nevypínej počítač... je tady pak hrozná tma a mám strach.",
+  cs="Prosím tě, až přestaneš hrát, nevypínej počítač... je tady pak hrozná tma a mám strach.",
   en="When you stop playing, don’t turn off the computer, please. It’s so dark and scary when you do."})
 
 dialog_add("ob-m-jakdlouho", "small", {
@@ -215,6 +215,6 @@ dialog_add("ob-v-covsechno", "big", {
   en="What everything?"})
 
 dialog_add("ob-m-uplnevse", "small", {
-  cs="Úplně všechno! A vůbec, starej se o sebe!",
+  cs="Úplně všechno! A vůbec, starej se o sebe!",
   en="Completely everything! And leave me alone, I beg you!"})
 

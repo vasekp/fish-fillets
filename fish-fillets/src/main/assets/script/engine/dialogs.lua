@@ -1,5 +1,5 @@
 dialog_add("mot-m-info", "small", {
-  cs="Myslím, že bychom tu mohli získat nějaké informace o mezihvězdném pohonu.",
+  cs="Myslím, že bychom tu mohli získat nějaké informace o mezihvězdném pohonu.",
   en="I think we can gain some information about the interstellar propulsion here."})
 
 dialog_add("mot-v-konvencni", "big", {
@@ -7,7 +7,7 @@ dialog_add("mot-v-konvencni", "big", {
   en="This looks more like conventional propulsion for the landing craft."})
 
 dialog_add("mot-m-tak", "small", {
-  cs="Tak. Našli jsme motor. Mohli bychom prohlásit jeden z našich úkolů za splněný.",
+  cs="Tak. Našli jsme motor. Mohli bychom prohlásit jeden z našich úkolů za splněný.",
   en="So. We found the drive. We have achieved one of the objectives of our mission."})
 
 dialog_add("mot-v-zavery", "big", {
@@ -19,11 +19,11 @@ dialog_add("mot-m-akce0", "small", {
   en="I am sorry that none of these technical marvels around us work."})
 
 dialog_add("mot-m-akce1", "small", {
-  cs="Já bych tak chtěla vidět trochu té mimozemské techniky v akci.",
+  cs="Já bych tak chtěla vidět trochu té mimozemské techniky v akci.",
   en="I’d like to see some of these extraterrestrial gizmos in action."})
 
 dialog_add("mot-m-akce2", "small", {
-  cs="To by mě zajímalo, jestli by tenhle motor fungoval i pod vodou.",
+  cs="To by mě zajímalo, jestli by tenhle motor fungoval i pod vodou.",
   en="I wonder if this motor could work under water."})
 
 dialog_add("mot-v-funkce0", "big", {
@@ -39,7 +39,7 @@ dialog_add("mot-v-funkce2", "big", {
   en="We should be happy that we could not switch anything on yet."})
 
 dialog_add("mot-v-klic", "big", {
-  cs="Opatrně s tím klíčem.",
+  cs="Opatrně s tím klíčem.",
   en="Careful with that wrench."})
 
 dialog_add("mot-m-ublizit", "small", {

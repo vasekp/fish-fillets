@@ -23,11 +23,11 @@ dialog_add("vrak-m-vrak2", "small", {
   en="Look, it invaded our library."})
 
 dialog_add("vrak-m-kupovat0", "small", {
-  cs="To máš z toho, že kupuješ tolik knížek.",
+  cs="To máš z toho, že kupuješ tolik knížek.",
   en="See? You shouldn’t have bought so many books."})
 
 dialog_add("vrak-m-kupovat1", "small", {
-  cs="To máš z toho, že koupíš každou knížku, kterou vidíš.",
+  cs="To máš z toho, že koupíš každou knížku, kterou vidíš.",
   en="You buy every book you can lay your hand on and now you have problems."})
 
 dialog_add("vrak-m-naco", "small", {
@@ -51,7 +51,7 @@ dialog_add("vrak-m-knihy3", "small", {
   en="Holistic methods."})
 
 dialog_add("vrak-m-knihy4", "small", {
-  cs="Telepatem snadno a rychle.",
+  cs="Telepatem snadno a rychle.",
   en="Teach yourself telepathy."})
 
 dialog_add("vrak-m-knihy5", "small", {
@@ -67,23 +67,23 @@ dialog_add("vrak-v-vyhodit", "big", {
   en="I’d throw out these, for example."})
 
 dialog_add("vrak-v-knihy0", "big", {
-  cs="Jak Frk a Brk putovali za sumýškem.",
+  cs="Jak Frk a Brk putovali za sumýškem.",
   en="The Three Little Shrimp"})
 
 dialog_add("vrak-v-knihy1", "big", {
-  cs="O perníkové ponorce.",
+  cs="O perníkové ponorce.",
   en="The Gingerbread Submarine"})
 
 dialog_add("vrak-v-knihy2", "big", {
-  cs="Dlouhý, Široký a Hluboký.",
+  cs="Dlouhý, Široký a Hluboký.",
   en="Goldilocks and the Three Lobsters"})
 
 dialog_add("vrak-v-knihy3", "big", {
-  cs="O rybce se zlatou mušlí na čele.",
+  cs="O rybce se zlatou mušlí na čele.",
   en="Sharkerella"})
 
 dialog_add("vrak-v-knihy4", "big", {
-  cs="Sépijka a sedm trpaslíků.",
+  cs="Sépijka a sedm trpaslíků.",
   en="Slimy Squid and the Seven Dwarfs"})
 
 dialog_add("vrak-m-pohadky", "small", {
@@ -99,11 +99,11 @@ dialog_add("vrak-v-nevejdu1", "big", {
   en="I can’t fit in here."})
 
 dialog_add("vrak-m-cteni0", "small", {
-  cs="K čemu je nám tolik knížek, když stejně nejdou vytáhnout z poliček?",
+  cs="K čemu je nám tolik knížek, když stejně nejdou vytáhnout z poliček?",
   en="Why do we have so many books if we cannot pull them out anyway?"})
 
 dialog_add("vrak-m-cteni1", "small", {
-  cs="Kdybys místo čtení o nesmyslech trochu sportoval, vešel by ses tam.",
+  cs="Kdybys místo čtení o nesmyslech trochu sportoval, vešel by ses tam.",
   en="If you did some work-outs instead of reading about silly affairs you could fit yourself in."})
 
 dialog_add("vrak-m-cteni2", "small", {
@@ -111,7 +111,7 @@ dialog_add("vrak-m-cteni2", "small", {
   en="I told you not to buy that Complete Dictionary of the Abnormal."})
 
 dialog_add("vrak-v-policky", "big", {
-  cs="Zamysleme se. Ty knihy nedostaneme z poliček.",
+  cs="Zamysleme se. Ty knihy nedostaneme z poliček.",
   en="Let’s think. We can’t get these books off the shelf."})
 
 dialog_add("vrak-m-predmety", "small", {
@@ -139,6 +139,6 @@ dialog_add("vrak-m-ocel", "small", {
   en="How am I to get there through that steel?!"})
 
 dialog_add("vrak-m-restart", "small", {
-  cs="Co takhle restartovat a zkusit to znovu?",
+  cs="Co takhle restartovat a zkusit to znovu?",
   en="What about restarting and trying it again from scratch?"})
 

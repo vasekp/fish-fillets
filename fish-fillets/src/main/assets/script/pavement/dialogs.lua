@@ -3,7 +3,7 @@ dialog_add("dir-m-rada0", "small", {
   en="Stuff yourself with your advice."})
 
 dialog_add("dir-m-rada1", "small", {
-  cs="To víme i bez tebe.",
+  cs="To víme i bez tebe.",
   en="We know that very well."})
 
 dialog_add("dir-m-rada2", "small", {
@@ -23,7 +23,7 @@ dialog_add("dir-v-rada0", "big", {
   en="Ignore it, let it talk."})
 
 dialog_add("dir-v-rada1", "big", {
-  cs="Nech nás v klidu přemýšlet.",
+  cs="Nech nás v klidu přemýšlet.",
   en="Let us think."})
 
 dialog_add("dir-v-rada2", "big", {
@@ -63,7 +63,7 @@ dialog_add("dir-hs-konec0", "statue", {
   en="demolish some wall."})
 
 dialog_add("dir-hs-konec1", "statue", {
-  cs="vylomit pár kamenů ze zdi a ucpat ty díry.",
+  cs="vylomit pár kamenů ze zdi a ucpat ty díry.",
   en="break off a few stones from the wall and plug the holes with them."})
 
 dialog_add("dir-hs-konec2", "statue", {
@@ -71,7 +71,7 @@ dialog_add("dir-hs-konec2", "statue", {
   en="plug those holes with something so that that hooked steel wouldn’t get stuck there."})
 
 dialog_add("dir-hs-konec3", "statue", {
-  cs="rozbít ten sloupek u východu.",
+  cs="rozbít ten sloupek u východu.",
   en="smash that pillar by the exit."})
 
 dialog_add("dir-hs-konec4", "statue", {
@@ -79,11 +79,11 @@ dialog_add("dir-hs-konec4", "statue", {
   en="saw off some of that hooked steel."})
 
 dialog_add("dir-hs-konec5", "statue", {
-  cs="nějak ty předměty přeskládat, abyste mohli odjet z místnosti.",
+  cs="nějak ty předměty přeskládat, abyste mohli odjet z místnosti.",
   en="rearrange the objects so that you can swim out."})
 
 dialog_add("dir-hs-konec6", "statue", {
-  cs="celé to nějak vyřešit a pustit se do dalších místností.",
+  cs="celé to nějak vyřešit a pustit se do dalších místností.",
   en="solve it somehow and get to the next level."})
 
 dialog_add("dir-hs-konec7", "statue", {

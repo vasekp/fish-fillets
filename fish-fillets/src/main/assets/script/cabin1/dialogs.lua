@@ -31,7 +31,7 @@ dialog_add("k1-pap-noproto", "parrot", {
   en="That’s betterrr!"})
 
 dialog_add("k1-pap-prcice", "parrot", {
-  cs="A jste v prrrčicích!",
+  cs="A jste v prrrčicích!",
   en="And it’s currrtains forrr you!"})
 
 dialog_add("k1-pap-prekazet", "parrot", {
@@ -59,7 +59,7 @@ dialog_add("k1-pap-trhnisi", "parrot", {
   en="Beat it, sirrr..."})
 
 dialog_add("k1-pap-vodprejskni", "parrot", {
-  cs="Nevotrrravuj a vodprrrejskni!",
+  cs="Nevotrrravuj a vodprrrejskni!",
   en="Leave me alone and get lost!"})
 
 dialog_add("k1-m-copak", "small", {
@@ -75,7 +75,7 @@ dialog_add("k1-m-myslis", "small", {
   en="Could this be the legendary Silver’s treasure?"})
 
 dialog_add("k1-v-bedna", "big", {
-  cs="V tak malé truhle? Kvůli jedné takové bedničce by nás šéf určitě nekontaktoval.",
+  cs="V tak malé truhle? Kvůli jedné takové bedničce by nás šéf určitě nekontaktoval.",
   en="In such a small chest? The boss surely wouldn’t contact us for such a little case."})
 
 dialog_add("k1-m-fuj", "small", {

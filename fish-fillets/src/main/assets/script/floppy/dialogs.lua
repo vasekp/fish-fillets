@@ -7,11 +7,11 @@ dialog_add("disk-m-tady", "small", {
   en="Do you think this is it?"})
 
 dialog_add("disk-m-vejit", "small", {
-  cs="Jak by se to mohlo vejít na jednu tři a půl palcovou disketu?",
+  cs="Jak by se to mohlo vejít na jednu tři a půl palcovou disketu?",
   en="How could it all fit on one three and a half inch floppy?"})
 
 dialog_add("disk-v-metrova", "big", {
-  cs="Podívej, o kolik je to větší než já. To je spíš třiceti pěti metrová disketa.",
+  cs="Podívej, o kolik je to větší než já. To je spíš třiceti pěti metrová disketa.",
   en="Look how much bigger than me it is. It is a three and a half meter floppy."})
 
 dialog_add("disk-m-velka", "small", {
@@ -43,15 +43,15 @@ dialog_add("disk-m-depres", "small", {
   en="Don’t be always so gloomy. I can’t bear it."})
 
 dialog_add("disk-m-nahrat", "small", {
-  cs="Nešlo by ten plán z diskety jenom nahrát do našeho notebooku a odjet?",
+  cs="Nešlo by ten plán z diskety jenom nahrát do našeho notebooku a odjet?",
   en="Wouldn’t it be enough to download that plan from the floppy to our notebook?"})
 
 dialog_add("disk-v-mas", "big", {
-  cs="Proč ne. A kde ho máš?",
+  cs="Proč ne. A kde ho máš?",
   en="Why not. Take it out."})
 
 dialog_add("disk-m-sakra", "small", {
-  cs="A sakra! Že já jsem ho nechala doma.",
+  cs="A sakra! Že já jsem ho nechala doma.",
   en="Oh, darn! I left it at home."})
 
 dialog_add("disk-v-vratime", "big", {
@@ -67,7 +67,7 @@ dialog_add("disk-v-nane", "big", {
   en="Suit yourself. I am curious how are you going to do it now."})
 
 dialog_add("disk-m-zmatlo", "small", {
-  cs="A co když ten plán není na té disketě? Co když je tu jen proto, aby nás to zmátlo?",
+  cs="A co když ten plán není na té disketě? Co když je tu jen proto, aby nás to zmátlo?",
   en="What if there is no plan on this floppy? What if it is here only to confound us?"})
 
 dialog_add("disk-v-neverim", "big", {
@@ -87,7 +87,7 @@ dialog_add("disk-m-potvory", "small", {
   en="Yuck. Some monsters."})
 
 dialog_add("disk-v-pozor", "big", {
-  cs="Hlavně si musíme dát pozor, abychom je neodnesli i s disketou. To by se nám hráč poděkoval, kdybychom mu je vysypali na desktop.",
+  cs="Hlavně si musíme dát pozor, abychom je neodnesli i s disketou. To by se nám hráč poděkoval, kdybychom mu je vysypali na desktop.",
   en="Above all, we must be careful not to take them with the disk. The player wouldn’t be happy if we pour them on their desktop."})
 
 dialog_add("disk-m-ukol", "small", {

@@ -3,7 +3,7 @@ dialog_add("pyr-m-kam", "small", {
   en="Where are we now?"})
 
 dialog_add("pyr-v-vsim", "big", {
-  cs="Pyramidy... Povšimni si, jak se v tomto městě mísí antické motivy.",
+  cs="Pyramidy... Povšimni si, jak se v tomto městě mísí antické motivy.",
   en="The Pyramids... Notice how the classical motifs mix in this city."})
 
 dialog_add("pyr-m-plaz", "small", {
@@ -27,7 +27,7 @@ dialog_add("pyr-m-zkus", "small", {
   en="Try it yourself, if you’re so clever."})
 
 dialog_add("pyr-m-comy", "small", {
-  cs="A co máme říkat my?",
+  cs="A co máme říkat my?",
   en="What should we say?"})
 
 dialog_add("pyr-m-nic", "small", {
@@ -43,6 +43,6 @@ dialog_add("pyr-m-dest", "small", {
   en="What is it written on these tablets?"})
 
 dialog_add("pyr-v-sbohem", "big", {
-  cs="Sbohem a dík za všechny ty ryby.",
+  cs="Sbohem a dík za všechny ty ryby.",
   en="So long and thanks for all the fish."})
 

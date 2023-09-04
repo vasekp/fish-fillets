@@ -3,7 +3,7 @@ dialog_add("tet-m-vypadala", "small", {
   en="So this is what the most successful game of all time originally looked like."})
 
 dialog_add("tet-v-ucta", "big", {
-  cs="Jenom úcta k její památce mi brání v tom, abych řekl, jak to vypadá...",
+  cs="Jenom úcta k její památce mi brání v tom, abych řekl, jak to vypadá...",
   en="Only deep respect for its memory prevents me from saying what it looks like..."})
 
 dialog_add("tet-m-usudek", "small", {

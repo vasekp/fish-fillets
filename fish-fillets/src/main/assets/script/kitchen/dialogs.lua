@@ -11,7 +11,7 @@ dialog_add("kuch-m-objev2", "small", {
   en="Darned kitchen."})
 
 dialog_add("kuch-m-objev3", "small", {
-  cs="Tak, a jsme v kuchyni kapitána Silvera.",
+  cs="Tak, a jsme v kuchyni kapitána Silvera.",
   en="And now we are in the captain Silver’s kitchen."})
 
 dialog_add("kuch-v-varil", "big", {
@@ -39,7 +39,7 @@ dialog_add("kuch-v-stolky1", "big", {
   en="These tables are in the way."})
 
 dialog_add("kuch-v-stolky2", "big", {
-  cs="Mám už z téhle komůrky silně klaustrofobní pocit.",
+  cs="Mám už z téhle komůrky silně klaustrofobní pocit.",
   en="This little chamber gives me the creeps."})
 
 dialog_add("kuch-v-odsud0", "big", {
@@ -63,7 +63,7 @@ dialog_add("kuch-m-premyslim2", "small", {
   en="I am on my way."})
 
 dialog_add("kuch-m-hrnec0", "small", {
-  cs="Fuj, v tom hrnci je něco připečené!",
+  cs="Fuj, v tom hrnci je něco připečené!",
   en="Yuck, there is something left in this pot!"})
 
 dialog_add("kuch-m-hrnec1", "small", {
@@ -83,11 +83,11 @@ dialog_add("kuch-v-ja", "big", {
   en="Especially myself."})
 
 dialog_add("kuch-m-kreslo0", "small", {
-  cs="Co vlastně dělá křeslo v kuchyni?",
+  cs="Co vlastně dělá křeslo v kuchyni?",
   en="What is a chair doing in a kitchen?"})
 
 dialog_add("kuch-v-kreslo1", "big", {
-  cs="Křeslo nemá co dělat v kuchyni.",
+  cs="Křeslo nemá co dělat v kuchyni.",
   en="There should be no chairs in the kitchen."})
 
 dialog_add("kuch-m-kreslo2", "small", {
@@ -111,7 +111,7 @@ dialog_add("kuch-v-obavam", "big", {
   en="I am afraid that only I can get out of this space."})
 
 dialog_add("kuch-m-zapeklite", "small", {
-  cs="Vypadá to, že jsou i v této lodi skutečně zapeklité problémy.",
+  cs="Vypadá to, že jsou i v této lodi skutečně zapeklité problémy.",
   en="It seems that even this ship contains some demanding problems."})
 
 dialog_add("kuch-v-mec", "big", {
@@ -119,11 +119,11 @@ dialog_add("kuch-v-mec", "big", {
   en="Why is that sword here?"})
 
 dialog_add("kuch-m-porcovani", "small", {
-  cs="Asi ho používali k porcování masa.",
+  cs="Asi ho používali k porcování masa.",
   en="Maybe they used it to cut the meat."})
 
 dialog_add("kuch-v-nedela", "big", {
-  cs="To jistě. Ale s mečem se to obvykle nedělá v kuchyni.",
+  cs="To jistě. Ale s mečem se to obvykle nedělá v kuchyni.",
   en="Certainly. But you don’t cut meat with a sword in the kitchen, usually."})
 
 dialog_add("kuch-m-kuchari", "small", {

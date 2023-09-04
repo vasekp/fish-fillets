@@ -15,11 +15,11 @@ dialog_add("let-v-vrak2", "big", {
   en="This is the wreck of the civilian airplane Poseidon 737."})
 
 dialog_add("let-v-oko", "big", {
-  cs="Vidíš to oko? Němý svědek tragédie... Někdo v důvěře usedl do letadla – a zůstalo z něho jen skleněné oko.",
+  cs="Vidíš to oko? Němý svědek tragédie... Někdo v důvěře usedl do letadla – a zůstalo z něho jen skleněné oko.",
   en="Can you see that eye? The silent witness to the tragedy... Somebody trusted this airplane – and the glass eye is everything he left behind."})
 
 dialog_add("let-m-oko", "small", {
-  cs="To není skleněné oko, ale gyroskop. Aspoň v této místnosti.",
+  cs="To není skleněné oko, ale gyroskop. Aspoň v této místnosti.",
   en="This is not a glass eye but a gyroscope. At least in this level."})
 
 dialog_add("let-m-sedadlo", "small", {

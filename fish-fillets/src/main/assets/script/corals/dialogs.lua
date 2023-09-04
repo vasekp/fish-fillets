@@ -15,7 +15,7 @@ dialog_add("re-m-libi1", "small", {
   en="They look nice to me."})
 
 dialog_add("re-m-libi2", "small", {
-  cs="Doufám, že v dalších místnostech budou ještě zajímavější korály.",
+  cs="Doufám, že v dalších místnostech budou ještě zajímavější korály.",
   en="I hope there will be even more interesting corals in the levels to come."})
 
 dialog_add("re-v-pokoj", "big", {
@@ -55,7 +55,7 @@ dialog_add("re-m-uzitecny0", "small", {
   en="That crab could be useful."})
 
 dialog_add("re-m-uzitecny1", "small", {
-  cs="S pomocí toho kraba to jistě vyřešíme.",
+  cs="S pomocí toho kraba to jistě vyřešíme.",
   en="This crab will surely help us to solve it."})
 
 dialog_add("re-k-budi", "crab", {

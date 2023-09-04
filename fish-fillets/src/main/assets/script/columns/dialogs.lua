@@ -7,7 +7,7 @@ dialog_add("sl-m-velkolepe", "small", {
   en="It looks magnificent."})
 
 dialog_add("sl-v-vkapse", "big", {
-  cs="Teď už musíme jen zjistit, proč se vlastně potopilo, a máme to v kapse.",
+  cs="Teď už musíme jen zjistit, proč se vlastně potopilo, a máme to v kapse.",
   en="Now we only have to find out why it sank and we are done."})
 
 dialog_add("sl-m-trvat", "small", {

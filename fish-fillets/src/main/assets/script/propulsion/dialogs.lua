@@ -7,11 +7,11 @@ dialog_add("poh-m-tosnadne", "small", {
   en="Oh, no!"})
 
 dialog_add("poh-v-biosila", "big", {
-  cs="Biologická síla. To nás mělo napadnout dříve. Všechno k tomu směřovalo.",
+  cs="Biologická síla. To nás mělo napadnout dříve. Všechno k tomu směřovalo.",
   en="Biological power. We should have thought about it earlier. We had every hint."})
 
 dialog_add("poh-m-reaktor", "small", {
-  cs="A k čemu byl ten reaktor?",
+  cs="A k čemu byl ten reaktor?",
   en="And what was that nuclear power plant for?"})
 
 dialog_add("poh-v-automat", "big", {
@@ -19,7 +19,7 @@ dialog_add("poh-v-automat", "big", {
   en="Can’t you see? It powers that Coca-Cola vending machine over there."})
 
 dialog_add("poh-m-motor", "small", {
-  cs="A co ten motor?",
+  cs="A co ten motor?",
   en="And what about that motor?"})
 
 dialog_add("poh-v-tocit", "big", {
@@ -55,7 +55,7 @@ dialog_add("poh-v-forma", "big", {
   en="Look, there is some strange life form, over there. Shouldn’t we try to contact them?"})
 
 dialog_add("poh-m-princip", "small", {
-  cs="Náš úkol zněl jasně – principy a konstrukce mezihvězdných pohonů. O kontaktu ani slovo.",
+  cs="Náš úkol zněl jasně – principy a konstrukce mezihvězdných pohonů. O kontaktu ani slovo.",
   en="Our mission was clear – principles and construction of the interstellar propulsion. Not a single word about contact."})
 
 dialog_add("poh-v-pomoct", "big", {
@@ -71,7 +71,7 @@ dialog_add("poh-m-dobryden1", "small", {
   en="Hmm, good afternoon sir, could I ask you to help us to dismantle your propulsion unit, please?"})
 
 dialog_add("poh-v-ukol", "big", {
-  cs="Naším úkolem v této místnosti je dostat ven tu klec s živočichem.",
+  cs="Naším úkolem v této místnosti je dostat ven tu klec s živočichem.",
   en="Our goal in this level is to get out the cage with that animal."})
 
 dialog_add("poh-m-pohadali", "small", {
@@ -79,10 +79,10 @@ dialog_add("poh-m-pohadali", "small", {
   en="I have a feeling there was an argument between these two."})
 
 dialog_add("poh-v-setkani", "big", {
-  cs="Tak jsem si setkání s mimozemšťany nepředstavoval.",
+  cs="Tak jsem si setkání s mimozemšťany nepředstavoval.",
   en="I never imagined that meeting aliens would look this way."})
 
 dialog_add("poh-m-sestra", "small", {
-  cs="A cos čekal? Že unesou tvou sestru?",
+  cs="A cos čekal? Že unesou tvou sestru?",
   en="And what did you expect? That they will kidnap your sister?"})
 

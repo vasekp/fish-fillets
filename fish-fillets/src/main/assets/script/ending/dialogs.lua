@@ -7,11 +7,11 @@ dialog_add("z-m-pocit", "small", {
   en="I have such a good feeling of the work well done."})
 
 dialog_add("z-v-sef", "big", {
-  cs="Před chvílí volal šéf. Byl s námi moc spokojen.",
+  cs="Před chvílí volal šéf. Byl s námi moc spokojen.",
   en="The boss called a moment ago. He was very satisfied with our performance."})
 
 dialog_add("z-m-nemluv", "small", {
-  cs="O šéfovi mi ani nemluv. On si sedí někde v teploučku, zatím co my jsme se dřeli.",
+  cs="O šéfovi mi ani nemluv. On si sedí někde v teploučku, zatím co my jsme se dřeli.",
   en="Don’t mention the boss to me. He sits somewhere in his cozy office and we have to do all the dirty work."})
 
 dialog_add("z-v-slyset", "big", {
@@ -27,7 +27,7 @@ dialog_add("z-m-dlouho", "small", {
   en="Really? It didn’t seem that long to me."})
 
 dialog_add("z-v-pozdrav", "big", {
-  cs="Hráči, máme ti vyřídit pozdrav a uznání od autorů hry. Jestli jsi to neřešil nějakým podvodem, tak jsi opravdu dobrej. Nebo dokonce dobrá? My tě tady odsud moc nevidíme.",
+  cs="Hráči, máme ti vyřídit pozdrav a uznání od autorů hry. Jestli jsi to neřešil nějakým podvodem, tak jsi opravdu dobrej. Nebo dokonce dobrá? My tě tady odsud moc nevidíme.",
   en="Dear player. We would like to communicate to you the high regards of the authors of this game. If you didn’t solve it by some cheat, you are really very, very good. It’s a pity we cannot see you from here, but..."})
 
 dialog_add("z-m-oblicej", "small", {

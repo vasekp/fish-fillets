@@ -31,7 +31,7 @@ dialog_add("sm-m-kramy1", "small", {
   en="This must be a wreck of a flea shop."})
 
 dialog_add("sm-v-kramy2", "big", {
-  cs="Tady je to horší než v ropné skvrně.",
+  cs="Tady je to horší než v ropné skvrně.",
   en="It’s worse here than in an oil spill."})
 
 dialog_add("sm-v-kramy3", "big", {
@@ -43,7 +43,7 @@ dialog_add("sm-v-lod", "big", {
   en="Can you see that boat?"})
 
 dialog_add("sm-m-dedek", "small", {
-  cs="Tu s tím dědkem?",
+  cs="Tu s tím dědkem?",
   en="The one with that old man?"})
 
 dialog_add("sm-v-charon", "big", {
@@ -51,19 +51,19 @@ dialog_add("sm-v-charon", "big", {
   en="It’s old Charon, ferryman of the dead."})
 
 dialog_add("sm-m-codela", "small", {
-  cs="A co dělá na smetišti?",
+  cs="A co dělá na smetišti?",
   en="And what does he do in the wasteyard?"})
 
 dialog_add("sm-v-duchodce0", "big", {
-  cs="Asi je z něj dneska důchodce.",
+  cs="Asi je z něj dneska důchodce.",
   en="He’s probably retired."})
 
 dialog_add("sm-v-duchodce1", "big", {
-  cs="Mrtvoly nevynášely dost, tak se s mladým dali na odpadky.",
+  cs="Mrtvoly nevynášely dost, tak se s mladým dali na odpadky.",
   en="The corpses were no longer profitable and so they started a recycling business."})
 
 dialog_add("sm-v-sbirka", "big", {
-  cs="Vidíš tu sbírku neužitečností, podivností a odpadků... Všechno to kdysi byly užitečné věci, které někdo pracně vyrobil.",
+  cs="Vidíš tu sbírku neužitečností, podivností a odpadků... Všechno to kdysi byly užitečné věci, které někdo pracně vyrobil.",
   en="Can you see that collection of useless stuff, weird objects and refuse... All of them were useful things, carefully and skillfully manufactured."})
 
 dialog_add("sm-m-namaloval", "small", {
@@ -79,7 +79,7 @@ dialog_add("sm-m-proc", "small", {
   en="Why?"})
 
 dialog_add("sm-v-podivej", "big", {
-  cs="Podívej se na ni. Běží stále vpřed a zůstává na místě. Není to snad nejkrásnější příklad toho, o čem jsem mluvil?",
+  cs="Podívej se na ni. Běží stále vpřed a zůstává na místě. Není to snad nejkrásnější příklad toho, o čem jsem mluvil?",
   en="Just look at it. It keeps running forward but stays in one place. Isn’t it the most fitting example of what I was talking about?"})
 
 dialog_add("sm-x-meduza", "magenta", {

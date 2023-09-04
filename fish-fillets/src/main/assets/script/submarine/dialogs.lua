@@ -3,23 +3,23 @@ dialog_add("zr-x-nabito", "white", {
   en="FIRST TORPEDO BAY LOADED..."})
 
 dialog_add("zr-m-obliceje", "small", {
-  cs="Nedělej na sebe obličeje a pomoz mi.",
+  cs="Nedělej na sebe obličeje a pomoz mi.",
   en="Stop making faces and come help me."})
 
 dialog_add("zr-m-prestan", "small", {
-  cs="Přestaň se prohlížet v zrcadle a radši něco dělej.",
+  cs="Přestaň se prohlížet v zrcadle a radši něco dělej.",
   en="Stop looking at yourself in the mirror and make yourself useful."})
 
 dialog_add("zr-m-takfajn", "small", {
-  cs="Tak fajn, on si odjede – a co já?",
+  cs="Tak fajn, on si odjede – a co já?",
   en="That’s great! He just goes on his merry little way, but what about me?"})
 
 dialog_add("zr-m-tojeon", "small", {
-  cs="To je celej on. Nechat mě v bryndě...",
+  cs="To je celej on. Nechat mě v bryndě...",
   en="As usual. He just leaves me behind."})
 
 dialog_add("zr-m-pockej", "small", {
-  cs="Počkej, a co já? Já chci taky ven!",
+  cs="Počkej, a co já? Já chci taky ven!",
   en="Wait! What about me? I want to get out of here, too!"})
 
 dialog_add("zr-v-hej", "big", {
@@ -35,11 +35,11 @@ dialog_add("zr-v-jetunekdo", "big", {
   en="Is anybody here?"})
 
 dialog_add("zr-m-nervi", "small", {
-  cs="Neřvi a radši mi nějak pomoz ven.",
+  cs="Neřvi a radši mi nějak pomoz ven.",
   en="Stop shouting and just get me out of here."})
 
 dialog_add("zr-m-nepovykuj", "small", {
-  cs="Nech toho povykování a dostaň mě odsud.",
+  cs="Nech toho povykování a dostaň mě odsud.",
   en="Stop your screaming and help me get out of here."})
 
 dialog_add("zr-m-tadyjsem", "small", {

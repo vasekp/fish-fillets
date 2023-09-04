@@ -31,7 +31,7 @@ dialog_add("ka2-v-nekde", "big", {
   en="Didn’t we see this somewhere already?"})
 
 dialog_add("ka2-m-kdepak", "small", {
-  cs="Kdepak, tahle kajuta je o sto čtyřicet čtyři políček větší...",
+  cs="Kdepak, tahle kajuta je o sto čtyřicet čtyři políček větší...",
   en="No, you’re wrong. This cabin is one hundred and forty four squares larger..."})
 
 dialog_add("ka2-v-papousek", "big", {
@@ -43,19 +43,19 @@ dialog_add("ka2-m-kostra", "small", {
   en="So what? It’s a normal skeleton."})
 
 dialog_add("ka2-m-posledni", "small", {
-  cs="Hele, tahle místnost už je skoro poslední v řadě. Že by v té truhle byl přece jenom ten poklad?",
+  cs="Hele, tahle místnost už je skoro poslední v řadě. Že by v té truhle byl přece jenom ten poklad?",
   en="Can you see it? This room is almost the last in the row. Could this really be that treasure?"})
 
 dialog_add("ka2-v-mapa0", "big", {
-  cs="Co by bylo v těch dalších dvou?",
+  cs="Co by bylo v těch dalších dvou?",
   en="And what would be in the other two?"})
 
 dialog_add("ka2-v-mapa1", "big", {
-  cs="Říkali nám jasně: najděte mapu. O pokladu řeč nebyla.",
+  cs="Říkali nám jasně: najděte mapu. O pokladu řeč nebyla.",
   en="They told us clearly to find the map. Nobody mentioned treasure."})
 
 dialog_add("ka2-v-mapa2", "big", {
-  cs="Neotravuj pořád. Autoři hry jistě nenechají hráče v nejistotě!",
+  cs="Neotravuj pořád. Autoři hry jistě nenechají hráče v nejistotě!",
   en="Don’t be so annoying. The authors of the game would surely let the player know."})
 
 dialog_add("ka2-m-chapadlo", "small", {
@@ -63,7 +63,7 @@ dialog_add("ka2-m-chapadlo", "small", {
   en="This octopus has unpleasantly knotted tentacles. I can’t fit between them."})
 
 dialog_add("ka2-v-fik", "big", {
-  cs="... a co kdybychom jí nějaké ufikli?!",
+  cs="... a co kdybychom jí nějaké ufikli?!",
   en="... so what if we cut one off?!"})
 
 dialog_add("ka2-v-napad", "big", {
@@ -87,7 +87,7 @@ dialog_add("ka2-m-patrne", "small", {
   en="Who are probably living on land. These skeletons are visible proof of their effort to stuff the ocean with all the things that don’t belong there."})
 
 dialog_add("ka2-v-myslet", "big", {
-  cs="Zkusme se zamyslet. Nedalo by se nějak vyjít z toho, jak jsme projeli tu předchozí kajutu?",
+  cs="Zkusme se zamyslet. Nedalo by se nějak vyjít z toho, jak jsme projeli tu předchozí kajutu?",
   en="Let’s try to think. Can’t we take our solution of that previous cabin and modify it a little?"})
 
 dialog_add("ka2-m-tezko", "small", {

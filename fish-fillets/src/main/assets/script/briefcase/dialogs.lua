@@ -7,7 +7,7 @@ dialog_add("kuf-v-noco", "big", {
   en="You know there’s nothing we can do about it."})
 
 dialog_add("kuf-v-hod", "big", {
-  cs="Hodíme to dolů a podíváme se na to.",
+  cs="Hodíme to dolů a podíváme se na to.",
   en="Let’s push it down so we can take a look at it."})
 
 dialog_add("kuf-v-doprace", "big", {
@@ -15,11 +15,11 @@ dialog_add("kuf-v-doprace", "big", {
   en="Well, let’s get to work."})
 
 dialog_add("kuf-v-dotoho", "big", {
-  cs="Tak, a teď už se do toho konečně pustíme.",
+  cs="Tak, a teď už se do toho konečně pustíme.",
   en="So, now we can finally get started."})
 
 dialog_add("kuf-m-ven", "small", {
-  cs="Naším prvním úkolem bude dostat se ven z místnosti.",
+  cs="Naším prvním úkolem bude dostat se ven z místnosti.",
   en="Our first task is to get out of this room."})
 
 dialog_add("kuf-v-ukol", "big", {
@@ -43,7 +43,7 @@ dialog_add("kuf-m-pravda", "small", {
   en="That’s true..."})
 
 dialog_add("kuf-m-dodilny", "small", {
-  cs="Pojď, vezmeme hráče do dílny a ukážeme mu pravidla bezpečnosti práce.",
+  cs="Pojď, vezmeme hráče do dílny a ukážeme mu pravidla bezpečnosti práce.",
   en="Come on, let’s take the player into the workshop and show him the work safety regulations."})
 
 dialog_add("kuf-v-napad", "big", {

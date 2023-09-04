@@ -3,7 +3,7 @@ dialog_add("zd2-m-dalsi", "small", {
   en="Another elevator? How many more are there to come?"})
 
 dialog_add("zd2-v-odlis0", "big", {
-  cs="Vidím tu jisté drobné odlišnosti... A něco mi říká, že to teď není jednodušší.",
+  cs="Vidím tu jisté drobné odlišnosti... A něco mi říká, že to teď není jednodušší.",
   en="I can see some differences here... And somehow I don’t think it’s going to be easier."})
 
 dialog_add("zd2-v-odlis1", "big", {
@@ -31,11 +31,11 @@ dialog_add("zd2-m-douf", "small", {
   en="I just hope it won’t drop on my head."})
 
 dialog_add("zd2-m-lebka", "small", {
-  cs="Zase nějaká lebka. Je to tu horší než v márnici.",
+  cs="Zase nějaká lebka. Je to tu horší než v márnici.",
   en="Another skull. It’s worse than a morgue."})
 
 dialog_add("zd2-v-haml", "big", {
-  cs="Je to tu horší než v Hamletovi.",
+  cs="Je to tu horší než v Hamletovi.",
   en="It’s worse than Hamlet."})
 
 dialog_add("zd2-x-hus0", "lightgrey", {

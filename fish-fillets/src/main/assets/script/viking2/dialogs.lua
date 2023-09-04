@@ -3,7 +3,7 @@ dialog_add("dr1-m-dlouho", "small", {
   en="This ship must have sunk long time ago."})
 
 dialog_add("dr1-v-urcite", "big", {
-  cs="Určitě. Je to jeden z raných drakarů. Podle tvaru hlavy, počtu závitů a barvy vody soudím, že patřil dědečkovi Erika Rudého.",
+  cs="Určitě. Je to jeden z raných drakarů. Podle tvaru hlavy, počtu závitů a barvy vody soudím, že patřil dědečkovi Erika Rudého.",
   en="Definitely. It’s one of the earliest drakkars. Judging by the shape of the head, number of spirals and color of the water I think it belonged to the grandfather of Eric the Red."})
 
 dialog_add("dr1-v-olaf", "big", {
@@ -19,7 +19,7 @@ dialog_add("dr1-v-harold", "big", {
   en="It could also belong to the niece of Harold the Great."})
 
 dialog_add("dr1-v-snorr", "big", {
-  cs="Je možné, že i tetě Snorra Statečného.",
+  cs="Je možné, že i tetě Snorra Statečného.",
   en="Or possibly to the aunt of Snorr the Courageous."})
 
 dialog_add("dr1-v-thorson", "big", {
@@ -139,7 +139,7 @@ dialog_add("dr-3-spravny", "viking3", {
   en="Real Vikings have beards."})
 
 dialog_add("dr-4-copy", "viking4", {
-  cs="C-c-copy jsou teď v m-módě.",
+  cs="C-c-copy jsou teď v m-módě.",
   en="B-b-braids are in n-nowadays."})
 
 dialog_add("dr-3-cojeto", "viking3", {
@@ -147,11 +147,11 @@ dialog_add("dr-3-cojeto", "viking3", {
   en="What kind of fad is that? Braids? For crying out loud."})
 
 dialog_add("dr-4-magazin", "viking4", {
-  cs="M-m-magazín Vikingská m-m-móda d-doporučuje k tmavé helmě a m-modrému štítu právě světlý c-c-cop.",
+  cs="M-m-magazín Vikingská m-m-móda d-doporučuje k tmavé helmě a m-modrému štítu právě světlý c-c-cop.",
   en="V-v-viking Fashion M-m-monthly r-recommends a blonde braid to complement a d-d-dark helmet and b-blue shield."})
 
 dialog_add("dr-3-stakovou", "viking3", {
-  cs="S takovou módou zásadně nesouhlasím.",
+  cs="S takovou módou zásadně nesouhlasím.",
   en="I simply don’t agree with such a fad."})
 
 dialog_add("dr-3-radeji", "viking3", {
@@ -175,7 +175,7 @@ dialog_add("dr-4-taky", "viking4", {
   en="But h-he also h-had a b-b-braid."})
 
 dialog_add("dr-3-nemel", "viking3", {
-  cs="Neměl. A dost řečí.",
+  cs="Neměl. A dost řečí.",
   en="He did not. And that’s final."})
 
 dialog_add("dr-4-myslis", "viking4", {
@@ -187,7 +187,7 @@ dialog_add("dr-3-samozrejme", "viking3", {
   en="Definitely."})
 
 dialog_add("dr-4-budu", "viking4", {
-  cs="B-b-budu o tom u-uvažovat.",
+  cs="B-b-budu o tom u-uvažovat.",
   en="I’ll th-th-think it o-over."})
 
 dialog_add("dr-4-hmmm", "viking4", {
@@ -203,7 +203,7 @@ dialog_add("dr-3-mladez", "viking3", {
   en="Today’s youth – absolutely unbelievable."})
 
 dialog_add("dr-3-chlap", "viking3", {
-  cs="Chlap a copy. Kdo to kdy slyšel!?",
+  cs="Chlap a copy. Kdo to kdy slyšel!?",
   en="A warrior with braids. It’s unheard of."})
 
 dialog_add("dr-3-mladi", "viking3", {

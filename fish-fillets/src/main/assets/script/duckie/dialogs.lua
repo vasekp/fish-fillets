@@ -27,8 +27,8 @@ dialog_add("odp-v-vtip", "big", {
   en="Now, this was a joke. Heh, heh."})
 
 dialog_add("odp-m-predmet", "small", {
-  cs="A není tu žádný veselý animovaný předmět.",
-  en="And there isn’t even a funny animated object here."})
+  cs="A není tu žádný veselý animovaný předmět.",
+  en="And there isn’t even a single funny animated object here."})
 
 dialog_add("odp-v-pozadi", "big", {
   cs="Zato se tu krásně vlní pozadí.",
@@ -39,7 +39,7 @@ dialog_add("odp-v-pohni", "big", {
   en="Move on, so that we can get going."})
 
 dialog_add("odp-v-coja", "big", {
-  cs="A co já?",
+  cs="A co já?",
   en="And what about me?"})
 
 dialog_add("odp-v-nestacim", "big", {

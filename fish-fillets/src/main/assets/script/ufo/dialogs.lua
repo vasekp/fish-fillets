@@ -15,11 +15,11 @@ dialog_add("ufo-m-moc", "small", {
   en="There is just too much steel here."})
 
 dialog_add("ufo-v-hur", "big", {
-  cs="Může být i hůř. Já si třeba dovedu představit místo, kde nebude nic než ocel.",
+  cs="Může být i hůř. Já si třeba dovedu představit místo, kde nebude nic než ocel.",
   en="It could be worse. I for one can imagine myself a room where there is nothing but steel."})
 
 dialog_add("ufo-m-ne", "small", {
-  cs="To snad ne. Co bych v takové místnosti dělala?",
+  cs="To snad ne. Co bych v takové místnosti dělala?",
   en="My goodness! What should I do in such a level?"})
 
 dialog_add("ufo-v-vpredu", "big", {

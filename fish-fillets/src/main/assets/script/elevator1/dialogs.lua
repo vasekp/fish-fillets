@@ -1,5 +1,5 @@
 dialog_add("zd1-v-civil", "big", {
-  cs="Jaká to byla vyspělá civilizace. Staletí pod vodou a jejich výtahy ještě jezdí.",
+  cs="Jaká to byla vyspělá civilizace. Staletí pod vodou a jejich výtahy ještě jezdí.",
   en="What a glorious civilization. So many centuries under water and their elevators still work."})
 
 dialog_add("zd1-m-tlac", "small", {

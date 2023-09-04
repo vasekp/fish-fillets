@@ -15,11 +15,11 @@ dialog_add("pap-m-zvlastni", "small", {
   en="This is a very strange object."})
 
 dialog_add("pap-v-prekvapeni", "big", {
-  cs="Myslím, že v Ufu bude spousta takových překvapení.",
+  cs="Myslím, že v Ufu bude spousta takových překvapení.",
   en="I think that UFO is going to be full of such surprises."})
 
 dialog_add("pap-m-teorie", "small", {
-  cs="Nerozvíjej svoje teorie a raději to nějak vyřešme.",
+  cs="Nerozvíjej svoje teorie a raději to nějak vyřešme.",
   en="Stop developing your theories and start solving."})
 
 dialog_add("pap-m-radio", "small", {
@@ -55,11 +55,11 @@ dialog_add("pap-m-jejedno", "small", {
   en="It doesn’t matter. We don’t need it."})
 
 dialog_add("pap-v-nemir", "big", {
-  cs="Hlavně s ní nemiř na mě!",
+  cs="Hlavně s ní nemiř na mě!",
   en="Stop pointing at me with it!"})
 
 dialog_add("pap-m-nejde", "small", {
-  cs="Jako bys nevěděl, že v této hře nejde předměty otáčet!",
+  cs="Jako bys nevěděl, že v této hře nejde předměty otáčet!",
   en="As if you don’t know that you can’t turn objects in this game."})
 
 dialog_add("pap-m-ocel", "small", {
@@ -71,11 +71,11 @@ dialog_add("pap-v-vufu", "big", {
   en="Don’t forget that we are inside of the flying saucer!"})
 
 dialog_add("pap-m-naucit", "small", {
-  cs="Možná bych se mohla naučit manipulovat s těmi ocelovými válci.",
+  cs="Možná bych se mohla naučit manipulovat s těmi ocelovými válci.",
   en="Maybe I could learn how to manipulate these steel tubes."})
 
 dialog_add("pap-m-nepohnu", "small", {
-  cs="Ne, s tím nepohnu.",
+  cs="Ne, s tím nepohnu.",
   en="No, I can’t move it."})
 
 dialog_add("pap-v-tesno", "big", {
@@ -83,7 +83,7 @@ dialog_add("pap-v-tesno", "big", {
   en="It’s quite tight here."})
 
 dialog_add("pap-m-mraz", "small", {
-  cs="Běhá mi z těch magnetů mráz po zádech.",
+  cs="Běhá mi z těch magnetů mráz po zádech.",
   en="These magnets are giving me the creeps."})
 
 dialog_add("pap-v-pole", "big", {

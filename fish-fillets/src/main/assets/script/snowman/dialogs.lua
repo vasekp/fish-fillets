@@ -11,7 +11,7 @@ dialog_add("tr-m-chlad2", "small", {
   en="I’m cold."})
 
 dialog_add("tr-v-jid2", "big", {
-  cs="To je snad v Zimní jídelně normální, ne?",
+  cs="To je snad v Zimní jídelně normální, ne?",
   en="Well that’s what you would expect in a Winter Mess Hall, right?"})
 
 dialog_add("tr-v-prezil", "big", {

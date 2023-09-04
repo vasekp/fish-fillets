@@ -1,5 +1,5 @@
 dialog_add("ves-v-veci", "big", {
-  cs="V tomhle městě se teda najdou věci!",
+  cs="V tomhle městě se teda najdou věci!",
   en="There are most interesting things in this city!"})
 
 dialog_add("ves-m-krab", "small", {
@@ -15,7 +15,7 @@ dialog_add("ves-m-uz", "small", {
   en="Oh, noo..."})
 
 dialog_add("ves-v-pokoj", "big", {
-  cs="A je pokoj.",
+  cs="A je pokoj.",
   en="And it’s over."})
 
 dialog_add("ves-m-dik", "small", {

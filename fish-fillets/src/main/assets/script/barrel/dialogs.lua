@@ -1,13 +1,13 @@
 dialog_add("bar-v-videt0", "big", {
-  cs="To by měli vidět lidi z Greenpeace.",
+  cs="To by měli vidět lidi z Greenpeace.",
   en="Somebody from Greenpeace should see this."})
 
 dialog_add("bar-m-videt1", "small", {
-  cs="To by měli vidět lidi z Temelína.",
+  cs="To by měli vidět lidi z Temelína.",
   en="Somebody from Three Mile Island should see this."})
 
 dialog_add("bar-v-co", "big", {
-  cs="Ale co s tím budeme dělat?",
+  cs="Ale co s tím budeme dělat?",
   en="What are we supposed to do with it?"})
 
 dialog_add("bar-m-pobit", "small", {
@@ -15,7 +15,7 @@ dialog_add("bar-m-pobit", "small", {
   en="We have to exterminate all of them. Such abominations have no right to breath the same air... er, water, as we do."})
 
 dialog_add("bar-v-priciny", "big", {
-  cs="Já si myslím, že musíme odstraňovat příčiny a ne následky.",
+  cs="Já si myslím, že musíme odstraňovat příčiny a ne následky.",
   en="I think we have to eliminate the cause and not the results."})
 
 dialog_add("bar-m-no", "small", {
@@ -23,7 +23,7 @@ dialog_add("bar-m-no", "small", {
   en="Well, you may be right."})
 
 dialog_add("bar-v-sud", "big", {
-  cs="A příčina je nepochybně tento olbřímí sud. Musíme ho nějak dostat ven.",
+  cs="A příčina je nepochybně tento olbřímí sud. Musíme ho nějak dostat ven.",
   en="And the cause is doubtless this giant barrel. We have to get it out somehow."})
 
 dialog_add("bar-m-panb", "small", {
@@ -55,7 +55,7 @@ dialog_add("bar-m-dost1", "small", {
   en="You are going to have plenty of time to enjoy them."})
 
 dialog_add("bar-v-lih", "big", {
-  cs="Kdybychom si je vzali s sebou a naložili do lihu, tak si můžeme otevřít obludárium.",
+  cs="Kdybychom si je vzali s sebou a naložili do lihu, tak si můžeme otevřít obludárium.",
   en="If we take them with us and store them in alcohol, we could found ourselves a freak show."})
 
 dialog_add("bar-m-fdto", "small", {
@@ -71,11 +71,11 @@ dialog_add("bar-m-promin", "small", {
   en="Sorry, boss. I didn’t mean to offend."})
 
 dialog_add("bar-m-mutanti", "small", {
-  cs="Víš, konečně jsem si uvědomila, že i mutanti mají duši.",
+  cs="Víš, konečně jsem si uvědomila, že i mutanti mají duši.",
   en="You know, I finally realized that even mutants have a soul."})
 
 dialog_add("bar-v-ufouni", "big", {
-  cs="Možná, že dokonce i ufouni mohou mít duši.",
+  cs="Možná, že dokonce i ufouni mohou mít duši.",
   en="Maybe even UFOs can have a soul."})
 
 dialog_add("bar-m-zmeni", "small", {
@@ -83,15 +83,15 @@ dialog_add("bar-m-zmeni", "small", {
   en="I think that this level is going to change us forever."})
 
 dialog_add("bar-m-noha", "small", {
-  cs="Ta noha je nejen odporná, ale i bezcharakterní. Podívej se na ni.",
+  cs="Ta noha je nejen odporná, ale i bezcharakterní. Podívej se na ni.",
   en="That foot is not only repulsive but also shameless. Just look at it."})
 
 dialog_add("bar-v-pld", "big", {
-  cs="Podívej na toho plda. Vypadá pořád stejně a přitom je pořád odpornější.",
+  cs="Podívej na toho plda. Vypadá pořád stejně a přitom je pořád odpornější.",
   en="Look at that blob. It looks the same and still it grows more and more repulsive."})
 
 dialog_add("bar-m-pudy", "small", {
-  cs="Ale i v něm dřímou mateřské pudy. Podívej, jak se stará o to maličké.",
+  cs="Ale i v něm dřímou mateřské pudy. Podívej, jak se stará o to maličké.",
   en="But even it harbors some motherly instincts. Look how it cares about the little one."})
 
 dialog_add("bar-v-traverza", "big", {
@@ -103,11 +103,11 @@ dialog_add("bar-m-rybka", "small", {
   en="This fish looks familiar to me."})
 
 dialog_add("bar-v-fotka", "big", {
-  cs="Možná, že byla na té fotografii z elekrárny.",
+  cs="Možná, že byla na té fotografii z elekrárny.",
   en="Maybe it was in that photo from the power plant."})
 
 dialog_add("bar-v-krab", "big", {
-  cs="Chudák ten krab. Tolik klepet a žádná hlava. I když... možná je mu takhle líp než nám.",
+  cs="Chudák ten krab. Tolik klepet a žádná hlava. I když... možná je mu takhle líp než nám.",
   en="The poor crab. So many pincers and no head. Although... maybe he is better off than us."})
 
 dialog_add("bar-m-kachna", "small", {
@@ -115,11 +115,11 @@ dialog_add("bar-m-kachna", "small", {
   en="No man is alone with a little yellow duck. Not even fish."})
 
 dialog_add("bar-m-barel", "small", {
-  cs="Tentokrát je naším úkolem vytlačit ven barel s tím svinstvem.",
+  cs="Tentokrát je naším úkolem vytlačit ven barel s tím svinstvem.",
   en="This time, our goal is to push out the barrel with that filth."})
 
 dialog_add("bar-v-genofond", "big", {
-  cs="A všechny tvory tu musíme nechat! Ať nezkazí genofond zdravé populace.",
+  cs="A všechny tvory tu musíme nechat! Ať nezkazí genofond zdravé populace.",
   en="But we have to leave all those creatures here. They must not harm the genepool of the healthy population."})
 
 dialog_add("bar-x-kchkch", "", {})

@@ -11,7 +11,7 @@ dialog_add("bl-m-funkce", "small", {
   en="The position of assistant deputy design coordinator was introduced because of this level. So that its author got his own credit."})
 
 dialog_add("bl-v-pozadi", "big", {
-  cs="Dosti již o pozadí hry a vzhůru do řešení.",
+  cs="Dosti již o pozadí hry a vzhůru do řešení.",
   en="Enough about the game background. Let’s get to work."})
 
 dialog_add("bl-m-koral0", "small", {
@@ -23,7 +23,7 @@ dialog_add("bl-v-koral1", "big", {
   en="This is a very peculiar coral."})
 
 dialog_add("bl-m-visi", "small", {
-  cs="A na čem to visí?",
+  cs="A na čem to visí?",
   en="And what does it hang on?"})
 
 dialog_add("bl-v-nevim0", "big", {
@@ -31,7 +31,7 @@ dialog_add("bl-v-nevim0", "big", {
   en="I don’t know. But we have to get it down anyway."})
 
 dialog_add("bl-v-nevim1", "big", {
-  cs="To nevím. A musíme to určitě sundávat?",
+  cs="To nevím. A musíme to určitě sundávat?",
   en="I don’t know. Do we have to put it down?"})
 
 dialog_add("bl-m-tvar", "small", {

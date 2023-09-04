@@ -15,15 +15,15 @@ dialog_add("vl-m-hak", "small", {
   en="Do you think that Silver had this hook in place of his hand?"})
 
 dialog_add("vl-v-lodni", "big", {
-  cs="To je lodní hák. S ním se vytahují čluny...",
+  cs="To je lodní hák. S ním se vytahují čluny...",
   en="This is a ship hook. It’s used to pull up boats..."})
 
 dialog_add("vl-x-site", "brown", {
-  cs="... a sítě!",
+  cs="... a sítě!",
   en="... and nets!"})
 
 dialog_add("vl-m-oko", "small", {
-  cs="S tím okem to nevidím dobře.",
+  cs="S tím okem to nevidím dobře.",
   en="It’s a strange looking eye."})
 
 dialog_add("vl-v-silha", "big", {
@@ -35,11 +35,11 @@ dialog_add("vl-leb-kecy0", "lightgrey", {
   en="Haven’t you seen my eye somewhere?"})
 
 dialog_add("vl-leb-kecy1", "lightgrey", {
-  cs="Tenhle šátek je velice důležitý. Víte, ona lidská lebka s prázdným očním důlkem vypadá opravdu odpudivě.",
+  cs="Tenhle šátek je velice důležitý. Víte, ona lidská lebka s prázdným očním důlkem vypadá opravdu odpudivě.",
   en="This scarf is very important. The human skull with an empty eye socket looks really disgusting, you know."})
 
 dialog_add("vl-leb-kecy2", "lightgrey", {
-  cs="Po té nešťastné nehodě s čajovou lžičkou se na svět dívám úplně jinak.",
+  cs="Po té nešťastné nehodě s čajovou lžičkou se na svět dívám úplně jinak.",
   en="After that unfortunate accident with a teaspoon I have a completely different viewpoint of the world."})
 
 dialog_add("vl-leb-kecy3", "lightgrey", {

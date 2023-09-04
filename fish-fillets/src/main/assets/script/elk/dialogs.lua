@@ -1,5 +1,5 @@
 dialog_add("deu-m-valka", "small", {
-  cs="Válka pokračuje i v hlubinách.",
+  cs="Válka pokračuje i v hlubinách.",
   en="The war goes on even here, on the ocean floor."})
 
 dialog_add("deu-v-nepratelstvi", "big", {
@@ -11,7 +11,7 @@ dialog_add("deu-m-bojovat", "small", {
   en="They will fight to the last... parrot."})
 
 dialog_add("deu-v-losa", "big", {
-  cs="A losa.",
+  cs="A losa.",
   en="And elk."})
 
 dialog_add("deu-m-zvlastni", "small", {
@@ -99,6 +99,6 @@ dialog_add("deu-l-necital", "elk", {
   en="Ya nichevo nechital."})
 
 dialog_add("deu-l-tovarisci", "elk", {
-  cs="Tovarišči, braťja i sestri, dorogije druzja...",
+  cs="Tovarišči, braťja i sestri, dorogije druzja...",
   en="Tovarishchi, bratya i sestri, dorogiye druzya..."})
 

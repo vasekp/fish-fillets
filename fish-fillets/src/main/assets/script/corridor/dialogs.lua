@@ -11,7 +11,7 @@ dialog_add("ch-m-rozsvit2", "small", {
   en="Cut it out and turn on the lights."})
 
 dialog_add("ch-v-pockej0", "big", {
-  cs="Počkej, zkusím dotápat k vypínači.",
+  cs="Počkej, zkusím dotápat k vypínači.",
   en="Wait, I’ll try to find the switch."})
 
 dialog_add("ch-v-pockej1", "big", {
@@ -75,7 +75,7 @@ dialog_add("ch-m-doufam", "small", {
   en="I hope it doesn’t kick me..."})
 
 dialog_add("ch-m-blik0", "small", {
-  cs="Už mě z toho blikání bolí oči.",
+  cs="Už mě z toho blikání bolí oči.",
   en="This flickering light is beginning to make my eyes hurt."})
 
 dialog_add("ch-m-blik1", "small", {
@@ -103,19 +103,19 @@ dialog_add("ch-v-zapada", "big", {
   en="Well now it all makes sense."})
 
 dialog_add("ch-m-odpoved0", "small", {
-  cs="Včetně karibské krize a Nostradamova proroctví.",
+  cs="Včetně karibské krize a Nostradamova proroctví.",
   en="Including the Cuban missile crisis and Nostradamus’ prophecies."})
 
 dialog_add("ch-m-odpoved1", "small", {
-  cs="Včetně vraždy Johna Lennona a pádu tunguzského meteoritu.",
+  cs="Včetně vraždy Johna Lennona a pádu tunguzského meteoritu.",
   en="Including the murder of John Lennon and the Tunguzian meteor."})
 
 dialog_add("ch-m-odpoved2", "small", {
-  cs="Včetně havárie raketoplánu Challenger a bitvy u Chlumce.",
+  cs="Včetně havárie raketoplánu Challenger a bitvy u Chlumce.",
   en="Including the Challenger explosion and the Battle of Bull Run."})
 
 dialog_add("ch-m-odpoved3", "small", {
-  cs="Včetně havárie v Černobylu a ztroskotání Noemovy archy.",
+  cs="Včetně havárie v Černobylu a ztroskotání Noemovy archy.",
   en="Including the Chernobyl meltdown and the wreck of Noah’s Ark."})
 
 dialog_add("ch-v-smysl", "big", {
@@ -123,19 +123,19 @@ dialog_add("ch-v-smysl", "big", {
   en="Now I can see the rationale behind this game."})
 
 dialog_add("ch-m-vubec", "small", {
-  cs="A taky smysl života, vesmíru a vůbec.",
+  cs="A taky smysl života, vesmíru a vůbec.",
   en="And also the meaning of life, the universe and everything."})
 
 dialog_add("ch-r-nevsimej0", "robodog", {
-  cs="Nevšímej si jich, hráči, dělají si z tebe legraci.",
+  cs="Nevšímej si jich, hráči, dělají si z tebe legraci.",
   en="Don’t listen to them, player. They are kidding you."})
 
 dialog_add("ch-r-nevsimej1", "robodog", {
-  cs="Nevšímej si jich, hráči, tropí si z tebe žerty.",
+  cs="Nevšímej si jich, hráči, tropí si z tebe žerty.",
   en="Don’t listen to them, player. They are trying to be funny."})
 
 dialog_add("ch-r-nevsimej2", "robodog", {
-  cs="Nevšímej si jich, hráči, tropí si z tebe řiť.",
+  cs="Nevšímej si jich, hráči, tropí si z tebe řiť.",
   en="Don’t listen to them, player. They are trying to fool you."})
 
 dialog_add("ch-r-hracka", "robodog", {
@@ -143,34 +143,34 @@ dialog_add("ch-r-hracka", "robodog", {
   en="I am but a humble cybernetic toy."})
 
 dialog_add("ch-r-ikdyz0", "robodog", {
-  cs="I když původně jsem měl být skútr.",
+  cs="I když původně jsem měl být skútr.",
   en="Though originally I was to be a scooter."})
 
 dialog_add("ch-r-ikdyz1", "robodog", {
-  cs="I když původně jsem měl být sekačka na trávu.",
+  cs="I když původně jsem měl být sekačka na trávu.",
   en="Though originally I was to be a lawn-mower."})
 
 dialog_add("ch-r-ikdyz2", "robodog", {
-  cs="I když původně jsem měl být kosmická orbitální stanice.",
+  cs="I když původně jsem měl být kosmická orbitální stanice.",
   en="Though originally I was to be a space orbital station."})
 
 dialog_add("ch-r-ikdyz3", "robodog", {
-  cs="I když původně jsem měl být rakvička se šlehačkou.",
+  cs="I když původně jsem měl být rakvička se šlehačkou.",
   en="Though orginally I was to be a piece of cake."})
 
 dialog_add("ch-r-anavic0", "robodog", {
-  cs="A u té karibské krize jsem se jen nachomýtl.",
+  cs="A u té karibské krize jsem se jen nachomýtl.",
   en="And I visited Cuba only once."})
 
 dialog_add("ch-r-anavic1", "robodog", {
-  cs="A z té vraždy usvědčili přece někoho jiného, mně nic nedokážou, nikdo mě neviděl.",
+  cs="A z té vraždy usvědčili přece někoho jiného, mně nic nedokážou, nikdo mě neviděl.",
   en="And everybody knows somebody else murdered him, they can’t prove anything."})
 
 dialog_add("ch-r-anavic2", "robodog", {
-  cs="A pro těch pár sedláků se nikdo nezblázní.",
+  cs="A pro těch pár sedláků se nikdo nezblázní.",
   en="And who cares about a few soldiers."})
 
 dialog_add("ch-r-anavic3", "robodog", {
-  cs="A navíc říkali, že ta regulační tyč není v reaktoru důležitá.",
+  cs="A navíc říkali, že ta regulační tyč není v reaktoru důležitá.",
   en="And they told me that the regulatory rod wasn’t important."})
 

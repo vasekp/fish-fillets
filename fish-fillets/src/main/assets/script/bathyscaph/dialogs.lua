@@ -83,7 +83,7 @@ dialog_add("bat-p-zhov0", "statue", {
   en="Hello, chief inspector Clouseau speaking. I am looking for the dangerous shellfish, who... Oh no, not now, Kato, you yellow ape!"})
 
 dialog_add("bat-p-zhov1", "green", {
-  cs="Dobrý den. Dovolali jste se na číslo 02 21913271. Z rodiny Okružáků nikdo není doma. Dokonce ani velkej brácha Eduard. Jestli chcete, můžete nám zanechat vzkaz, až pípne signál. Co je s tím signálem?",
+  cs="Dobrý den. Dovolali jste se na číslo 02 21913271. Z rodiny Okružáků nikdo není doma. Dokonce ani velkej brácha Eduard. Jestli chcete, můžete nám zanechat vzkaz, až pípne signál. Co je s tím signálem?",
   en="Hello, you have reached the number 4202-21913271. Nobody from the family of Roundfish is presently present. Please, leave the message after the beep. What happened?"})
 
 dialog_add("bat-t-phone0", "", {})

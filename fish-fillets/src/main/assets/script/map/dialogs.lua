@@ -15,7 +15,7 @@ dialog_add("map-v-jasne", "big", {
   en="Of course. It would be too easy, if we should just swim away."})
 
 dialog_add("map-m-neplacej", "small", {
-  cs="Neplácej nesmysly a raději přemýšlej.",
+  cs="Neplácej nesmysly a raději přemýšlej.",
   en="Don’t talk nonsense and try to think instead."})
 
 dialog_add("map-v-ukol", "big", {
@@ -55,7 +55,7 @@ dialog_add("map-m-pravidla", "small", {
   en="Don’t pretend that you didn’t understand the rules after so many solved levels."})
 
 dialog_add("map-m-pohnout", "small", {
-  cs="Tak se nám s ní podařilo pohnout.",
+  cs="Tak se nám s ní podařilo pohnout.",
   en="So we managed to move it."})
 
 dialog_add("map-v-dal", "big", {

@@ -23,7 +23,7 @@ dialog_add("jed-v-poslani2", "big", {
   en="Remember! We have a mission to complete."})
 
 dialog_add("jed-m-flakas", "small", {
-  cs="Ty se tam nahoře flákáš a já to tu musím oddřít všechno sama!",
+  cs="Ty se tam nahoře flákáš a já to tu musím oddřít všechno sama!",
   en="You are just sitting up there and I have to do all the work myself!"})
 
 dialog_add("jed-v-uzivat0", "big", {
@@ -55,7 +55,7 @@ dialog_add("jed-m-trubka", "small", {
   en="I wonder if it wouldn’t be easier to shorten that steel pipe."})
 
 dialog_add("jed-v-ocet", "big", {
-  cs="Kleopatra prý rozpouštěla perly v octě.",
+  cs="Kleopatra prý rozpouštěla perly v octě.",
   en="Cleopatra is rumored to dissolve pearls in vinegar."})
 
 dialog_add("jed-m-moc", "small", {
@@ -67,10 +67,10 @@ dialog_add("jed-v-vzdelat", "big", {
   en="Well, I just wanted to educate you a little."})
 
 dialog_add("jed-v-poter", "big", {
-  cs="Když se na tebe dívám, vzpomínám, jak jsem hrál s potěrem kuličky.",
+  cs="Když se na tebe dívám, vzpomínám, jak jsem hrál s potěrem kuličky.",
   en="Watching you, I have to think about how I played marbles with tadpoles."})
 
 dialog_add("jed-m-kulicka", "small", {
-  cs="Předpokládám, že ti nějaká kulička nezbyla v kapse, co?",
+  cs="Předpokládám, že ti nějaká kulička nezbyla v kapse, co?",
   en="You haven’t got a spare marble in your pocket, do you?"})
 

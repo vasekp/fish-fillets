@@ -1,9 +1,9 @@
 dialog_add("smrt-v-0", "big", {
-  cs="No a je to v ...",
+  cs="No a je to v ...",
   en="Oh, shoot!"})
 
 dialog_add("smrt-m-psst", "small", {
-  cs="Pššt, mohou to hrát i děti!",
+  cs="Pššt, mohou to hrát i děti!",
   en="Shhh, children can be playing this game!"})
 
 dialog_add("smrt-v-1", "big", {
@@ -19,7 +19,7 @@ dialog_add("smrt-v-3", "big", {
   en="Scheisse!"})
 
 dialog_add("smrt-v-4", "big", {
-  cs="Hmmm... a jsem sám.",
+  cs="Hmmm... a jsem sám.",
   en="Hmmm... and now I am alone."})
 
 dialog_add("smrt-v-5", "big", {
@@ -35,7 +35,7 @@ dialog_add("smrt-v-7", "big", {
   en="What can be the constant of decay of the fish skeleton?"})
 
 dialog_add("smrt-m-0", "small", {
-  cs="No, a je to.",
+  cs="No, a je to.",
   en="So much for him."})
 
 dialog_add("smrt-m-1", "small", {
@@ -43,7 +43,7 @@ dialog_add("smrt-m-1", "small", {
   en="Oh, nooo."})
 
 dialog_add("smrt-m-2", "small", {
-  cs="A jsem tady sama.",
+  cs="A jsem tady sama.",
   en="And now I am alone."})
 
 dialog_add("smrt-m-3", "small", {
@@ -87,11 +87,11 @@ dialog_add("smrt-v-zahrobi", "big", {
   en="Restart the level! The afterlife is too tedious."})
 
 dialog_add("smrt-m-zahrobi", "small", {
-  cs="Restartuj místnost. Tady v záhrobí je to hrozně strašidelné.",
+  cs="Restartuj místnost. Tady v záhrobí je to hrozně strašidelné.",
   en="Restart the level! This afterlife is too scary."})
 
 dialog_add("smrt-v-posmrtny", "big", {
-  cs="Halóóó. Slyšíš mě tam někde v záhrobí? Existuje posmrtný život?",
+  cs="Halóóó. Slyšíš mě tam někde v záhrobí? Existuje posmrtný život?",
   en="Hellooo? Can you hear me hereafter? Is there life after death?"})
 
 dialog_add("smrt-m-posmrtny", "small", {
@@ -99,7 +99,7 @@ dialog_add("smrt-m-posmrtny", "small", {
   en="I don’t know. I don’t think so."})
 
 dialog_add("smrt-m-autorest", "small", {
-  cs="Sama to řešit nebudu. Ani se nemusíš obtěžovat s restartem, udělám to sama.",
+  cs="Sama to řešit nebudu. Ani se nemusíš obtěžovat s restartem, udělám to sama.",
   en="I am not going to solve it alone. Don’t trouble yourself with restart, I’ll do it myself."})
 
 dialog_add("smrt-v-autorest", "big", {

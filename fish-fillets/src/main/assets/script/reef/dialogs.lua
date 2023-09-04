@@ -55,7 +55,7 @@ dialog_add("uts-v-mikroskop", "big", {
   en="Don’t we need a microscope to investigate corals?"})
 
 dialog_add("uts-m-zivocich", "small", {
-  cs="No, jsou malí. Ale mohou tam být i jiní živočichové.",
+  cs="No, jsou malí. Ale mohou tam být i jiní živočichové.",
   en="Yes, they are small. But there can be other life forms."})
 
 dialog_add("uts-m-zelvy", "small", {
@@ -63,6 +63,6 @@ dialog_add("uts-m-zelvy", "small", {
   en="Coral turtles, for example."})
 
 dialog_add("uts-m-batyskaf", "small", {
-  cs="A navíc mi něco říká, že mikroskop je v jednom batyskafu.",
+  cs="A navíc mi něco říká, že mikroskop je v jednom batyskafu.",
   en="And moreover I have a suspicion that there’s a microscope in a bathyscaph."})
 

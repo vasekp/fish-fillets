@@ -19,7 +19,7 @@ dialog_add("dr-m-hruza", "small", {
   en="That’s awful. They look like they’re still alive."})
 
 dialog_add("d1-1-hudba0", "viking1", {
-  cs="Hudba je v tahu!",
+  cs="Hudba je v tahu!",
   en="The music is gone!"})
 
 dialog_add("d1-1-hudba1", "viking1", {

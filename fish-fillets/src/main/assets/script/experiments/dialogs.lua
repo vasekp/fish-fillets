@@ -1,9 +1,9 @@
 dialog_add("bank-m-labolator1", "small", {
-  cs="Jsme asi v nějaké vědecké laboratoři.",
+  cs="Jsme asi v nějaké vědecké laboratoři.",
   en="This must be some kind of laboratory."})
 
 dialog_add("bank-m-labolator2", "small", {
-  cs="Vypadá to, že i UFO může mít vědeckou laboratoř na palubě.",
+  cs="Vypadá to, že i UFO může mít vědeckou laboratoř na palubě.",
   en="It seems that even UFOs can be equipped with an on-board lab."})
 
 dialog_add("bank-m-labolator3", "small", {
@@ -39,7 +39,7 @@ dialog_add("bank-m-ocicka", "small", {
   en="Why does it have three eyes?"})
 
 dialog_add("bank-v-pomoc", "big", {
-  cs="Nech toho tam dole a pojď mi radši pomoct!",
+  cs="Nech toho tam dole a pojď mi radši pomoct!",
   en="Stop what you’re doing down there and come help me!"})
 
 dialog_add("bank-m-organismy", "small", {
@@ -55,7 +55,7 @@ dialog_add("bank-v-mnozeni", "big", {
   en="My goodness, look at those things reproduce!"})
 
 dialog_add("bank-m-nesetkala", "small", {
-  cs="S tímto typem organismu jsem se ještě nesetkala.",
+  cs="S tímto typem organismu jsem se ještě nesetkala.",
   en="I’ve never seen this kind of organism before."})
 
 dialog_add("bank-m-kouka", "small", {
@@ -67,15 +67,15 @@ dialog_add("bank-m-fuj", "small", {
   en="Yuck."})
 
 dialog_add("bank-m-nervozni", "small", {
-  cs="Jsem z té ruky trochu nervózní...",
+  cs="Jsem z té ruky trochu nervózní...",
   en="That hand gives me the creeps..."})
 
 dialog_add("bank-m-zkumavka", "small", {
-  cs="Z té zkumavky je něco podezřelého cítit...",
+  cs="Z té zkumavky je něco podezřelého cítit...",
   en="There’s a strange odor coming from this test-tube..."})
 
 dialog_add("bank-m-hlavakolem", "small", {
-  cs="Z toho všeho tady už mi jde hlava kolem...",
+  cs="Z toho všeho tady už mi jde hlava kolem...",
   en="All of this is making my head spin..."})
 
 dialog_add("bank-v-neproplavu1", "big", {

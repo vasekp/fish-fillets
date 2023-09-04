@@ -11,7 +11,7 @@ dialog_add("1st-v-ven", "big", {
   en="We should go and have a look outside."})
 
 dialog_add("1st-m-pockej", "small", {
-  cs="Počkej na mě, jdu s tebou!",
+  cs="Počkej na mě, jdu s tebou!",
   en="Wait! I’m going with you."})
 
 dialog_add("1st-m-proc", "small", {
@@ -23,11 +23,11 @@ dialog_add("1st-m-hej", "small", {
   en="Hey, player!"})
 
 dialog_add("1st-v-navod1", "big", {
-  cs="Můžeš nás ovládat kurzorovými šipkami a mezerníkem mezi námi přepínat.",
+  cs="Můžeš nás ovládat kurzorovými šipkami a mezerníkem mezi námi přepínat.",
   en="You can control us with arrow keys and use the space bar to switch fish."})
 
 dialog_add("1st-m-navod4", "small", {
-  cs="A nebo myškou – někam ukaž levým tlačítkem a když tam můžeme dojet...",
+  cs="A nebo myškou – někam ukaž levým tlačítkem a když tam můžeme dojet...",
   en="Or you can control us with the mouse – left-click somewhere and..."})
 
 dialog_add("1st-v-navod5", "big", {
@@ -39,19 +39,19 @@ dialog_add("1st-m-navod6", "small", {
   en="...we’ll follow your clicks."})
 
 dialog_add("1st-v-navod7", "big", {
-  cs="A když někam klikneš pravým, tak tím směrem zkrátka zkusíme jet, překážky nepřekážky...",
+  cs="A když někam klikneš pravým, tak tím směrem zkrátka zkusíme jet, překážky nepřekážky...",
   en="And when you right-click somewhere, we’ll try to get there, pushing aside all obstacles in our way."})
 
 dialog_add("1st-m-navod8", "small", {
-  cs="No a tvým cílem by mělo být dostat nás oba ven.",
+  cs="No a tvým cílem by mělo být dostat nás oba ven.",
   en="Your goal should be to get both of us outside."})
 
 dialog_add("1st-v-davej", "big", {
-  cs="A dávej pozor, ať nám neublížíš. Když nám něco hodíš na hlavu nebo...",
+  cs="A dávej pozor, ať nám neublížíš. Když nám něco hodíš na hlavu nebo...",
   en="And be careful not to hurt us. If you drop something on us or..."})
 
 dialog_add("1st-m-nechtoho", "small", {
-  cs="Už toho nech, to mu řekneme v příští místnosti.",
+  cs="Už toho nech, to mu řekneme v příští místnosti.",
   en="Oh, stop it. We’ll tell him in the next level."})
 
 dialog_add("1st-v-takdobre", "big", {
@@ -63,7 +63,7 @@ dialog_add("1st-m-neprojedu", "small", {
   en="I can’t get through here. That steel cylinder is in the way."})
 
 dialog_add("1st-m-nepohnu", "small", {
-  cs="S tou ocelí nepohnu. Nechceš mi pomoct?",
+  cs="S tou ocelí nepohnu. Nechceš mi pomoct?",
   en="I can’t move that cylinder. Can you help me?"})
 
 dialog_add("1st-v-takukaz", "big", {
@@ -71,11 +71,11 @@ dialog_add("1st-v-takukaz", "big", {
   en="No problem..."})
 
 dialog_add("1st-m-hmmm", "small", {
-  cs="Hmmm... Pohneš s tím. To já bych nedokázala!",
+  cs="Hmmm... Pohneš s tím. To já bych nedokázala!",
   en="Wow, you moved it! I could never do that!"})
 
 dialog_add("1st-m-diky", "small", {
-  cs="Díky, už můžu jít s tebou.",
+  cs="Díky, už můžu jít s tebou.",
   en="Thanks, now I can go with you."})
 
 dialog_add("1st-v-nemuzu", "big", {
@@ -111,7 +111,7 @@ dialog_add("1st-v-jedno", "big", {
   en="Whatever. It was funnier in Czech."})
 
 dialog_add("1st-v-najit", "big", {
-  cs="Můžeš si to najít i na ovládacím panelu.",
+  cs="Můžeš si to najít i na ovládacím panelu.",
   en="The restart option is also located on the control panel."})
 
 dialog_add("1st-m-pokud", "small", {
@@ -127,11 +127,11 @@ dialog_add("1st-x-ocel", "darkgrey", {
   en="I’m a heavy steel cylinder. It’s not easy to move me around. Such a tiny fish, like the orange one over there, simply has no chance. I could smash her without any problem."})
 
 dialog_add("1st-x-hint1", "", {
-  cs="Dotyková obrazovka: tah v žádaném směru\nZměna: ťukni dvakrát",
+  cs="Dotyková obrazovka: tah v žádaném směru\nZměna: ťukni dvakrát",
   en="Touch screen: tap and move\nDouble tap to switch"
 });
 
 dialog_add("1st-x-hint2", "", {
-  cs="Dotyková obrazovka: ťuknout a podržet\nPřeskočit animaci pohybu: dotek dvěma prsty",
+  cs="Dotyková obrazovka: ťuknout a podržet\nPřeskočit animaci pohybu: dotek dvěma prsty",
   en="Touch screen: tap and hold\nFast-forward travel: two-finger tap"
 });

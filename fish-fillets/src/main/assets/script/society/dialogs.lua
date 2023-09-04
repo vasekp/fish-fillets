@@ -43,7 +43,7 @@ dialog_add("mik-m-nezlob", "small", {
   en="Don’t be mad at them."})
 
 dialog_add("mik-m-myslit", "small", {
-  cs="Teď se v klidu zamyslíme, jak ven.",
+  cs="Teď se v klidu zamyslíme, jak ven.",
   en="Now we can calmly ponder how to get out of here."})
 
 dialog_add("mik-m-proc", "small", {

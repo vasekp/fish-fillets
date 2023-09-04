@@ -27,7 +27,7 @@ dialog_add("puc-m-hele", "small", {
   en="Oh, my, this is repulsive."})
 
 dialog_add("puc-m-slizka", "small", {
-  cs="Ošklivá, slizká, špinavá a navíc hrozně zavazí.",
+  cs="Ošklivá, slizká, špinavá a navíc hrozně zavazí.",
   en="Repulsive, slimy, dirty and in the way."})
 
 dialog_add("puc-v-fuska0", "big", {
@@ -47,7 +47,7 @@ dialog_add("puc-m-stalo", "small", {
   en="But it paid off, didn’t it?"})
 
 dialog_add("puc-m-obraz", "small", {
-  cs="Představ si, že by to byl třeba nějaký vzácný obraz a my ho zachránili!",
+  cs="Představ si, že by to byl třeba nějaký vzácný obraz a my ho zachránili!",
   en="Just imagine it was some precious painting and we have saved it!"})
 
 dialog_add("puc-v-nesmysl", "big", {

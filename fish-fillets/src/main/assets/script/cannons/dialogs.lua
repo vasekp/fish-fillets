@@ -11,7 +11,7 @@ dialog_add("del-m-ci", "small", {
   en="Whose ship was she? Maybe she served under admiral Nelson... or captain Hornblower."})
 
 dialog_add("del-v-splet", "big", {
-  cs="V tom případě jsme se spletli nejméně o sto let.",
+  cs="V tom případě jsme se spletli nejméně o sto let.",
   en="No, I think you’re about a hundred years off."})
 
 dialog_add("del-v-mec", "big", {
@@ -19,7 +19,7 @@ dialog_add("del-v-mec", "big", {
   en="I have a feeling we’re going to need that sword."})
 
 dialog_add("del-m-tus", "small", {
-  cs="Ty tvoje tušení. A vůbec, nenapovídej.",
+  cs="Ty tvoje tušení. A vůbec, nenapovídej.",
   en="You and your ‘feelings’. Besides, we’re not supposed to be giving any hints."})
 
 dialog_add("del-m-jedn0", "small", {

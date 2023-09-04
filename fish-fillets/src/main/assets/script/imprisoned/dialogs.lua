@@ -1,5 +1,5 @@
 dialog_add("ncp-m-tesno0", "small", {
-  cs="Hele, jak mám z toho vylézt?",
+  cs="Hele, jak mám z toho vylézt?",
   en="Look, how I am supposed to get out of here?"})
 
 dialog_add("ncp-m-tesno1", "small", {
@@ -11,7 +11,7 @@ dialog_add("ncp-v-dostala", "big", {
   en="How did you manage to get there?"})
 
 dialog_add("ncp-v-sasanka", "big", {
-  cs="Nehrej si se sasankou a pojďme se radši nějak dostat ven.",
+  cs="Nehrej si se sasankou a pojďme se radši nějak dostat ven.",
   en="Stop playing with anemones and help me to get us out of here."})
 
 dialog_add("ncp-m-nekoukej", "small", {

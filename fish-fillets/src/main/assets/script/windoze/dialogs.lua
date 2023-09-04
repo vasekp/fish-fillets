@@ -11,15 +11,15 @@ dialog_add("win-m-costim1", "small", {
   en="What if we try to minimize the biggest windows?"})
 
 dialog_add("win-m-costim2", "small", {
-  cs="Co kdybychom některá z těch oken zavřeli?",
+  cs="Co kdybychom některá z těch oken zavřeli?",
   en="What if we try to close some of these windows?"})
 
 dialog_add("win-m-costim3", "small", {
-  cs="Co takhle to celé vypnout a nabootovat v DOSu?",
+  cs="Co takhle to celé vypnout a nabootovat v DOSu?",
   en="What about shutting down the whole thing and switching to command prompt only?"})
 
 dialog_add("win-m-costim4", "small", {
-  cs="Co takhle se na to vykašlat a odplavat do hospody?",
+  cs="Co takhle se na to vykašlat a odplavat do hospody?",
   en="What about giving up altogether and swimming to the pub instead?"})
 
 dialog_add("win-v-pocitala", "big", {
@@ -35,7 +35,7 @@ dialog_add("win-m-blok", "small", {
   en="Can you see that Notepad? Now is a good time to send a message to the player!"})
 
 dialog_add("win-v-premyslej", "big", {
-  cs="Nech těch hloupostí a raději přemýšlej.",
+  cs="Nech těch hloupostí a raději přemýšlej.",
   en="Stop that folly and try to think instead."})
 
 dialog_add("win-m-dira", "small", {
@@ -75,7 +75,7 @@ dialog_add("win-m-nic3", "small", {
   en="Only a beep from time to time..."})
 
 dialog_add("win-v-hav", "big", {
-  cs="Ještě, že se k ní autoři po létech vrátili a dali jí tento moderní háv.",
+  cs="Ještě, že se k ní autoři po létech vrátili a dali jí tento moderní háv.",
   en="But fortunately the authors got back to it and gave it this modern facelift."})
 
 dialog_add("win-m-zahrat", "small", {
@@ -83,7 +83,7 @@ dialog_add("win-m-zahrat", "small", {
   en="But I’d like to play it sometime, anyway!"})
 
 dialog_add("win-m-vga", "small", {
-  cs="Já s tímhle oknem nepohnu. Támhle dole, to je ocelový válec, i když jen v šestnáctibarevném VGA.",
+  cs="Já s tímhle oknem nepohnu. Támhle dole, to je ocelový válec, i když jen v šestnáctibarevném VGA.",
   en="I can’t move this window. Down there, it’s a steel cylinder, though it’s only in sixteen color VGA."})
 
 dialog_add("win-v-pockej", "big", {
@@ -103,7 +103,7 @@ dialog_add("win-m-ven", "small", {
   en="Yes, but the player has to get us out."})
 
 dialog_add("win-v-citim", "big", {
-  cs="Tak budeme stávkovat. Já osobně plně cítím s tou velkou rybičkou uvnitř.",
+  cs="Tak budeme stávkovat. Já osobně plně cítím s tou velkou rybičkou uvnitř.",
   en="So we’ll go on strike. Personally, I fully sympathize with the bigger fish inside."})
 
 dialog_add("win-m-vzit", "small", {

@@ -11,7 +11,7 @@ dialog_add("bot-v-uveznen1", "big", {
   en="It got itself drunk among the amphoras."})
 
 dialog_add("bot-m-zajem", "small", {
-  cs="Zajímalo by mě, jestli v nich ještě něco je.",
+  cs="Zajímalo by mě, jestli v nich ještě něco je.",
   en="I wonder if there is anything left in them."})
 
 dialog_add("bot-v-podivat", "big", {
@@ -51,7 +51,7 @@ dialog_add("bot-v-totem", "big", {
   en="This totem looks good to me."})
 
 dialog_add("bot-v-lebka", "big", {
-  cs="Z té lebky vyzařuje něco tajemného.",
+  cs="Z té lebky vyzařuje něco tajemného.",
   en="That skull seems to radiate something strange."})
 
 dialog_add("bot-m-zivy", "small", {

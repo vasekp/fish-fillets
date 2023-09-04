@@ -11,19 +11,19 @@ dialog_add("wc-v-neznas", "big", {
   en="You don’t know David? It’s one of the artists who worked on this game."})
 
 dialog_add("wc-m-sochar", "small", {
-  cs="David nebyl žádný malíř. David byl sochař. Davidova socha je jednou z nejznámějších renesančních památek.",
+  cs="David nebyl žádný malíř. David byl sochař. Davidova socha je jednou z nejznámějších renesančních památek.",
   en="David was no graphic artist. He was a sculpturer. His sculptures are one of the best-known Renaissance artifacts."})
 
 dialog_add("wc-v-zmatek", "big", {
-  cs="Máš v tom nějaký zmatek.",
+  cs="Máš v tom nějaký zmatek.",
   en="You’ve got it all wrong."})
 
 dialog_add("wc-m-prasecinky", "small", {
-  cs="Já jsem ti říkala, že zrovna my splachovací záchod nepotřebujeme. A ještě tu visí ty tvoje prasečinky.",
+  cs="Já jsem ti říkala, že zrovna my splachovací záchod nepotřebujeme. A ještě tu visí ty tvoje prasečinky.",
   en="Didn’t I tell you, that WE don’t need a flushing toilet? And decorated with your smut, too!"})
 
 dialog_add("wc-v-hygiena", "big", {
-  cs="Splachovací záchod je hygieničtější a pod vodou i ekologičtější.",
+  cs="Splachovací záchod je hygieničtější a pod vodou i ekologičtější.",
   en="The flushing toilet is more hygienic and when under water even more ecological."})
 
 dialog_add("wc-m-vlezt", "small", {
