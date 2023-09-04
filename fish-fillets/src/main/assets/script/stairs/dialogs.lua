@@ -8,7 +8,7 @@ dialog_add("sch-v-lastura", "big", {
 
 dialog_add("sch-v-setkani", "big", {
   cs="Setkání lastury s květináčem. To je skoro jako setkání žehličky s šicím strojem na operačním stole.",
-  en="I can see it now: ‘Shell Meets Flowerpot’. That’s almost like an iron and a sewing machine meeting on an operating table."})
+  en="The Shell Meets The Flowerpot. That’s almost like an iron and a sewing machine meeting on an operating table."})
 
 dialog_add("sch-m-moc0", "small", {
   cs="Nějak jsem se do toho moc zabrala.",

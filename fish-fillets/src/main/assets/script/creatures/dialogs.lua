@@ -48,7 +48,7 @@ dialog_add("kor-v-jedovate", "big", {
 
 dialog_add("kor-m-dusi", "small", {
   cs="Co myslíš, mají korály duši?",
-  en="What do you think, is there such a thing as a ‘coral-soul’?"})
+  en="What do you think, do corals possess souls?"})
 
 dialog_add("kor-m-pocit", "small", {
   cs="Nemáš pocit, že nás ty korály pozorují?",

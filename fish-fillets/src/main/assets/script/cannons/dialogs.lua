@@ -20,7 +20,7 @@ dialog_add("del-v-mec", "big", {
 
 dialog_add("del-m-tus", "small", {
   cs="Ty tvoje tušení. A vůbec, nenapovídej.",
-  en="You and your ‘feelings’. Besides, we’re not supposed to be giving any hints."})
+  en="You and your “feelings”. Besides, we’re not supposed to be giving any hints."})
 
 dialog_add("del-m-jedn0", "small", {
   cs="To bylo nějak jednoduché, ne?",
