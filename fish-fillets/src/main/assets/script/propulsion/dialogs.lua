@@ -55,8 +55,8 @@ dialog_add("poh-v-forma", "big", {
   en="Look, there is some strange life form, over there. Shouldn’t we try to contact them?"})
 
 dialog_add("poh-m-princip", "small", {
-  cs="Náš úkol zněl jasně - principy a konstrukce mezihvězdných pohonů. O kontaktu ani slovo.",
-  en="Our mission was clear - principles and construction of the interstellar propulsion. Not a single word about contact."})
+  cs="Náš úkol zněl jasně – principy a konstrukce mezihvězdných pohonů. O kontaktu ani slovo.",
+  en="Our mission was clear – principles and construction of the interstellar propulsion. Not a single word about contact."})
 
 dialog_add("poh-v-pomoct", "big", {
   cs="Tak dobře. Ale mohli by nám aspoň pomoct.",

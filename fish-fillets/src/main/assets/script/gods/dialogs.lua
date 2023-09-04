@@ -267,8 +267,8 @@ dialog_add("b2-podvadis", "cyan", {
   en="You cheat!!!"})
 
 dialog_add("b2-spatne", "cyan", {
-  cs="Tohle jsem už zkoušel - a ty jsi řekl 'voda'!",
-  en="I have tried that - and you said ‘miss’!"})
+  cs="Tohle jsem už zkoušel – a ty jsi řekl „voda“!",
+  en="I have tried that – and you said “miss”!"})
 
 dialog_add("b1-1", "", {})
 

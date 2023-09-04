@@ -79,7 +79,7 @@ dialog_add("pra-v-prekvapit", "big", {
   en="Just wait and see."})
 
 dialog_add("pra-m-kniha", "small", {
-  cs="Tady ti, hráči, poradíme - tu knihu musíš dostat támhle vlevo.",
+  cs="Tady ti, hráči, poradíme – tu knihu musíš dostat támhle vlevo.",
   en="We will give you a hint here, player. You have to put that book over there, to the left."})
 
 dialog_add("pra-v-valec", "big", {
@@ -119,6 +119,6 @@ dialog_add("pra-v-schvalne", "big", {
   en="We admit that we did this on purpose."})
 
 dialog_add("pra-m-znovu", "small", {
-  cs="Aby sis to zkusil znovu - a tentokrát už bez našich rad.",
-  en="So that you could try it again - this time without any hints."})
+  cs="Aby sis to zkusil znovu – a tentokrát už bez našich rad.",
+  en="So that you could try it again – this time without any hints."})
 

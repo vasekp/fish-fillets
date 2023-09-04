@@ -3,8 +3,8 @@ dialog_add("help1", "small", {
   en="For now, don’t touch anything, just watch and learn. We’ll show you what you should and shouldn’t do with us as well as what things we’re capable of."})
 
 dialog_add("help2", "big", {
-  cs="Než vstoupíme do dílny, uložíme si pozici - dělá se to klávesou F2.",
-  en="Before entering the workshop, let’s save the game - just press the F2 key."})
+  cs="Než vstoupíme do dílny, uložíme si pozici – dělá se to klávesou F2.",
+  en="Before entering the workshop, let’s save the game – just press the F2 key."})
 
 dialog_add("help3", "small", {
   cs="Nejprve ti ukážeme, co nám ubližuje.",
@@ -19,12 +19,12 @@ dialog_add("help5", "small", {
   en="First of all, we shouldn’t drop things on each other."})
 
 dialog_add("help6", "small", {
-  cs="Stejně tak nesmíme podklesnout pod předmětem, který neseme - spadnul by na nás.",
+  cs="Stejně tak nesmíme podklesnout pod předmětem, který neseme – spadnul by na nás.",
   en="We also can’t swim downwards when carrying an object, because it would fall on us."})
 
 dialog_add("help7", "big", {
-  cs="Nyní začínáme znovu - můžeme však nahrát uloženou pozici klávesou F3.",
-  en="Now we’ll start again - or we can load the saved game by pressing the F3 key."})
+  cs="Nyní začínáme znovu – můžeme však nahrát uloženou pozici klávesou F3.",
+  en="Now we’ll start again – or we can load the saved game by pressing the F3 key."})
 
 dialog_add("help8", "big", {
   cs="Tak, a jsme na místě, kde jsme hru ukládali.",
@@ -32,11 +32,11 @@ dialog_add("help8", "big", {
 
 dialog_add("help9", "small", {
   cs="Další věc, kterou nesmíme dělat, je posunovat si předmět po hřbetě.",
-  en="Another thing we must not do is push objects along our back."})
+  en="Another thing we must not do is push objects across our back."})
 
 dialog_add("help10", "small", {
-  cs="Některé předměty mají takový tvar, že bych je mohla zároveň držet i posouvat - ale to také nesmím.",
-  en="Some objects are shaped in such a way that we could hold them and push them at the same time - but we’re not allowed to do this either."})
+  cs="Některé předměty mají takový tvar, že bych je mohla zároveň držet i posouvat – ale to také nesmím.",
+  en="Some objects are shaped in such a way that we could hold them and push them at the same time – but we’re not allowed to do this either."})
 
 dialog_add("help11", "big", {
   cs="Znovu nahrajeme pozici klávesou F3.",

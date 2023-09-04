@@ -27,8 +27,8 @@ dialog_add("1st-v-navod1", "big", {
   en="You can control us with arrow keys and use the space bar to switch fish."})
 
 dialog_add("1st-m-navod4", "small", {
-  cs="A nebo myškou - někam ukaž levým tlačítkem a když tam můžeme dojet...",
-  en="Or you can control us with the mouse -- left-click somewhere and..."})
+  cs="A nebo myškou – někam ukaž levým tlačítkem a když tam můžeme dojet...",
+  en="Or you can control us with the mouse – left-click somewhere and..."})
 
 dialog_add("1st-v-navod5", "big", {
   cs="...aniž bychom něčím hýbali...",

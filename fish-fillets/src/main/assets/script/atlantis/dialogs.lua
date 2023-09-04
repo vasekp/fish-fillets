@@ -16,7 +16,7 @@ dialog_add("sp-m-neopatrnost", "small", {
 
 dialog_add("sp-v-zahynuli", "big", {
   cs="Tisíce lidí zahynuly, celé město zmizelo v rozbouřených vlnách kvůli takové hlouposti.",
-  en="Thousands perished - the whole city disappeared in the waves because of such ineptness."})
+  en="Thousands perished – the whole city disappeared in the waves because of such ineptness."})
 
 dialog_add("sp-m-vytazeny", "small", {
   cs="Vytažený špunt.",
@@ -43,8 +43,8 @@ dialog_add("sp-v-vratit1", "big", {
   en="We can put it back in place as a token of our esteem of the citizens’ heroic effort to keep it afloat. As a memorial to their industrious, adroit and... persistent nature."})
 
 dialog_add("sp-m-vratit1", "small", {
-  cs="Čeho že? 'Kam běžíš? Pro sedm mečů!’ Ten špunt podle mě vytáhla sama prozřetelnost. Představ si, že bys takové věci slýchal doma. Den co den.",
-  en="Of what? ‘Where are you running? I need to order eight swords.’ The Providence itself unplugged that hole. Just imagine you’d hear such things at home. Day by day."})
+  cs="Čeho že? „Kam běžíš? Pro sedm mečů!“ Ten špunt podle mě vytáhla sama prozřetelnost. Představ si, že bys takové věci slýchal doma. Den co den.",
+  en="Of what? “Where are you running? I need to order eight swords.” The Providence itself unplugged that hole. Just imagine you’d hear such things at home. Day by day."})
 
 dialog_add("sp-m-kalet", "small", {
   cs="A navíc: copak sem ještě někdo někdy přijde? Tady budou na ten špunt akorát kálet sépie.",

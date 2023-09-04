@@ -79,8 +79,8 @@ dialog_add("zel-v-tazelva", "big", {
   en="This must be that turtle!"})
 
 dialog_add("zel-m-jasne", "small", {
-  cs="Tak teď už je to jasné - je to ona. Tu hledáme!",
-  en="So there can be no doubts now - this is it. The one we are looking for!"})
+  cs="Tak teď už je to jasné – je to ona. Tu hledáme!",
+  en="So there can be no doubts now – this is it. The one we are looking for!"})
 
 dialog_add("zel-v-pochyby", "big", {
   cs="Teď už není pochyb, je to ta želva, kterou hledáme!",
@@ -115,8 +115,8 @@ dialog_add("zel-v-tvary", "big", {
   en="Where do so many bizarre shapes come from?"})
 
 dialog_add("zel-m-jednoduse", "small", {
-  cs="Jednoduše - programátoři vytvoří zapeklitý problém a grafici to pak nakreslí.",
-  en="It’s easy - designers create tricky problems and leave the drawing to the graphic artists."})
+  cs="Jednoduše – programátoři vytvoří zapeklitý problém a grafici to pak nakreslí.",
+  en="It’s easy – designers create tricky problems and leave the drawing to the graphic artists."})
 
 dialog_add("zel-v-ukol", "big", {
   cs="V této místnosti je naším úkolem dostat ven tu želvu.",

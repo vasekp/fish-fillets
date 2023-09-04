@@ -11,8 +11,8 @@ dialog_add("poc-m-lezt2", "small", {
   en="Wow, what a place!"})
 
 dialog_add("poc-v-kam0", "big", {
-  cs="Kam tak člověk - chci říci ryba - může vlézt záchodem?",
-  en="Where can man - I mean fish - get by climbing into a toilet?"})
+  cs="Kam tak člověk – chci říci ryba – může vlézt záchodem?",
+  en="Where can man – I mean fish – get by climbing into a toilet?"})
 
 dialog_add("poc-v-kam1", "big", {
   cs="Vypadá to na malé úhledné smetiště.",

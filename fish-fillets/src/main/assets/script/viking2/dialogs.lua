@@ -200,7 +200,7 @@ dialog_add("dr-4-ne", "viking4", {
 
 dialog_add("dr-3-mladez", "viking3", {
   cs="Ta dnešní mládež je příšerná.",
-  en="Today’s youth - absolutely unbelievable."})
+  en="Today’s youth – absolutely unbelievable."})
 
 dialog_add("dr-3-chlap", "viking3", {
   cs="Chlap a copy. Kdo to kdy slyšel!?",

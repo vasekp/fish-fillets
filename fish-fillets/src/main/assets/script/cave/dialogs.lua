@@ -95,10 +95,10 @@ dialog_add("jes-m-netopyr3", "small", {
   en="It’s just an ordinary piece of rock."})
 
 dialog_add("jes-v-nechut0", "big", {
-  cs="Myslím, že tu 'potvoru’ budeš potřebovat.",
-  en="I think you are going to need that ‘monster’."})
+  cs="Myslím, že tu „potvoru“ budeš potřebovat.",
+  en="I think you are going to need that “monster”."})
 
 dialog_add("jes-v-nechut1", "big", {
-  cs="Myslím, že bys měla překonat nechuť k té 'nestvůře’.",
-  en="I think you will have to overcome your dislike of that ‘abomination’."})
+  cs="Myslím, že bys měla překonat nechuť k té „nestvůře“.",
+  en="I think you will have to overcome your dislike of that “abomination”."})
 

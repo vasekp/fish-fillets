@@ -51,11 +51,11 @@ dialog_add("uts-m-tvorove", "small", {
   en="There are going to be many interesting beings to investigate there."})
 
 dialog_add("uts-v-mikroskop", "big", {
-  cs="Nejsou korály náhodou zkoumatelné jen pod mikroskopem?",
+  cs="Nejsou koráli náhodou zkoumatelní jen pod mikroskopem?",
   en="Don’t we need a microscope to investigate corals?"})
 
 dialog_add("uts-m-zivocich", "small", {
-  cs="No, jsou malé. Ale mohou tam být i jiní živočichové.",
+  cs="No, jsou malí. Ale mohou tam být i jiní živočichové.",
   en="Yes, they are small. But there can be other life forms."})
 
 dialog_add("uts-m-zelvy", "small", {

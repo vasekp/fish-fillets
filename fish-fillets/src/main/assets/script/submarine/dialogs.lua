@@ -11,7 +11,7 @@ dialog_add("zr-m-prestan", "small", {
   en="Stop looking at yourself in the mirror and make yourself useful."})
 
 dialog_add("zr-m-takfajn", "small", {
-  cs="Tak fajn, on si odjede - a co já?",
+  cs="Tak fajn, on si odjede – a co já?",
   en="That’s great! He just goes on his merry little way, but what about me?"})
 
 dialog_add("zr-m-tojeon", "small", {

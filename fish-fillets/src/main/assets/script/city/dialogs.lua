@@ -4,7 +4,7 @@ dialog_add("vit-hs-vitejteA", "statue", {
 
 dialog_add("vit-hs-vitejteB", "statue", {
   cs="Vítejte v našem městě, městě neomezených možností.",
-  en="Welcome to our city - the city of unlimited opportunities."})
+  en="Welcome to our city – the city of unlimited opportunities."})
 
 dialog_add("vit-hs-vitejteC", "statue", {
   cs="Dovoluji si vás přivítat jménem občanů našeho města.",
@@ -140,7 +140,7 @@ dialog_add("vit-v-pockej", "big", {
 
 dialog_add("vit-m-vecnost", "small", {
   cs="Představ si, že ta hlava tohle dělá celou věčnost...",
-  en="Just imagine - that head has been like doing this all these years..."})
+  en="Just imagine – that head has been like doing this all these years..."})
 
 dialog_add("vit-v-noa", "big", {
   cs="No a?",

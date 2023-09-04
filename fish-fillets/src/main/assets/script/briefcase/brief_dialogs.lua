@@ -4,7 +4,7 @@ dialog_add("kd-uvod", "white", {
 
 dialog_add("kd-ufo", "white", {
   cs="Informátorům naší Fakt Děsně Tajné Organizace se podařilo získat několik amatérských záběrů mimozemského objektu, který se zřítil někam do vaší oblasti. Vaším úkolem, pokud ho přijmete, bude UFO najít a získat informace o principech a konstrukci mezihvězdného pohonu.",
-  en="Agents of FDTO - Fish Detective Training Organization - managed to get hold of several amateur snapshots of an extraterrestrial object which has crashed somewhere in your vicinity. Your mission, if you choose to accept it, will be to recover the UFO and acquire all the information you can about the principles and nature of interstellar propulsion."})
+  en="Agents of FDTO – Fish Detective Training Organization – managed to get hold of several amateur snapshots of an extraterrestrial object which has crashed somewhere in your vicinity. Your mission, if you choose to accept it, will be to recover the UFO and acquire all the information you can about the principles and nature of interstellar propulsion."})
 
 dialog_add("kd-mesto", "white", {
   cs="Zároveň zkuste pohnout s našimi starými nevyřešenými případy. Především jsou to nejasnosti kolem potopení dávného mýtického města, shodou okolností v téže oblasti.",
