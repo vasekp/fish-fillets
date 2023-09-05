@@ -15,6 +15,7 @@ class AudioSourceList {
         Sources* operator->();
     private:
         AudioSourceList& m_parent;
+        std::size_t m_startSize;
 
         void checkDialogs();
     };
@@ -33,6 +34,7 @@ private:
     std::unique_ptr<Sources> m_sources_local;
     std::atomic<bool> m_sources_lock;
 
+    bool m_dirty;
     std::atomic<bool> m_dialogsLocal;
     std::atomic<bool> m_dialogsThread;
 };

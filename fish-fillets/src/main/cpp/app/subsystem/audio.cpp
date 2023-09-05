@@ -75,11 +75,11 @@ void Audio::preload(const std::string& filename) {
 }
 
 float Audio::getVolume(AudioType type) {
-    return m_volumes[(int)type];
+    return m_volumes[(int)type].load(std::memory_order::relaxed);
 }
 
 void Audio::setVolume(AudioType type, float volume) {
-    m_volumes[(int)type] = volume;
+    m_volumes[(int)type].store(volume, std::memory_order::relaxed);
 }
 
 bool Audio::isDialog() const {
@@ -91,7 +91,7 @@ void Audio::mix(float* output, std::size_t numSamples) {
         return;
     std::array<float, 3> volumes;
     for(int i = 0; i < 3; i++)
-        volumes[i] = m_volumes[i]; // cache atomics
+        volumes[i] = m_volumes[i].load(std::memory_order::relaxed); // cache atomics
     std::memset(output, 0, sizeof(float) * numSamples);
     auto& sources = m_sources.thread();
     unsigned dialogs = 0;
