@@ -38,7 +38,6 @@ void LevelScreen::exit() {
 }
 
 void LevelScreen::own_start() {
-    m_instance.audio().clear();
     m_level.init();
     if(m_replay)
         m_level.replay();

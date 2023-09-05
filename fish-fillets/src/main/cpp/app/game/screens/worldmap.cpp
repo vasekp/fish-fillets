@@ -71,7 +71,6 @@ void WorldMap::staticFrame(Frames frame, std::function<void()>&& action) {
 }
 
 void WorldMap::own_start() {
-    m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
 }
 

@@ -18,7 +18,6 @@ PosterScreen::PosterScreen(Instance& instance, const std::string& script) :
 }
 
 void PosterScreen::own_start() {
-    m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
 }
 

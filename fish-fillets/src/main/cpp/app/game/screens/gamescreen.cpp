@@ -1,5 +1,6 @@
 #include "gamescreen.h"
 #include "subsystem/graphics.h"
+#include "subsystem/audio.h"
 
 GameScreen::GameScreen(Instance& instance) :
     m_instance(instance),
@@ -27,6 +28,7 @@ const Image* GameScreen::getImage(const std::string& name) {
 
 void GameScreen::start() {
     Log::debug<Log::lifecycle>("screen: start");
+    m_instance.audio().clear();
     own_start();
     resize();
 }

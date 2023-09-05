@@ -57,7 +57,6 @@ void IntroScreen::fill_buffers() {
 }
 
 void IntroScreen::own_start() {
-    m_instance.audio().clear();
     m_instance.audio().addSource(m_aBuffer);
 }
 
