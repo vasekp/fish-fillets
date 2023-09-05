@@ -59,7 +59,6 @@ void IntroScreen::fill_buffers() {
 void IntroScreen::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_aBuffer);
-    m_instance.screens().announceLevel("");
 }
 
 void IntroScreen::own_update() {

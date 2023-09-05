@@ -16,7 +16,6 @@ CreditsScreen::CreditsScreen(Instance& instance) :
 void CreditsScreen::own_start() {
     m_instance.audio().clear();
     m_instance.audio().addSource(m_music);
-    m_instance.screens().announceLevel("");
 }
 
 void CreditsScreen::own_draw(DrawTarget& target) {

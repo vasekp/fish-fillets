@@ -30,6 +30,10 @@ ScreenType& ScreenManager::open(Ts&&... ts) {
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
     Log::debug<Log::lifecycle>("ScreenManager::open duration = ", diff.count(), " s");
+    if constexpr (std::is_same_v<ScreenType, LevelScreen>)
+        m_title.fadeout();
+    else
+        m_title.hide();
     return screen;
 }
 
@@ -42,7 +46,6 @@ void ScreenManager::announceLevel(const std::string& title) {
 
 void ScreenManager::startLevel(LevelRecord& record, bool replay) {
     open<LevelScreen>(record, replay).level();
-    m_title.fadeout();
 }
 
 void ScreenManager::poster(const LevelRecord& record) {
