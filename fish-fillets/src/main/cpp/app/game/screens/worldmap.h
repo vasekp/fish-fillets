@@ -18,7 +18,7 @@ public:
     enum class Frames {
         none,
         loading,
-        exit,
+        help,
         options,
         intro,
         credits

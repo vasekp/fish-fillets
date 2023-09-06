@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="853.33331"
+   height="640"
+   viewBox="0 0 853.33331 640"
+   sodipodi:docname="map_help.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.75412654"
+     inkscape:cx="726.66849"
+     inkscape:cy="163.76562"
+     inkscape:window-width="1920"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1"
+     sodipodi:insensitive="true">
+    <image
+       width="853.33331"
+       height="640"
+       preserveAspectRatio="none"
+       xlink:href="../fish-fillets/src/main/assets/images/menu/map_noexit.png"
+       id="image1" />
+    <path
+       style="display:inline;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 35.782646,143.30186 c 46.683136,13.88296 92.300994,-7.03298 125.893994,-34.67888"
+       id="path1"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:33.3333px;line-height:1.25;font-family:'Myriad Pro';-inkscape-font-specification:'Myriad Pro';letter-spacing:7.5px;word-spacing:0px"
+       id="text1"><textPath
+         xlink:href="#path1"
+         id="textPath1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:33.3333px;font-family:Cancun;-inkscape-font-specification:Cancun;letter-spacing:7.5px;fill:#9e9e9e;fill-opacity:1">INTRO</textPath></text>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:33.3333px;line-height:1.25;font-family:Cancun;-inkscape-font-specification:Cancun;letter-spacing:7.5px;word-spacing:0px;display:none"
+     id="text1-9"><textPath
+       xlink:href="#path1-2"
+       id="textPath2">EXIT</textPath></text>
+  <path
+     style="display:none;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 707.3663,128.83405 c 20.87614,15.24925 55.16238,30.68615 93.68476,29.77902"
+     id="path1-2"
+     sodipodi:nodetypes="cc" />
+  <text
+     xml:space="preserve"
+     style="font-size:33.3333px;line-height:1.25;font-family:Cancun;-inkscape-font-specification:Cancun;letter-spacing:6.5px;word-spacing:0px;display:inline"
+     id="text1-9-3"><textPath
+       xlink:href="#path1-2-9"
+       id="textPath2-1"
+       style="letter-spacing:6.5px">HELP</textPath></text>
+  <path
+     style="display:inline;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 697.50835,122.66115 c 30.04198,21.08478 63.84061,34.22352 103.54271,35.95192"
+     id="path1-2-9"
+     sodipodi:nodetypes="cc" />
+</svg>
