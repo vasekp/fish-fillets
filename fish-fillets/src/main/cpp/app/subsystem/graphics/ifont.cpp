@@ -2,6 +2,8 @@
 
 constexpr float upsampleThreshold = 20.f;
 
+IFont::IFont(Instance& instance) : m_instance(instance), m_fontSize(0), m_outline(0), m_scale(0) { }
+
 void IFont::setSizes(float fontSize, float outline, float scale) {
     fontSize *= scale;
     outline *= scale;

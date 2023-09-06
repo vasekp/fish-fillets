@@ -7,7 +7,7 @@ class TextImage;
 
 class IFont {
 public:
-    IFont(Instance& instance) : m_instance(instance) { }
+    IFont(Instance& instance);
     virtual ~IFont() = 0;
 
     void setSizes(float fontSize, float outline, float scale);
