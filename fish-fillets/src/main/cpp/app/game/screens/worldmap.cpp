@@ -7,6 +7,8 @@
 
 static constexpr int nodeRadius = 9;
 static constexpr int nodeTolerance = 15;
+static auto hintDisplayTime = 1000ms;
+static auto hintFadeoutTime = 300ms;
 
 struct MaskColors {
     static constexpr Color exit = 0x008080;
@@ -37,9 +39,14 @@ WorldMap::WorldMap(Instance& instance) :
     m_frameShown(false)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
+#ifdef FISH_FILLETS_DISABLE_EXIT
+    addImage("images/menu/map_noexit.png", "background");
+    addImage("images/menu/map_lower_noexit.png", "masked");
+#else
     addImage("images/menu/map.png", "background");
-    addImage("images/menu/map_mask.png", "mask", TextureType::mask);
     addImage("images/menu/map_lower.png", "masked");
+#endif
+    addImage("images/menu/map_mask.png", "mask", TextureType::mask);
     addImage("images/menu/loading.png", "loading");
     for(int i = 0; i < 5; i++) {
         auto name = "images/menu/n"s + (char)('0' + i) + ".png";
@@ -120,6 +127,18 @@ void WorldMap::own_draw(DrawTarget& target) {
     if(m_pm && m_staticFrame != Frames::loading)
         m_pm->draw(target, liveTime());
 
+    if(m_hint) {
+        if(liveTime() > m_hintHide + hintFadeoutTime)
+            m_hint.reset();
+        else {
+            if(liveTime() > m_hintHide) {
+                float alpha = 1.f - (liveTime() - m_hintHide) / hintFadeoutTime;
+                m_hint->setAlpha(alpha);
+            }
+            m_hint->draw(target);
+        }
+    }
+
     switch(m_staticFrame) {
         case Frames::loading:
             target.draw(getImage("loading"), copyProgram, coords, { .dest = FCoords{227, 160} });
@@ -137,12 +156,19 @@ void WorldMap::own_draw(DrawTarget& target) {
 }
 
 bool WorldMap::own_pointer(FCoords coords) {
+    m_hint.reset();
     for(const auto& area : areas)
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {
                 case Frames::exit:
 #ifndef FISH_FILLETS_DISABLE_EXIT
                     staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
+#else
+                    {
+                        auto lang = m_instance.persist().get("subtitles", ""s);
+                        m_hint.emplace(m_instance, lang == "en" ? "Please use the Home button." : "Použijte Home Button.", false);
+                        m_hintHide = liveTime() + hintDisplayTime;
+                    }
 #endif
                     return true;
                 case Frames::options:

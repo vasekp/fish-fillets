@@ -12,6 +12,7 @@
 #include "game/graphics/hint.h"
 #include "game/graphics/zxeffect.h"
 #include "game/logic/level.h"
+#include "liveclock.h"
 
 class LevelScreen : public GameScreen {
 public:

@@ -9,6 +9,7 @@ class Hint {
 public:
     Hint(Instance& instance, const std::string& text, bool fullWidth);
 
+    void setAlpha(float alpha);
     void draw(DrawTarget& target);
     void resize();
 
@@ -17,6 +18,7 @@ private:
     std::unique_ptr<IFont> m_font;
     std::vector<ImageRef> m_lines;
     Graphics::CoordSystems m_coords;
+    float m_alpha;
 };
 
 #endif //FISH_FILLETS_GAME_HINT_H
