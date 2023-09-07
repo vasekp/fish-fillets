@@ -100,6 +100,7 @@ struct FCoords {
     friend constexpr FCoords operator-(FCoords a, FCoords b) { return {a.x - b.x, a.y - b.y}; }
     friend FCoords& operator+=(FCoords& a, FCoords b) { return a = a + b; }
     friend FCoords& operator-=(FCoords& a, FCoords b) { return a = a - b; }
+    friend constexpr FCoords operator-(FCoords a) { return {-a.x, -a.y}; }
     friend constexpr FCoords operator*(float f, FCoords c) { return {f * c.x, f * c.y}; }
     friend constexpr FCoords operator*(FCoords c, float f) { return {f * c.x, f * c.y}; }
     friend constexpr FCoords operator/(FCoords c, float f) { return {c.x / f, c.y / f}; }

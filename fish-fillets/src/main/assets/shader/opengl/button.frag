@@ -11,5 +11,5 @@ void main(void) {
     vec2 texCoords = vSrcCoords - uArea / 2.0 + uSrcSize / 2.0;
     vec2 pv = pow(abs(coords), vec2(5.0));
     float q = pv.x + pv.y;
-    gl_FragColor = step(q, 1.0) * uColor * (1.0 - texture2D(uSrcTexture, texCoords / uSrcSize).a);
+    gl_FragColor = step(q, 1.0) * vec4(uColor.rgb * (1.0 - texture2D(uSrcTexture, texCoords / uSrcSize).a), 1.0);
 }

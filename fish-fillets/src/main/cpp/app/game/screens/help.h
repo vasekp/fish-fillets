@@ -7,6 +7,7 @@
 #include "subsystem/audio/audiosource.h"
 #include "api/ogg/video.h"
 #include "baseinput.h"
+#include "subsystem/graphics/image.h"
 #include "game/graphics/hint.h"
 
 class HelpScreen : public GameScreen {
@@ -21,6 +22,7 @@ protected:
     void own_draw(DrawTarget& target) override;
     bool own_key(Key key) override;
     bool own_pointer(FCoords coords) override;
+    void own_resize() override;
 
 private:
     BaseInput m_input;
@@ -37,6 +39,9 @@ private:
     unsigned m_index;
 
     Hint m_hint;
+    std::unique_ptr<IFont> m_buttonFont;
+    ImageRef m_button;
+    FCoords m_buttonPos;
 
     void loopVideo();
     void loadPart(unsigned i);

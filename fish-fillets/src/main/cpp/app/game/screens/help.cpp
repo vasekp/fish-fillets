@@ -42,6 +42,11 @@ static const std::array help_en{
 static_assert(help_cs.size() == files.size());
 static_assert(help_en.size() == files.size());
 
+static constexpr const char* fontFilename = "font/FFArrows.ttf";
+static constexpr float buttonSize = 48.f;
+static constexpr float buttonFontSize = 40.f;
+static constexpr Color buttonColor{0x96afff};
+
 HelpScreen::HelpScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
@@ -53,7 +58,9 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_imgTime(-1.f),
     m_startTime(0.f),
     m_index(0),
-    m_hint(instance, "", true)
+    m_hint(instance, "", true),
+    m_buttonFont(decoders::ttf(instance, fontFilename)),
+    m_button(TextImage::create(instance, *m_buttonFont, ">"))
 {
     loadPart(0);
 }
@@ -133,10 +140,16 @@ void HelpScreen::own_draw(DrawTarget& target) {
         m_imgY->texture(), m_imgCb->texture(), m_imgCr->texture()
     }, program, coords);
     m_hint.draw(target);
+
+    const auto buttonProgram = m_instance.graphics().shaders().button({ .color = buttonColor.gl() });
+    constexpr auto extent = FCoords{buttonSize, buttonSize};
+    target.draw(m_button, buttonProgram, coords, { .dest = m_buttonPos - extent / 2.f, .area = extent });
 }
 
 bool HelpScreen::own_pointer(FCoords coords) {
-    nextPart();
+    constexpr auto extent = FCoords{buttonSize, buttonSize};
+    if((coords - m_buttonPos).within(-extent / 2.f, extent / 2.f))
+        nextPart();
     return true;
 }
 
@@ -159,4 +172,13 @@ void HelpScreen::nextPart() {
         loadPart(m_index);
     else
         m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+}
+
+void HelpScreen::own_resize() {
+    const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
+    m_buttonFont->setSizes(buttonFontSize, 0.f, coords.scale);
+
+    const auto& nullCoords = m_instance.graphics().coords(Graphics::CoordSystems::null);
+    FCoords cREdge{nullCoords.size.x, nullCoords.size.y / 2.f};
+    m_buttonPos = coords.out2in(cREdge) - FCoords{buttonSize, 0.f};
 }

@@ -20,5 +20,5 @@ void main() {
     vec2 texCoords = vSrcCoords - pc.uArea / 2.0 + pc.uSrcSize / 2.0;
     vec2 pv = pow(abs(coords), vec2(5.0));
     float q = pv.x + pv.y;
-    fragColor = step(q, 1.0) * pc.uColor * (1.0 - texture(uSrcTexture, texCoords / pc.uSrcSize).a);
+    fragColor = step(q, 1.0) * vec4(pc.uColor.rgb * (1.0 - texture(uSrcTexture, texCoords / pc.uSrcSize).a), 1.0);
 }
