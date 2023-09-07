@@ -10,6 +10,7 @@ public:
     Hint(Instance& instance, const std::string& text, bool fullWidth);
 
     void draw(DrawTarget& target);
+    void setText(const std::string& text);
     void resize();
 
 private:

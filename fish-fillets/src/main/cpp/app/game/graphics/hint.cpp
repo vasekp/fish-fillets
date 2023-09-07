@@ -12,10 +12,7 @@ Hint::Hint(Instance& instance, const std::string& text, bool fullWidth) :
     m_coords(fullWidth ? Graphics::CoordSystems::base : Graphics::CoordSystems::window)
 {
     resize();
-    const auto& coords = m_instance.graphics().coords(m_coords);
-    auto lines = m_font->breakLines(text, coords.size.x);
-    for(const auto& line : lines)
-        m_lines.push_back(TextImage::create(m_instance, *m_font, line));
+    setText(text);
 }
 
 void Hint::draw(DrawTarget& target) {
@@ -28,6 +25,14 @@ void Hint::draw(DrawTarget& target) {
         target.draw(line, program, coords, { .dest = coords.pixelAlign(dest) });
         y += size.y;
     }
+}
+
+void Hint::setText(const std::string& text) {
+    const auto& coords = m_instance.graphics().coords(m_coords);
+    auto lines = m_font->breakLines(text, coords.size.x);
+    m_lines.clear();
+    for(const auto& line : lines)
+        m_lines.push_back(TextImage::create(m_instance, *m_font, line));
 }
 
 void Hint::resize() {

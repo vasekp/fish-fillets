@@ -38,8 +38,9 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_imgCr(BufferImage::create(instance, {320, 240}, TextureType::channelCr, nullptr)),
     m_imgTime(-1.f),
     m_startTime(0.f),
-    m_hint(instance, help_cs[0], true)
+    m_hint(instance, "", true)
 {
+    m_hint.setText(help_cs[0]);
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)
         Log::fatal("Video expected in 640x480!");
