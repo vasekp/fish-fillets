@@ -7,6 +7,7 @@
 #include "subsystem/audio/audiosource.h"
 #include "api/ogg/video.h"
 #include "baseinput.h"
+#include "game/graphics/hint.h"
 
 class HelpScreen : public GameScreen {
 public:
@@ -33,6 +34,8 @@ private:
     ImageRef m_imgCr;
     float m_imgTime;
     float m_startTime;
+
+    Hint m_hint;
 
     float timeSinceStart();
     void fill_buffers();

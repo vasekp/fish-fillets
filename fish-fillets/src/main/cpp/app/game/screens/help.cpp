@@ -6,6 +6,28 @@
 
 static constexpr std::size_t vBufSize = 5;
 
+static const std::vector<std::string> help_cs{
+    "Pohyb o políčko: potažení prstem",
+    "Více pohybů jedním gestem",
+    "Pokračování ve stejném směru: podržet",
+    "Změna rybky: poklepání",
+    "Poklepání na konkrétní rybku",
+    "Přejetí na dosažitelnou polohu: podržet prst",
+    "Urychlení pohybu: ťuknutí druhým prstem",
+    "Přerušit: ťuknutí během pohybu"
+};
+
+static const std::vector<std::string> help_en{
+    "Single move: finger gesture",
+    "Multiple moves in single gesture",
+    "Continue in same direction: hold",
+    "Change fish: double tap",
+    "Select concrete fish"
+    "Find path to accessible location: tap and hold",
+    "Fast forward: tap with second finger",
+    "Break running motion"
+};
+
 HelpScreen::HelpScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
@@ -15,7 +37,8 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_imgCb(BufferImage::create(instance, {320, 240}, TextureType::channelCb, nullptr)),
     m_imgCr(BufferImage::create(instance, {320, 240}, TextureType::channelCr, nullptr)),
     m_imgTime(-1.f),
-    m_startTime(0.f)
+    m_startTime(0.f),
+    m_hint(instance, help_cs[0], true)
 {
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)
@@ -80,6 +103,7 @@ void HelpScreen::own_draw(DrawTarget& target) {
     target.draw({
         m_imgY->texture(), m_imgCb->texture(), m_imgCr->texture()
     }, program, coords);
+    m_hint.draw(target);
 }
 
 bool HelpScreen::own_pointer(FCoords coords) {
