@@ -115,6 +115,8 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(fillets SHARED ${fillets_sources})
+
+    target_compile_definitions(fillets PRIVATE "FISH_FILLETS_DISABLE_EXIT")
 else()
     add_executable(fillets ${fillets_sources})
 endif()

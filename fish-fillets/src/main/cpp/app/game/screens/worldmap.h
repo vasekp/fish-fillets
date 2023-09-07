@@ -17,6 +17,7 @@ public:
         none,
         loading,
         help,
+        exit,
         options,
         intro,
         credits
