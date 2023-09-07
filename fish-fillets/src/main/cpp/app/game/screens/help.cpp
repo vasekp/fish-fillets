@@ -3,6 +3,7 @@
 #include "subsystem/files.h"
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
+#include "subsystem/persist.h"
 
 static constexpr std::size_t vBufSize = 5;
 
@@ -31,12 +32,12 @@ static const std::array help_cs{
 static const std::array help_en{
     "Single move: finger gesture",
     "Multiple moves in single gesture",
-    "Continue in same direction: hold",
+    "Continue in the same direction: hold",
     "Change fish: double tap",
-    "Select concrete fish",
+    "Select specific fish",
     "Find path to accessible location: tap and hold",
     "Fast forward: tap with second finger",
-    "Break running motion"
+    "Break running motion: tap anywhere"
 };
 
 static_assert(help_cs.size() == files.size());
@@ -83,7 +84,8 @@ void HelpScreen::loadPart(unsigned i) {
     m_vBuffer.clear();
     m_startTime = timeAlive();
     fill_buffers();
-    m_hint.setText(help_cs[i]);
+    auto lang = m_instance.persist().get("subtitles", "cs"s);
+    m_hint.setText(lang == "cs" ? help_cs[i] : help_en[i]);
 }
 
 void HelpScreen::loopVideo() {
