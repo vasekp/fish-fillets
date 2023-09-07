@@ -23,6 +23,7 @@
 		FFB327802AA52DC3008151EC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FFB3277F2AA52DC3008151EC /* Launch Screen.storyboard */; };
 		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
 		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
+		FFB6710A2AAA4A7F00A62CA3 /* help.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB671082AAA4A7F00A62CA3 /* help.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
 		FFD991252AA11D48001D7CCA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD99C9A2AA129E5001D7CCA /* ContentView.swift */; };
@@ -349,6 +350,8 @@
 		FFB327762AA3E84F008151EC /* filter_neon.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = filter_neon.S; sourceTree = "<group>"; };
 		FFB327772AA3E84F008151EC /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = filter_neon_intrinsics.c; sourceTree = "<group>"; };
 		FFB3277F2AA52DC3008151EC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../swift/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		FFB671082AAA4A7F00A62CA3 /* help.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = help.cpp; sourceTree = "<group>"; };
+		FFB671092AAA4A7F00A62CA3 /* help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = help.h; sourceTree = "<group>"; };
 		FFD990C42AA116C0001D7CCA /* fillets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fillets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../../../../Library/Frameworks/MoltenVK.xcframework; sourceTree = "<group>"; };
 		FFD99BD02AA129AB001D7CCA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -1189,6 +1192,8 @@
 		FFD99C0C2AA129AB001D7CCA /* screens */ = {
 			isa = PBXGroup;
 			children = (
+				FFB671082AAA4A7F00A62CA3 /* help.cpp */,
+				FFB671092AAA4A7F00A62CA3 /* help.h */,
 				FFD99C0D2AA129AB001D7CCA /* worldmap.h */,
 				FFD99C0E2AA129AB001D7CCA /* liveclock.h */,
 				FFD99C0F2AA129AB001D7CCA /* credits.cpp */,
@@ -2455,6 +2460,7 @@
 				FFD99CF12AA12ACF001D7CCA /* modelanim.cpp in Sources */,
 				FFD99CF42AA12ACF001D7CCA /* levelrecord.cpp in Sources */,
 				FFD99CF62AA12ACF001D7CCA /* gametree.cpp in Sources */,
+				FFB6710A2AAA4A7F00A62CA3 /* help.cpp in Sources */,
 				FFD99CF92AA12ACF001D7CCA /* lowlevel.cpp in Sources */,
 				FFB327732AA3A237008151EC /* input.cpp in Sources */,
 				FFD99CFB2AA12ACF001D7CCA /* video.cpp in Sources */,
