@@ -23,6 +23,13 @@ IntroScreen::IntroScreen(Instance& instance) :
         Log::fatal("Video expected in 640x480!");
     if(info.pixel_fmt != TH_PF_420)
         Log::fatal("Video expected in 4:2:0 Y'CbCr!");
+}
+
+void IntroScreen::own_start() {
+    m_instance.audio().addSource(m_aBuffer);
+}
+
+void IntroScreen::own_resume() {
     fill_buffers();
 }
 
@@ -54,10 +61,6 @@ void IntroScreen::fill_buffers() {
         }
         Log::verbose<Log::video>("Video frame @ ", frame.time);
     }
-}
-
-void IntroScreen::own_start() {
-    m_instance.audio().addSource(m_aBuffer);
 }
 
 void IntroScreen::own_update() {

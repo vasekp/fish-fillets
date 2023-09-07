@@ -33,7 +33,7 @@ bool DataAudioSource::done() const {
 
 AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
     AudioSource(type),
-    m_head(std::make_unique<Node>()), m_tail(m_head.get()),
+    m_head(std::make_unique<Node>()), m_tail(nullptr),
     m_curNode(m_head.get()), m_curIndex(0),
     m_total(0),
     m_name(std::move(name))
@@ -42,6 +42,8 @@ AudioSourceQueue::AudioSourceQueue(std::string name, AudioType type) :
 void AudioSourceQueue::enqueue(std::vector<float>&& data) {
     m_total += data.size();
     auto* tail = m_tail.load(std::memory_order::acquire);
+    if(!tail)
+        tail = m_head.get();
     tail->next = std::make_unique<Node>();
     tail->next->data = std::move(data);
     m_tail.store(tail->next.get(), std::memory_order::release);
@@ -57,11 +59,12 @@ void AudioSourceQueue::enqueue(std::vector<float>&& data) {
 }
 
 void AudioSourceQueue::mixin(float* output, std::size_t numSamples, float refVolume) {
-    auto* current = m_curNode.load(std::memory_order::acquire);
-    if(!current) {
+    auto* tail = m_tail.load(std::memory_order::acquire);
+    if(!tail) {
         Log::error("AudioSourceQueue: data not ready");
         return;
     }
+    auto* current = m_curNode.load(std::memory_order::acquire);
     const auto& data = current->data;
     float volume = refVolume * m_volume;
     if(m_curIndex + numSamples < data.size()) {
@@ -71,7 +74,7 @@ void AudioSourceQueue::mixin(float* output, std::size_t numSamples, float refVol
         auto countRead = data.size() - m_curIndex;
         for(auto i = 0u; i < countRead; i++)
             output[i] += volume * data[m_curIndex++];
-        if(current == m_tail.load(std::memory_order::relaxed)) {
+        if(current == tail) {
             Log::debug<Log::audio>("Audio data ended.");
             m_curNode.store(nullptr, std::memory_order::release);
         } else {
