@@ -2,6 +2,7 @@
 #include "game/screens/worldmap.h"
 #include "game/screens/credits.h"
 #include "game/screens/intro.h"
+#include "game/screens/help.h"
 #include "game/screens/levelscreen.h"
 #include "game/screens/poster.h"
 
@@ -15,6 +16,9 @@ void ScreenManager::startMode(Mode mode) {
             break;
         case Mode::Intro:
             open<IntroScreen>();
+            return;
+        case Mode::Help:
+            open<HelpScreen>();
             return;
     }
 }

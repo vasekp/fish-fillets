@@ -49,6 +49,7 @@ set(fillets_sources
         "${FILLETS_DIR}/game/screens/worldmap.cpp"
         "${FILLETS_DIR}/game/screens/credits.cpp"
         "${FILLETS_DIR}/game/screens/intro.cpp"
+        "${FILLETS_DIR}/game/screens/help.cpp"
         "${FILLETS_DIR}/game/screens/levelscreen.cpp"
         "${FILLETS_DIR}/game/screens/leveltitle.cpp"
         "${FILLETS_DIR}/game/screens/baseinput.cpp"

@@ -156,7 +156,9 @@ bool WorldMap::own_pointer(FCoords coords) {
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {
                 case Frames::help:
-                    staticFrame(WorldMap::Frames::help, [this]() { m_instance.quit(); });
+                    staticFrame(WorldMap::Frames::help, [this]() {
+                        m_instance.screens().startMode(ScreenManager::Mode::Help);
+                    });
                     return true;
                 case Frames::options:
                     m_instance.screens().options().show();
