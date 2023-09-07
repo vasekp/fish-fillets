@@ -6,10 +6,8 @@
 #include "gamescreen.h"
 #include "subsystem/audio/audiosource.h"
 #include "game/structure/levelrecord.h"
-#include "game/graphics/hint.h"
 #include "pedometer.h"
 #include "baseinput.h"
-#include "liveclock.h"
 
 class WorldMap : public GameScreen {
 public:
@@ -45,8 +43,6 @@ private:
     std::function<void()> m_nextAction;
     bool m_frameShown;
     std::optional<Pedometer> m_pm;
-    std::optional<Hint> m_hint;
-    LiveClock::time_point m_hintHide;
     bool m_showEnding;
 
     void drawMasked(DrawTarget& target, Color maskColor);
