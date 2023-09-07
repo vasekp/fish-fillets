@@ -14,7 +14,8 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_imgY(BufferImage::create(instance, {640, 480}, TextureType::channelY, nullptr)),
     m_imgCb(BufferImage::create(instance, {320, 240}, TextureType::channelCb, nullptr)),
     m_imgCr(BufferImage::create(instance, {320, 240}, TextureType::channelCr, nullptr)),
-    m_imgTime(-1.f)
+    m_imgTime(-1.f),
+    m_startTime(0.f)
 {
     auto& info = m_theora.info();
     if(info.pic_width != 640 || info.pic_height != 480)
@@ -24,9 +25,13 @@ HelpScreen::HelpScreen(Instance& instance) :
     fill_buffers();
 }
 
+float HelpScreen::timeSinceStart() {
+    return timeAlive() - m_startTime;
+}
+
 void HelpScreen::fill_buffers() {
-    if(!m_vBuffer.empty() && !m_theora.done() && m_vBuffer.back().time < timeAlive()) {
-        Log::warn("Video lagging by ", timeAlive() - m_vBuffer.back().time, "s, skipping to next keyframe, ",
+    if(!m_vBuffer.empty() && !m_theora.done() && m_vBuffer.back().time < timeSinceStart()) {
+        Log::warn("Video lagging by ", timeSinceStart() - m_vBuffer.back().time, "s, skipping to next keyframe, ",
             "dropping ", m_vBuffer.size(), " decoded frames");
         m_vBuffer.clear();
         m_theora.skipToKey();
@@ -47,11 +52,15 @@ void HelpScreen::fill_buffers() {
 void HelpScreen::own_start() { }
 
 void HelpScreen::own_update() {
-    while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeAlive())
+    while(m_vBuffer.size() > 1 && m_vBuffer.front().time < timeSinceStart())
         m_vBuffer.pop_front();
-    if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeAlive() && m_theora.done()) {
-        Log::debug<Log::video>("Help ended.");
-        m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+    if(m_vBuffer.size() == 1 && m_vBuffer.front().time < timeSinceStart() && m_theora.done()) {
+        m_demux.reset();
+        m_theora.reset();
+        m_vBuffer.clear();
+        Log::debug<Log::video>("video loop");
+        m_startTime = timeAlive();
+        fill_buffers();
     }
     auto& frame = m_vBuffer.front();
     if(frame.time == m_imgTime)

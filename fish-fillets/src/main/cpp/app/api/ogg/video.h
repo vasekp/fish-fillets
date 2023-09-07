@@ -23,6 +23,7 @@ namespace ogg {
 
         AutoStream& findStream(std::string_view type);
         bool operator>>(AutoStream& target);
+        void reset();
 
     private:
         ll::OggSync m_sync;
@@ -67,6 +68,7 @@ namespace ogg {
         bool operator>>(Frame& frame);
 
         void skipToKey();
+        void reset();
 
     private:
         AutoStream& m_stream;

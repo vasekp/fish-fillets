@@ -32,7 +32,9 @@ private:
     ImageRef m_imgCb;
     ImageRef m_imgCr;
     float m_imgTime;
+    float m_startTime;
 
+    float timeSinceStart();
     void fill_buffers();
 };
 

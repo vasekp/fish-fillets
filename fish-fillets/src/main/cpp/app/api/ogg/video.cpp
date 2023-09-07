@@ -56,6 +56,14 @@ namespace ogg {
         Log::fatal("Stream ", type, " not found");
     }
 
+    void DemuxStream::reset() {
+        auto fill = m_sync.fill;
+        ogg_sync_reset(&m_sync);
+        ogg_sync_wrote(&m_sync, fill);
+        for(auto& [type, stream] : m_streams)
+            ogg_stream_reset(&*stream);
+    }
+
     VorbisDecoder::VorbisDecoder(DemuxStream& source) :
         m_stream(source.findStream("vorbis")),
         m_decoder(init()),
@@ -108,6 +116,11 @@ namespace ogg {
 
     void TheoraDecoder::skipToKey() {
         m_skipping = true;
+    }
+
+    void TheoraDecoder::reset() {
+        m_done = false;
+        m_skipping = false;
     }
 
     bool TheoraDecoder::operator>>(TheoraDecoder::Frame& frame) {
