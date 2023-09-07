@@ -40,6 +40,7 @@ private:
 
     void loopVideo();
     void loadPart(unsigned i);
+    void nextPart();
     float timeSinceStart();
     void fill_buffers();
 };

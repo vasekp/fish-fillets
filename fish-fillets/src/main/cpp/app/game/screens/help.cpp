@@ -136,14 +136,27 @@ void HelpScreen::own_draw(DrawTarget& target) {
 }
 
 bool HelpScreen::own_pointer(FCoords coords) {
-    if(++m_index < files.size())
-        loadPart(m_index);
-    else
-        m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+    nextPart();
     return true;
 }
 
 bool HelpScreen::own_key(Key key) {
-    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
-    return true;
+    switch(key) {
+        case Key::right:
+        case Key::space:
+            nextPart();
+            return true;
+        case Key::exit:
+            m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+            return true;
+        default:
+            return false;
+    }
+}
+
+void HelpScreen::nextPart() {
+    if(++m_index < files.size())
+        loadPart(m_index);
+    else
+        m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
