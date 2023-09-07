@@ -46,6 +46,8 @@ static constexpr const char* fontFilename = "font/FFArrows.ttf";
 static constexpr float buttonSize = 48.f;
 static constexpr float buttonFontSize = 40.f;
 static constexpr Color buttonColor{0x96afff};
+static constexpr auto buttonHighlightTime = 300ms;
+static constexpr auto buttonHighlightAlpha = .5f;
 
 HelpScreen::HelpScreen(Instance& instance) :
     GameScreen(instance),
@@ -60,7 +62,10 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_index(0),
     m_hint(instance, "", true),
     m_buttonFont(decoders::ttf(instance, fontFilename)),
-    m_button(TextImage::create(instance, *m_buttonFont, ">"))
+    m_buttons({
+            Button{TextImage::create(instance, *m_buttonFont, ">"), +1, {}, {}},
+            Button{TextImage::create(instance, *m_buttonFont, "<"), -1, {}, {}}
+    })
 {
     loadPart(0);
 }
@@ -141,15 +146,31 @@ void HelpScreen::own_draw(DrawTarget& target) {
     }, program, coords);
     m_hint.draw(target);
 
-    const auto buttonProgram = m_instance.graphics().shaders().button({ .color = buttonColor.gl() });
-    constexpr auto extent = FCoords{buttonSize, buttonSize};
-    target.draw(m_button, buttonProgram, coords, { .dest = m_buttonPos - extent / 2.f, .area = extent });
+    auto drawButton = [&] (Button& button) {
+        float alpha = 1.f;
+        auto time = liveTime();
+        if(time < button.fadeTime)
+            alpha += (button.fadeTime - time) / buttonHighlightTime * buttonHighlightAlpha;
+        const auto buttonProgram = m_instance.graphics().shaders().button({ .color = buttonColor.gl(alpha) });
+        constexpr auto extent = FCoords{buttonSize, buttonSize};
+        target.draw(button.image, buttonProgram, coords, { .dest = button.pos - extent / 2.f, .area = extent });
+    };
+
+    drawButton(m_buttons[0]);
+    if(m_index > 0)
+        drawButton(m_buttons[1]);
 }
 
 bool HelpScreen::own_pointer(FCoords coords) {
     constexpr auto extent = FCoords{buttonSize, buttonSize};
-    if((coords - m_buttonPos).within(-extent / 2.f, extent / 2.f))
-        nextPart();
+    for(auto& button : m_buttons)
+        if((coords - button.pos).within(-extent / 2.f, extent / 2.f)) {
+            if(button.dir > 0)
+                nextPart();
+            else
+                prevPart();
+            button.fadeTime = liveTime() + buttonHighlightTime;
+        }
     return true;
 }
 
@@ -158,6 +179,9 @@ bool HelpScreen::own_key(Key key) {
         case Key::right:
         case Key::space:
             nextPart();
+            return true;
+        case Key::left:
+            prevPart();
             return true;
         case Key::exit:
             m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
@@ -174,11 +198,20 @@ void HelpScreen::nextPart() {
         m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
 
+void HelpScreen::prevPart() {
+    if(m_index == 0)
+        return;
+    m_index--;
+    loadPart(m_index);
+}
+
 void HelpScreen::own_resize() {
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     m_buttonFont->setSizes(buttonFontSize, 0.f, coords.scale);
 
     const auto& nullCoords = m_instance.graphics().coords(Graphics::CoordSystems::null);
     FCoords cREdge{nullCoords.size.x, nullCoords.size.y / 2.f};
-    m_buttonPos = coords.out2in(cREdge) - FCoords{buttonSize, 0.f};
+    m_buttons[0].pos = coords.out2in(cREdge) - FCoords{buttonSize, 0.f};
+    FCoords cLEdge{0.f, nullCoords.size.y / 2.f};
+    m_buttons[1].pos = coords.out2in(cLEdge) + FCoords{buttonSize, 0.f};
 }

@@ -9,6 +9,7 @@
 #include "baseinput.h"
 #include "subsystem/graphics/image.h"
 #include "game/graphics/hint.h"
+#include "liveclock.h"
 
 class HelpScreen : public GameScreen {
 public:
@@ -39,13 +40,20 @@ private:
     unsigned m_index;
 
     Hint m_hint;
+
+    struct Button{
+        ImageRef image;
+        int dir;
+        FCoords pos;
+        LiveClock::time_point fadeTime;
+    };
     std::unique_ptr<IFont> m_buttonFont;
-    ImageRef m_button;
-    FCoords m_buttonPos;
+    std::array<Button, 2> m_buttons;
 
     void loopVideo();
     void loadPart(unsigned i);
     void nextPart();
+    void prevPart();
     float timeSinceStart();
     void fill_buffers();
 };
