@@ -121,6 +121,9 @@ namespace ogg {
     void TheoraDecoder::reset() {
         m_done = false;
         m_skipping = false;
+        ogg_packet packet;
+        for(int i = 0; i < 3; i++)
+            m_stream >> packet;
     }
 
     bool TheoraDecoder::operator>>(TheoraDecoder::Frame& frame) {
@@ -150,8 +153,9 @@ namespace ogg {
             copy(frame.yData, ycbcr[0]);
             copy(frame.cbData, ycbcr[1]);
             copy(frame.crData, ycbcr[2]);
-        }
-        return true;
+            return true;
+        } else
+            return false;
     }
 
     void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src) {
