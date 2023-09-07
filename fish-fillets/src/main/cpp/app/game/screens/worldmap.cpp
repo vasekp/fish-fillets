@@ -9,6 +9,7 @@ static constexpr int nodeRadius = 9;
 static constexpr int nodeTolerance = 15;
 
 struct MaskColors {
+    static constexpr Color help = 0x008080;
     static constexpr Color exit = 0x008080;
     static constexpr Color options = 0x008000;
     static constexpr Color intro = 0x000080;
@@ -24,7 +25,11 @@ struct ActiveAreas {
 
 static constexpr std::array<ActiveAreas, 5> areas {{
     {{0, 0}, {138, 127}, WorldMap::Frames::intro},
+#ifdef FISH_FILLETS_DISABLE_EXIT
+    {{517, 0}, {640, 130}, WorldMap::Frames::help},
+#else
     {{517, 0}, {640, 130}, WorldMap::Frames::exit},
+#endif
     {{0, 364}, {124, 480}, WorldMap::Frames::credits},
     {{0, 403}, {145, 480}, WorldMap::Frames::credits}, /* a single rectangle would overlap a level */
     {{487, 362}, {640, 480}, WorldMap::Frames::options}
@@ -37,16 +42,25 @@ WorldMap::WorldMap(Instance& instance) :
     m_frameShown(false)
 {
     m_music = m_instance.audio().loadMusic("music/menu.ogg");
+#ifdef FISH_FILLETS_DISABLE_EXIT
+    addImage("images/menu/map_help.png", "background");
+    addImage("images/menu/map_help_lower.png", "masked");
+#else
     addImage("images/menu/map.png", "background");
-    addImage("images/menu/map_mask.png", "mask", TextureType::mask);
     addImage("images/menu/map_lower.png", "masked");
+#endif
+    addImage("images/menu/map_mask.png", "mask", TextureType::mask);
     addImage("images/menu/loading.png", "loading");
     for(int i = 0; i < 5; i++) {
         auto name = "images/menu/n"s + (char)('0' + i) + ".png";
         m_nodeImages.push_back(addImage(name));
     }
 
+#ifdef FISH_FILLETS_DISABLE_EXIT
+    m_maskColors.insert({Frames::help, MaskColors::help});
+#else
     m_maskColors.insert({Frames::exit, MaskColors::exit});
+#endif
     m_maskColors.insert({Frames::options, MaskColors::options});
     m_maskColors.insert({Frames::intro, MaskColors::intro});
     m_maskColors.insert({Frames::credits, MaskColors::credits});
@@ -126,6 +140,7 @@ void WorldMap::own_draw(DrawTarget& target) {
             m_frameShown = true;
             break;
         case Frames::exit:
+        case Frames::help:
         case Frames::intro:
         case Frames::credits:
             drawMasked(target, m_maskColors.at(m_staticFrame));
@@ -141,9 +156,12 @@ bool WorldMap::own_pointer(FCoords coords) {
         if(coords.within(area.from, area.to)) {
             switch(area.frame) {
                 case Frames::exit:
-#ifndef FISH_FILLETS_DISABLE_EXIT
                     staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
-#endif
+                    return true;
+                case Frames::help:
+                    staticFrame(WorldMap::Frames::help, [this]() {
+                        m_instance.screens().startMode(ScreenManager::Mode::Help);
+                    });
                     return true;
                 case Frames::options:
                     m_instance.screens().options().show();
@@ -209,7 +227,7 @@ bool WorldMap::own_key(Key key) {
             m_pm.reset();
             m_instance.screens().announceLevel("");
         } else {
-            staticFrame(WorldMap::Frames::exit, [this]() { m_instance.quit(); });
+            m_instance.quit();
         }
         return true;
     } else

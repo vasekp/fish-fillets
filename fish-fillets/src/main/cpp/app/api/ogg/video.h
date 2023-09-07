@@ -5,41 +5,36 @@
 
 namespace ogg {
 
-    class InterleavedStream;
+    class DemuxStream;
 
     class AutoStream : public ll::OggStream {
     public:
-        AutoStream(InterleavedStream& source, ogg_page&& page);
+        AutoStream(DemuxStream& source, ogg_page&& page);
 
         bool operator>>(ogg_packet& packet);
 
     private:
-        InterleavedStream& m_source;
+        DemuxStream& m_source;
     };
 
-    class InterleavedStream {
+    class DemuxStream {
     public:
-        InterleavedStream(const std::string& data);
+        DemuxStream(const std::string& data, std::size_t numStreams);
 
-        AutoStream& theora() { return m_theora; }
-        AutoStream& vorbis() { return m_vorbis; }
-
+        AutoStream& findStream(std::string_view type);
         bool operator>>(AutoStream& target);
+        void reset();
 
     private:
         ll::OggSync m_sync;
-        AutoStream m_s1, m_s2;
-        AutoStream &m_theora, &m_vorbis;
+        std::vector<std::pair<std::string, std::unique_ptr<AutoStream>>> m_streams;
 
         ogg_page getBOS();
-        AutoStream& pickTheora();
-        AutoStream& pickVorbis();
-        AutoStream& pickStream(std::string_view type);
     };
 
     class VorbisDecoder {
     public:
-        VorbisDecoder(InterleavedStream& source);
+        VorbisDecoder(DemuxStream& source);
 
         const vorbis_info& info() { return m_info; }
         bool done() const { return m_done; }
@@ -65,7 +60,7 @@ namespace ogg {
             float time;
         };
 
-        TheoraDecoder(InterleavedStream& source);
+        TheoraDecoder(DemuxStream& source);
 
         const th_info& info() { return m_info; }
         bool done() const { return m_done; }
@@ -73,6 +68,7 @@ namespace ogg {
         bool operator>>(Frame& frame);
 
         void skipToKey();
+        void reset();
 
     private:
         AutoStream& m_stream;

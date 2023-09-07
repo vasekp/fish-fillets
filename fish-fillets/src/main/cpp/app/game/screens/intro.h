@@ -24,7 +24,7 @@ protected:
 private:
     BaseInput m_input;
 
-    ogg::InterleavedStream m_ogg;
+    ogg::DemuxStream m_demux;
     ogg::VorbisDecoder m_vorbis;
     ogg::TheoraDecoder m_theora;
 

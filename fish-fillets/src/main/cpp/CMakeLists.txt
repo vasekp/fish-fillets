@@ -49,6 +49,7 @@ set(fillets_sources
         "${FILLETS_DIR}/game/screens/worldmap.cpp"
         "${FILLETS_DIR}/game/screens/credits.cpp"
         "${FILLETS_DIR}/game/screens/intro.cpp"
+        "${FILLETS_DIR}/game/screens/help.cpp"
         "${FILLETS_DIR}/game/screens/levelscreen.cpp"
         "${FILLETS_DIR}/game/screens/leveltitle.cpp"
         "${FILLETS_DIR}/game/screens/baseinput.cpp"
@@ -114,6 +115,8 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(fillets SHARED ${fillets_sources})
+
+    target_compile_definitions(fillets PRIVATE "FISH_FILLETS_DISABLE_EXIT")
 else()
     add_executable(fillets ${fillets_sources})
 endif()

@@ -23,6 +23,7 @@ public:
     enum class Mode {
         WorldMap,
         Intro,
+        Help,
         Credits
     };
 

@@ -2,7 +2,7 @@
 
 namespace ogg {
 
-    AutoStream::AutoStream(InterleavedStream& source, ogg_page&& page) :
+    AutoStream::AutoStream(DemuxStream& source, ogg_page&& page) :
             ll::OggStream(page),
             m_source(source)
         { }
@@ -19,23 +19,29 @@ namespace ogg {
             Log::fatal("Stream lost sync.");
     }
 
-    InterleavedStream::InterleavedStream(const std::string& data) :
-        m_sync(data),
-        m_s1(*this, getBOS()), m_s2(*this, getBOS()),
-        m_theora(pickTheora()), m_vorbis(pickVorbis())
-    { }
+    DemuxStream::DemuxStream(const std::string& data, std::size_t numStreams) :
+        m_sync(data)
+    {
+        for(auto i = 0u; i < numStreams; i++) {
+            auto stream = std::make_unique<AutoStream>(*this, getBOS());
+            ogg_packet packet;
+            ogg_stream_packetpeek(&*stream, &packet);
+            std::string type((char*)packet.packet + 1, 6);
+            m_streams.emplace_back(std::move(type), std::move(stream));
+        }
+    }
 
-    bool InterleavedStream::operator>>(AutoStream& target) {
+    bool DemuxStream::operator>>(AutoStream& target) {
         ogg_page page;
         while(m_sync >> page) {
-            for(auto* stream : {&m_s1, &m_s2})
-                if(*stream << page && stream == &target)
+            for(auto& [type, stream] : m_streams)
+                if(*stream << page && stream.get() == &target)
                     return true;
         }
         return false;
     }
 
-    ogg_page InterleavedStream::getBOS() {
+    ogg_page DemuxStream::getBOS() {
         ogg_page page;
         m_sync >> page;
         if(!ogg_page_bos(&page))
@@ -43,29 +49,23 @@ namespace ogg {
         return page;
     }
 
-    AutoStream& InterleavedStream::pickStream(std::string_view type) {
-        ogg_packet packet;
-        ogg_stream_packetpeek(&m_s1, &packet);
-        std::string_view type1((char*)packet.packet + 1, 6);
-        if(type1 == type)
-            return m_s1;
-        ogg_stream_packetpeek(&m_s2, &packet);
-        std::string_view type2((char*)packet.packet + 1, 6);
-        if(type2 == type)
-            return m_s2;
+    AutoStream& DemuxStream::findStream(std::string_view type) {
+        for(auto& [type1, stream] : m_streams)
+            if(type1 == type)
+                return *stream;
         Log::fatal("Stream ", type, " not found");
     }
 
-    AutoStream& InterleavedStream::pickTheora() {
-        return pickStream("theora");
+    void DemuxStream::reset() {
+        auto fill = m_sync.fill;
+        ogg_sync_reset(&m_sync);
+        ogg_sync_wrote(&m_sync, fill);
+        for(auto& [type, stream] : m_streams)
+            ogg_stream_reset(&*stream);
     }
 
-    AutoStream& InterleavedStream::pickVorbis() {
-        return pickStream("vorbis");
-    }
-
-    VorbisDecoder::VorbisDecoder(InterleavedStream& source) :
-        m_stream(source.vorbis()),
+    VorbisDecoder::VorbisDecoder(DemuxStream& source) :
+        m_stream(source.findStream("vorbis")),
         m_decoder(init()),
         m_done(false)
     {
@@ -94,8 +94,8 @@ namespace ogg {
         return &m_info;
     }
 
-    TheoraDecoder::TheoraDecoder(InterleavedStream& source) :
-        m_stream(source.theora()),
+    TheoraDecoder::TheoraDecoder(DemuxStream& source) :
+        m_stream(source.findStream("theora")),
         m_done(false),
         m_skipping(false)
     {
@@ -116,6 +116,14 @@ namespace ogg {
 
     void TheoraDecoder::skipToKey() {
         m_skipping = true;
+    }
+
+    void TheoraDecoder::reset() {
+        m_done = false;
+        m_skipping = false;
+        ogg_packet packet;
+        for(int i = 0; i < 3; i++)
+            m_stream >> packet;
     }
 
     bool TheoraDecoder::operator>>(TheoraDecoder::Frame& frame) {
@@ -145,8 +153,9 @@ namespace ogg {
             copy(frame.yData, ycbcr[0]);
             copy(frame.cbData, ycbcr[1]);
             copy(frame.crData, ycbcr[2]);
-        }
-        return true;
+            return true;
+        } else
+            return false;
     }
 
     void TheoraDecoder::copy(std::unique_ptr<std::uint8_t[]>& dst, th_img_plane& src) {
