@@ -9,9 +9,9 @@ static constexpr std::size_t vBufSize = 5;
 IntroScreen::IntroScreen(Instance& instance) :
     GameScreen(instance),
     m_input(instance, *this),
-    m_ogg(instance.files().system("video/intro.ogv")->read()),
-    m_vorbis(m_ogg),
-    m_theora(m_ogg),
+    m_demux(instance.files().system("video/intro.ogv")->read(), 2),
+    m_vorbis(m_demux),
+    m_theora(m_demux),
     m_aBuffer(std::make_shared<AudioSourceQueue>("intro audio", AudioType::music)),
     m_imgY(BufferImage::create(instance, {640, 480}, TextureType::channelY, nullptr)),
     m_imgCb(BufferImage::create(instance, {320, 240}, TextureType::channelCb, nullptr)),
