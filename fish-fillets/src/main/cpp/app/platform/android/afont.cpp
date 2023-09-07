@@ -7,7 +7,7 @@
 AndroidFont::AndroidFont(Instance& instance, const std::string& filename) :
     IFont(instance)
 {
-    m_filename = dynamic_cast<SystemFile&>(*instance.files().system(filename)).path();
+    m_filename = instance.files().system(filename)->relPath();
 }
 
 void AndroidFont::own_setSizes() { }

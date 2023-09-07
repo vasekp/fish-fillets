@@ -1,19 +1,19 @@
-#include "system.h"
+#include "assetfile.h"
 
-SystemFile::SystemFile(const std::string& path, AAssetManager* assets) :
+AssetFile::AssetFile(const std::string& path, AAssetManager* assets) :
         m_assets(assets),
         m_path(path)
 { }
 
-bool SystemFile::exists() const {
+bool AssetFile::exists() const {
     return exists(m_path);
 }
 
-bool SystemFile::exists(const std::filesystem::path& path) const {
+bool AssetFile::exists(const std::filesystem::path& path) const {
     return (bool) ndk::Asset{m_assets, path.c_str(), AASSET_MODE_UNKNOWN};
 }
 
-std::string SystemFile::read() const {
+std::string AssetFile::read() const {
     ndk::Asset asset{m_assets, m_path.c_str(), AASSET_MODE_BUFFER};
     if(!asset)
         Log::fatal("System file not found: ", m_path);
@@ -23,10 +23,14 @@ std::string SystemFile::read() const {
     return ret;
 }
 
-bool SystemFile::write(const std::string& data) const {
+bool AssetFile::write(const std::string& data) const {
     Log::fatal("Attempt to write to system file.");
 }
 
-ndk::Asset SystemFile::asset(int mode) const {
+std::string AssetFile::fullPath() const {
+    throw std::logic_error("AssetFile::fullPath unimplemented");
+}
+
+ndk::Asset AssetFile::asset(int mode) const {
     return ndk::Asset{m_assets, m_path.c_str(), mode};
 }

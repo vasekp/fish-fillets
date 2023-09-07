@@ -1,6 +1,5 @@
-#include "ft-font.h"
+#include "ttf-freetype.h"
 #include "subsystem/files.h"
-#include "files.h"
 #include <codecvt>
 
 static FT_F26Dot6 to266(float x) {
@@ -19,7 +18,7 @@ FTFont::FTFont(Instance& instance, const std::string& filename) :
     IFont(instance),
     m_stroker()
 {
-    auto fnFull = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath(); // TODO
+    auto fnFull = instance.files().system(filename)->fullPath();
     if(FT_Init_FreeType(&m_ft) != 0)
         Log::fatal("Can't initiate FreeType.");
 

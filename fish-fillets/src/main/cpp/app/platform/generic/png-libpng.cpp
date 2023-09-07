@@ -1,14 +1,13 @@
 #include "common.h"
 #include "subsystem/graphics/imagedata.h"
 #include "subsystem/files.h"
-#include "files.h"
 #include <png.h>
 #include <cstdio>
 #include <csetjmp>
 
 namespace decoders {
     ImageData png(Instance& instance, const std::string& filename) {
-        auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
+        auto path = instance.files().system(filename)->fullPath();
         std::array<png_byte, 8> header;
 
         std::FILE* fp = fopen(path.c_str(), "rb");

@@ -1,9 +1,8 @@
 #ifndef FF_IOS_FILES_H
 #define FF_IOS_FILES_H
 
+#include "common.h"
 #include "subsystem/files.h"
-#include "./files/system.h"
-#include "./files/user.h"
 
 class IOSFiles : public IFiles {
     std::filesystem::path m_docs;

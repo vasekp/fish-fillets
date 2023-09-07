@@ -3,8 +3,6 @@
 
 #include "common.h"
 #include "subsystem/files.h"
-#include "files/system.h"
-#include "files/user.h"
 
 class LinuxFiles : public IFiles {
 public:

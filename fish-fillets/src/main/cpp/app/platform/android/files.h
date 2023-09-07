@@ -3,8 +3,7 @@
 
 #include "common.h"
 #include "subsystem/files.h"
-#include "files/system.h"
-#include "files/user.h"
+#include <android_native_app_glue.h>
 
 class AndroidFiles : public IFiles {
 public:

@@ -1,10 +1,10 @@
-#include "subsystem/files.h"
 #include "files.h"
+#include "platform/generic/fs-file.h"
 
 std::unique_ptr<IFile> LinuxFiles::system(const std::string& path) {
-    return std::make_unique<SystemFile>(path, "/home/vasek/prog/android/fish-fillets/fish-fillets/src/main/assets/"); // TODO
+    return std::make_unique<FilesystemFile>(path, "/home/vasek/prog/android/fish-fillets/fish-fillets/src/main/assets/"); // TODO
 }
 
 std::unique_ptr<IFile> LinuxFiles::user(const std::string& path) {
-    return std::make_unique<UserFile>(path, ""); // TODO
+    return std::make_unique<FilesystemFile>(path, ""); // TODO
 }

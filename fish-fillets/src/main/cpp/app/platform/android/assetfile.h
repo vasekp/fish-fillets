@@ -1,25 +1,25 @@
-#ifndef FISH_FILLETS_FILES_SYSTEM_H
-#define FISH_FILLETS_FILES_SYSTEM_H
+#ifndef FISH_FILLETS_ASSETFILE_H
+#define FISH_FILLETS_ASSETFILE_H
 
-#include <android_native_app_glue.h>
 #include "api/ndk.h"
 #include "subsystem/files.h"
 
-class SystemFile : public IFile {
+class AssetFile : public IFile {
     AAssetManager* m_assets;
     std::filesystem::path m_path;
 
 public:
-    SystemFile(const std::string& path, AAssetManager* assets);
+    AssetFile(const std::string& path, AAssetManager* assets);
 
-    std::string path() const { return m_path; }
     bool exists() const override;
     std::string read() const override;
     bool write(const std::string& data) const override;
+    std::string relPath() const override { return m_path; }
+    std::string fullPath() const override;
     ndk::Asset asset(int mode = AASSET_MODE_UNKNOWN) const;
 
 private:
     bool exists(const std::filesystem::path& path) const;
 };
 
-#endif //FISH_FILLETS_FILES_SYSTEM_H
+#endif //FISH_FILLETS_ASSETFILE_H

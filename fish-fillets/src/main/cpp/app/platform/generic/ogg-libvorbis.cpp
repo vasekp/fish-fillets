@@ -1,6 +1,5 @@
 #include "subsystem/audio/audiodata.h"
 #include "subsystem/files.h"
-#include "files.h"
 #include <cstdio>
 #include <cstring>
 #include <vorbis/codec.h>
@@ -21,7 +20,7 @@ namespace decoders {
 }
 
 static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename) {
-    auto path = dynamic_cast<SystemFile&>(*instance.files().system(filename)).fullPath();
+    auto path = instance.files().system(filename)->fullPath();
     OggVorbis_File vf;
     bool doubleSample;
     std::size_t numSamples;

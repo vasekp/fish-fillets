@@ -1,6 +1,6 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio/audiodata.h"
-#include "files.h"
+#include "assetfile.h"
 #include "ainstance.h"
 #include <thread>
 
@@ -11,7 +11,7 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
 
 namespace decoders {
     ImageData png(Instance& instance, const std::string& filename0) {
-        auto filename = dynamic_cast<SystemFile&>(*instance.files().system(filename0)).path();
+        auto filename = instance.files().system(filename0)->relPath();
         Log::debug<Log::graphics>("Load PNG ", filename);
         auto& jni = dynamic_cast<AndroidInstance&>(instance).jni;
         jstring jPath = jni->NewStringUTF(filename.c_str());
@@ -48,7 +48,7 @@ namespace decoders {
 
 static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& filename) {
     auto file = instance.files().system(filename);
-    auto asset = dynamic_cast<SystemFile&>(*file).asset();
+    auto asset = dynamic_cast<AssetFile&>(*file).asset();
 
     off64_t start, length;
     bool doubleSample;

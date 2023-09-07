@@ -24,6 +24,10 @@
 		FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB02AA2A067001D7CCA /* glue.cpp */; };
 		FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */; };
 		FFB6710A2AAA4A7F00A62CA3 /* help.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB671082AAA4A7F00A62CA3 /* help.cpp */; };
+		FFB671122AAA654A00A62CA3 /* fs-file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB6710C2AAA654A00A62CA3 /* fs-file.cpp */; };
+		FFB671132AAA654A00A62CA3 /* ogg-libvorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB6710E2AAA654A00A62CA3 /* ogg-libvorbis.cpp */; };
+		FFB671142AAA654A00A62CA3 /* png-libpng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB671102AAA654A00A62CA3 /* png-libpng.cpp */; };
+		FFB671152AAA654A00A62CA3 /* ttf-freetype.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFB671112AAA654A00A62CA3 /* ttf-freetype.cpp */; };
 		FFD991242AA11D48001D7CCA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; };
 		FFD991252AA11D48001D7CCA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD99C9A2AA129E5001D7CCA /* ContentView.swift */; };
@@ -169,10 +173,6 @@
 		FFD9ADAD2AA13631001D7CCA /* huffdec.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AD6C2AA13631001D7CCA /* huffdec.c */; };
 		FFD9ADB72AA13D18001D7CCA /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADAF2AA13D18001D7CCA /* log.cpp */; };
 		FFD9ADB82AA13D18001D7CCA /* files.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADB02AA13D18001D7CCA /* files.cpp */; };
-		FFD9ADB92AA13D18001D7CCA /* system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADB32AA13D18001D7CCA /* system.cpp */; };
-		FFD9ADBA2AA13D18001D7CCA /* user.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADB42AA13D18001D7CCA /* user.cpp */; };
-		FFD9ADBD2AA13D82001D7CCA /* loadogg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADBB2AA13D82001D7CCA /* loadogg.cpp */; };
-		FFD9ADBE2AA13D82001D7CCA /* loadpng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADBC2AA13D82001D7CCA /* loadpng.cpp */; };
 		FFD9AE042AA13F3F001D7CCA /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADF42AA13F3D001D7CCA /* png.c */; };
 		FFD9AE052AA13F3F001D7CCA /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADF52AA13F3D001D7CCA /* pngwio.c */; };
 		FFD9AE062AA13F3F001D7CCA /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9ADF62AA13F3D001D7CCA /* pngrtran.c */; };
@@ -189,7 +189,6 @@
 		FFD9AE122AA13F40001D7CCA /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AE022AA13F3F001D7CCA /* pngwutil.c */; };
 		FFD9AE132AA13F40001D7CCA /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AE032AA13F3F001D7CCA /* pngpread.c */; };
 		FFD9AE162AA13F74001D7CCA /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFD9ADC32AA13E57001D7CCA /* libpng.a */; };
-		FFD9AE192AA142CD001D7CCA /* ft-font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AE182AA142CD001D7CCA /* ft-font.cpp */; };
 		FFD9AF932AA2887C001D7CCA /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AEC82AA287E2001D7CCA /* ftbase.c */; };
 		FFD9AF942AA288B6001D7CCA /* basepic.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AEC92AA287E2001D7CCA /* basepic.c */; };
 		FFD9AF952AA288D0001D7CCA /* ftapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FFD9AEC62AA287E2001D7CCA /* ftapi.c */; };
@@ -352,6 +351,12 @@
 		FFB3277F2AA52DC3008151EC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../swift/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		FFB671082AAA4A7F00A62CA3 /* help.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = help.cpp; sourceTree = "<group>"; };
 		FFB671092AAA4A7F00A62CA3 /* help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = help.h; sourceTree = "<group>"; };
+		FFB6710C2AAA654A00A62CA3 /* fs-file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "fs-file.cpp"; sourceTree = "<group>"; };
+		FFB6710D2AAA654A00A62CA3 /* ttf-freetype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ttf-freetype.h"; sourceTree = "<group>"; };
+		FFB6710E2AAA654A00A62CA3 /* ogg-libvorbis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ogg-libvorbis.cpp"; sourceTree = "<group>"; };
+		FFB6710F2AAA654A00A62CA3 /* fs-file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "fs-file.h"; sourceTree = "<group>"; };
+		FFB671102AAA654A00A62CA3 /* png-libpng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "png-libpng.cpp"; sourceTree = "<group>"; };
+		FFB671112AAA654A00A62CA3 /* ttf-freetype.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ttf-freetype.cpp"; sourceTree = "<group>"; };
 		FFD990C42AA116C0001D7CCA /* fillets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fillets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD991232AA11D47001D7CCA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../../../../Library/Frameworks/MoltenVK.xcframework; sourceTree = "<group>"; };
 		FFD99BD02AA129AB001D7CCA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -700,13 +705,7 @@
 		FFD9AD6E2AA13631001D7CCA /* dequant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dequant.h; sourceTree = "<group>"; };
 		FFD9ADAF2AA13D18001D7CCA /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
 		FFD9ADB02AA13D18001D7CCA /* files.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = files.cpp; sourceTree = "<group>"; };
-		FFD9ADB22AA13D18001D7CCA /* user.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = user.h; sourceTree = "<group>"; };
-		FFD9ADB32AA13D18001D7CCA /* system.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = system.cpp; sourceTree = "<group>"; };
-		FFD9ADB42AA13D18001D7CCA /* user.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = user.cpp; sourceTree = "<group>"; };
-		FFD9ADB52AA13D18001D7CCA /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
 		FFD9ADB62AA13D18001D7CCA /* files.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = files.h; sourceTree = "<group>"; };
-		FFD9ADBB2AA13D82001D7CCA /* loadogg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadogg.cpp; sourceTree = "<group>"; };
-		FFD9ADBC2AA13D82001D7CCA /* loadpng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadpng.cpp; sourceTree = "<group>"; };
 		FFD9ADC32AA13E57001D7CCA /* libpng.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpng.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD9ADF42AA13F3D001D7CCA /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = deps/png/png.c; sourceTree = SOURCE_ROOT; };
 		FFD9ADF52AA13F3D001D7CCA /* pngwio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwio.c; path = deps/png/pngwio.c; sourceTree = SOURCE_ROOT; };
@@ -723,8 +722,6 @@
 		FFD9AE012AA13F3F001D7CCA /* pngerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngerror.c; path = deps/png/pngerror.c; sourceTree = SOURCE_ROOT; };
 		FFD9AE022AA13F3F001D7CCA /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwutil.c; path = deps/png/pngwutil.c; sourceTree = SOURCE_ROOT; };
 		FFD9AE032AA13F3F001D7CCA /* pngpread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngpread.c; path = deps/png/pngpread.c; sourceTree = SOURCE_ROOT; };
-		FFD9AE172AA142CD001D7CCA /* ft-font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ft-font.h"; sourceTree = "<group>"; };
-		FFD9AE182AA142CD001D7CCA /* ft-font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ft-font.cpp"; sourceTree = "<group>"; };
 		FFD9AE1E2AA287A1001D7CCA /* libfreetype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfreetype.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFD9AE2B2AA287E1001D7CCA /* sfobjs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sfobjs.c; sourceTree = "<group>"; };
 		FFD9AE2C2AA287E1001D7CCA /* ttcmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttcmap.h; sourceTree = "<group>"; };
@@ -1112,6 +1109,19 @@
 			path = deps/png/arm;
 			sourceTree = SOURCE_ROOT;
 		};
+		FFB6710B2AAA654A00A62CA3 /* generic */ = {
+			isa = PBXGroup;
+			children = (
+				FFB6710C2AAA654A00A62CA3 /* fs-file.cpp */,
+				FFB6710D2AAA654A00A62CA3 /* ttf-freetype.h */,
+				FFB6710E2AAA654A00A62CA3 /* ogg-libvorbis.cpp */,
+				FFB6710F2AAA654A00A62CA3 /* fs-file.h */,
+				FFB671102AAA654A00A62CA3 /* png-libpng.cpp */,
+				FFB671112AAA654A00A62CA3 /* ttf-freetype.cpp */,
+			);
+			path = generic;
+			sourceTree = "<group>";
+		};
 		FFD99BCE2AA1294E001D7CCA /* Fillets */ = {
 			isa = PBXGroup;
 			children = (
@@ -1144,6 +1154,7 @@
 		FFD99BD12AA129AB001D7CCA /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				FFB6710B2AAA654A00A62CA3 /* generic */,
 				FFD9ADAE2AA13D17001D7CCA /* ios */,
 			);
 			path = platform;
@@ -1784,27 +1795,11 @@
 				FFD9AFAF2AA2A067001D7CCA /* glue.h */,
 				FFD9AFB12AA2A068001D7CCA /* iosinstance.cpp */,
 				FFD9AFB22AA2A068001D7CCA /* iosinstance.h */,
-				FFD9AE182AA142CD001D7CCA /* ft-font.cpp */,
-				FFD9AE172AA142CD001D7CCA /* ft-font.h */,
-				FFD9ADBB2AA13D82001D7CCA /* loadogg.cpp */,
-				FFD9ADBC2AA13D82001D7CCA /* loadpng.cpp */,
 				FFD9ADAF2AA13D18001D7CCA /* log.cpp */,
 				FFD9ADB02AA13D18001D7CCA /* files.cpp */,
-				FFD9ADB12AA13D18001D7CCA /* files */,
 				FFD9ADB62AA13D18001D7CCA /* files.h */,
 			);
 			path = ios;
-			sourceTree = "<group>";
-		};
-		FFD9ADB12AA13D18001D7CCA /* files */ = {
-			isa = PBXGroup;
-			children = (
-				FFD9ADB22AA13D18001D7CCA /* user.h */,
-				FFD9ADB32AA13D18001D7CCA /* system.cpp */,
-				FFD9ADB42AA13D18001D7CCA /* user.cpp */,
-				FFD9ADB52AA13D18001D7CCA /* system.h */,
-			);
-			path = files;
 			sourceTree = "<group>";
 		};
 		FFD9ADC42AA13E58001D7CCA /* png */ = {
@@ -2429,21 +2424,20 @@
 				FFB3FC452AA2AB8E008151EC /* glue.cpp in Sources */,
 				FFB3FC462AA2AB8E008151EC /* iosinstance.cpp in Sources */,
 				FFD9AFAD2AA28E48001D7CCA /* display_metal.cpp in Sources */,
-				FFD9ADBA2AA13D18001D7CCA /* user.cpp in Sources */,
 				FFD99C9C2AA12ACF001D7CCA /* ContentView.swift in Sources */,
 				FFD99C9D2AA12ACF001D7CCA /* filletsApp.swift in Sources */,
-				FFD9ADBD2AA13D82001D7CCA /* loadogg.cpp in Sources */,
 				FFD99CC52AA12ACF001D7CCA /* level.cpp in Sources */,
 				FFD99CC62AA12ACF001D7CCA /* timer.cpp in Sources */,
+				FFB671142AAA654A00A62CA3 /* png-libpng.cpp in Sources */,
 				FFD99CC72AA12ACF001D7CCA /* layout.cpp in Sources */,
 				FFD99CCB2AA12ACF001D7CCA /* interface.cpp in Sources */,
 				FFD99CCD2AA12ACF001D7CCA /* shape.cpp in Sources */,
+				FFB671122AAA654A00A62CA3 /* fs-file.cpp in Sources */,
 				FFD99CCF2AA12ACF001D7CCA /* model.cpp in Sources */,
 				FFD99CD02AA12ACF001D7CCA /* rules.cpp in Sources */,
 				FFD99CD42AA12ACF001D7CCA /* credits.cpp in Sources */,
 				FFD99CD52AA12ACF001D7CCA /* levelinput.cpp in Sources */,
 				FFD99CD62AA12ACF001D7CCA /* worldmap.cpp in Sources */,
-				FFD9AE192AA142CD001D7CCA /* ft-font.cpp in Sources */,
 				FFD99CD72AA12ACF001D7CCA /* screenmanager.cpp in Sources */,
 				FFD99CD92AA12ACF001D7CCA /* gamescreen.cpp in Sources */,
 				FFD99CDB2AA12ACF001D7CCA /* options.cpp in Sources */,
@@ -2460,18 +2454,18 @@
 				FFD99CF12AA12ACF001D7CCA /* modelanim.cpp in Sources */,
 				FFD99CF42AA12ACF001D7CCA /* levelrecord.cpp in Sources */,
 				FFD99CF62AA12ACF001D7CCA /* gametree.cpp in Sources */,
+				FFB671132AAA654A00A62CA3 /* ogg-libvorbis.cpp in Sources */,
 				FFB6710A2AAA4A7F00A62CA3 /* help.cpp in Sources */,
 				FFD99CF92AA12ACF001D7CCA /* lowlevel.cpp in Sources */,
 				FFB327732AA3A237008151EC /* input.cpp in Sources */,
 				FFD99CFB2AA12ACF001D7CCA /* video.cpp in Sources */,
 				FFD99D0C2AA12ACF001D7CCA /* program.cpp in Sources */,
-				FFD9ADBE2AA13D82001D7CCA /* loadpng.cpp in Sources */,
 				FFD99D0E2AA12ACF001D7CCA /* framebuffer.cpp in Sources */,
+				FFB671152AAA654A00A62CA3 /* ttf-freetype.cpp in Sources */,
 				FFD99D0F2AA12ACF001D7CCA /* texture.cpp in Sources */,
 				FFD99D102AA12ACF001D7CCA /* descriptorpool.cpp in Sources */,
 				FFD99D122AA12ACF001D7CCA /* display.cpp in Sources */,
 				FFD9ADB72AA13D18001D7CCA /* log.cpp in Sources */,
-				FFD9ADB92AA13D18001D7CCA /* system.cpp in Sources */,
 				FFD99D1C2AA12ACF001D7CCA /* persist.cpp in Sources */,
 				FFD99D202AA12ACF001D7CCA /* key.cpp in Sources */,
 				FFD99D212AA12ACF001D7CCA /* script.cpp in Sources */,

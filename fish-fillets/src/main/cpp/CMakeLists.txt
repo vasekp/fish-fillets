@@ -82,8 +82,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
             "${FILLETS_DIR}/platform/android/ainstance.cpp"
             "${FILLETS_DIR}/platform/android/decoders.cpp"
             "${FILLETS_DIR}/platform/android/files.cpp"
-            "${FILLETS_DIR}/platform/android/files/system.cpp"
-            "${FILLETS_DIR}/platform/android/files/user.cpp"
+            "${FILLETS_DIR}/platform/generic/fs-file.cpp"
+            "${FILLETS_DIR}/platform/android/assetfile.cpp"
             "${FILLETS_DIR}/platform/android/input.cpp"
             "${FILLETS_DIR}/platform/android/log.cpp"
             "${FILLETS_DIR}/platform/android/main.cpp"
@@ -93,15 +93,14 @@ else()
     list(APPEND fillets_sources
             "${FILLETS_DIR}/platform/linux/alsasink.cpp"
             "${FILLETS_DIR}/platform/linux/files.cpp"
-            "${FILLETS_DIR}/platform/linux/files/system.cpp"
-            "${FILLETS_DIR}/platform/linux/files/user.cpp"
-            "${FILLETS_DIR}/platform/linux/ft-font.cpp"
             "${FILLETS_DIR}/platform/linux/xinput.cpp"
-            "${FILLETS_DIR}/platform/linux/loadogg.cpp"
-            "${FILLETS_DIR}/platform/linux/loadpng.cpp"
             "${FILLETS_DIR}/platform/linux/log.cpp"
             "${FILLETS_DIR}/platform/linux/main.cpp"
-            "${FILLETS_DIR}/platform/linux/xinstance.cpp")
+            "${FILLETS_DIR}/platform/linux/xinstance.cpp"
+            "${FILLETS_DIR}/platform/generic/fs-file.cpp"
+            "${FILLETS_DIR}/platform/generic/ttf-freetype.cpp"
+            "${FILLETS_DIR}/platform/generic/ogg-libvorbis.cpp"
+            "${FILLETS_DIR}/platform/generic/png-libpng.cpp")
 
     list(APPEND fillets_sources_vulkan
             "${FILLETS_DIR}/api/vulkan/display_xlib.cpp")

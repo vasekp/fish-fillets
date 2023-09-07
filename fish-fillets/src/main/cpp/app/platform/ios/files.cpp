@@ -1,4 +1,5 @@
-#include "./files.h"
+#include "files.h"
+#include "platform/generic/fs-file.h"
 #include <CoreFoundation/CFBundle.h>
 
 IOSFiles::IOSFiles() {
@@ -12,9 +13,9 @@ IOSFiles::IOSFiles() {
 }
 
 std::unique_ptr<IFile> IOSFiles::system(const std::string& path) {
-    return std::make_unique<SystemFile>(path, m_bundle);
+    return std::make_unique<FilesystemFile>(path, m_bundle);
 }
 
 std::unique_ptr<IFile> IOSFiles::user(const std::string& path) {
-    return std::make_unique<UserFile>(path, m_docs);
+    return std::make_unique<FilesystemFile>(path, m_docs);
 }
