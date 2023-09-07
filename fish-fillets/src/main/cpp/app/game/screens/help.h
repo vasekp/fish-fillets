@@ -25,8 +25,8 @@ protected:
 private:
     BaseInput m_input;
 
-    ogg::DemuxStream m_demux;
-    ogg::TheoraDecoder m_theora;
+    std::optional<ogg::DemuxStream> m_demux;
+    std::optional<ogg::TheoraDecoder> m_theora;
     std::deque<ogg::TheoraDecoder::Frame> m_vBuffer;
 
     ImageRef m_imgY;
@@ -34,9 +34,12 @@ private:
     ImageRef m_imgCr;
     float m_imgTime;
     float m_startTime;
+    unsigned m_index;
 
     Hint m_hint;
 
+    void loopVideo();
+    void loadPart(unsigned i);
     float timeSinceStart();
     void fill_buffers();
 };
