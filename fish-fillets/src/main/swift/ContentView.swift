@@ -1,6 +1,4 @@
 import SwiftUI
-
-import SwiftUI
 import AVFAudio
 
 struct ContentView: UIViewControllerRepresentable {

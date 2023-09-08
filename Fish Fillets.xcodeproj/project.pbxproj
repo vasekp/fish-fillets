@@ -1500,7 +1500,7 @@
 				FFD9AC0B2AA1307F001D7CCA /* lzio.h */,
 			);
 			name = lua;
-			path = ../../../../lua;
+			path = deps/lua;
 			sourceTree = "<group>";
 		};
 		FFD9AC352AA132E4001D7CCA /* ogg */ = {
@@ -1510,7 +1510,7 @@
 				FFD9AC542AA13344001D7CCA /* src */,
 			);
 			name = ogg;
-			path = ../../../../ogg;
+			path = deps/ogg;
 			sourceTree = "<group>";
 		};
 		FFD9AC4D2AA13344001D7CCA /* include */ = {
@@ -1553,7 +1553,7 @@
 				FFD9AC832AA13587001D7CCA /* lib */,
 			);
 			name = vorbis;
-			path = ../../../../vorbis;
+			path = deps/vorbis;
 			sourceTree = "<group>";
 		};
 		FFD9AC722AA13552001D7CCA /* theora */ = {
@@ -1563,7 +1563,7 @@
 				FFD9ACF92AA1361C001D7CCA /* include */,
 			);
 			name = theora;
-			path = ../../../../theora;
+			path = deps/theora;
 			sourceTree = "<group>";
 		};
 		FFD9AC7C2AA13587001D7CCA /* include */ = {
@@ -1823,7 +1823,7 @@
 				FFD9AE022AA13F3F001D7CCA /* pngwutil.c */,
 			);
 			name = png;
-			path = ../../../../png;
+			path = deps/png;
 			sourceTree = "<group>";
 		};
 		FFD9AE1F2AA287A1001D7CCA /* freetype */ = {
@@ -1833,7 +1833,7 @@
 				FFD9AE292AA287E1001D7CCA /* src */,
 			);
 			name = freetype;
-			path = ../../../../freetype;
+			path = deps/freetype2-ios;
 			sourceTree = "<group>";
 		};
 		FFD9AE292AA287E1001D7CCA /* src */ = {
@@ -2383,7 +2383,7 @@
 				English,
 			);
 			mainGroup = EDDC36905D464C7DAD48D69F;
-			projectDirPath = "/Users/vasek/prog/fish-fillets/fish-fillets/src/main/cpp";
+			projectDirPath = "fish-fillets/src/main/cpp";
 			projectRoot = "";
 			targets = (
 				FFD990C32AA116C0001D7CCA /* fillets */,
@@ -2699,11 +2699,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk;
+				ONLY_ACTIVE_ARCH = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "/Users/vasek/prog/fish-fillets/build";
 			};
 			name = Release;
 		};
@@ -2711,10 +2708,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk;
-				SYMROOT = "/Users/vasek/prog/fish-fillets/build";
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug;
 		};
@@ -2722,11 +2716,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk;
+				ONLY_ACTIVE_ARCH = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "/Users/vasek/prog/fish-fillets/build";
 			};
 			name = RelWithDebInfo;
 		};
@@ -2734,11 +2725,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk;
+				ONLY_ACTIVE_ARCH = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "/Users/vasek/prog/fish-fillets/build";
 			};
 			name = MinSizeRel;
 		};
