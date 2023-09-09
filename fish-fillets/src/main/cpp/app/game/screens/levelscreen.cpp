@@ -123,8 +123,8 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     }
 
     const Model* mirror = nullptr;
-    for(const auto& uModel : m_level.layout().models()) {
-        const auto& model = *uModel;
+    for(const auto* pModel : m_level.layout().models()) {
+        const auto& model = *pModel;
         if(model.hidden())
             continue;
         auto [effect, effectTime] = model.effect();

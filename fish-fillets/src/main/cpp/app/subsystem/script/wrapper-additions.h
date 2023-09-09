@@ -5,7 +5,7 @@
 
 namespace lua::internal {
     template<>
-    inline LuaCallback read(lua_State* L, std::size_t index) {
+    inline LuaCallback read(lua_State* L, int index) {
         return LuaCallback::from(L);
     }
 
@@ -16,8 +16,8 @@ namespace lua::internal {
 
         args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
-        template<std::size_t index>
-        auto get(std::size_t orig_index = index) const {
+        template<int index>
+        auto get(int orig_index = index) const {
             if constexpr(index == 0)
             return dynamic_cast<M*>(&Script::from(state()).ref());
             else
@@ -32,8 +32,8 @@ namespace lua::internal {
 
         args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
-        template<std::size_t index>
-        auto get(std::size_t orig_index = index) const {
+        template<int index>
+        auto get(int orig_index = index) const {
             if constexpr(index == 0)
             return dynamic_cast<const M*>(&Script::from(state()).ref());
             else
@@ -48,8 +48,8 @@ namespace lua::internal {
 
         args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
-        template<std::size_t index>
-        auto get(std::size_t orig_index = index) const {
+        template<int index>
+        auto get(int orig_index = index) const {
             if constexpr(index == 0)
             return &Script::from(state());
             else

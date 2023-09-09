@@ -8,60 +8,60 @@ namespace lua {
     namespace internal {
 
         template<typename T>
-        inline T read(lua_State*, std::size_t);
+        inline T read(lua_State*, int);
 
         template<>
-        inline lua_State* read(lua_State* L, std::size_t) {
+        inline lua_State* read(lua_State* L, int) {
             return L;
         }
 
         template<>
-        inline std::string read(lua_State* L, std::size_t index) {
+        inline std::string read(lua_State* L, int index) {
             return luaL_checkstring(L, index);
         }
 
         template<>
-        inline int read(lua_State* L, std::size_t index) {
+        inline int read(lua_State* L, int index) {
             return (int) luaL_checkinteger(L, index);
         }
 
         template<>
-        inline unsigned read(lua_State* L, std::size_t index) {
+        inline unsigned read(lua_State* L, int index) {
             return (unsigned) luaL_checkinteger(L, index);
         }
 
         template<>
-        inline float read(lua_State* L, std::size_t index) {
+        inline float read(lua_State* L, int index) {
             return (float) luaL_checknumber(L, index);
         }
 
         template<>
-        inline bool read(lua_State* L, std::size_t index) {
+        inline bool read(lua_State* L, int index) {
             return lua_toboolean(L, index);
         }
 
         template<>
-        inline std::optional<std::string> read(lua_State* L, std::size_t index) {
+        inline std::optional<std::string> read(lua_State* L, int index) {
             return lua_isnoneornil(L, index) ? std::optional<std::string>{} : luaL_checkstring(L, index);
         }
 
         template<>
-        inline std::optional<int> read(lua_State* L, std::size_t index) {
+        inline std::optional<int> read(lua_State* L, int index) {
             return lua_isnoneornil(L, index) ? std::optional<int>{} : (int)luaL_checkinteger(L, index);
         }
 
         template<>
-        inline std::optional<float> read(lua_State* L, std::size_t index) {
+        inline std::optional<float> read(lua_State* L, int index) {
             return lua_isnoneornil(L, index) ? std::optional<float>{} : (int)luaL_checknumber(L, index);
         }
 
         template<>
-        inline std::optional<bool> read(lua_State* L, std::size_t index) {
+        inline std::optional<bool> read(lua_State* L, int index) {
             return lua_isnoneornil(L, index) ? std::optional<bool>{} : lua_toboolean(L, index);
         }
 
         template<>
-        inline std::map<std::string, std::string> read(lua_State* L, std::size_t index) {
+        inline std::map<std::string, std::string> read(lua_State* L, int index) {
             lua_pushvalue(L, index);
             lua_pushnil(L);
             std::map<std::string, std::string> ret;
@@ -134,8 +134,8 @@ namespace lua {
 
             args(lua_State* L) : args<R(*)(Ts...)>(L) {}
 
-            template<std::size_t index>
-            auto get(std::size_t orig_index = index) const {
+            template<int index>
+            auto get(int orig_index = index) const {
                 if constexpr(index == 0)
                     return read<std::decay_t<T>>(state(), orig_index);
                 else
@@ -145,7 +145,7 @@ namespace lua {
 
         template<typename T, typename S, std::size_t... Is>
         auto apply_impl(T f, S args, std::index_sequence<Is...>) {
-            return std::invoke(f, args.template get<Is>()...);
+            return std::invoke(f, args.template get<(int)Is>()...);
         }
 
         template<typename T, typename S, std::size_t... Is>

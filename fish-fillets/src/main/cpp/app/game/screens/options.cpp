@@ -30,7 +30,6 @@ OptionsOverlay::OptionsOverlay(Instance& instance) :
 OptionsOverlay::VolumeBar::VolumeBar(AudioType type_, const char* typeString_, FCoords origin_) :
     type(type_), typeString(typeString_), origin(origin_)
 {
-    static int i = 0;
     from = origin - FCoords(volTolerance, volTolerance);
     to = origin + FCoords(volTolerance, volTolerance) + FCoords(volLength, 0.f);
 }

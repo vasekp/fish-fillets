@@ -43,7 +43,7 @@ namespace decoders {
         if(setjmp(png_jmpbuf(png_ptr)))
             Log::error("libpng: error during png_read_image");
 
-        unsigned stride = png_get_rowbytes(png_ptr, info_ptr);
+        auto stride = png_get_rowbytes(png_ptr, info_ptr);
         if(stride != 4 * width)
             Log::error(filename, ": width = ", width, " but stride = ", stride);
         auto data = std::make_unique<std::uint8_t[]>(height * stride);

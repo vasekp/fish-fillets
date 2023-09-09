@@ -2,7 +2,7 @@
 
 namespace vulkan {
 
-static constexpr std::array<std::size_t, 3> maxDescriptors = {500, 2, 1};
+static constexpr std::array<std::uint32_t, 3> maxDescriptors = {500, 2, 1};
 
 DescriptorPool::DescriptorPool(const vk::raii::Device& device) :
     m_descriptorPool{createDescriptorPool(device)},
@@ -21,7 +21,7 @@ DescriptorPool::DescriptorPool(const vk::raii::Device& device) :
 
 vk::raii::DescriptorPool DescriptorPool::createDescriptorPool(const vk::raii::Device& device) {
     std::array<vk::DescriptorPoolSize, 3> poolSizes;
-    std::size_t total = 0;
+    std::uint32_t total = 0;
     for(int binding = 0; binding < 3; binding++) {
         poolSizes[binding] = vk::DescriptorPoolSize{}
             .setType(vk::DescriptorType::eCombinedImageSampler)
