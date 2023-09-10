@@ -42,7 +42,6 @@ public:
 
     void setWindowSize(FCoords size);
     void setWindowShift(FCoords shift);
-    //void setViewport(FCoords origin, FCoords size);
     void notifyResize(USize sz);
     void setScissor(ICoords from, ICoords to);
     void releaseScissor();

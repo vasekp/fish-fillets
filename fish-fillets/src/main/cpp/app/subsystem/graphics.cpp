@@ -31,16 +31,6 @@ void Graphics::setWindowShift(FCoords shift) {
     m_coords[window].origin += m_windowShift;
 }
 
-#if 0
-void Graphics::setViewport(FCoords origin, FCoords size) {
-    Log::debug<Log::graphics>("viewport origin ", origin, " size ", size);
-    m_backend->setViewport(origin.round(), size.round()); // TODO check no-op
-    m_backend->notifyResize();
-    recalc();
-    m_instance.screens().resize();
-}
-#endif
-
 void Graphics::notifyResize(USize sz) {
     m_backend->notifyResize(sz);
     recalc();

@@ -24,12 +24,12 @@ bool IOSInput::registerTouchEvent(int action, FCoords coords) {
     std::lock_guard lock{m_mutex};
     switch(action) {
         case kTouchEventPointerDown: {
-            auto size = m_instance.graphics().coords(Graphics::null).size; // TODO: no graphics(), only if fullscreen
+            auto size = m_instance.graphics().coords(Graphics::null).size;
             auto edge = edgePercentage * std::min(size.x, size.y);
             auto edges = FCoords{edge, edge};
             m_pointerFollow = true;
             enqueue(Events::PointerDown{coords});
-            if(!coords.within(edges, size - edges) /*&& !ret*/) { // TODO
+            if(!coords.within(edges, size - edges)) {
                 enqueue(Events::PointerUp{});
                 m_pointerFollow = false;
                 return false;
