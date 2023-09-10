@@ -46,7 +46,8 @@ static_assert(help_en.size() == files.size());
 static constexpr const char* fontFilename = "font/FFArrows.ttf";
 static constexpr float buttonSize = 48.f;
 static constexpr float buttonFontSize = 40.f;
-static constexpr Color buttonColor{0x96afff};
+static constexpr Color buttonColorNav{0x96afff};
+static constexpr Color buttonColorQuit{0x606060};
 static constexpr auto buttonHighlightTime = 300ms;
 static constexpr auto buttonHighlightAlpha = .5f;
 
@@ -64,17 +65,18 @@ HelpScreen::HelpScreen(Instance& instance) :
     m_hint(instance, "", true),
     m_buttonFont(decoders::ttf(instance, fontFilename)),
     m_buttons({
-            Button{TextImage::create(instance, *m_buttonFont, ">"), +1, {}, {}},
-            Button{TextImage::create(instance, *m_buttonFont, "<"), -1, {}, {}}
+        Button{TextImage::create(instance, *m_buttonFont, ">"), Key::right, buttonColorNav, true, {}, {}},
+        Button{TextImage::create(instance, *m_buttonFont, "<"), Key::left, buttonColorNav, false, {}, {}},
+        Button{TextImage::create(instance, *m_buttonFont, "Q"), Key::exit, buttonColorQuit, true, {}, {}}
     })
 {
     loadPart(0);
 }
 
-void HelpScreen::loadPart(unsigned i) {
-    Log::debug<Log::video>("New video: ", files[i]);
+void HelpScreen::loadPart(unsigned index) {
+    Log::debug<Log::video>("New video: ", files[index]);
     m_demux.reset();
-    m_demux.emplace(m_instance.files().system(files[i])->read(), 1);
+    m_demux.emplace(m_instance.files().system(files[index])->read(), 1);
     m_theora.emplace(m_demux.value());
     auto& info = m_theora.value().info();
     if(info.pic_width != 640 || info.pic_height != 480)
@@ -85,7 +87,7 @@ void HelpScreen::loadPart(unsigned i) {
     m_startTime = timeAlive();
     fill_buffers();
     auto lang = m_instance.persist().get("subtitles", "cs"s);
-    m_hint.setText(lang == "cs" ? help_cs[i] : help_en[i]);
+    m_hint.setText(lang == "cs" ? help_cs[index] : help_en[index]);
 }
 
 void HelpScreen::loopVideo() {
@@ -148,63 +150,61 @@ void HelpScreen::own_draw(DrawTarget& target) {
     }, program, coords);
     m_hint.draw(target);
 
-    auto drawButton = [&] (Button& button) {
+    for(auto& button : m_buttons) {
+        if(!button.visible)
+            continue;
         float alpha = 1.f;
         auto time = liveTime();
         if(time < button.fadeTime)
             alpha += (button.fadeTime - time) / buttonHighlightTime * buttonHighlightAlpha;
-        const auto buttonProgram = m_instance.graphics().shaders().button({ .color = buttonColor.gl(alpha) });
+        const auto buttonProgram = m_instance.graphics().shaders().button({ .color = button.color.gl(alpha) });
         constexpr auto extent = FCoords{buttonSize, buttonSize};
         target.draw(button.image, buttonProgram, coords, { .dest = button.pos - extent / 2.f, .area = extent });
     };
-
-    drawButton(m_buttons[0]);
-    if(m_index > 0)
-        drawButton(m_buttons[1]);
 }
 
 bool HelpScreen::own_pointer(FCoords coords) {
     constexpr auto extent = FCoords{buttonSize, buttonSize};
     for(auto& button : m_buttons)
-        if((coords - button.pos).within(-extent / 2.f, extent / 2.f)) {
-            if(button.dir > 0)
-                nextPart();
-            else
-                prevPart();
+        if(button.visible && (coords - button.pos).within(-extent / 2.f, extent / 2.f)) {
+            own_key(button.key);
             button.fadeTime = liveTime() + buttonHighlightTime;
+            return true;
         }
-    return true;
+    return false;
 }
 
 bool HelpScreen::own_key(Key key) {
     switch(key) {
         case Key::right:
         case Key::space:
-            nextPart();
+            advance(+1);
             return true;
         case Key::left:
-            prevPart();
+            advance(-1);
             return true;
         case Key::exit:
-            m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+            exit();
             return true;
         default:
             return false;
     }
 }
 
-void HelpScreen::nextPart() {
-    if(++m_index < files.size())
-        loadPart(m_index);
+void HelpScreen::advance(int diff) {
+    if(m_index == 0 && diff == -1)
+        return;
+    m_index += diff;
+    if(m_index == files.size())
+        exit();
     else
-        m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
+        loadPart(m_index);
+    m_buttons[1].visible = m_index > 0;
+    m_buttons[2].visible = m_index == 0;
 }
 
-void HelpScreen::prevPart() {
-    if(m_index == 0)
-        return;
-    m_index--;
-    loadPart(m_index);
+void HelpScreen::exit() {
+    m_instance.screens().startMode(ScreenManager::Mode::WorldMap);
 }
 
 void HelpScreen::own_resize() {
@@ -216,4 +216,5 @@ void HelpScreen::own_resize() {
     m_buttons[0].pos = coords.out2in(cREdge) - FCoords{buttonSize, 0.f};
     FCoords cLEdge{0.f, nullCoords.size.y / 2.f};
     m_buttons[1].pos = coords.out2in(cLEdge) + FCoords{buttonSize, 0.f};
+    m_buttons[2].pos = m_buttons[1].pos;
 }

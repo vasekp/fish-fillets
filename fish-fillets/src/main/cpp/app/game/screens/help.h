@@ -43,17 +43,19 @@ private:
 
     struct Button{
         ImageRef image;
-        int dir;
+        Key key;
+        Color color;
+        bool visible;
         FCoords pos;
         LiveClock::time_point fadeTime;
     };
     std::unique_ptr<IFont> m_buttonFont;
-    std::array<Button, 2> m_buttons;
+    std::array<Button, 3> m_buttons;
 
     void loopVideo();
-    void loadPart(unsigned i);
-    void nextPart();
-    void prevPart();
+    void loadPart(unsigned index);
+    void advance(int diff);
+    void exit();
     float timeSinceStart();
     void fill_buffers();
 };
