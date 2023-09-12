@@ -46,7 +46,7 @@ public:
     bool transitioning() const;
     bool loading() const;
     bool enqueueGoTo(ICoords coords);
-    bool enqueueGoTo(Model* unit, ICoords coords);
+    bool enqueueGoTo(Model& unit, ICoords coords);
     void dispatchMoveQueue();
     void recordMove(char key);
     bool accepting() const;
@@ -59,14 +59,14 @@ public:
     bool quitSlideshow();
     bool activeFishReady() const;
 
-    void killModelSound(Model* model);
+    void killModelSound(Model& model);
     void killPlan();
-    void setModelEffect(Model* model, const std::string& name);
+    void setModelEffect(Model& model, const std::string& name);
 
     void notifyRound();
     void notifyFish(Model::Fish fish);
-    void notifyDeath(Model* unit);
-    void notifyEscape(Model* model);
+    void notifyDeath(Model& unit);
+    void notifyEscape(Model& model);
 
 private:
     Instance& m_instance;

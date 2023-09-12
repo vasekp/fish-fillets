@@ -191,37 +191,37 @@ void Level::game_setBonusLevel(bool value) {
 
 void Level::model_addAnim(int index, const std::string& name, const std::string& filename, std::optional<int> orientation) {
     auto* image = m_screen.addImage(filename);
-    layout().getModel(index)->anim().add(name, orientation.value_or(Model::Orientation::left), image);
+    layout().getModel(index).anim().add(name, orientation.value_or(Model::Orientation::left), image);
 }
 
 void Level::model_runAnim(int index, const std::string& name, std::optional<int> phase) {
-    layout().getModel(index)->anim().set(name, phase.value_or(0), true);
+    layout().getModel(index).anim().set(name, phase.value_or(0), true);
 }
 
 void Level::model_setAnim(int index, const std::string& name, int phase) {
-    layout().getModel(index)->anim().set(name, phase, false);
+    layout().getModel(index).anim().set(name, phase, false);
 }
 
 void Level::model_useSpecialAnim(int index, const std::string& name, int phase) {
-    layout().getModel(index)->anim().setExtra(name, phase);
+    layout().getModel(index).anim().setExtra(name, phase);
 }
 
 void Level::model_setEffect(int index, const std::string& name) {
     setModelEffect(layout().getModel(index), name);
 }
 
-void Level::setModelEffect(Model* model, const std::string& name) {
-    model->setEffect(name, m_screen.timeAlive());
+void Level::setModelEffect(Model& model, const std::string& name) {
+    model.setEffect(name, m_screen.timeAlive());
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto [x, y] = layout().getModel(index)->xy();
+    auto [x, y] = layout().getModel(index).xy();
     return {x, y};
 }
 
 std::string Level::model_getAction(int index) {
-    const auto* model = layout().getModel(index);
-    switch(model->action()) {
+    const auto& model = layout().getModel(index);
+    switch(model.action()) {
         case Model::Action::busy:
             return "busy";
         case Model::Action::turning:
@@ -232,7 +232,7 @@ std::string Level::model_getAction(int index) {
         case Model::Action::willBusy:
             break;
     }
-    auto dir = model->movingDir();
+    auto dir = model.movingDir();
     if (dir == Direction::up)
         return "move_up";
     else if (dir == Direction::down)
@@ -246,19 +246,19 @@ std::string Level::model_getAction(int index) {
 }
 
 std::string Level::model_getState(int index) {
-    const auto* model = layout().getModel(index);
-    if(!model->alive())
+    const auto& model = layout().getModel(index);
+    if(!model.alive())
         return "dead";
-    else if(model->talking())
+    else if(model.talking())
         return "talking";
-    else if(model->pushing())
+    else if(model.pushing())
         return "pushing";
     else
         return "normal";
 }
 
 int Level::model_getTouchDir(int index) {
-    auto dir = layout().getModel(index)->touchDir();
+    auto dir = layout().getModel(index).touchDir();
     if(dir == Direction::up)
         return 1;
     else if(dir == Direction::down)
@@ -272,7 +272,7 @@ int Level::model_getTouchDir(int index) {
 }
 
 bool Level::model_isAlive(int index) {
-    return layout().getModel(index)->alive();
+    return layout().getModel(index).alive();
 }
 
 bool Level::model_isAtBorder(int index) {
@@ -280,60 +280,60 @@ bool Level::model_isAtBorder(int index) {
 }
 
 bool Level::model_isOut(int index) {
-    return layout().getModel(index)->hidden();
+    return layout().getModel(index).hidden();
 }
 
 bool Level::model_isLeft(int index) {
-    return layout().getModel(index)->orientation() == Model::Orientation::left;
+    return layout().getModel(index).orientation() == Model::Orientation::left;
 }
 
 unsigned Level::model_getW(int index) {
-    return layout().getModel(index)->size().width;
+    return layout().getModel(index).size().width;
 }
 
 unsigned Level::model_getH(int index) {
-    return layout().getModel(index)->size().height;
+    return layout().getModel(index).size().height;
 }
 
 void Level::model_setGoal(int index, const std::string& goal) {
-    auto* model = layout().getModel(index);
+    auto& model = layout().getModel(index);
     if(goal == "goal_alive")
-        model->goal() = Model::Goal::alive;
+        model.goal() = Model::Goal::alive;
     else if(goal == "goal_escape" || goal == "goal_out") { // FIXME: is there any need to differentiate?
-        bool release = model->goal() == Model::Goal::alive;
-        model->goal() = Model::Goal::escape;
+        bool release = model.goal() == Model::Goal::alive;
+        model.goal() = Model::Goal::escape;
         if(release)
             rules().checkEscape(model);
     } else
-        model->goal() = Model::Goal::none;
+        model.goal() = Model::Goal::none;
 }
 
 void Level::model_change_turnSide(int index) {
-    layout().getModel(index)->turn();
+    layout().getModel(index).turn();
 }
 
 void Level::model_setViewShift(int index, float dx, float dy, std::optional<float> speedX, std::optional<float> speedY) {
-    auto [shift, speed] = layout().getModel(index)->viewShift();
+    auto [shift, speed] = layout().getModel(index).viewShift();
     shift = {dx, dy};
     speed = {speedX.value_or(0.f), speedY.value_or(0.f)};
 }
 
 std::pair<float, float> Level::model_getViewShift(int index) {
-    auto [shift, speed] = layout().getModel(index)->viewShift();
+    auto [shift, speed] = layout().getModel(index).viewShift();
     return {shift.x, shift.y};
 }
 
 void Level::model_setBusy(int index, bool busy) {
-    auto* model = layout().getModel(index);
-    model->action() = busy
-        ? model->moving() ? Model::Action::willBusy : Model::Action::busy
+    auto& model = layout().getModel(index);
+    model.action() = busy
+        ? model.moving() ? Model::Action::willBusy : Model::Action::busy
         : Model::Action::base;
     if(!busy)
         rules().checkEscape(model);
 }
 
 bool Level::model_isTalking(int index) {
-    return layout().getModel(index)->talking();
+    return layout().getModel(index).talking();
 }
 
 void Level::model_talk(int index, std::string name, std::optional<int> type, std::optional<bool> loops, std::optional<bool> dialogFlag) {
@@ -369,11 +369,11 @@ void Level::model_talk(int index, std::string name, std::optional<int> type, std
     source->setRepeat(loops.value_or(false));
     source->setDialog(dialogFlag.value_or(false));
     if(index != -1 /* talk_both */)
-        layout().getModel(index)->talk() = source;
+        layout().getModel(index).talk() = source;
     else {
         auto [small, big] = rules().bothFish();
-        small->talk() = source;
-        big->talk() = source;
+        small.talk() = source;
+        big.talk() = source;
     }
     m_instance.audio().addSource(source);
 }
@@ -382,11 +382,11 @@ void Level::model_killSound(int index) {
     killModelSound(layout().getModel(index));
 }
 
-void Level::killModelSound(Model* model) {
-    const auto& talk = model->talk();
+void Level::killModelSound(Model& model) {
+    const auto& talk = model.talk();
     if(talk)
         m_instance.audio().removeSource(talk);
-    model->talk() = {};
+    model.talk() = {};
 }
 
 bool Level::model_equals(int index, int x, int y) {
@@ -394,8 +394,8 @@ bool Level::model_equals(int index, int x, int y) {
     if(!xy.within({}, ICoords{layout().size(), 1}))
         return false;
     if(index != -1 /* free space */) {
-        const auto* model = layout().getModel(index);
-        return model->shape().covers(xy - model->xy());
+        const auto& model = layout().getModel(index);
+        return model.shape().covers(xy - model.xy());
     } else
         return layout().modelAt(xy) == nullptr;
 }
@@ -405,11 +405,11 @@ bool Level::model_goto(int index, int x, int y) {
         return false;
     Log::verbose<Log::lua>("model_goto");
     ICoords dest{x, y};
-    auto* model = layout().getModel(index);
+    auto& model = layout().getModel(index);
     auto path = layout().findPath(model, dest);
     if(path.empty())
-        Log::error("model_goto requested but path from ", model->xy(), " to ", dest, " not found");
-    m_rules->switchFish(model);
+        Log::error("model_goto requested but path from ", model.xy(), " to ", dest, " not found");
+    m_rules->switchFish(&model);
     m_rules->enqueue(path, true);
     return true;
 }
@@ -418,7 +418,7 @@ bool Level::model_gotoRandom(int index, int minDistance) {
     if(!m_rules->ready())
         return false;
     Log::verbose<Log::lua>("model_gotoRandom");
-    auto* model = layout().getModel(index);
+    auto& model = layout().getModel(index);
     if(!m_rules->isFree(model)) {
         Log::debug<Log::gotos>("gotoRandom: model not free.");
         return false;
@@ -426,7 +426,7 @@ bool Level::model_gotoRandom(int index, int minDistance) {
     auto path = layout().randomPath(model, minDistance);
     if(path.empty())
         return false;
-    m_rules->switchFish(model);
+    m_rules->switchFish(&model);
     m_rules->enqueue(path, true);
     return true;
 }

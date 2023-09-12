@@ -7,17 +7,17 @@
 LevelRules::LevelRules(Level& level, LevelLayout& layout) :
     m_level(level),
     m_layout(layout),
+    m_small(*std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model.type() == Model::Type::fish_small; })),
+    m_big(*std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model.type() == Model::Type::fish_big; })),
     m_curFish(nullptr),
     m_doomed(false),
     m_vintage(false),
     m_bonusExit(nullptr),
     m_queueFixed(false)
 {
-    m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_small; });
-    m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [](const auto& model) { return model->type() == Model::Type::fish_big; });
     setFish(Model::Fish::small);
-    for(auto* model : m_layout.models())
-        if(model->goal() != Model::Goal::none)
+    for(auto& model : m_layout.models())
+        if(model.goal() != Model::Goal::none)
             m_goals.push_back(model);
     buildDepGraph();
 }
@@ -26,10 +26,10 @@ void LevelRules::setFish(Model::Fish fish) {
     auto* newFish = m_curFish;
     switch(fish) {
         case Model::Fish::small:
-            newFish = m_small;
+            newFish = &m_small.get();
             break;
         case Model::Fish::big:
-            newFish = m_big;
+            newFish = &m_big.get();
             break;
         case Model::Fish::none:
             newFish = nullptr;
@@ -41,17 +41,17 @@ void LevelRules::setFish(Model::Fish fish) {
     }
 }
 
-void LevelRules::setFish(Model* which) {
+void LevelRules::setFish(Model& which) {
     setFish(which == m_small ? Model::Fish::small : Model::Fish::big);
 }
 
 Model::Fish LevelRules::activeFish() const {
-    if(m_curFish == m_small)
-        return Model::Fish::small;
-    else if(m_curFish == m_big)
-        return Model::Fish::big;
-    else
+    if(!m_curFish)
         return Model::Fish::none;
+    else if(*m_curFish == m_small)
+        return Model::Fish::small;
+    else
+        return Model::Fish::big;
 }
 
 Model* LevelRules::activeFish_model() const {
@@ -126,30 +126,31 @@ void LevelRules::processKey(Key key) {
 }
 
 bool LevelRules::switchFish(Model* which) {
-    Model* target = which != nullptr ? which : m_curFish == m_small ? m_big : m_small;
-    if(target->action() != Model::Action::base || !target->alive() || target->hidden() || target->driven())
+    assert(which != nullptr || m_curFish != nullptr);
+    Model& target = which != nullptr ? *which : *m_curFish == m_small ? m_big.get() : m_small.get();
+    if(target.action() != Model::Action::base || !target.alive() || target.hidden() || target.driven())
         return false;
     setFish(target);
     if(!m_vintage && !m_level.inDemo()) {
         m_curFish->action() = Model::Action::activate;
-        m_level.transition(ModelAnim::framesActivate, [unit = m_curFish]() {
-            unit->action() = Model::Action::base;
+        m_level.transition(ModelAnim::framesActivate, [fish = m_curFish]() {
+            fish->action() = Model::Action::base;
         });
     }
     return true;
 }
 
 void LevelRules::bonusSwitch(bool value) {
-    std::for_each(m_layout.models().begin(), m_layout.models().end(), [&, value](auto* model) {
-            if(auto type = model->type(); type == Model::Type::bonus_box || type == Model::Type::bonus_exit) {
-                model->bonusSwitch(value);
-                updateDepGraph(model);
-                if(type == Model::Type::bonus_exit)
-                    m_bonusExit = model;
-            }
-    });
-    m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model->type() == type; });
-    m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model->type() == type; });
+    for(auto& model : m_layout.models()) {
+        if(auto type = model.type(); type == Model::Type::bonus_box || type == Model::Type::bonus_exit) {
+            model.bonusSwitch(value);
+            updateDepGraph(model);
+            if(type == Model::Type::bonus_exit)
+                m_bonusExit = &model;
+        }
+    }
+    m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model.type() == type; });
+    m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model.type() == type; });
     setFish(Model::Fish::small);
     clearQueue();
     m_vintage = value;
@@ -180,7 +181,7 @@ void LevelRules::moveFish(Direction d) {
         return;
     }
 
-    const auto obs = m_layout.obstacles(m_curFish, d);
+    const auto obs = m_layout.obstacles(*m_curFish, d);
 
     if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return !model->movable(); }) != obs.end()) {
         for(auto* model : obs)
@@ -192,10 +193,10 @@ void LevelRules::moveFish(Direction d) {
         if (std::find_if(obs.begin(), obs.end(), [](Model* model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
     }
-    if(m_layout.borderDir(m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
+    if(m_layout.borderDir(*m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
         return;
     for(const auto* model : obs) {
-        if(m_layout.borderDir(model) == d && model->goal() != Model::Goal::escape)
+        if(m_layout.borderDir(*model) == d && model->goal() != Model::Goal::escape)
             return;
     }
 
@@ -244,7 +245,8 @@ static constexpr std::array<std::pair<char, Key>, 8> dirChars_vintage{{
 }};
 
 char LevelRules::dirToChar(Direction d) {
-    bool small = m_curFish == m_small;
+    assert(m_curFish != nullptr);
+    bool small = *m_curFish == m_small;
     for(const auto& [dir, cS, cB] : m_vintage ? charDirs_vintage : charDirs_normal)
         if(d == dir)
             return small ? cS : cB;
@@ -280,13 +282,13 @@ void LevelRules::enqueue(const std::vector<Direction>& dirs, bool fixed) {
         keyInput(Input::toKey(dir));
 }
 
-void LevelRules::registerMotion(Model* model, Direction d) {
-    m_motions.emplace_back(model, d);
+void LevelRules::registerMotion(Model& model, Direction d) {
+    m_motions.emplace_back(&model, d);
     updateDepGraph(model);
 }
 
 bool LevelRules::steady() {
-    return std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model->moving(); }) && !m_level.transitioning();
+    return std::none_of(m_layout.models().begin(),  m_layout.models().end(), [](const auto& model) { return model.moving(); }) && !m_level.transitioning();
 }
 
 bool LevelRules::ready() {
@@ -296,9 +298,9 @@ bool LevelRules::ready() {
 void LevelRules::update() {
     evalFalls();
     evalSteel();
-    for (auto [model, d] : m_motions)
-        if (!model->moving())
-            evalMotion(model, d);
+    for(auto [model, d] : m_motions)
+        if(!model->moving())
+            evalMotion(*model, d);
     m_motions.clear();
 
     if(steady()) {
@@ -311,38 +313,38 @@ void LevelRules::update() {
             processKey(key);
     }
 
-    for(auto* model : m_layout.models())
-        if(!model->moving())
-            model->deltaStop();
+    for(auto& model : m_layout.models())
+        if(!model.moving())
+            model.deltaStop();
 }
 
 void LevelRules::evalFalls() {
     std::vector<Model*> falling;
-    for(auto* model : m_layout.models()) {
-        if (model->hidden())
+    for(auto& model : m_layout.models()) {
+        if(model.hidden())
             continue;
-        if (model->movable() && m_support[model].none()) {
+        if(model.movable() && m_support[&model].none()) {
             clearQueue();
-            if(model->movingDir() != Direction::down)
+            if(model.movingDir() != Direction::down)
                 m_level.notifyRound();
-            model->displace(Direction::down);
-            falling.push_back(model);
+            model.displace(Direction::down);
+            falling.push_back(&model);
         }
     }
     for(bool stable = false; !stable; ) {
         stable = true;
         for(auto* model: falling)
             for(auto* other: falling)
-                if(other != model && model->intersects(other, Direction::down))
-                    stable &= !model->syncFall(other);
+                if(other != model && model->intersects(*other, Direction::down))
+                    stable &= !model->syncFall(*other);
     }
 }
 
 void LevelRules::evalSteel() {
-    for(const auto* model : m_layout.models()) {
-        if(model->hidden())
+    for(const auto& model : m_layout.models()) {
+        if(model.hidden())
             continue;
-        if(auto support = m_support[model]; model->movable() && model->weight() == Model::Weight::heavy
+        if(auto support = m_support[&model]; model.movable() && model.weight() == Model::Weight::heavy
                 && support.test(Model::SupportType::small)
                 && !support.test(Model::SupportType::big)
                 && !support.test(Model::SupportType::wall))
@@ -350,71 +352,71 @@ void LevelRules::evalSteel() {
     }
 }
 
-void LevelRules::evalMotion(Model* model, Direction d) {
-    Log::verbose<Log::motion>("stopped ", model->index(), " ", d);
-    if(model->action() == Model::Action::willBusy)
-        model->action() = Model::Action::busy;
+void LevelRules::evalMotion(Model& model, Direction d) {
+    Log::verbose<Log::motion>("stopped ", model.index(), " ", d);
+    if(model.action() == Model::Action::willBusy)
+        model.action() = Model::Action::busy;
     m_level.notifyRound();
-    if(!model->alive() && model->weight() != Model::Weight::none && d != Direction::up) {
-        const auto& fullSupport = m_support[model];
+    if(!model.alive() && model.weight() != Model::Weight::none && d != Direction::up) {
+        const auto& fullSupport = m_support[&model];
         if(fullSupport.test(Model::SupportType::wall)) {
             if(d == Direction::down)
-                m_level.screen().playSound(model->weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
+                m_level.screen().playSound(model.weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
         } else if(fullSupport.any()) {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
                     if(supp->alive()) {
-                        Log::verbose<Log::motion>("model ", model->size(), " @ ", model->xy(), " killing ", supp->size(), " @ ", supp->xy());
-                        death(supp);
+                        Log::verbose<Log::motion>("model ", model.size(), " @ ", model.xy(), " killing ", supp->size(), " @ ", supp->xy());
+                        death(*supp);
                     }
             } else {
                 auto dirSupport = directSupport(model);
                 if(fullSupport == dirSupport)
                     for(auto* supp : m_layout.intersections(model, Direction::down))
                         if(supp->alive())
-                            death(supp);
+                            death(*supp);
             }
         }
     }
     checkEscape(model);
 }
 
-void LevelRules::death(Model* unit) {
-    if(!unit->alive())
+void LevelRules::death(Model& unit) {
+    if(!unit.alive())
         return;
-    unit->die();
+    unit.die();
     updateDepGraph(unit);
     clearQueue();
-    unit->anim().removeExtra();
+    unit.anim().removeExtra();
     if(!m_vintage)
         m_level.setModelEffect(unit, "disintegrate");
-    m_level.transition(ModelAnim::framesDeath, [&, unit]() {
-        unit->disappear();
+    m_level.transition(ModelAnim::framesDeath, [&]() {
+        unit.disappear();
         updateDepGraph(unit);
     });
     evalMotion(unit, Direction::down); // see this line's commit's comment
     m_doomed = true;
     m_level.notifyDeath(unit);
-    if(unit == m_curFish && !switchFish())
+    if(&unit == m_curFish && !switchFish())
         setFish(Model::Fish::none);
 }
 
-void LevelRules::checkEscape(Model* model) {
-    if(model->goal() == Model::Goal::escape && model->action() != Model::Action::busy) {
+void LevelRules::checkEscape(Model& model) {
+    if(model.goal() == Model::Goal::escape && model.action() != Model::Action::busy) {
         auto dir = m_layout.borderDir(model);
         auto out = m_layout.isOut(model);
-        if((model->alive() && !!dir) || (!model->alive() && out))
+        if((model.alive() && !!dir) || (!model.alive() && out))
             m_level.notifyEscape(model);
         if(!!dir) {
             clearQueue();
-            model->driven() = true;
-            model->displace(dir);
+            model.driven() = true;
+            model.displace(dir);
         }
-        if(out || (m_bonusExit && model->intersects(m_bonusExit))) {
-            if(model == m_curFish)
+        if(out || (m_bonusExit && model.intersects(*m_bonusExit))) {
+            if(&model == m_curFish)
                 if(!switchFish())
                     setFish(Model::Fish::none);
-            model->disappear();
+            model.disappear();
             if(solved())
                 m_level.success();
         }
@@ -422,39 +424,39 @@ void LevelRules::checkEscape(Model* model) {
 }
 
 void LevelRules::buildDepGraph() {
-    for(const auto* model : m_layout.models()) {
-        if (!model->movable() || model->hidden())
+    for(const auto& model : m_layout.models()) {
+        if(!model.movable() || model.hidden())
             continue;
-        for (auto* other : m_layout.intersections(model, Direction::down))
-            m_dependencyGraph.emplace(model, other);
+        for(auto* other : m_layout.intersections(model, Direction::down))
+            m_dependencyGraph.emplace(&model, other);
     }
     buildSupportMap();
 }
 
-void LevelRules::updateDepGraph(const Model* model) {
-    std::erase_if(m_dependencyGraph, [model](const auto& pair) {
-        return pair.first == model || pair.second == model;
+void LevelRules::updateDepGraph(const Model& model) {
+    std::erase_if(m_dependencyGraph, [&model](const auto& pair) {
+        return pair.first == &model || pair.second == &model;
     });
     for(const auto* other : m_layout.intersections(model, Direction::down))
-        m_dependencyGraph.emplace(model, other);
+        m_dependencyGraph.emplace(&model, other);
     for(const auto* other : m_layout.intersections(model, Direction::up))
-        m_dependencyGraph.emplace(other, model);
+        m_dependencyGraph.emplace(other, &model);
     buildSupportMap();
 }
 
 void LevelRules::buildSupportMap() {
     m_support.clear();
 
-    for(const auto* model : m_layout.models()) {
-        if (!model->movable() || model->hidden())
+    for(const auto& model : m_layout.models()) {
+        if(!model.movable() || model.hidden())
             continue;
         calcSupport(model);
     }
 }
 
-const util::EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model* model) {
-    if(m_support.contains(model))
-        return m_support[model];
+const util::EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model& model) {
+    if(m_support.contains(&model))
+        return m_support[&model];
 
     std::set<const Model*> seen;
     std::set<const Model*> seen_via;
@@ -462,12 +464,12 @@ const util::EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model*
     std::deque<std::pair<const Model*, bool>> queue;
 
     for(auto [above, below] : m_dependencyGraph)
-        if(above == model)
+        if(above == &model)
             queue.push_back({below, false});
     while(!queue.empty()) {
         auto [other, viaWeak] = queue.front();
         queue.pop_front();
-        if(other->hidden() || other == model
+        if(other->hidden() || other == &model
                 || (viaWeak && ret.test(Model::SupportType::weak))
                 || seen.contains(other) || (viaWeak && seen_via.contains(other)))
             continue;
@@ -486,19 +488,18 @@ const util::EnumBitset<Model::SupportType>& LevelRules::calcSupport(const Model*
                 ret.set(viaWeak ? Model::SupportType::weak : sType);
         }
     }
-    return m_support[model] = ret;
+    return m_support[&model] = ret;
 }
 
-util::EnumBitset<Model::SupportType> LevelRules::directSupport(const Model* model) {
+util::EnumBitset<Model::SupportType> LevelRules::directSupport(const Model& model) {
     util::EnumBitset<Model::SupportType> ret;
     for(auto[above, below] : m_dependencyGraph)
-        if(above == model && below->supportType() != Model::SupportType::none)
+        if(above == &model && below->supportType() != Model::SupportType::none)
             ret.set(below->supportType());
     return ret;
 }
 
-bool LevelRules::isFree(Model* model) const {
-    //assert(model == m_small || model == m_big);
+bool LevelRules::isFree(Model& model) const {
     auto [tThis, tOther] = model == m_small
         ? std::pair{Model::SupportType::small, Model::SupportType::big}
         : std::pair{Model::SupportType::big, Model::SupportType::small};
@@ -511,7 +512,7 @@ bool LevelRules::isFree(Model* model) const {
     return true;
 }
 
-std::pair<Model*, Model*> LevelRules::bothFish() const {
+std::pair<Model&, Model&> LevelRules::bothFish() const {
     return {m_small, m_big};
 }
 
@@ -520,9 +521,9 @@ bool LevelRules::solvable() const {
 }
 
 bool LevelRules::solved() const {
-    return std::all_of(m_goals.begin(),  m_goals.end(), [this](const Model* model) {
-        return (model->goal() == Model::Goal::escape && m_layout.isOut(model))
-            || (model->goal() == Model::Goal::alive && model->alive())
-            || (model->goal() == Model::Goal::none);
+    return std::all_of(m_goals.begin(),  m_goals.end(), [this](const Model& model) {
+        return (model.goal() == Model::Goal::escape && m_layout.isOut(model))
+            || (model.goal() == Model::Goal::alive && model.alive())
+            || (model.goal() == Model::Goal::none);
     });
 }

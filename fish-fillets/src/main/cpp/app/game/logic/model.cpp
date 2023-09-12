@@ -52,12 +52,12 @@ void Model::displace(ICoords d, bool pushing) {
         Log::verbose<Log::motion>("falling ", index(), " warp ", m_warp, " delta ", m_delta, " pos ", m_position);
 }
 
-bool Model::syncFall(const Model* other) {
-    if(m_warp > other->m_warp) {
-        Log::verbose<Log::motion>("sync ", index(), " [", m_warp, ",", m_delta, "] / ", other->index(), " [", other->m_warp, ",", other->m_delta, "]", " ", m_position - other->m_position);
-        m_warp = other->m_warp;
-        if(m_delta > other->m_delta)
-           m_delta = other->m_delta;
+bool Model::syncFall(const Model& other) {
+    if(m_warp > other.m_warp) {
+        Log::verbose<Log::motion>("sync ", index(), " [", m_warp, ",", m_delta, "] / ", other.index(), " [", other.m_warp, ",", other.m_delta, "]", " ", m_position - other.m_position);
+        m_warp = other.m_warp;
+        if(m_delta > other.m_delta)
+           m_delta = other.m_delta;
         return true;
     } else
         return false;
@@ -106,8 +106,8 @@ FCoords Model::fxy() const {
         return m_position + m_viewShift;
 }
 
-bool Model::intersects(Model* other, Direction d) const {
-    return shape().intersects(other->shape(), other->xy() - (xy() + d));
+bool Model::intersects(Model& other, Direction d) const {
+    return shape().intersects(other.shape(), other.xy() - (xy() + d));
 }
 
 void Model::setEffect(const std::string& name, float startTime) {

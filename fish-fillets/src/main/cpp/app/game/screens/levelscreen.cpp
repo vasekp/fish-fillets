@@ -52,11 +52,11 @@ void LevelScreen::own_resize() {
         m_hint->resize();
 
     const auto& models = m_level.layout().models();
-    auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model->effect().name == Model::Effect::mirror; });
+    auto it = std::find_if(models.begin(), models.end(), [&](const auto& model) { return model.effect().name == Model::Effect::mirror; });
     if(it == models.end())
         m_mirrorTarget = {};
     else
-        m_mirrorTarget = makeMirrorTarget(**it);
+        m_mirrorTarget = makeMirrorTarget(*it);
 }
 
 std::unique_ptr<TextureTarget> LevelScreen::makeMirrorTarget(const Model& model) {
@@ -123,8 +123,7 @@ void LevelScreen::drawLevel(DrawTarget& target) {
     }
 
     const Model* mirror = nullptr;
-    for(const auto* pModel : m_level.layout().models()) {
-        const auto& model = *pModel;
+    for(const auto& model : m_level.layout().models()) {
         if(model.hidden())
             continue;
         auto [effect, effectTime] = model.effect();

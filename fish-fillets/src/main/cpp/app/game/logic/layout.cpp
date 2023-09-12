@@ -6,64 +6,60 @@
 
 LevelLayout::LevelLayout(Level& level, USize size) :
         m_level(level),
-        m_size(size),
-        m_models_adapted(m_models_internal)
+        m_size(size)
 { }
 
 int LevelLayout::addModel(const std::string& type, int x, int y, const std::string& shape) {
-    auto index = (int)m_models_internal.size();
-    m_models_internal.push_back(std::make_unique<Model>(index, type, x, y, shape));
+    auto index = (int)m_models.size();
+    m_models.emplace_back(index, type, x, y, shape);
     return index;
 }
 
-Model* LevelLayout::getModel(int index) const {
-    if(index >= 0 && (std::size_t)index < m_models_internal.size())
-        return m_models_internal[index].get();
+Model& LevelLayout::getModel(int index) {
+    if(index >= 0 && (std::size_t)index < m_models.size())
+        return m_models[index];
     if(m_virtModels.contains(index))
-        return m_virtModels.at(index).get();
+        return *m_virtModels.at(index);
     m_virtModels.emplace(index, std::make_unique<Model>(index, "virtual", 0, 0, ""));
     Log::verbose<Log::lua>("virtual model ", index);
-    return m_virtModels.at(index).get();
+    return *m_virtModels.at(index);
 }
 
-Model* LevelLayout::modelAt(ICoords coords) const {
+Model* LevelLayout::modelAt(ICoords coords) {
     if(!coords.within({}, ICoords{m_size, 1}))
         return nullptr;
-    auto it = std::find_if(models().begin(), models().end(), [coords](const Model* model) {
-        return model->shape().covers(coords - model->xy());
-    });
-    if(it == models().end())
-        return nullptr;
-    else
-        return *it;
+    for(auto& model : m_models)
+        if(model.shape().covers(coords - model.xy()))
+          return &model;
+    return nullptr;
 }
 
-void LevelLayout::addRope(const Model* m1, const Model* m2, ICoords d1, ICoords d2) {
-    m_ropes.push_back({m1, m2, d1, d2});
+void LevelLayout::addRope(const Model& m1, const Model& m2, ICoords d1, ICoords d2) {
+    m_ropes.push_back({&m1, &m2, d1, d2});
 }
 
-std::set<Model*> LevelLayout::intersections(const Model* model, ICoords d) {
-    if(model->hidden())
+std::set<Model*> LevelLayout::intersections(const Model& model, ICoords d) {
+    if(model.hidden())
         return {};
     std::set<Model*> ret;
-    for(auto* other : m_models_adapted) {
-        if(*other == *model || ret.contains(other) || other->hidden())
+    for(auto& other : m_models) {
+        if(other == model || ret.contains(&other) || other.hidden())
             continue;
-        if(model->intersects(other, d))
-            ret.insert(other);
+        if(model.intersects(other, d))
+            ret.insert(&other);
     }
     return ret;
 }
 
-std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
+std::set<Model*> LevelLayout::obstacles(const Model& root, ICoords d) {
     std::set<Model*> ret;
     std::deque<const Model*> queue;
-    queue.push_back(root);
+    queue.push_back(&root);
 
     while(!queue.empty()) {
-        const auto model = queue.front();
-        for(auto* other : intersections(model, d)) {
-            if(ret.contains(other) || other == root)
+        const auto& model = *queue.front();
+        for(auto other : intersections(model, d)) {
+            if(ret.contains(other) || other == &root)
                 continue;
             ret.insert(other);
             if(other->movable() && other->supportType() != Model::SupportType::weak)
@@ -76,24 +72,24 @@ std::set<Model*> LevelLayout::obstacles(const Model* root, ICoords d) {
 }
 
 void LevelLayout::animate(std::chrono::duration<float> dt, float speed) {
-    for (auto* model: m_models_adapted) {
-        if (model->moving()) {
-            auto d = model->movingDir();
+    for (auto& model: m_models) {
+        if (model.moving()) {
+            auto d = model.movingDir();
             if(speed == speed_instant)
-                model->instaMove();
+                model.instaMove();
             else
-                model->deltaMove(dt, speed);
-            if (!model->moving())
+                model.deltaMove(dt, speed);
+            if (!model.moving())
                 m_level.rules().registerMotion(model, d);
         }
-        if(auto [shift, speed] = model->viewShift(); speed)
+        if(auto [shift, speed] = model.viewShift(); speed)
             shift += dt.count() * speed;
     }
 }
 
-Direction LevelLayout::borderDir(const Model* model) const {
-    auto [x, y] = model->xy();
-    auto [width, height] = model->size();
+Direction LevelLayout::borderDir(const Model& model) const {
+    auto [x, y] = model.xy();
+    auto [width, height] = model.size();
     if(isOut(model))
         return Direction::none;
     else if(x <= 0)
@@ -108,8 +104,8 @@ Direction LevelLayout::borderDir(const Model* model) const {
         return Direction::none;
 }
 
-bool LevelLayout::isOut(const Model* model) const {
-    return !model->xy().within(-ICoords{model->size(), 1}, ICoords{m_size, 1});
+bool LevelLayout::isOut(const Model& model) const {
+    return !model.xy().within(-ICoords{model.size(), 1}, ICoords{m_size, 1});
 }
 
 static std::array<Direction, 3> nextDirs(Direction dir) {
@@ -125,20 +121,20 @@ static std::array<Direction, 3> nextDirs(Direction dir) {
         std::unreachable();
 }
 
-std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::occupiedBitmap(const Model* unit) {
+std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::occupiedBitmap(const Model& unit) {
     std::array<std::bitset<maxDim>, maxDim> occupied;
     /* Mark all occupied fields */
-    for(const auto* model : models()) {
-        if(model == unit || model->hidden() || model->driven())
+    for(const auto& model : m_models) {
+        if(model == unit || model.hidden() || model.driven())
             continue;
-        auto [x, y] = model->xy();
-        auto size = model->size();
+        auto [x, y] = model.xy();
+        auto size = model.size();
         for(auto dx = 0u; dx < size.width; dx++)
             for(auto dy = 0u; dy < size.height; dy++)
-                occupied[y + dy][x + dx] = occupied[y + dy][x + dx] || model->shape()[dy][dx];
+                occupied[y + dy][x + dx] = occupied[y + dy][x + dx] || model.shape()[dy][dx];
     }
     /* Also avoid borders */
-    if(unit->goal() == Model::Goal::escape) {
+    if(unit.goal() == Model::Goal::escape) {
       for(auto x = 0u; x < m_size.width; x++)
           occupied[0][x] = occupied[m_size.height - 1][x] = true;
       for(auto y = 0u; y < m_size.height; y++)
@@ -151,7 +147,7 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
     }
     /* Extend occupied fields to the left and above, as unit covers [x, x+unitWidth) × [y, y + unitHeight)
      * and thus can't start where it could clash with an occupied field due to its nonunit size */
-    auto unitSize = unit->size();
+    auto unitSize = unit.size();
     for(auto i = 0u; i < unitSize.width - 1; i++)
         for(auto y = 0u; y < maxDim; y++)
             occupied[y] |= occupied[y] >> 1;
@@ -161,10 +157,10 @@ std::array<std::bitset<LevelLayout::maxDim>, LevelLayout::maxDim> LevelLayout::o
     return occupied;
 }
 
-std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) {
+std::vector<Direction> LevelLayout::findPath(const Model& unit, ICoords target) {
     if(!target.within({}, ICoords{m_size, 1}))
         return {};
-    ICoords start = unit->xyFinal();
+    ICoords start = unit.xyFinal();
     Log::debug<Log::gotos>("path from ", start, " to ", target, ":");
     auto occupied = occupiedBitmap(unit);
     /* Check validity */
@@ -172,7 +168,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
         Log::error("Unit start field marked as occupied.");
         return {};
     }
-    auto unitSize = unit->size();
+    auto unitSize = unit.size();
     bool found = false;
     for(auto dx = 0u; !found && dx < std::min(unitSize.width, (unsigned)target.x + 1u); dx++)
         for(auto dy = 0u; !found && dy < std::min(unitSize.height, (unsigned)target.y + 1u); dy++)
@@ -190,7 +186,7 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     for(auto dir : {Direction::up, Direction::down, Direction::left, Direction::right})
         queue.emplace_back(start + dir, dir);
     ICoords end{};
-    ICoords accept{unit->size(), 1};
+    ICoords accept{unit.size(), 1};
     while(!queue.empty()) {
         auto [coords, dir] = queue.front();
         queue.pop_front();
@@ -224,8 +220,8 @@ std::vector<Direction> LevelLayout::findPath(const Model* unit, ICoords target) 
     return ret;
 }
 
-std::vector<Direction> LevelLayout::randomPath(const Model* unit, int minDistance) {
-    ICoords start = unit->xyFinal();
+std::vector<Direction> LevelLayout::randomPath(const Model& unit, int minDistance) {
+    ICoords start = unit.xyFinal();
     Log::debug<Log::gotos>("path from ", start, " minDistance ", minDistance, ":");
     auto occupied = occupiedBitmap(unit);
     if(occupied[start.y][start.x]) {

@@ -73,6 +73,8 @@ public:
     };
 
     Model(int index, const std::string& type, int x, int y, const std::string& shape);
+    Model(const Model&) = delete;
+    Model(Model&&) = delete;
 
     friend bool operator==(const Model& a, const Model& b) { return &a == &b; }
 
@@ -107,11 +109,11 @@ public:
     auto& driven() { return m_driven; }
     auto driven() const { return m_driven; }
 
-    bool intersects(Model* other, Direction d = Direction::none) const;
+    bool intersects(Model& other, Direction d = Direction::none) const;
 
     void turn();
     void displace(ICoords d, bool pushing = false);
-    bool syncFall(const Model* other);
+    bool syncFall(const Model& other);
     void deltaMove(std::chrono::duration<float> dt, float speed = 1.f);
     void instaMove();
     void deltaStop();

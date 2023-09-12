@@ -72,8 +72,8 @@ void Level::update(std::chrono::duration<float> dt) {
 }
 
 void Level::tick() {
-    for(auto* model : layout().models())
-        model->anim().update();
+    for(auto& model : layout().models())
+        model.anim().update();
     for(auto& transition : m_transitions) {
         if(--transition.countdown == 0)
             transition.callback();
@@ -184,22 +184,22 @@ void Level::notifyFish(Model::Fish fish) {
         input().setFish(fish);
 }
 
-void Level::notifyDeath(Model* unit) {
+void Level::notifyDeath(Model& unit) {
     input().setSavePossible(false);
-    screen().playSound(unit->supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
+    screen().playSound(unit.supportType() == Model::SupportType::small ? "dead_small" : "dead_big");
     killModelSound(unit);
     auto [small, big] = rules().bothFish();
-    small->action() = Model::Action::base;
-    big->action() = Model::Action::base;
+    small.action() = Model::Action::base;
+    big.action() = Model::Action::base;
     if(!inDemo()) {
         killPlan();
-        if(!small->alive() && !big->alive())
+        if(!small.alive() && !big.alive())
             transition(ModelAnim::framesRestart, [this]() { restartWhenEmpty(); });
     }
 }
 
-void Level::notifyEscape(Model* model) {
-    m_script.doString("notify_escape(" + std::to_string(model->index()) + ")");
+void Level::notifyEscape(Model& model) {
+    m_script.doString("notify_escape(" + std::to_string(model.index()) + ")");
 }
 
 bool Level::quitSlideshow() {
@@ -294,10 +294,10 @@ std::unique_ptr<IFile> Level::solveFile() const {
 }
 
 bool Level::enqueueGoTo(ICoords coords) {
-    return enqueueGoTo(rules().activeFish_model(), coords);
+    return enqueueGoTo(*rules().activeFish_model(), coords);
 }
 
-bool Level::enqueueGoTo(Model* unit, ICoords coords) {
+bool Level::enqueueGoTo(Model& unit, ICoords coords) {
     if(!m_rules->isFree(unit)) {
         Log::debug<Log::gotos>("GoTo rejected, model not free.");
         return false;
