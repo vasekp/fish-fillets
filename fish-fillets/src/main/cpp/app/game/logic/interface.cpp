@@ -217,7 +217,7 @@ void Level::setModelEffect(Model& model, const std::string& name) {
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto [x, y] = layout().getModel(index).xy();
+    auto [x, y] = layout().getModel(index).xyFinal();
     return {x, y};
 }
 
