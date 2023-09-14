@@ -144,6 +144,7 @@ private:
     void model_useSpecialAnim(int index, const std::string& name, int phase);
     void model_setEffect(int index, const std::string& name);
     std::pair<int, int> model_getLoc(int index);
+    void model_setLoc(int index, int x, int y, bool left);
     std::string model_getAction(int index);
     std::string model_getState(int index);
     int model_getTouchDir(int index);

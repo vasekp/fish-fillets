@@ -130,6 +130,9 @@ function createObject(model_index)
     object.goTo = function(self, x, y)
         return model_goto(self.index, x, y)
     end
+    object.initPos = function(self, x, y, lookLeft)
+        model_initPos(self.index, x, y, lookLeft)
+    end
 
     return object
 end

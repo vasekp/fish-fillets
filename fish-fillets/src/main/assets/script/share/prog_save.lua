@@ -25,10 +25,12 @@ local function assignModelAttributes(saved_table)
     local models = getModelsTable()
     --NOTE: don't save objects with cross references
     --NOTE: objects addresses will be different after load
-    for model_key, model in pairs(saved_table) do
-        for param_key, param in pairs(model) do
-            models[model_key][param_key] = param
+    for model_key, model_table in pairs(saved_table) do
+        model = models[model_key]
+        for param_key, param in pairs(model_table) do
+            model[param_key] = param
         end
+        model:initPos(model.X, model.Y, model.lookLeft)
     end
 end
 

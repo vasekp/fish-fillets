@@ -19,6 +19,7 @@ public:
     void enqueue(const std::string& chars, bool fixed);
     void enqueue(const std::vector<Direction>& chars, bool fixed);
     void clearQueue();
+    void skipLoad();
     void update();
     bool ready();
     void checkEscape(Model& model);

@@ -76,6 +76,24 @@ void LevelRules::clearQueue() {
         m_keyQueue.clear();
 }
 
+void LevelRules::skipLoad() {
+    m_keyQueue.clear();
+    m_queueFixed = false;
+    auto& models = m_layout.models();
+    if(auto it = std::find_if(models.begin(), models.end(), [](const auto& model) { return model.type() == Model::Type::bonus_exit; }); it != models.end()) {
+        auto& exit = *it;
+        for(auto& model : m_layout.models())
+            if(model.intersects(exit) && &model != &exit)
+                model.disappear(true);
+    }
+    for(auto& model : m_layout.models())
+        if(m_layout.isOut(model))
+            model.disappear();
+    if(m_layout.isOut(*m_curFish))
+        switchFish();
+    buildDepGraph();
+}
+
 void LevelRules::processKey(Key key) {
     switch(key) {
         case Key::up:
@@ -424,6 +442,7 @@ void LevelRules::checkEscape(Model& model) {
 }
 
 void LevelRules::buildDepGraph() {
+    m_dependencyGraph.clear();
     for(const auto& model : m_layout.models()) {
         if(!model.movable() || model.hidden())
             continue;

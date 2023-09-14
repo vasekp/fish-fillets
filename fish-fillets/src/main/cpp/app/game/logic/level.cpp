@@ -125,8 +125,11 @@ bool Level::activeFishReady() const {
 void Level::skipBusy() {
     if(m_busy[BusyReason::slideshow])
         quitSlideshow();
-    else if(m_busy[BusyReason::loading] && !inDemo())
-        dispatchMoveQueue();
+    else if(m_busy[BusyReason::loading] && !inDemo()) {
+        m_script.doString("script_loadState()");
+        m_rules->skipLoad();
+        setBusy(BusyReason::loading, false);
+    }
 }
 
 void Level::transition(int frames, std::function<void()>&& callback) {
@@ -171,7 +174,8 @@ void Level::dispatchMoveQueue() {
 }
 
 void Level::recordMove(char key) {
-    m_replay += key;
+    if(!isBusy(BusyReason::loading))
+        m_replay += key;
 }
 
 void Level::notifyRound() {

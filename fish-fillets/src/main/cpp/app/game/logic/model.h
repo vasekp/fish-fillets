@@ -111,6 +111,7 @@ public:
 
     bool intersects(Model& other, Direction d = Direction::none) const;
 
+    void setLoc(ICoords xy, Orientation o);
     void turn();
     void displace(ICoords d, bool pushing = false);
     bool syncFall(const Model& other);
