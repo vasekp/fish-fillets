@@ -320,3 +320,16 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
     } else
         return false;
 }
+
+void Level::saveUndo() {
+    Log::debug<Log::lifecycle>("undo: save");
+    m_script.doString("script_saveUndo()");
+}
+
+void Level::useUndo() {
+    Log::debug<Log::lifecycle>("undo: use");
+    killPlan();
+    reinit();
+    m_script.doString("script_useUndo()");
+    m_rules->skipLoad();
+}

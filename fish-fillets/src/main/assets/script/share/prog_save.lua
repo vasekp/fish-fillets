@@ -26,7 +26,7 @@ local function assignModelAttributes(saved_table)
     --NOTE: don't save objects with cross references
     --NOTE: objects addresses will be different after load
     for model_key, model_table in pairs(saved_table) do
-        model = models[model_key]
+        local model = models[model_key]
         for param_key, param in pairs(model_table) do
             model[param_key] = param
         end
@@ -40,4 +40,21 @@ function script_loadState()
     end
     local saved_table = unpickle_table(saved_models)
     assignModelAttributes(saved_table)
+end
+
+function script_saveUndo()
+    models_undo = {} -- global
+    for index, model_table in pairs(getModelsTable()) do
+        models_undo[index] = {}
+        local model = models_undo[index]
+        for key, value in pairs(model_table) do
+            if type(value) ~= "function" then
+                model[key] = value
+            end
+        end
+    end
+end
+
+function script_useUndo()
+    assignModelAttributes(models_undo)
 end

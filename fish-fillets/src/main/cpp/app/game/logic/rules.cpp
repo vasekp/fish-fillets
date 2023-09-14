@@ -218,6 +218,7 @@ void LevelRules::moveFish(Direction d) {
             return;
     }
 
+    m_level.saveUndo();
     for(auto* model : obs)
         model->displace(d, true);
     Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);

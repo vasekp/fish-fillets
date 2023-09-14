@@ -42,6 +42,9 @@ public:
     void replay();
     void success();
 
+    void saveUndo();
+    void useUndo();
+
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
     bool loading() const;
