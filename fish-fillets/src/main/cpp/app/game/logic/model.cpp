@@ -94,6 +94,12 @@ void Model::bonusSwitch(bool value) {
         m_hidden = value;
 }
 
+void Model::disappear(bool moveOut) {
+    m_hidden = true;
+    if(moveOut)
+        m_position = ICoords{-5, 0};
+}
+
 void Model::deltaStop() {
     m_delta = {};
     m_warp = 1.f;

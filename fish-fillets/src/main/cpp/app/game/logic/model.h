@@ -119,7 +119,7 @@ public:
     void deltaStop();
     void die();
     void bonusSwitch(bool value);
-    void disappear() { m_hidden = true; }
+    void disappear(bool moveOut = false);
     AudioSource::Ref& talk() { return m_talk; }
     void setEffect(const std::string& name, float startTime);
     auto effect() const { return m_effect; }

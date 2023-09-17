@@ -151,7 +151,7 @@ void LevelRules::bonusSwitch(bool value) {
     }
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model.type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model.type() == type; });
-    setFish(Model::Fish::small);
+    setFish(m_layout.isOut(m_small) ? Model::Fish::big : Model::Fish::small);
     clearQueue();
     m_vintage = value;
 }
@@ -416,7 +416,7 @@ void LevelRules::checkEscape(Model& model) {
             if(&model == m_curFish)
                 if(!switchFish())
                     setFish(Model::Fish::none);
-            model.disappear();
+            model.disappear(!out);
             if(solved())
                 m_level.success();
         }
