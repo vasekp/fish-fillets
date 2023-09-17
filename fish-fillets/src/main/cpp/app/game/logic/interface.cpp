@@ -280,7 +280,7 @@ bool Level::model_isAtBorder(int index) {
 }
 
 bool Level::model_isOut(int index) {
-    return layout().getModel(index).hidden();
+    return layout().isOut(layout().getModel(index));
 }
 
 bool Level::model_isLeft(int index) {
