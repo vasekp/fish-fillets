@@ -35,10 +35,13 @@ void Glue::worker() {
     IOSInstance instance{*this};
     m_instance = &instance;
 
-    m_running = true;
+    {
+        std::unique_lock lock(m_mutex);
+        m_running = true;
+    }
     Log::info<Log::lifecycle>("thread running (worker)");
     m_cond.notify_one();
-    
+
     while(m_running) {
         try {
             if(!instance.live) {

@@ -23,7 +23,10 @@ Persist::Persist(Instance& instance) :
 }
 
 Persist::~Persist() {
-    m_startstop = true;
+    {
+        std::unique_lock lock(m_mutex);
+        m_startstop = true;
+    }
     m_cond.notify_one();
     m_thread.join();
 }
@@ -63,8 +66,11 @@ void Persist::save() {
 }
 
 void Persist::worker() {
-    assert(m_startstop == true);
-    m_startstop = false;
+    {
+        std::unique_lock lock(m_mutex);
+        assert(m_startstop == true);
+        m_startstop = false;
+    }
     m_cond.notify_one();
     Log::debug<Log::persist>("settings thread started");
     std::unique_lock lock(m_mutex);
