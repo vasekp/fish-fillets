@@ -140,7 +140,10 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                 auto samplesRead = info.size / 2;
                 std::size_t outBufferSize;
                 std::uint8_t* outBuffer = AMediaCodec_getOutputBuffer(codec, outIndex, &outBufferSize);
-                assert(curSample + samplesRead <= numSamples);
+                if(curSample + (doubleSample ? 2 : 1) * samplesRead > numSamples) {
+                    samplesRead = (numSamples - curSample) / (doubleSample ? 2 : 1);
+                    codecDone = true;
+                }
                 oboe::convertPcm16ToFloat(reinterpret_cast<std::int16_t*>(outBuffer), &data[curSample], samplesRead);
                 if(doubleSample) {
                     for(auto i = samplesRead - 1 ; i >= 0 ; i--) {
@@ -170,7 +173,8 @@ static AudioData::Ref loadSoundAsync(Instance& instance, const std::string& file
                         break;
                 }
         } while(!(extractorDone && codecDone));
-        Log::debug<Log::audio>("loadSoundAsync ", filename, ": decoded ", curSample, " frames");
+        Log::debug<Log::audio>("loadSoundAsync ", filename, ": decoded ", curSample, " frames, expected = ", numSamples);
+        ret->m_samplesAvail.store(numSamples, std::memory_order::release);
 
         AMediaFormat_delete(format);
         AMediaCodec_delete(codec);
