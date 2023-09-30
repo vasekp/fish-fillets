@@ -9,6 +9,8 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+constexpr static auto undoGracePeriod = 2s;
+
 Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_instance(instance),
         m_screen(screen),
@@ -328,21 +330,26 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
 }
 
 void Level::saveUndo() {
-    Log::debug<Log::lifecycle>("undo: save");
+    Log::debug<Log::motion>("undo: save");
     m_script.doString("script_saveUndo()");
     m_undoTime = std::chrono::steady_clock::now();
 }
 
 void Level::killUndo() {
+    Log::debug<Log::motion>("undo: kill");
     m_undoTime.reset();
 }
 
 void Level::useUndo() {
     if(!m_undoTime) {
-        Log::debug<Log::lifecycle>("undo: impossible");
+        Log::debug<Log::motion>("undo: impossible");
         return;
     }
-    Log::debug<Log::lifecycle>("undo: use");
+    if(std::chrono::steady_clock::now() > m_undoTime.value() + undoGracePeriod) {
+        Log::debug<Log::motion>("undo: too late");
+        return;
+    }
+    Log::debug<Log::motion>("undo: use");
     killPlan();
     reinit();
     m_script.doString("script_useUndo()");
