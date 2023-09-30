@@ -179,9 +179,9 @@ void Level::dispatchMoveQueue() {
 
 void Level::recordMove(char key) {
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::replay)) {
-        m_replay += key;
         if(!m_goto && !isBusy(BusyReason::demo))
             saveUndo();
+        m_replay += key;
     }
 }
 
@@ -333,6 +333,7 @@ void Level::saveUndo() {
     Log::debug<Log::motion>("undo: save");
     m_script.doString("script_saveUndo()");
     m_undoTime = std::chrono::steady_clock::now();
+    m_undoReplay = m_replay;
 }
 
 void Level::killUndo() {
@@ -354,4 +355,5 @@ void Level::useUndo() {
     reinit();
     m_script.doString("script_useUndo()");
     m_rules->skipLoad();
+    m_replay = m_undoReplay;
 }

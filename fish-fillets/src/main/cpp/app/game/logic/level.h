@@ -110,6 +110,7 @@ private:
     bool m_goto;
 
     std::optional<std::chrono::steady_clock::time_point> m_undoTime;
+    std::string m_undoReplay;
 
     void registerCallbacks();
 
