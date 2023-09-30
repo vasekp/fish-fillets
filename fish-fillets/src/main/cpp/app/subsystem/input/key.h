@@ -24,6 +24,7 @@ enum class Key {
     load,
     restart,
     options,
+    undo,
     special,
     exit
 };

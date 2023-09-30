@@ -41,10 +41,7 @@ public:
     void restartWhenEmpty();
     void replay();
     void success();
-
-    void saveUndo();
-    void killUndo();
-    void useUndo();
+    bool undo();
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
@@ -190,6 +187,9 @@ private:
 
     std::unique_ptr<IFile> saveFile() const;
     std::unique_ptr<IFile> solveFile() const;
+
+    void saveUndo();
+    void killUndo();
 };
 
 #endif //FISH_FILLETS_LEVEL_H

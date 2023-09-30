@@ -345,14 +345,14 @@ void Level::killUndo() {
     m_undo.reset();
 }
 
-void Level::useUndo() {
+bool Level::undo() {
     if(!m_undo) {
         Log::debug<Log::motion>("undo: no saved state");
-        return;
+        return false;
     }
     if(std::chrono::steady_clock::now() > m_undo->time + undoGracePeriod) {
         Log::debug<Log::motion>("undo: too late");
-        return;
+        return false;
     }
     auto conds = m_undo.value(); // gets cleared in reinit()
     Log::debug<Log::motion>("undo: use");
@@ -361,4 +361,5 @@ void Level::useUndo() {
     m_script.doString("script_useUndo()");
     m_rules->skipLoad(conds.active);
     m_replay = conds.replay;
+    return true;
 }

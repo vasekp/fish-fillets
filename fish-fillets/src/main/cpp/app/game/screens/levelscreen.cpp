@@ -323,9 +323,10 @@ bool LevelScreen::own_key(Key key) {
                 return true;
             } else return false;
         case Key::options:
-            m_level.useUndo();
-            //m_instance.screens().options().show();
+            m_instance.screens().options().show();
             return true;
+        case Key::undo:
+            return m_level.undo();
         default:
             return false;
     }
