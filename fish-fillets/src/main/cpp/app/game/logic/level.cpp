@@ -179,7 +179,7 @@ void Level::dispatchMoveQueue() {
 
 void Level::recordMove(char key) {
     if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::replay)) {
-        if(!m_goto && !isBusy(BusyReason::demo))
+        if(!m_goto && !isBusy(BusyReason::demo) && m_rules->solvable())
             saveUndo();
         m_replay += key;
     }
