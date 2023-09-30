@@ -5,8 +5,7 @@ AudioSourceList::AudioSourceList() :
         m_sources_local(),
         m_sources_lock(false),
         m_dirty(false),
-        m_dialogsLocal(false),
-        m_dialogsThread(false)
+        m_dialogs(false)
 { }
 
 AudioSourceList::SourcesGuard::SourcesGuard(AudioSourceList& parent) : m_parent(parent) {
@@ -32,9 +31,8 @@ AudioSourceList::Sources* AudioSourceList::SourcesGuard::operator->() {
 }
 
 void AudioSourceList::SourcesGuard::checkDialogs() {
-    bool dialogs = std::any_of(m_parent.m_sources_local->begin(), m_parent.m_sources_local->end(),
+    m_parent.m_dialogs = std::any_of(m_parent.m_sources_local->begin(), m_parent.m_sources_local->end(),
             [](const auto& source) { return source->isDialog(); });
-    m_parent.m_dialogsLocal.store(dialogs, std::memory_order::release);
 }
 
 AudioSourceList::SourcesGuard AudioSourceList::local() {
@@ -45,8 +43,6 @@ AudioSourceList::Sources& AudioSourceList::thread() {
     if(auto lock = !m_sources_lock.exchange(true, std::memory_order_acquire)) {
         if(m_dirty) {
             m_sources_thread = std::move(m_sources_local);
-            m_dialogsThread.store(m_dialogsLocal.load(std::memory_order::relaxed), std::memory_order::relaxed);
-            m_dialogsLocal.store(false, std::memory_order::relaxed);
             m_dirty = false;
         }
         m_sources_lock.store(false, std::memory_order_release);
@@ -54,10 +50,6 @@ AudioSourceList::Sources& AudioSourceList::thread() {
     return *m_sources_thread;
 }
 
-void AudioSourceList::setDialogsThread(bool dialogs) {
-    m_dialogsThread.store(dialogs, std::memory_order::release);
-}
-
 bool AudioSourceList::hasDialogs() const {
-    return m_dialogsLocal.load(std::memory_order::acquire) || m_dialogsThread.load(std::memory_order::acquire);
+    return m_dialogs;
 }

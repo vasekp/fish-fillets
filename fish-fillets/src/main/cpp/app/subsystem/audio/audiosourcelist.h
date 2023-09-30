@@ -16,7 +16,6 @@ class AudioSourceList {
     private:
         AudioSourceList& m_parent;
         std::size_t m_startSize;
-
         void checkDialogs();
     };
 
@@ -25,8 +24,6 @@ public:
 
     SourcesGuard local();
     Sources& thread();
-
-    void setDialogsThread(bool dialogs);
     bool hasDialogs() const;
 
 private:
@@ -35,8 +32,7 @@ private:
     std::atomic<bool> m_sources_lock;
 
     bool m_dirty;
-    std::atomic<bool> m_dialogsLocal;
-    std::atomic<bool> m_dialogsThread;
+    bool m_dialogs;
 };
 
 #endif //FISH_FILLETS_AUDIO_SOURCELIST_H

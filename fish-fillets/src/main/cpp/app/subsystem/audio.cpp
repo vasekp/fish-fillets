@@ -94,15 +94,9 @@ void Audio::mix(float* output, std::size_t numSamples) {
         volumes[i] = m_volumes[i].load(std::memory_order::relaxed); // cache atomics
     std::memset(output, 0, sizeof(float) * numSamples);
     auto& sources = m_sources.thread();
-    unsigned dialogs = 0;
-    for(const auto& source : sources) {
-        if(source->done())
-            continue;
-        if(source->isDialog())
-            dialogs++;
-        source->mixin(output, numSamples, volumes[(int)source->type()]);
-    }
-    m_sources.setDialogsThread(dialogs > 0);
+    for(const auto& source : sources)
+        if(!source->done())
+            source->mixin(output, numSamples, volumes[(int)source->type()]);
 }
 
 AudioData::Ref Audio::loadSound(const std::string& filename) const {
