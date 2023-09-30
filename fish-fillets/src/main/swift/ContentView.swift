@@ -25,7 +25,7 @@ class ContentViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let fullCount = event?.allTouches?.count
+        let fullCount = event!.allTouches!.count
         if fullCount == 1 {
             let loc = touches.first!.location(in: self.view)
             touchEvent(ptr, kTouchEventPointerDown, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
@@ -39,14 +39,14 @@ class ContentViewController: UIViewController {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if event?.allTouches?.count == 1 {
+        if event!.allTouches!.count == 1 {
             let loc = touches.first!.location(in: self.view)
             touchEvent(ptr, kTouchEventPointerMove, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if event?.allTouches?.count == 1 {
+        if event!.allTouches!.count - touches.count == 0 {
             let loc = touches.first!.location(in: self.view)
             touchEvent(ptr, kTouchEventPointerUp, Float(loc.x * scaleFactor), Float(loc.y * scaleFactor))
         }
