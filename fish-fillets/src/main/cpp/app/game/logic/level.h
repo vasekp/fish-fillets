@@ -30,7 +30,7 @@ public:
     LevelInput& input();
 
     void init();
-    void reinit(bool fromScript = false);
+    void reinit(bool fromScript = false, bool bumpAttempt = true);
     void update(std::chrono::duration<float> dt);
     void tick();
     void save(bool fromScript = false);

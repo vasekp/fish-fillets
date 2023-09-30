@@ -16,7 +16,7 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_screen(screen),
         m_record(record),
         m_script(instance, *this),
-        m_attempt(0),
+        m_attempt(1),
         m_roundFlag(false),
         m_goto(false),
         m_undo()
@@ -39,7 +39,6 @@ LevelInput& Level::input() {
 }
 
 void Level::init() {
-    m_attempt++;
     Log::info<Log::lifecycle>("Level ", m_record.codename, ", attempt ", m_attempt);
     m_script.loadFile(m_record.script_filename);
     m_rules = std::make_unique<LevelRules>(*this, layout());
@@ -48,10 +47,12 @@ void Level::init() {
     m_undo.reset();
 }
 
-void Level::reinit(bool fromScript) {
+void Level::reinit(bool fromScript, bool bumpAttempt) {
     m_dialogs.clear();
     m_screen.killSounds();
     m_screen.reset();
+    if(bumpAttempt)
+        m_attempt++;
     init();
     m_transitions.clear();
     m_replay.clear();
@@ -356,7 +357,7 @@ void Level::useUndo() {
     auto conds = m_undo.value(); // gets cleared in reinit()
     Log::debug<Log::motion>("undo: use");
     killPlan();
-    reinit();
+    reinit(false, false);
     m_script.doString("script_useUndo()");
     m_rules->skipLoad(conds.active);
     m_replay = conds.replay;
