@@ -76,7 +76,7 @@ void LevelRules::clearQueue() {
         m_keyQueue.clear();
 }
 
-void LevelRules::skipLoad() {
+void LevelRules::skipLoad(Model::Fish active) {
     m_keyQueue.clear();
     m_queueFixed = false;
     auto& models = m_layout.models();
@@ -89,6 +89,8 @@ void LevelRules::skipLoad() {
     for(auto& model : m_layout.models())
         if(m_layout.isOut(model))
             model.disappear();
+    if(active != Model::Fish::none)
+        setFish(active);
     if(m_layout.isOut(*m_curFish))
         switchFish();
     buildDepGraph();

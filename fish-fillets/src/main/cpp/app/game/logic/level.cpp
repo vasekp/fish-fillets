@@ -19,7 +19,7 @@ Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_attempt(0),
         m_roundFlag(false),
         m_goto(false),
-        m_undoTime()
+        m_undo()
 {
     registerCallbacks();
     m_script.loadFile("script/globals.lua");
@@ -45,7 +45,7 @@ void Level::init() {
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
     input().setLoadPossible(loadPossible());
-    m_undoTime.reset();
+    m_undo.reset();
 }
 
 void Level::reinit(bool fromScript) {
@@ -332,28 +332,32 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
 void Level::saveUndo() {
     Log::debug<Log::motion>("undo: save");
     m_script.doString("script_saveUndo()");
-    m_undoTime = std::chrono::steady_clock::now();
-    m_undoReplay = m_replay;
+    m_undo = UndoConds {
+        .time = std::chrono::steady_clock::now(),
+        .replay = m_replay,
+        .active = m_rules->activeFish()
+    };
 }
 
 void Level::killUndo() {
     Log::debug<Log::motion>("undo: kill");
-    m_undoTime.reset();
+    m_undo.reset();
 }
 
 void Level::useUndo() {
-    if(!m_undoTime) {
-        Log::debug<Log::motion>("undo: impossible");
+    if(!m_undo) {
+        Log::debug<Log::motion>("undo: no saved state");
         return;
     }
-    if(std::chrono::steady_clock::now() > m_undoTime.value() + undoGracePeriod) {
+    if(std::chrono::steady_clock::now() > m_undo->time + undoGracePeriod) {
         Log::debug<Log::motion>("undo: too late");
         return;
     }
+    auto conds = m_undo.value(); // gets cleared in reinit()
     Log::debug<Log::motion>("undo: use");
     killPlan();
     reinit();
     m_script.doString("script_useUndo()");
-    m_rules->skipLoad();
-    m_replay = m_undoReplay;
+    m_rules->skipLoad(conds.active);
+    m_replay = conds.replay;
 }

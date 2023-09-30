@@ -19,7 +19,7 @@ public:
     void enqueue(const std::string& chars, bool fixed);
     void enqueue(const std::vector<Direction>& chars, bool fixed);
     void clearQueue();
-    void skipLoad();
+    void skipLoad(Model::Fish active = Model::Fish::none);
     void update();
     bool ready();
     void checkEscape(Model& model);

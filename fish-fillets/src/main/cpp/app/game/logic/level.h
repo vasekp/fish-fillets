@@ -109,8 +109,12 @@ private:
     util::EnumBitset<BusyReason> m_busy;
     bool m_goto;
 
-    std::optional<std::chrono::steady_clock::time_point> m_undoTime;
-    std::string m_undoReplay;
+    struct UndoConds {
+        std::chrono::steady_clock::time_point time;
+        std::string replay;
+        Model::Fish active;
+    };
+    std::optional<UndoConds> m_undo;
 
     void registerCallbacks();
 
