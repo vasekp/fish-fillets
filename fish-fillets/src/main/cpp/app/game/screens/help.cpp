@@ -15,7 +15,8 @@ static const std::array files{
     "video/navod5.ogv",
     "video/navod6.ogv",
     "video/navod7.ogv",
-    "video/navod8.ogv"
+    "video/navod8.ogv",
+    "video/navod9.ogv"
 };
 
 static const std::array help_cs{
@@ -26,7 +27,8 @@ static const std::array help_cs{
     "Poklepání na konkrétní rybku",
     "Přejetí na dosažitelnou polohu: podržet prst",
     "Urychlení pohybu: ťuknutí druhým prstem",
-    "Přerušit: ťuknutí během pohybu"
+    "Přerušit: ťuknutí během pohybu",
+    "Vrátit jeden krok: potažení dvěma prsty\nMožno pouze do dvou sekund od provedené akce!"
 };
 
 static const std::array help_en{
@@ -37,7 +39,8 @@ static const std::array help_en{
     "Select specific fish",
     "Find path to accessible location: tap and hold",
     "Fast forward: tap with second finger",
-    "Break running motion: tap anywhere"
+    "Break running motion: tap anywhere",
+    "Undo one move: two finger drag\nOnly possible within 2 seconds!"
 };
 
 static_assert(help_cs.size() == files.size());
