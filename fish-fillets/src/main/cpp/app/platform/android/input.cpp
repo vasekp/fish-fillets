@@ -4,13 +4,15 @@
 
 static constexpr std::chrono::steady_clock::time_point absolutePast{};
 static constexpr float edgePercentage = 0.07f;
+static constexpr float twoPointerMovePercentage = 0.1f;
 
 AndroidInput::AndroidInput(AndroidInstance& instance) :
         m_instance(instance),
         m_lastKey(Key::none),
         m_pointerFollow(false),
         m_pointerId(-1),
-        m_lastHover(noHover)
+        m_lastHover(noHover),
+        m_2pCenter()
 { }
 
 void AndroidInput::reset() {
@@ -105,20 +107,43 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                 default:
                     return false;
             }
-        } else if(pointerCount == 2 && action == AMOTION_EVENT_ACTION_POINTER_DOWN) {
-            Log::debug<Log::input>("secondary: ", AMotionEvent_getPointerId(event, 1));
-            if(!m_pointerFollow)
-                return false;
-            auto id0 = AMotionEvent_getPointerId(event, 0);
-            auto id1 = AMotionEvent_getPointerId(event, 1);
-            if(id0 != m_pointerId && id1 != m_pointerId)
-                return false;
-            return inputSink.twoPointTap();
-        } else if(action == AMOTION_EVENT_ACTION_POINTER_UP && AMotionEvent_getPointerId(event, index) == m_pointerId) {
-            inputSink.pointerUp();
-            m_pointerFollow = false;
-            return true;
-        }
+        } else if(pointerCount == 2) {
+            auto id1 = AMotionEvent_getPointerId(event, 0);
+            auto id2 = AMotionEvent_getPointerId(event, 1);
+            FCoords coords1{AMotionEvent_getX(event, 0), AMotionEvent_getY(event, 0)};
+            FCoords coords2{AMotionEvent_getX(event, 1), AMotionEvent_getY(event, 1)};
+            FCoords center = (coords1 + coords2) / 2.f;
+            switch(action) {
+                case AMOTION_EVENT_ACTION_POINTER_DOWN:
+                    Log::debug<Log::input>("secondary: ", AMotionEvent_getPointerId(event, 1));
+                    if(m_pointerFollow && (id1 == m_pointerId || id2 == m_pointerId))
+                        inputSink.twoPointTap();
+                    m_2pCenter = center;
+                    return true;
+                case AMOTION_EVENT_ACTION_MOVE: {
+                    if(!m_2pCenter)
+                        return false;
+                    auto size = m_instance.graphics().coords(Graphics::null).size;
+                    auto minDist = twoPointerMovePercentage * std::min(size.x, size.y);
+                    auto dist = (center - m_2pCenter.value()).length();
+                    if(dist > minDist) {
+                        Log::debug<Log::input>("sending UNDO");
+                        inputSink.keyDown(Key::undo);
+                        m_2pCenter.reset();
+                    }
+                    return false;
+                }
+                case AMOTION_EVENT_ACTION_POINTER_UP:
+                    m_2pCenter.reset();
+                    if(AMotionEvent_getPointerId(event, index) == m_pointerId) {
+                        inputSink.pointerUp();
+                        m_pointerFollow = false;
+                        return true;
+                    }
+                    return false;
+            }
+        } else
+            m_2pCenter.reset();
     } else if(AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         auto key = AndroidKeymap(AKeyEvent_getKeyCode(event));
         if(key == Key::none)
