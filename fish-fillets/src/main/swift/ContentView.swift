@@ -81,7 +81,6 @@ class ContentViewController: UIViewController {
             let duration = 256.0 / sampleRate
             try audioSession.setPreferredSampleRate(sampleRate)
             try audioSession.setPreferredIOBufferDuration(duration)
-            NotificationCenter.default.addObserver(self, selector: #selector(audioInterrupted), name: AVAudioSession.interruptionNotification, object: audioSession)
             try audioSession.setActive(true)
             // ----
             let audioComponent = AudioComponentDescription(
@@ -120,9 +119,5 @@ class ContentViewController: UIViewController {
     @objc func enterBackground() {
         NSLog("background")
         setFocus(ptr, 0)
-    }
-    
-    @objc func audioInterrupted() {
-        NSLog("audio interrupted")
     }
 }
