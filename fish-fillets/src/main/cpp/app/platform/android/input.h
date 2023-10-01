@@ -24,6 +24,8 @@ private:
     bool m_pointerFollow;
     std::int32_t m_pointerId;
     FCoords m_lastHover;
+
+    std::optional<FCoords> m_2pCenter;
 };
 
 #endif //FISH_FILLETS_ANDROID_INPUT_H

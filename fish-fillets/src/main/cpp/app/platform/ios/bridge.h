@@ -12,7 +12,8 @@ enum : int {
     kTouchEventPointerUp,
     kTouchEventPointerMove,
     kTouchEventCancel,
-    kTouchEventTwoTap
+    kTouchEventTwoTap,
+    kTouchEventTwoMove
 };
 
 void resizeWin(void* pGlue, unsigned width, unsigned height);

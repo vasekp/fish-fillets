@@ -76,6 +76,26 @@ void LevelRules::clearQueue() {
         m_keyQueue.clear();
 }
 
+void LevelRules::skipLoad(Model::Fish active) {
+    m_keyQueue.clear();
+    m_queueFixed = false;
+    auto& models = m_layout.models();
+    if(auto it = std::find_if(models.begin(), models.end(), [](const auto& model) { return model.type() == Model::Type::bonus_exit; }); it != models.end()) {
+        auto& exit = *it;
+        for(auto& model : m_layout.models())
+            if(model.intersects(exit) && &model != &exit)
+                model.disappear(true);
+    }
+    for(auto& model : m_layout.models())
+        if(m_layout.isOut(model))
+            model.disappear();
+    if(active != Model::Fish::none)
+        setFish(active);
+    if(m_layout.isOut(*m_curFish))
+        switchFish();
+    buildDepGraph();
+}
+
 void LevelRules::processKey(Key key) {
     switch(key) {
         case Key::up:
@@ -149,9 +169,12 @@ void LevelRules::bonusSwitch(bool value) {
                 m_bonusExit = &model;
         }
     }
+    auto active = activeFish();
+    if(active == Model::Fish::none)
+        active = Model::Fish::small;
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model.type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model.type() == type; });
-    setFish(m_layout.isOut(m_small) ? Model::Fish::big : Model::Fish::small);
+    setFish(active);
     clearQueue();
     m_vintage = value;
 }
@@ -200,11 +223,11 @@ void LevelRules::moveFish(Direction d) {
             return;
     }
 
+    m_level.recordMove(dirToChar(d));
+    Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     for(auto* model : obs)
         model->displace(d, true);
-    Log::debug<Log::motion>(m_curFish->xy(), " -> ", m_curFish->xy() + d);
     m_curFish->displace(d, !obs.empty());
-    m_level.recordMove(dirToChar(d));
     m_level.notifyRound();
 }
 
@@ -424,6 +447,7 @@ void LevelRules::checkEscape(Model& model) {
 }
 
 void LevelRules::buildDepGraph() {
+    m_dependencyGraph.clear();
     for(const auto& model : m_layout.models()) {
         if(!model.movable() || model.hidden())
             continue;

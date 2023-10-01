@@ -22,7 +22,7 @@ local function prog_init()
         room.oblizardu = 0
 
         return function()
-            if room.oblizardu == 0 and isReady(big) and big.X == 47 and big.dir == dir_right and big.Y == 11 then
+            if room.oblizardu == 0 and isReady(big) and big.X == 48 and big.Y == 11 then
                 room.oblizardu = 1
                 big:setBusy(true)
                 addv(5, "war-v-blizzard")

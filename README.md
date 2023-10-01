@@ -19,13 +19,13 @@ Originally the plan was to simply port Fish Fillets NG source code to a new plat
 
 In this version, Fish Fillets Reborn, hardcoded ties between display and game logic were removed. In result, the game will run in your native screen FPS and pixel resolution (limited, of course, by upscaling the original bitmaps). Motion, falling, text are much smoother and not bound to fixed keyframes. Despite thorough efforts in testing, it's possible that this fact causes some misbehaviour. Please report such problems.
 
-## I can't find a way to undo a wrong move or save partial progress!
-
-This is 100% intentional and *will not* change. Undo mechanics were a part of Next Generation, but part of the intended complexity of the game is the necessity to be able to finish it without crutches. Also, due to the interaction of all the game elements, undoing a step is a delicate process that is extremely prone to not bringing the game back to a consistent state, unless a full state backup is done in every moment.
-
-Saves are possible but you only have one save slot per level. When you make progress and save again, you can not restore to the previous save point. Same if you restart the level and save earlier, or hit save instead of load (a mistake you only do once, trust me). It has been confirmed by the long history of the game, and tested in the new version, that this goal is cumbersome but achievable.
-
 Please also note that while the general form of save and solve files from FFNG was retained, the content is not compatible. In other words, a file saved in Next Generation and loaded in Reborn will not work.
+
+## How about multiple saves or retracing steps?
+
+Saves are possible but you only have one save slot per level. When you make progress and save again, you can not restore to the previous save point. Same if you restart the level and save earlier, or hit save instead of load (a mistake you only make once, trust me). It has been confirmed by the long history of the game, and tested in the new version, that this goal is cumbersome but achievable.
+
+Since the target platform is mobile and mistakes happen on touch screens, a very limited undo mechanics has been implemented. It is allowed to undo a single user-initiated move action. The possibility to revert is limited to a two-second window. It is not possible to undo restart, save, load, or go-to commands this way.
 
 ## Contributing
 

@@ -21,14 +21,16 @@ public:
         struct PointerMove { FCoords coords; };
         struct PointerUp { };
         struct PointerCancel { };
-        struct TwoPointer { };
+        struct TwoPointerTap { };
+        struct TwoPointerMove { };
     };
 
 private:
     IOSInstance& m_instance;
     bool m_pointerFollow;
+    std::optional<FCoords> m_2pCenter;
 
-    using Event = std::variant<Events::PointerDown, Events::PointerMove, Events::PointerUp, Events::PointerCancel, Events::TwoPointer>;
+    using Event = std::variant<Events::PointerDown, Events::PointerMove, Events::PointerUp, Events::PointerCancel, Events::TwoPointerTap, Events::TwoPointerMove>;
     std::vector<Event> m_eventQueue;
     unsigned m_head;
     std::atomic<unsigned> m_tail;

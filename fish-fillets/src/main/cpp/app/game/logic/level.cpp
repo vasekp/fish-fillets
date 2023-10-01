@@ -9,14 +9,17 @@
 #include "subsystem/graphics.h"
 #include "subsystem/audio.h"
 
+constexpr static auto undoGracePeriod = 2s;
+
 Level::Level(Instance& instance, LevelScreen& screen, LevelRecord& record) :
         m_instance(instance),
         m_screen(screen),
         m_record(record),
         m_script(instance, *this),
-        m_attempt(0),
+        m_attempt(1),
         m_roundFlag(false),
-        m_goto(false)
+        m_goto(false),
+        m_undo()
 {
     registerCallbacks();
     m_script.loadFile("script/globals.lua");
@@ -36,18 +39,20 @@ LevelInput& Level::input() {
 }
 
 void Level::init() {
-    m_attempt++;
     Log::info<Log::lifecycle>("Level ", m_record.codename, ", attempt ", m_attempt);
     m_script.loadFile(m_record.script_filename);
     m_rules = std::make_unique<LevelRules>(*this, layout());
     input().setSavePossible(savePossible());
     input().setLoadPossible(loadPossible());
+    m_undo.reset();
 }
 
-void Level::reinit(bool fromScript) {
+void Level::reinit(bool fromScript, bool bumpAttempt) {
     m_dialogs.clear();
     m_screen.killSounds();
     m_screen.reset();
+    if(bumpAttempt)
+        m_attempt++;
     init();
     m_transitions.clear();
     m_replay.clear();
@@ -125,8 +130,11 @@ bool Level::activeFishReady() const {
 void Level::skipBusy() {
     if(m_busy[BusyReason::slideshow])
         quitSlideshow();
-    else if(m_busy[BusyReason::loading] && !inDemo())
-        dispatchMoveQueue();
+    else if(m_busy[BusyReason::loading] && !inDemo()) {
+        m_script.doString("script_loadState()");
+        m_rules->skipLoad();
+        setBusy(BusyReason::loading, false);
+    }
 }
 
 void Level::transition(int frames, std::function<void()>&& callback) {
@@ -171,7 +179,11 @@ void Level::dispatchMoveQueue() {
 }
 
 void Level::recordMove(char key) {
-    m_replay += key;
+    if(!isBusy(BusyReason::loading) && !isBusy(BusyReason::replay)) {
+        if(!m_goto && !isBusy(BusyReason::demo) && m_rules->solvable())
+            saveUndo();
+        m_replay += key;
+    }
 }
 
 void Level::notifyRound() {
@@ -304,6 +316,7 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
     }
     auto path = layout().findPath(unit, coords);
     if(!path.empty()) {
+        killUndo();
         m_goto = true;
         m_rules->enqueue(path, false);
         m_plan.emplace_back([&]() {
@@ -315,4 +328,38 @@ bool Level::enqueueGoTo(Model& unit, ICoords coords) {
         return true;
     } else
         return false;
+}
+
+void Level::saveUndo() {
+    Log::debug<Log::motion>("undo: save");
+    m_script.doString("script_saveUndo()");
+    m_undo = UndoConds {
+        .time = std::chrono::steady_clock::now(),
+        .replay = m_replay,
+        .active = m_rules->activeFish()
+    };
+}
+
+void Level::killUndo() {
+    Log::debug<Log::motion>("undo: kill");
+    m_undo.reset();
+}
+
+bool Level::undo() {
+    if(!m_undo) {
+        Log::debug<Log::motion>("undo: no saved state");
+        return false;
+    }
+    if(std::chrono::steady_clock::now() > m_undo->time + undoGracePeriod) {
+        Log::debug<Log::motion>("undo: too late");
+        return false;
+    }
+    auto conds = m_undo.value(); // gets cleared in reinit()
+    Log::debug<Log::motion>("undo: use");
+    killPlan();
+    reinit(false, false);
+    m_script.doString("script_useUndo()");
+    m_rules->skipLoad(conds.active);
+    m_replay = conds.replay;
+    return true;
 }

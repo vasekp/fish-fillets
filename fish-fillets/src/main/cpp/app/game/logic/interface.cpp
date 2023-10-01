@@ -29,6 +29,7 @@ void Level::registerCallbacks() {
     m_script.registerFn("model_useSpecialAnim", lua::wrap<&Level::model_useSpecialAnim>);
     m_script.registerFn("model_setEffect", lua::wrap<&Level::model_setEffect>);
     m_script.registerFn("model_getLoc", lua::wrap<&Level::model_getLoc>);
+    m_script.registerFn("model_initPos", lua::wrap<&Level::model_setLoc>);
     m_script.registerFn("model_getAction", lua::wrap<&Level::model_getAction>);
     m_script.registerFn("model_getState", lua::wrap<&Level::model_getState>);
     m_script.registerFn("model_getTouchDir", lua::wrap<&Level::model_getTouchDir>);
@@ -136,6 +137,7 @@ bool Level::level_save(const std::string& text_models) {
 
 bool Level::level_load(const std::string& text_moves) {
     setBusy(BusyReason::loading); // unset in Level::tick()
+    m_replay = text_moves;
     m_rules->enqueue(text_moves, true);
     return true;
 }
@@ -215,8 +217,12 @@ void Level::setModelEffect(Model& model, const std::string& name) {
 }
 
 std::pair<int, int> Level::model_getLoc(int index) {
-    auto [x, y] = layout().getModel(index).xy();
+    auto [x, y] = layout().getModel(index).xyFinal();
     return {x, y};
+}
+
+void Level::model_setLoc(int index, int x, int y, bool left) {
+    layout().getModel(index).setLoc({x, y}, left ? Model::Orientation::left : Model::Orientation::right);
 }
 
 std::string Level::model_getAction(int index) {

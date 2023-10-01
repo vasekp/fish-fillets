@@ -30,7 +30,7 @@ public:
     LevelInput& input();
 
     void init();
-    void reinit(bool fromScript = false);
+    void reinit(bool fromScript = false, bool bumpAttempt = true);
     void update(std::chrono::duration<float> dt);
     void tick();
     void save(bool fromScript = false);
@@ -41,6 +41,7 @@ public:
     void restartWhenEmpty();
     void replay();
     void success();
+    bool undo();
 
     void transition(int frames, std::function<void()>&& callback);
     bool transitioning() const;
@@ -105,6 +106,13 @@ private:
     util::EnumBitset<BusyReason> m_busy;
     bool m_goto;
 
+    struct UndoConds {
+        std::chrono::steady_clock::time_point time;
+        std::string replay;
+        Model::Fish active;
+    };
+    std::optional<UndoConds> m_undo;
+
     void registerCallbacks();
 
     void level_createRoom(unsigned width, unsigned height, const std::string& bg);
@@ -144,6 +152,7 @@ private:
     void model_useSpecialAnim(int index, const std::string& name, int phase);
     void model_setEffect(int index, const std::string& name);
     std::pair<int, int> model_getLoc(int index);
+    void model_setLoc(int index, int x, int y, bool left);
     std::string model_getAction(int index);
     std::string model_getState(int index);
     int model_getTouchDir(int index);
@@ -178,6 +187,9 @@ private:
 
     std::unique_ptr<IFile> saveFile() const;
     std::unique_ptr<IFile> solveFile() const;
+
+    void saveUndo();
+    void killUndo();
 };
 
 #endif //FISH_FILLETS_LEVEL_H

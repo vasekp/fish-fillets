@@ -325,6 +325,8 @@ bool LevelScreen::own_key(Key key) {
         case Key::options:
             m_instance.screens().options().show();
             return true;
+        case Key::undo:
+            return m_level.undo();
         default:
             return false;
     }

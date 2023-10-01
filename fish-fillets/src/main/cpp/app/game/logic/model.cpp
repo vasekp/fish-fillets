@@ -36,6 +36,13 @@ Model::Model(int index, const std::string& type, int x, int y, const std::string
     std::tie(m_type, m_alive, m_supportType, m_weight) = modelTypes.at(type);
 }
 
+void Model::setLoc(ICoords xy, Orientation o) {
+    m_position = xy;
+    m_orientation = o;
+    m_move = {};
+    m_delta = {};
+}
+
 void Model::turn() {
     m_orientation = (Orientation)(1 - m_orientation);
 }
