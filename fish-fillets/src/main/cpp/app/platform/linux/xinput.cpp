@@ -57,6 +57,8 @@ Key XKeyMap(KeySym keysym) {
             return Key::load;
         case XK_BackSpace:
             return Key::restart;
+        case XK_u:
+            return Key::undo;
         default:
             return Key::none;
     }
