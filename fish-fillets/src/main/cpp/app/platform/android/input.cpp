@@ -130,6 +130,8 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                         Log::debug<Log::input>("sending UNDO");
                         inputSink.keyDown(Key::undo);
                         m_2pCenter.reset();
+                        inputSink.pointerCancel();
+                        m_pointerFollow = false;
                     }
                     return false;
                 }
@@ -140,6 +142,8 @@ bool AndroidInput::processEvent(AInputEvent* event) {
                         m_pointerFollow = false;
                         return true;
                     }
+                    return false;
+                default:
                     return false;
             }
         } else
