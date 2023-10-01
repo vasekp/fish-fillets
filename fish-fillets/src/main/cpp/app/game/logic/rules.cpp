@@ -170,6 +170,8 @@ void LevelRules::bonusSwitch(bool value) {
         }
     }
     auto active = activeFish();
+    if(active == Model::Fish::none)
+        active = Model::Fish::small;
     m_small = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_small : Model::Type::fish_small](const auto& model) { return model.type() == type; });
     m_big = *std::find_if(m_layout.models().begin(), m_layout.models().end(), [type = value ? Model::Type::fish_old_big : Model::Type::fish_big](const auto& model) { return model.type() == type; });
     setFish(active);
