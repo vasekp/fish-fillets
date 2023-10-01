@@ -4,11 +4,13 @@
 #include "bridge.h"
 
 static constexpr float edgePercentage = 0.07f;
+static constexpr float twoPointerMovePercentage = 0.1f;
 static constexpr unsigned ringBufferSize = 16;
 
 IOSInput::IOSInput(IOSInstance& instance) :
         m_instance(instance),
         m_pointerFollow(false),
+        m_2pCenter(),
         m_head(0),
         m_tail(0)
 {
@@ -52,10 +54,26 @@ bool IOSInput::registerTouchEvent(int action, FCoords coords) {
             m_pointerFollow = false;
             return false;
         case kTouchEventTwoTap:
+            m_2pCenter = coords;
             if(!m_pointerFollow)
                 return false;
-            enqueue(Events::TwoPointer{});
+            enqueue(Events::TwoPointerTap{});
             return true;
+        case kTouchEventTwoMove: {
+            if(!m_2pCenter)
+                return false;
+            auto size = m_instance.graphics().coords(Graphics::null).size;
+            auto minDist = twoPointerMovePercentage * std::min(size.x, size.y);
+            auto dist = (coords - m_2pCenter.value()).length();
+            if(dist > minDist) {
+                Log::debug<Log::input>("sending UNDO");
+                enqueue(Events::TwoPointerMove{});
+                enqueue(Events::PointerCancel{});
+                m_2pCenter.reset();
+                m_pointerFollow = false;
+            }
+            return false;
+        }
         default:
             return false;
     }
@@ -84,8 +102,12 @@ static void deliver(IInputSink& sink, IOSInput::Events::PointerCancel) {
     sink.pointerCancel();
 }
 
-static void deliver(IInputSink& sink, IOSInput::Events::TwoPointer) {
+static void deliver(IInputSink& sink, IOSInput::Events::TwoPointerTap) {
     sink.twoPointTap();
+}
+
+static void deliver(IInputSink& sink, IOSInput::Events::TwoPointerMove) {
+    sink.keyDown(Key::undo);
 }
 
 void IOSInput::deliverEvents() {
