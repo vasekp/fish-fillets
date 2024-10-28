@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 33
+    compileSdk 35
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'cz.absolutno.fillets'
         minSdkVersion 21
-        targetSdk 33
+        targetSdk 35
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_shared'
@@ -33,5 +33,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.oboe:oboe:1.7.0'
+    implementation 'com.google.oboe:oboe:1.9.0'
 }
