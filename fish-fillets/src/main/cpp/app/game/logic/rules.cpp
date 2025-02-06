@@ -213,7 +213,7 @@ void LevelRules::moveFish(Direction d) {
         return;
     }
     if(m_curFish->supportType() == Model::SupportType::small) {
-        if (std::find_if(obs.begin(), obs.end(), [](Model* model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
+        if(std::find_if(obs.begin(), obs.end(), [](Model* model) { return model->weight() == Model::Weight::heavy; }) != obs.end())
             return;
     }
     if(m_layout.borderDir(*m_curFish) == d && m_curFish->goal() != Model::Goal::escape)
@@ -347,6 +347,8 @@ void LevelRules::evalFalls() {
         if(model.hidden())
             continue;
         if(model.movable() && m_support[&model].none()) {
+            if(m_layout.borderDir(model) == Direction::down && model.goal() != Model::Goal::escape)
+              continue;
             clearQueue();
             if(model.movingDir() != Direction::down)
                 m_level.notifyRound();
@@ -382,10 +384,10 @@ void LevelRules::evalMotion(Model& model, Direction d) {
     m_level.notifyRound();
     if(!model.alive() && model.weight() != Model::Weight::none && d != Direction::up) {
         const auto& fullSupport = m_support[&model];
-        if(fullSupport.test(Model::SupportType::wall)) {
+        if(fullSupport.test(Model::SupportType::wall) || fullSupport.none()) {
             if(d == Direction::down)
                 m_level.screen().playSound(model.weight() == Model::Weight::heavy ? "impact_heavy" : "impact_light", .5f);
-        } else if(fullSupport.any()) {
+        } else {
             if(d == Direction::down) {
                 for(auto* supp : m_layout.obstacles(model, Direction::down))
                     if(supp->alive()) {
